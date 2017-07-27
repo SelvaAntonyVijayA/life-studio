@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="page_header">
+    <img class="header_logo" src="assets/img/header/QIL_logo.png">
+    <div class="header_user_info" style="bottom: 51px;">
+      <select class="user_organization" id="ddUserOrganization" style="display: inline-block;">
+         <option *ngFor='let org of orgs' [ngValue]='selectedOrg' >{{mach.name}}</option>
+      </select>
+      <a class="header_username" href="javascript:void(0);"></a>
+      <a class="header_logout" href="javascript:void(0);">Logout</a>
+    </div>
+    <div class="navbar navbar-default" id="ili_menu">
+      <ul class="nav navbar-nav" id="ili_menu_ulRight"></ul>
+      <ul class="nav navbar-nav navbar-right"></ul>
+    </div>
+  </div>
+</div>

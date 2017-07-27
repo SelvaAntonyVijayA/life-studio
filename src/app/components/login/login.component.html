@@ -1,3 +1,50 @@
-<p>
-  login works!
-</p>
+<table cellspacing="0" cellpadding="0" width="1220px" align="center">
+  <tr>
+    <td colspan="3" width="100%" class="loginmenuheader" valign="bottom" align="center"><img class="header_logo" src="assets/img/header/QIL_logo.png"></td>
+  </tr>
+  <tr class="main_row">
+    <td valign="top" align="center" width="100%">
+      <form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>
+        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !username.valid }">
+          <div class="row">
+            <label class="login_lbl_txt" for="username">Username : </label></div>
+          <div class="row"> <input type="text" class="form-control lg_input_box lg_email" name="username" [(ngModel)]="model.username" #username="ngModel"
+              required /></div>
+          <div *ngIf="f.submitted && !username.valid" class="help-block login_validate_color">Username is required</div>
+        </div>
+        <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !password.valid }">
+          <div class="row">
+            <label class="login_lbl_txt" for="password">Password : </label></div>
+          <div class="row">
+            <input type="password" class="form-control lg_input_box lgn_password" name="password" [(ngModel)]="model.password" #password="ngModel"
+              required /></div>
+          <div *ngIf="f.submitted && !password.valid" class="help-block login_validate_color">Password is required</div>
+        </div>
+        <div class="row">
+          <a class="need-help" href="mailto:support@interactivelife.com">Need login help? </a>
+        </div>
+        <div class="form-group login_btn_group">
+          <button [disabled]="loading" class="btn btn-primary login_btn">Login</button>
+        </div>
+        <div *ngIf="error" class="alert alert-danger login_validate_color">{{error}}</div>
+      </form>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="3" width="100%" class="DefaultFooter" align="center">
+      <table id="index-footer" border="0" cellspacing="0" cellpadding="0" width="100%">
+        <tr>
+          <td style="text-align: center; padding-top:30px; padding-bottom:25px;">
+            <img src="assets/img/header/IL_bottom_logo.png" width="350" />
+          </td>
+        </tr>
+        <tr>
+          <td align="center" valign="top"><b><span style="font-size: 11px;"><a href="http://www.interactivelife.com/" target="_blank" class="description">Interactivelife.com</a> | <a href="mailto:support@interactivelife.com"
+  class="description">Contact Us</a>&nbsp;&nbsp;&copy;Copyright Interactive Life Inc. All rights reserved.</span>
+</b>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

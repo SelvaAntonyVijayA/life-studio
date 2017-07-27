@@ -1,4 +1,5 @@
 global._ = require('underscore');
+global.$async = require('async');
 
 const express = require('express');
 const plugins = require('./config/plugins');
@@ -11,7 +12,7 @@ const env = process.env.NODE_ENV || 'development';
 var mongoose = require('mongoose');
 var db = require('./config/db-connect');
 const app = express();
-
+var context = require('./app-middlewares/context');
 
 app.set('settings', require(path.join(process.cwd(), 'config', 'settings')));
 app.use(logger('dev'));
@@ -20,7 +21,7 @@ app.set('view engine', 'html');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(context);
 
 var routes = require('./config/routes');
 db(mongoose, app);

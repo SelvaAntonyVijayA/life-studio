@@ -1,22 +1,23 @@
 var crypto = require('crypto');
+var mongoose = require('mongoose');
 var hexType = 'hex';
 var utfType = 'utf8';
 
-module.exports = {
-  init : function(){
+var convertToObjectId = function (data) {
+  var mongoId = "";
 
-  },
-  encrypt: function (str) {
-    var encrypted = _cryptString(str, utfType, hexType);
+  if (typeof data === "string") {
+    mongoId = mongoose.Types.ObjectId(data);
+  } else {
+    mongoId = [];
 
-    return encrypted;
-  },
-
-  decrypt: function (str) {
-    var decrypted = _cryptString(str, hexType, utfType);
-    
-    return decrypted;
+    _.each(data, function (id, indx) {
+      var curMgId = mongoose.Types.ObjectId(id);
+      mongoId.push(curMgId)
+    });
   }
+  
+  return mongoId;
 };
 
 var _cryptString = function (str, fromType, toType) {
@@ -27,3 +28,23 @@ var _cryptString = function (str, fromType, toType) {
 
   return cryptedPassword;
 };
+
+module.exports = {
+  init: function () {
+
+  },
+  encrypt: function (str) {
+    var encrypted = _cryptString(str, utfType, hexType);
+
+    return encrypted;
+  },
+
+  decrypt: function (str) {
+    var decrypted = _cryptString(str, hexType, utfType);
+
+    return decrypted;
+  },
+
+  convertToObjectId: convertToObjectId
+};
+

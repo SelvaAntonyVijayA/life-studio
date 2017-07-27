@@ -1,0 +1,29 @@
+body {margin: 0;padding: 0 0 0 0;font-family: Verdana;	font-size: 12px; color: #cecece;}
+p, td{font-size: 10pt;}
+span{background-color: transparent;	display: table-row;}
+span {background-color: rgba(0, 0, 0, 0); display: table-row;}
+.DefaultFooter{	padding-top: 10px; padding-right: 12px; font-size: 10pt; color: White;}
+.loginmenuheader {color: #FFFFFF; height: 200px;    margin-top: 10px; padding: 4px;}
+.LoginBox {padding: 15px 0 20px 16px; width: 300px;}
+input {font-size: 12px;font-weight: bold;}
+.textBox {color: #000000; display: block;font-size: 15px;font-weight: normal;height: 35px;margin: 0; width: 300px;}
+.icl-btn { background-color: #FFFFFF; border: 1px solid #000000; border-radius: 20px;color: #000000; cursor: pointer;display: inline-block;font-family: "Corbel";font-size: 16px;padding: 8px 30px;text-decoration: none;}
+.icl-btn-blue {background: -webkit-linear-gradient(#148CD3, #0D7BCB) repeat scroll 0 0 rgba(0, 0, 0, 0); background: linear-gradient(#148CD3, #0D7BCB) repeat scroll 0 0 rgba(0, 0, 0, 0); border: 1px solid #0F6BBA;border-radius: 20px;color: #FFFFFF;}
+.need-help {color: #3282E6; font-weight: normal; text-decoration: none;}
+a.description:link{font-family: Arial,Verdana,San-serif;font-size: 10px;font-weight: normal;color: #3a85d0;	text-decoration: none;	white-space: nowrap;}
+a.description:visited{font-family: Arial,Verdana,San-serif;font-size: 10px;font-weight: normal;color: #8000AF;text-decoration: none;white-space: nowrap;}
+a.description:hover{font-family: Arial,Verdana,San-serif;font-size: 10px;font-weight: normal;color: #0066ff;text-decoration: underline;	white-space: nowrap;}
+a.homelink:link{font-family: Arial,Verdana,San-serif;font-size: 11px;font-weight: normal;color: #3a85d0;	text-decoration: none;	white-space: nowrap;}
+a.homelink:visited{font-family: Arial,Verdana,San-serif;font-size: 11px;font-weight: normal;color: #8000AF;text-decoration: none;white-space: nowrap;}
+a.homelink:hover{font-family: Arial,Verdana,San-serif;font-size: 11px;font-weight: normal;color: #0066ff;text-decoration: underline;	white-space: nowrap;}
+.header_logo{left: -5px; display: block; position: relative; -webkit-transform: scale(0.7); -moz-transform: scale(0.7); -o-transform: scale(0.7); -ms-transform: scale(0.7); transform: scale(0.7);}
+.login-ad{position: absolute; right: -205px; top: -2px;}
+.msg_box_updated{height: 13px; font-size: 11px; color: red; padding-bottom: 5px;}
+.lg_email{margin-bottom: 20px; margin-top: 3px;}
+.lg_input_box{width: 300px; height: 35px;}
+.lgn_password{margin-top: 5px; margin-bottom: 5px;}
+.login_lbl_txt{margin: 0 223px 0 0; color:#cecece;}
+.login_validate_color{color: #FF0000;}
+.login_btn{background: linear-gradient(#148CD3, #0D7BCB) repeat scroll 0 0 rgba(0, 0, 0, 0); border: 1px solid #0F6BBA; border-radius: 20px; color: #FFFFFF; cursor: pointer; display: inline-block; font-family: "Corbel"; font-size: 16px; padding: 8px 30px; text-decoration: none; margin-top: 15px;}
+.need-help {color: #3282E6; font-weight: normal; text-decoration: none; margin-right: -207px;}
+.login_btn_group{margin: 17px 0px 25px 0;}

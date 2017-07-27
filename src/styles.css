@@ -1,1 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+
+body{
+background: url('assets/img/SnipImage.png');     
+overflow-x: hidden;
+font-family: Arial;
+font-size: 12px;
+}
+
+
+
+

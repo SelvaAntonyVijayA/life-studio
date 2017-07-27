@@ -1,0 +1,53 @@
+.page_header {
+    position: relative;
+    border: 0px solid;
+    width: 100%;
+    height: 85px;
+    padding-top: 3px;
+}
+
+.header_logo {
+    position: relative;
+    left: -88px;
+    margin-bottom: -28px;
+    margin-top: -30px;
+    -webkit-transform: scale(0.4);
+    -moz-transform: scale(0.4);
+    -o-transform: scale(0.4);
+    -ms-transform: scale(0.4);
+    transform: scale(0.4);
+}
+
+.navbar-default {
+    padding-right: 20px;
+    margin-left: 1px;
+}
+
+.header_user_info {
+    position: absolute;
+    bottom: 53px;
+    right: 20px;
+}
+
+.user_organization {
+    width: 320px;
+    margin-right: 10px;
+}
+
+.header_username {
+    color: #cecece;
+    border-right: 1px solid #808080;
+    padding-right: 7px;
+}
+
+.header_logout {
+    display: inline-block;
+    margin-left: 7px;
+    text-decoration: none;
+    color: #cecece;
+}
+
+.navbar {
+    min-height: 30px;
+    border-radius: 0px;
+}
