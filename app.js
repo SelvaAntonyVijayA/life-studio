@@ -1,4 +1,5 @@
 global._ = require('underscore');
+global.__util = require('./lib/util');
 global.$async = require('async');
 
 const express = require('express');

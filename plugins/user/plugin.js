@@ -1,26 +1,24 @@
 var path = require("path");
 
-var login = require(path.join(process.cwd(), 'models', 'login'));
+var user = require(path.join(process.cwd(), 'models', 'user'));
 var query = {};
 
-exports.init = function (req, res, next) {
+var init = function (req, res, next) {
   console.log("ILI Itialized");
 };
 
-exports.getLogin = function (req, res, next) {
+var getLogin = function (req, res, next) {
   res.render('index.html');
 };
 
-exports.login = function (req, res, next) {
-
-  console.dir(req);
+var login = function (req, res, next) {
   var obj = req.body.form_data;
 
   query = {};
   query.email = obj.email.toLowerCase();
   query.password = $general.encrypt(obj.password);
 
-  login.find(query, {}, { lean: true }, function (err, user) {
+  user.find(query, {}, { lean: true }, function (err, user) {
     var mainResult = { "userfound": false };
 
     if (user && user.length > 0) {
@@ -53,10 +51,18 @@ exports.login = function (req, res, next) {
               callback(null, []);
             }
           }], function (err, userResult, result) {
+            var userObj = {};
+
+            userObj.name = userResult[0].name;
+            userObj.email = userResult[0].email;
+            userObj.isAdmin = userResult[0].isAdmin;
+            userObj.pin = userResult[0].pin;
+            userObj.roleId = !__util.isNullOrEmpty(userResult[0].role_id) ? userResult[0].role_id : "";
+            userObj.role = result.role[0];
 
             var tokenJSON = {
               uid: userResult[0]._id,
-              user: user
+              user: userObj
             };
 
             var token = $authtoken.generate(tokenJSON);
@@ -71,4 +77,45 @@ exports.login = function (req, res, next) {
     }
 
   });
+};
+
+var get = function (req, res, next) {
+  var obj = $authtoken.get(req.cookies.token);
+  var uid = obj.uid;
+  query = { "_id": uid };
+
+  user.find(query, {}, { lean: true }, function (err, result) {
+    if (result.length > 0) {
+      $organization.getList({ _id: { $in: result[0].organizationId } }, {}, function (orgs) {
+        result[0].organizations = orgs;
+        res.send(result);
+      });
+    } else {
+      res.send([]);
+    }
+  });
+};
+
+var getsession = function (req, res, next) {
+  var obj = $authtoken.get(req.cookies.token);
+  
+  res.send({
+    name: obj.user.name,
+    pin: obj.user.pin,
+    email: obj.user.email,
+    roleId: obj.user.roleId,
+    role: {
+      name: obj.user.isAdmin && obj.user.role.name.toLowerCase() == 'ili' ? "iliadmin" : obj.user.role.name.toLowerCase(),
+      level: obj.user.role.level
+    }
+  });
+};
+
+module.exports = {
+  "init": init,
+  "login": login,
+  "getLogin": getLogin,
+  "login": login,
+  "get": get,
+  "getsession": getsession
 };
