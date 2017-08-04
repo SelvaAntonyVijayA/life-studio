@@ -51,3 +51,31 @@
     min-height: 30px;
     border-radius: 0px;
 }
+
+.navbar-nav li .dropdown-menu {
+  z-index: 10001; 
+  font-size: inherit;
+}
+
+.navbar-nav > li > a, .navbar-nav > li > a:hover{
+    padding: 0px;
+}
+
+.dropdown-menu > li > a{
+  color: #000000;    
+}
+
+.nav > li > a, .nav > li > a:hover{
+  padding: 4px 15px;
+}
+
+.dropdown-menu > li > a:hover{
+  background-color: #3c3c3c; 
+  color: #FFFFFF
+}
+
+.navbar-default .navbar-nav>li>a, .navbar-default .navbar-text{
+    color: #000000; 
+    font-weight: bold; 
+    font-size:12px;
+}

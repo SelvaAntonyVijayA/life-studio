@@ -1,0 +1,112 @@
+.tiles_list {
+    border: 0px solid;
+    width: 292px;
+    height: 911px;
+    float: left;
+    margin-left: 1px;
+    background-image: url(/assets/img/ili-bg/bg_panels/tile_bg_panel.png);
+}
+
+.tiles_list_search {
+    padding-left: 10px;
+    padding-right: 8px;
+    text-align: center;
+    margin-top: 3px;
+    float: left;
+    width: 290px;
+}
+
+.filter_select_box {
+    margin-top: 5px;
+    width: 133px;
+    display: inline;
+}
+
+.orgs_box {
+    float: left;
+}
+
+.category_box {
+    float: right;
+    margin-right: 2px;
+}
+
+.tiles_sort {
+    float: left;
+    width: 284px;
+    margin-top: 4%;
+}
+
+.txt_arrange {
+    font-size: 11px;
+    float: left;
+    margin-top: 4px;
+    margin-left: 9px;
+}
+
+.sort_box {
+    float: left;
+    margin-left: 5px;
+    width: 86px;
+}
+
+.not_show{
+  display: none; 
+  float:right;
+}
+
+.do_sort{
+    margin-right: 20px; 
+    margin-top: 4px; 
+    font-size: 11px; 
+    cursor:pointer;
+}
+
+.sort_image{
+    margin-left: 5px;
+}
+
+.tiles_count_main{
+    width: 100%; 
+    font-size: 12px; 
+    float: left; 
+    height: 1.5%; 
+    margin-top: 3%;
+}
+
+.tile-view-change{
+    float: left; 
+    margin-left: 17px;
+}
+
+.tile-view-change img{
+    cursor: pointer; 
+    padding-right: 2px;
+}
+
+.tiles_list_count{
+    float: right; color:
+    #666666; 
+    font-size: 80%; 
+    padding-right: 7%; 
+    padding-top: 5px;
+}
+
+.tiles_list_show_tiles{
+    padding-top: 1px; 
+    padding-left: 10px; 
+    height: 786px; 
+    overflow: hidden; 
+    margin-top: 120px;
+    width:280px;
+}
+
+.tiles_list_show_tiles{
+    padding-top: 1px; 
+    padding-left: 10px; 
+    height: 786px; 
+    overflow: hidden; 
+    margin-top: 120px; 
+    width:280px;
+}
+

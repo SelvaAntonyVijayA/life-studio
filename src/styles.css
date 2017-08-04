@@ -1,11 +1,61 @@
 /* You can add global styles to this file, and also import other style files */
 
 body{
-background: url('assets/img/SnipImage.png');     
-overflow-x: hidden;
-font-family: Arial;
-font-size: 12px;
+    background: url(assets/img/ili-bg/ili-bg-layer.png); 
+    background-repeat: no-repeat; 
+    background-size: 100% 1009px; 
+    overflow-x: hidden;
+    font-family: Arial;
+    font-size: 12px;
 }
+
+.container {
+    width: 1200px;
+}
+
+/*.page_block {
+    background-color: #FFFFFF;
+    border-radius: 0px;
+    box-shadow: 0px 0px 3px #071838;
+}*/
+
+.search_box {
+    width: 270px;
+    display: inline;
+    float: left;
+}
+
+.input-sm {
+    border-radius: 0px;
+    font-size: 11px;
+}
+
+.ili-btn {
+    width: 75px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 0;
+    background-color: #FFFFFF;
+    color: black;
+}
+
+.ili-form {
+    line-height: 1.42857143;
+    color: #666;
+    background-image: none;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    background-color: #FFFFFF;
+    border-radius: 0px;
+    height: 25px;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+
 
 
 

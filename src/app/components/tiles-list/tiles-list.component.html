@@ -1,0 +1,41 @@
+<div class="tiles_list">
+    <div class='tiles_list_search'>
+      <input id='txtTileSearch' class='form-control input-sm search_box' type='text' placeholder='Search Tiles' />
+      <select id='drpdnTileOrgs' class="form-control input-sm filter_select_box orgs_box"></select>
+      <select id='drpdnTileCategory' class="form-control input-sm filter_select_box category_box"></select>
+    </div>
+    <div class="tiles_sort">
+      <label class="txt_arrange">Sort by: </label>
+      <select id='drpdnTileSort' class="form-control input-sm sort_box" placeholder='Search'>
+        <option>Date</option>
+        <option value="name">Title</option>
+        <option class="tile_content tile_url">Category</option>
+        <option class="tile_content tile_url">Author</option>
+        </select>
+      <div class="not_show do_sort date_sort">
+        <div id='divDateOrderAsc' class='not_show date_asc'>
+          Oldest on top<img class="sort_image" src='assets/img/sort_up.png' />
+        </div>
+        <div id='divDateOrderDesc' class='not_show date_desc'>
+          Newest on top<img class="sort_image" src='assets/img/sort_down.png' />
+        </div>
+      </div>
+      <div class="not_show do_sort text_sort">
+        <div class='not_show text_asc'>
+          A on top<img class="sort_image" src='assets/img/sort_up.png' />
+        </div>
+        <div class='not_show text_desc'>
+          Z on top<img class="sort_image" src='assets/img/sort_down.png' />
+        </div>
+      </div>
+    </div>
+    <div class='tiles_count_main'>
+      <div class="tile-view-change">
+        <img id='imgTileViewDetail' src="assets/img/details.png" alt="" title="Details" />
+        <img id='imgTileViewList' src="assets/img/list.png" alt="" title="List" />
+      </div>
+      <div class='tiles_list_count'></div>
+    </div>
+    <div class='tiles_list_show tiles_list_show_tiles'>
+    </div>
+  </div>

@@ -10,8 +10,54 @@
       <a class="header_logout" href="javascript:void(0);">Logout</a>
     </div>
     <div class="navbar navbar-default" id="ili_menu">
-      <ul class="nav navbar-nav" id="ili_menu_ulRight"></ul>
-      <ul class="nav navbar-nav navbar-right"></ul>
+      <ul class="nav navbar-nav" id="ili_menu_ulLeft">
+        <li [attr.id]="menuLeft.id" *ngFor="let menuLeft of menusDatas.left; let i = index;">
+
+          <a [attr.id]="menuLeft.aId" class="dropdown-toggle" href="javascript:void(0);" data-toggle="dropdown" *ngIf="menuLeft.type.indexOf('multi') !== -1">
+           {{menuLeft.text}}
+            <b class="caret"></b>
+            </a>
+          <ul class="dropdown-menu">
+            <li [attr.id]="subPage.id" *ngFor="let subPage of menuLeft.subPages; let i = index;">
+              <a href="javascript:void(0);" (click)="loadPage(subPage)" [attr.url]="subPage.url" [attr.id]="subPage.aId">{{subPage.name}}</a>
+            </li>
+          </ul>
+
+          <a [attr.id]="menuLeft.aId" href="javascript:void(0);" *ngIf="menuLeft.type.indexOf('single') !== -1">
+            {{menuLeft.text}}
+            <b class="caret"></b>
+            </a>
+          <ul class="dropdown-menu">
+            <li [attr.id]="subPage.id" *ngFor="let subPage of menuLeft.subPages; let i = index;">
+              <a href="javascript:void(0);" (click)="loadPage(subPage)" [attr.url]="subPage.url" [attr.id]="subPage.aId">{{subPage.name}}</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right" id="ili_menu_ulRight">
+        <li [attr.id]="menuRight.id" *ngFor="let menuRight of menusDatas.right; let i = index;">
+
+          <a [attr.id]="menuRight.aId" class="dropdown-toggle" href="javascript:void(0);" data-toggle="dropdown" *ngIf="menuRight.type.indexOf('multi') !== -1">
+           {{menuRight.text}}
+            <b class="caret"></b>
+            </a>
+          <ul class="dropdown-menu">
+            <li [attr.id]="subPage.id" *ngFor="let subPage of menuRight.subPages; let i = index;">
+              <a href="javascript:void(0);" (click)="loadPage(subPage)" [attr.id]="subPage.aId">{{subPage.name}}</a>
+            </li>
+          </ul>
+
+          <a [attr.id]="menuRight.aId" href="javascript:void(0);" *ngIf="menuRight.type.indexOf('single') !== -1">
+            {{menuRight.text}}
+            <b class="caret"></b>
+            </a>
+          <ul class="dropdown-menu">
+            <li [attr.id]="subPage.id" *ngFor="let subPage of menuRight.subPages; let i = index;">
+              <a href="javascript:void(0);" (click)="loadPage(subPage)" [attr.id]="subPage.aId">{{subPage.name}}</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </div>
 </div>

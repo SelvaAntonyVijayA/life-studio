@@ -1,4 +1,4 @@
 export class Common {
-  public rAcesss: any;
-  
+  rAcesss: any;
+  accessList: any;
 };
