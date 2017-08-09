@@ -13,11 +13,10 @@ body{
     width: 1200px;
 }
 
-/*.page_block {
-    background-color: #FFFFFF;
-    border-radius: 0px;
-    box-shadow: 0px 0px 3px #071838;
-}*/
+.page_block {
+  background: linear-gradient(rgba(255, 255, 255,0.1) 10%, rgba(255, 255, 255,0.1) 10%);
+   border-radius: 0px;
+}
 
 .search_box {
     width: 270px;
@@ -53,6 +52,11 @@ body{
     height: 25px;
     padding: 5px 10px;
     font-size: 12px;
+}
+
+.input-sm {
+    border-radius: 0px;
+    font-size: 11px;
 }
 
 

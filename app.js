@@ -16,12 +16,14 @@ const app = express();
 var context = require('./app-middlewares/context');
 
 app.set('settings', require(path.join(process.cwd(), 'config', 'settings')));
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('views', __dirname + '/public');
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.set('view engine', 'html');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(context);
 
 var routes = require('./config/routes');
@@ -29,7 +31,7 @@ db(mongoose, app);
 plugins(path, __dirname, app);
 routes(app);
 
-app.use(function(req, res, next) {
+/*app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
@@ -44,7 +46,7 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
-});
+});*/
 
 module.exports = app;
 

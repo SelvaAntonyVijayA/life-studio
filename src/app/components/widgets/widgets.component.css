@@ -189,7 +189,8 @@
   display:inline-block; 
   position:relative; 
   text-align:center; 
-  width:80%; float:left; 
+  width:80%; 
+  float:left; 
   border:0; 
   border-top:0px solid #B5B8C8;
 }
@@ -262,6 +263,74 @@
     height: 832px;
     float: left;
     background-image: url(/assets/img/ili-bg/bg_panels/tile_block_bg_panel.png);
+}
+
+.widget-forms-collapse{
+  max-height: 140px; 
+  overflow: hidden; 
+  cursor: pointer; 
+  position: relative; 
+  transition: 2s;
+}
+
+.widget-forms-collapse:hover{
+  max-height: 545px; 
+  overflow: hidden; 
+  cursor: pointer; 
+  transition: 2s;
+}
+
+.widget-forms-collapse:hover .widgets-load-more {
+  display: none;
+}
+
+.widget-restricted-collapse{
+    max-height: 140px;
+   overflow: hidden; 
+   cursor: pointer; 
+   position: relative; 
+   transition: 1s;
+  }
+
+.widget-restricted-collapse:hover{
+  max-height: 300px; 
+  overflow: hidden; 
+  cursor: pointer; 
+  transition: 1s;
+}
+
+.widget-restricted-collapse:hover .widgets-load-more{
+  display: none;
+}
+
+.widget-exclusive-collapse{
+  max-height: 140px; 
+  overflow: hidden; 
+  cursor: pointer; 
+  transition: 1s;
+}
+
+.widget-exclusive-collapse:hover{
+  max-height: 190px; 
+  overflow: hidden; 
+  cursor: pointer; 
+  transition: 1s;
+}
+
+.widget-exclusive-collapse:hover .widgets-load-more{
+    display : none;
+}
+
+.widget-exclusive-collapse:hover .exclusive-widgets-load-more{
+   display : none;
+}
+
+.exclusive-widgets-load-more{
+  position: relative; 
+  bottom: 0px; 
+  top: 124px; 
+  right: 20px; 
+  font-weight: bolder;
 }
 
 
