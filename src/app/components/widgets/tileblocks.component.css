@@ -7,6 +7,7 @@
     padding-top: 10px;
     padding-bottom: 10px;
     margin-bottom: 10px;
+    margin-left: 4px;
 }
 
 .confirmation_text_block {
@@ -19,7 +20,7 @@
     margin-top: 10px;
 }
 
-.content_account_panel {
+.notes_panel {
     width: 97%;
 }
 
@@ -29,6 +30,7 @@
     width: 98%;
     margin-left: auto;
     margin-right: auto;
+    font-size: 11px;
 }
 
 .txt-email-notes {
@@ -38,4 +40,47 @@
 .url_block_url {
     width: 97%;
     margin-top: 10px;
+}
+
+.input-group-sm>.form-control {
+  font-size: 11px;
+}
+
+.content_buttons{
+    margin-bottom: 10px; 
+    position: relative; 
+    width: 100%; 
+    text-align: right; 
+    height: 15px;
+}
+
+.drag_cursor{ 
+
+}
+
+.widgetstext{
+    position: relative; 
+    float: left; 
+    font-family: Verdana,Arial,sans-serif; 
+    font-size: 0.8em;
+}
+
+.tigger_btn{
+    margin-right: 11px; 
+    margin-top: 2px; 
+    cursor: pointer; 
+    float: right;
+}
+
+.redirect-app-submit{
+    float:right; 
+    margin-right: 18px;
+}
+
+.redirect-back-app{
+    float: right; 
+    font-weight: normal; 
+    font-size: 11px; 
+    font-size: 0.8em; 
+    color: #666;
 }

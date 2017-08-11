@@ -149,12 +149,11 @@
 
 .widgets_block {
     width: 150px;
-    height: 832px;
+    height: 833px;
     text-align: center;
     position:relative; 
     float: left;
     margin-left: -1px;
-    background-image: url(/assets/img/ili-bg/bg_panels/bg_panel.png);
 }
   .widget-container{
     float: left;
@@ -184,15 +183,15 @@
 }
 
 .content_widget_btns .widget_btn_separator{
-  margin-left:12px; 
-  margin-bottom:15px; 
-  display:inline-block; 
-  position:relative; 
-  text-align:center; 
-  width:80%; 
-  float:left; 
-  border:0; 
-  border-top:0px solid #B5B8C8;
+   margin-left: 12px;
+   margin-bottom: 15px;
+   display: inline-block;
+   position: relative;
+   text-align: center;
+   width: 80%;
+   float: left;
+   border: 0;
+   border-top: 0px solid #B5B8C8;
 }
 
 .content_widget_btns .normal-pointer{
@@ -226,6 +225,8 @@
    display : none;
 }
 
+/* Widgets Separator */
+
 .separator-text{
   text-align: center; 
   position: relative; 
@@ -233,12 +234,16 @@
   font-size: 12px;
 }
 
-.separator-text:after{
-  content: "";
+.line-left{
   position: absolute; 
-  top: 50%; 
-  left: 0; 
-  right: 0; 
+  top: 50%; left: 0; 
+  border-top: 
+  solid 1px #B5B8C8; z-index: -1;
+}
+
+.line-right{
+  position: absolute; 
+  top: 50%; right: 0; 
   border-top: solid 1px #B5B8C8; 
   z-index: -1;
 }
@@ -246,8 +251,23 @@
 .line-center {
   margin: 0; 
   padding: 0 2px; 
-  background: #fff; 
   display: inline-block;
+}
+
+.line-restricted{
+  width: 23%;
+}
+
+.line-basic{
+  width: 33.5%;
+}
+
+.line-form{
+  width: 34%;
+}
+
+.line-exclusive{
+  width: 24%;
 }
 
 .widgets-load-more{
@@ -259,10 +279,10 @@
 
 .tile_blocks-content {
     position: relative;
-    width: 729px;
-    height: 832px;
+    width: 726px;
+    height: 833px;
     float: left;
-    background-image: url(/assets/img/ili-bg/bg_panels/tile_block_bg_panel.png);
+    margin-left: 1px;
 }
 
 .widget-forms-collapse{

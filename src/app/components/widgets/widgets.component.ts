@@ -14,49 +14,55 @@ declare var $: any;
 })
 
 export class WidgetsComponent implements OnInit {
-  @Input() ads: BlockItem[];
+  @Input() blocks: BlockItem[];
   currentAddIndex: number = -1;
   @ViewChild(TileBlocksDirective) blockSelected: TileBlocksDirective;
   interval: any;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
 
-  loadWidgets(type: any){
-    var ads = this.ads;
+  
+  /* Checking the block by block type */
 
-    if(type === "notes"){
-       this.ads.push(new BlockItem(NotesBlockComponent, {}));
+  loadWidgets(type: any, data: any) {
+    var blocks = this.blocks;
+
+    if (type === "notes") {
+      this.blocks.push(new BlockItem(NotesBlockComponent, {"type": "notes", "data":{}}));
     }
 
-    if(type === "inquiry"){
-       ads.push(new BlockItem(InquiryBlockComponent, {})); 
+    if (type === "inquiry") {
+      blocks.push(new BlockItem(InquiryBlockComponent, {"type": "inquiry", "data":{"email": "", "text": ""}}));
     }
 
     this.loadComponent();
   }
 
   ngOnInit() {
-   this.ads = [];
-    //this.loadComponent();
-    //this.getAds();
+    this.blocks = [];
   }
+
+  saveBlocks(e: any){
+   var currentBlock = this.blocks[0];
+   let index = this.blockSelected.viewContainerRef.indexOf(currentBlock.block["view"]);
+   this.blockSelected.viewContainerRef.remove(index);
+   this.blocks.splice(0, 1);
+  };
+
+  /* Loading the block components */
 
   loadComponent() {
     this.currentAddIndex = this.currentAddIndex + 1;
-    let adItem = this.ads[this.currentAddIndex];
+    let adBlock = this.blocks[this.currentAddIndex];
 
-    let componentFactory = this.componentFactoryResolver.resolveComponentFactory(adItem.component);
+    let componentFactory = this.componentFactoryResolver.resolveComponentFactory(adBlock.component);
 
     let viewContainerRef = this.blockSelected.viewContainerRef;
     //viewContainerRef.clear();
 
     let componentRef = viewContainerRef.createComponent(componentFactory);
-    (<BlockComponent>componentRef.instance).block = adItem.block;
-  }
+    adBlock.block["view"] = componentRef.hostView;
 
-  getAds() {
-    this.interval = setInterval(() => {
-      this.loadComponent();
-    }, 3000);
+    (<BlockComponent>componentRef.instance).block = adBlock.block;
   }
 }

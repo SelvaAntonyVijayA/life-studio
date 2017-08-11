@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
     path: 'home',
-    loadChildren: 'app/components/home/home.module#HomeModule',
+    loadChildren: 'app/app-routes/home.module#HomeModule',
     data: { preload: true }
   },
   { path: '**', component: NotFoundComponent }
