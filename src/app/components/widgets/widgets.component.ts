@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ComponentFactoryResolver, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, ComponentFactoryResolver, OnDestroy } from '@angular/core';
 import { TileBlocksDirective } from './tileblocks.directive';
 import { BlockItem } from './block-item';
 import { BlockComponent } from './block.component';
@@ -19,20 +19,20 @@ export class WidgetsComponent implements OnInit {
   @ViewChild(TileBlocksDirective) blockSelected: TileBlocksDirective;
   interval: any;
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver) { }
+  constructor(private componentFactoryResolver: ComponentFactoryResolver, elemRef: ElementRef) { }
 
-  
+
   /* Checking the block by block type */
 
   loadWidgets(type: any, data: any) {
     var blocks = this.blocks;
 
     if (type === "notes") {
-      this.blocks.push(new BlockItem(NotesBlockComponent, {"type": "notes", "data":{}}));
+      this.blocks.push(new BlockItem(NotesBlockComponent, { "type": "notes", "data": {} }));
     }
 
     if (type === "inquiry") {
-      blocks.push(new BlockItem(InquiryBlockComponent, {"type": "inquiry", "data":{"email": "", "text": ""}}));
+      blocks.push(new BlockItem(InquiryBlockComponent, { "type": "inquiry", "data": { "email": "vijay@g.com", "text": "" } }));
     }
 
     this.loadComponent();
@@ -42,11 +42,17 @@ export class WidgetsComponent implements OnInit {
     this.blocks = [];
   }
 
-  saveBlocks(e: any){
-   var currentBlock = this.blocks[0];
-   let index = this.blockSelected.viewContainerRef.indexOf(currentBlock.block["view"]);
-   this.blockSelected.viewContainerRef.remove(index);
-   this.blocks.splice(0, 1);
+  deleteBlock(view: any) {
+    let index = this.blockSelected.viewContainerRef.indexOf(view);
+    this.blockSelected.viewContainerRef.remove(index);
+    this.blocks.splice(0, 1);
+
+    this.currentAddIndex = this.currentAddIndex - 1;
+  }
+
+  saveBlocks(e: any) {
+
+
   };
 
   /* Loading the block components */
@@ -62,6 +68,7 @@ export class WidgetsComponent implements OnInit {
 
     let componentRef = viewContainerRef.createComponent(componentFactory);
     adBlock.block["view"] = componentRef.hostView;
+    componentRef.instance.blockView.subscribe(view => this.deleteBlock(view));
 
     (<BlockComponent>componentRef.instance).block = adBlock.block;
   }

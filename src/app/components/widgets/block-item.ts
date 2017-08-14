@@ -1,5 +1,7 @@
-import { Type } from '@angular/core';
+import { Type, HostListener } from '@angular/core';
 
 export class BlockItem {
-  constructor(public component: Type<any>, public block: any) {}
+  constructor(public component: Type<any>, public block: any) {
+  
+  }
 }

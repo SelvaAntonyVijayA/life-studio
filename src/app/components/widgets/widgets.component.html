@@ -292,8 +292,9 @@
       </div>
       <!-- Tile Widgets Blocks -->
 
-      <div class="page_block tile_blocks-content">
+      <div (removeBlock)="deleteBlock($event)" class="page_block tile_blocks-content">
        <ng-template block-selected></ng-template>
+       
       </div>
     </div>
 

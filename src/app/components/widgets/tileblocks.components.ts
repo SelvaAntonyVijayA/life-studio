@@ -1,12 +1,14 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input } from '@angular/core';
 import { BlockComponent } from './block.component';
+import { WidgetsComponent } from './widgets.component';
 
 @Component({
   selector: 'block-controls',
+  outputs: ["removeBlock"],
   template: `<div class="content_buttons">
-             <div style="float:left;" class="drag_cursor"><span class="widgetstext"></span></div>
+             <div style="float:left;" class="drag_cursor"><span class="widgetstext">{{block!.data!.email}}</span></div>
              <div class="tigger_btn"><span class="glyphicon glyphicon-off"></span></div>
-             <div class="tigger_btn" (click)="clearBlock($event)" title="Remove"><span class="glyphicon glyphicon-remove"></span></div>
+             <div class="tigger_btn" (click)="clearBlock(block['view'])" title="Remove"><span class="glyphicon glyphicon-remove"></span></div>
              <div class="tigger_btn" title="MoveDown"><span class="glyphicon glyphicon-arrow-down"></span></div>
              <div class="tigger_btn" title="MoveUp"><span style="margin-top:-1px;" class="glyphicon glyphicon-arrow-up"></span></div>
              <div style="display:none" id="divRedirectBackToApp" class="redirect-app-submit"><span class="redirect-back-app">Redirect back to app </span></div>
@@ -17,15 +19,20 @@ import { BlockComponent } from './block.component';
 export class BlockControls {
   @Input() block: any;
 
-  clearBlock(event: any){
-     var test =  event;
+  removeBlock = new EventEmitter<any>();
+  view: any;
+
+  clearBlock(view: any) {
+    var nous = this.block;
+    this.removeBlock.emit(view)
   }
 }
 
 @Component({
   selector: 'inquiry-block',
-  template: `<div version="" value="" isForm=true class="page_block tile_block">
-             <block-controls></block-controls>
+  outputs: ["blockView"],
+  template: `<div (compo)="block" version="" value="" isForm=true class="page_block tile_block">
+             <block-controls (removeBlock)="deleteBlock($event)" [(block)]= "block"></block-controls>
              <span class="txt-email-notes">Separate multiple email addresses with a comma followed by a space</span>
              <div class="confirmation_text_block">
              <input type="text" placeholder="To email address" id="email" [(ngModel)]="block!.data!.email" value="" class="form-control input-sm url_block_url">
@@ -39,6 +46,11 @@ export class BlockControls {
 
 export class InquiryBlockComponent implements BlockComponent {
   @Input() block: any;
+  blockView = new EventEmitter<any>();
+
+  deleteBlock(view: any) {
+    this.blockView.emit(view);
+  };
 }
 
 @Component({
