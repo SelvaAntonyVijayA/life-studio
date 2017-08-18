@@ -12,12 +12,15 @@ import { HeaderService } from '../services/header.service';
 
 import { TileBlocksDirective } from '../components/widgets/tileblocks.directive';
 
+import { Ng2Summernote } from 'ng2-summernote/ng2-summernote';
+import { SlimScrollModule } from 'ng2-slimscroll';
+
 @NgModule({
   imports: [
-    CommonModule, FormsModule, HomeRoutingModule
+    CommonModule, FormsModule, HomeRoutingModule, SlimScrollModule 
   ],
   entryComponents: [TileBlocksComponents],
-  declarations: [HomeComponent, HeaderComponent, WidgetsComponent, TilesListComponent, TileBlocksComponents, TileBlocksDirective],
+  declarations: [HomeComponent, HeaderComponent, WidgetsComponent, TilesListComponent, TileBlocksComponents, TileBlocksDirective, Ng2Summernote],
   providers: [HeaderService]
 })
 

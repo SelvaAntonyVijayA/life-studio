@@ -84,3 +84,124 @@
     font-size: 0.8em; 
     color: #666;
 }
+
+  /* Questionnaire Block */
+
+.survey_panel {
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px;
+}
+
+.text_header_content {
+    font-size: 92%;
+    float: left;
+    text-align: justify;
+    padding: 0 2%;
+}
+
+.survey_question_text {
+    width: 516px;
+    float: left;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.control_survey {
+    width: 98%;
+    float: left;
+}
+
+.decription-survey {
+    float: left;
+    margin-left: 30px;
+    margin-right: 5px;
+    padding: 0px 0px;
+    font-size: 93%;
+    margin-top: 1px;
+}
+
+.ques-one, .ques-multiple, .ques-radio, .ques-dropdown{
+    margin-top: 2px;
+}
+
+.control-app{
+    margin-left: 30px;
+}
+
+.survey_controls{
+    float: left;
+    margin-right: 11px;
+    width: 275px;
+    margin-bottom: 12px;
+}
+
+.survey-opts{
+    float: left;
+    margin-right: 12px;
+    margin-bottom: 12px;
+}
+
+.survey_text_row {
+    width: 105%;
+    float: left;
+    height: 4%;
+    margin-top: 1%;
+    padding: 0 4%;
+}
+
+.options-count {
+    float: left;
+    padding: 4px 5px 0 0;
+}
+
+.survey_option_box {
+    width: 521px;
+    float: left;
+    margin-bottom: 5px;
+}
+
+.delete-quest-option {
+    margin-left: 8px;
+    margin-top: 3px;
+    cursor: pointer;
+}
+
+.btn-questionnaire {
+    width: 88px;
+}
+
+.btn-add-text-box {
+    margin-bottom: 1px;
+    margin-top: 1px;
+    margin-left: 14px;
+}
+
+.chk-results, .enable-note{
+    margin-top: 2px;
+}
+
+.survey_add_alert {
+    width: 100%;
+}
+
+.survey-confirmation {
+    margin-left: 5px;
+    width: 105px;
+    float: right;
+}
+
+.btn-ques-alert {
+    width: 80px;
+    float: right;
+}
+
+.btn-popup-alert {
+    width: 80px;
+    float: right;
+    margin-right: 5px;
+}
+

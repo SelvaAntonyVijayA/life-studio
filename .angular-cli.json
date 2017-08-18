@@ -23,6 +23,7 @@
         "../node_modules/font-awesome/css/font-awesome.min.css",
         "../node_modules/ionicons/dist/css/ionicons.min.css",
         "../node_modules/jquery-ui-dist/jquery-ui.min.css",
+        "../node_modules/summernote/dist/summernote.css",
          "../src/assets/css/ili_theme.css",
         "styles.css"
       ],
@@ -30,7 +31,8 @@
         "../node_modules/jquery/dist/jquery.min.js",
         "../node_modules/bootstrap/dist/js/bootstrap.min.js",
         "../node_modules/jquery-ui-dist/jquery-ui.min.js",
-         "../src/assets/js/jquery.custom.combo.js"
+         "../src/assets/js/jquery.custom.combo.js",
+         "../node_modules/summernote/dist/summernote.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

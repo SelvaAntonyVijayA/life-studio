@@ -2,10 +2,10 @@
   <div class="widget-container">
     <div class="tiles_head">
       <div class="tile_form_btns">
-        <button id="btnTileNew" class="ili-btn reset_tile_btn">
+        <button id="btnTileNew" (click)="resetTile($event)" class="ili-btn reset_tile_btn">
           New
         </button>
-        <button id="btnTileSave" (click)="saveBlocks($event)" class="ili-btn save_tile_btn">
+        <button id="btnTileSave" (click)="saveBlocks()" class="ili-btn save_tile_btn">
           Save
         </button>
         <button id="btnTileDuplicate" class="ili-btn duplicate_tile_btn">
@@ -124,7 +124,7 @@
 
             <div id='widgetSurvey' block='Survey' data-toggle='tooltip' data-toggle='tooltip' title='Multiple questions where users can select only One or Multiple answers.  Percentages can be shown in-app.'
               class='widget_btn'>
-              <div><img src='assets/img/survey1.png' /></div>
+              <div><img (click)='loadWidgets("survey")' src='assets/img/survey1.png' /></div>
               <div><label>Questionnaire</label></div>
             </div>
 
@@ -292,8 +292,10 @@
       </div>
       <!-- Tile Widgets Blocks -->
 
-      <div (removeBlock)="deleteBlock($event)" class="page_block tile_blocks-content">
-       <ng-template block-selected></ng-template>
+      <div class="page_block tile_blocks-content">
+        <div style="width:98.9%; height: 833px" slimScroll [options]="opts">
+          <ng-template block-selected></ng-template>
+        </div>
        
       </div>
     </div>
