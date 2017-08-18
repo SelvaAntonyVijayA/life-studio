@@ -146,20 +146,21 @@
 }
 
 .survey_text_row {
-    width: 105%;
+    width: 87%;
     float: left;
     height: 4%;
-    margin-top: 1%;
+    margin-top: 10px;
     padding: 0 4%;
 }
 
 .options-count {
     float: left;
     padding: 4px 5px 0 0;
+    width:23px;
 }
 
 .survey_option_box {
-    width: 521px;
+    width: 473px;
     float: left;
     margin-bottom: 5px;
 }
@@ -176,7 +177,7 @@
 
 .btn-add-text-box {
     margin-bottom: 1px;
-    margin-top: 1px;
+    margin-top: 10px;
     margin-left: 14px;
 }
 
@@ -203,5 +204,10 @@
     width: 80px;
     float: right;
     margin-right: 5px;
+}
+
+.survey-option-btn{
+  float: right;
+  margin-right: 14px;
 }
 

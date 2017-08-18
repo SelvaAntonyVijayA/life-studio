@@ -155,6 +155,7 @@
     float: left;
     margin-left: -1px;
 }
+
   .widget-container{
     float: left;
     width: 876px;
@@ -166,8 +167,8 @@
 .content_widget_btns{
   position:relative; 
   top: 1%; 
-  height:98%; 
-  overflow-y: auto; 
+  height: 833px; 
+  overflow-y: hidden; 
   overflow-x: hidden; 
   float: left; 
   width: 100%;

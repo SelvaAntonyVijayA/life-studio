@@ -70,6 +70,13 @@ body{
   border: 1px solid transparent;
 }
 
+     /* Slim Scroll CSS */
+
+.scroll-window{
+  font-size: 13px;
+  padding: 10px 10px;
+}
+
 
 
 

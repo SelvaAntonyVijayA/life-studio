@@ -44,259 +44,273 @@
 
     <div class="widgets_content_blocks">
       <div class="page_block widgets_block">
-        <div class="content_widget_btns">
-          <div class='widget-basic-collapse'>
-            <div class='widget_btn_separator'>
-              <div class='separator-text'><span class='line-left line-basic'></span><span class='line-center' title='Basic widgets can be intermixed, or mixed with any other widgets.'>Basic</span><span class='line-right line-basic'></span></div>
-            </div>
+        <div class="scroll-window" slimScroll [options]="opts" style="height: 833px;">
+          <div class="content_widget_btns">
+            <div class='widget-basic-collapse'>
+              <div class='widget_btn_separator'>
+                <div class='separator-text'><span class='line-left line-basic'></span><span class='line-center' title='Basic widgets can be intermixed, or mixed with any other widgets.'>Basic</span>
+                  <span
+                    class='line-right line-basic'></span>
+                </div>
+              </div>
 
-            <div id='widgetEditor' block='Text' data-placement='top' title='Add any description in multiple paragraphs.' class='widget_btn'>
-              <div><img src='assets/img/text_32.png' /></div>
-              <div><label>Editor</label></div>
-            </div>
+              <div id='widgetEditor' block='Text' data-placement='top' title='Add any description in multiple paragraphs.' class='widget_btn'>
+                <div><img src='assets/img/text_32.png' /></div>
+                <div><label>Editor</label></div>
+              </div>
 
-            <div id='widgetUploadVideo' block='Video' data-toggle='tooltip' title='Upload a video file' class='widget_btn'>
-              <div><img src='assets/img/video_32.png' /></div>
-              <div><label>Upload Video</label></div>
-            </div>
+              <div id='widgetUploadVideo' block='Video' data-toggle='tooltip' title='Upload a video file' class='widget_btn'>
+                <div><img src='assets/img/video_32.png' /></div>
+                <div><label>Upload Video</label></div>
+              </div>
 
-            <div id='widgetPicture' block='picture' data-toggle='tooltip' title='Allow users to upload their own pictures.  Select Moderate if you want pictures to be moderated before being published.'
-              class='widget_btn'>
-              <div><img src='assets/img/camara.png' /></div>
-              <div><label>Event Media</label></div>
-            </div>
+              <div id='widgetPicture' block='picture' data-toggle='tooltip' title='Allow users to upload their own pictures.  Select Moderate if you want pictures to be moderated before being published.'
+                class='widget_btn'>
+                <div><img src='assets/img/camara.png' /></div>
+                <div><label>Event Media</label></div>
+              </div>
 
-            <div id='widgetDisqus' block='disqus' data-toggle='tooltip' title='Disqus allows to create a discussion room amongst users. It helps you build a community of active readers and commenters.'
-              class='widget_btn'>
-              <div><img src='assets/img/disqus.png' /></div>
-              <div><label>Disqus</label></div>
-            </div>
+              <div id='widgetDisqus' block='disqus' data-toggle='tooltip' title='Disqus allows to create a discussion room amongst users. It helps you build a community of active readers and commenters.'
+                class='widget_btn'>
+                <div><img src='assets/img/disqus.png' /></div>
+                <div><label>Disqus</label></div>
+              </div>
 
-            <div id='widgetSocialFeed' block='feed' data-toggle='tooltip' title='Integrate FB and Twitter' class='widget_btn'>
-              <div><img src='assets/img/icon-feed.png' /></div>
-              <div><label>Social Feed</label></div>
-            </div>
+              <div id='widgetSocialFeed' block='feed' data-toggle='tooltip' title='Integrate FB and Twitter' class='widget_btn'>
+                <div><img src='assets/img/icon-feed.png' /></div>
+                <div><label>Social Feed</label></div>
+              </div>
 
-            <div id='widgetCalendar' block='calendar' data-toggle='tooltip' title='This Widget allows to create calendar' class='widget_btn'>
-              <div><img src='assets/img/calendar.png' /></div>
-              <div><label>Calendar</label></div>
-            </div>
+              <div id='widgetCalendar' block='calendar' data-toggle='tooltip' title='This Widget allows to create calendar' class='widget_btn'>
+                <div><img src='assets/img/calendar.png' /></div>
+                <div><label>Calendar</label></div>
+              </div>
 
-            <div id='widgetShare' block='share' data-toggle='tooltip' title='Share this Tile as a URL.' class='widget_btn'>
-              <div><img src='assets/img/share_this.png' /></div>
-              <div><label>Share</label></div>
-            </div>
+              <div id='widgetShare' block='share' data-toggle='tooltip' title='Share this Tile as a URL.' class='widget_btn'>
+                <div><img src='assets/img/share_this.png' /></div>
+                <div><label>Share</label></div>
+              </div>
 
-            <div id='widgetPatient' block='patients' data-toggle='tooltip' title='Show the list of patients by clinic' class='widget_btn'>
-              <div><img src='assets/img/patient.png' /></div>
-              <div><label>Patients</label></div>
-            </div>
+              <div id='widgetPatient' block='patients' data-toggle='tooltip' title='Show the list of patients by clinic' class='widget_btn'>
+                <div><img src='assets/img/patient.png' /></div>
+                <div><label>Patients</label></div>
+              </div>
 
-            <div class='widgets-load-more'>. . .</div>
-          </div>
-          <div id='divTileWidgetFormsCollapse' class='widget-forms-collapse'>
-            <div class='widget_btn_separator'>
-              <div class='separator-text'><span class='line-left line-form'></span><span class='line-center' title='Multiple Form widgets may be used in the same Tile. Each has its own Submit button. To create a Form with a group of widgets and a unique submit button, add the Form widgets between a Title and a Confirmation.'>Form</span><span class='line-right line-form'></span></div>
+              <div class='widgets-load-more'>. . .</div>
             </div>
+            <div id='divTileWidgetFormsCollapse' class='widget-forms-collapse'>
+              <div class='widget_btn_separator'>
+                <div class='separator-text'><span class='line-left line-form'></span><span class='line-center' title='Multiple Form widgets may be used in the same Tile. Each has its own Submit button. To create a Form with a group of widgets and a unique submit button, add the Form widgets between a Title and a Confirmation.'>Form</span>
+                  <span
+                    class='line-right line-form'></span>
+                </div>
+              </div>
 
-            <div id='widgetStartWrapper' block='StartWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form'
-              class='widget_btn'>
-              <div><img src='assets/img/start_wrapper.png' /></div>
-              <div><label>Start Wrapper</label></div>
-            </div>
+              <div id='widgetStartWrapper' block='StartWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form'
+                class='widget_btn'>
+                <div><img src='assets/img/start_wrapper.png' /></div>
+                <div><label>Start Wrapper</label></div>
+              </div>
 
-            <div id='widgetTitle' block='title' data-toggle='tooltip' title='Title that will appear over any form you create' class='widget_btn'>
-              <div><img src='assets/img/form.png' /></div>
-              <div><label>Form Title</label></div>
-            </div>
+              <div id='widgetTitle' block='title' data-toggle='tooltip' title='Title that will appear over any form you create' class='widget_btn'>
+                <div><img src='assets/img/form.png' /></div>
+                <div><label>Form Title</label></div>
+              </div>
 
-            <div id='widgetAccount' block='Account' data-toggle='tooltip' title='Name, DOB, Gender, Phone, email etc. Select the fields you want to appear in the app.'
-              class='widget_btn'>
-              <div><img src='assets/img/profile.png' /></div>
-              <div><label>Connection&nbsp;Card</label></div>
-            </div>
+              <div id='widgetAccount' block='Account' data-toggle='tooltip' title='Name, DOB, Gender, Phone, email etc. Select the fields you want to appear in the app.'
+                class='widget_btn'>
+                <div><img src='assets/img/profile.png' /></div>
+                <div><label>Connection&nbsp;Card</label></div>
+              </div>
 
-            <div id='widgetAttendance' block='Attendance' data-toggle='tooltip' title='Users can select if they are attending In-Person or Online'
-              class='widget_btn'>
-              <div><img src='assets/img/clock.png' /></div>
-              <div><label>Attendance</label></div>
-            </div>
+              <div id='widgetAttendance' block='Attendance' data-toggle='tooltip' title='Users can select if they are attending In-Person or Online'
+                class='widget_btn'>
+                <div><img src='assets/img/clock.png' /></div>
+                <div><label>Attendance</label></div>
+              </div>
 
-            <div id='widgetSurvey' block='Survey' data-toggle='tooltip' data-toggle='tooltip' title='Multiple questions where users can select only One or Multiple answers.  Percentages can be shown in-app.'
-              class='widget_btn'>
-              <div><img (click)='loadWidgets("survey")' src='assets/img/survey1.png' /></div>
-              <div><label>Questionnaire</label></div>
-            </div>
+              <div id='widgetSurvey' block='Survey' data-toggle='tooltip' data-toggle='tooltip' title='Multiple questions where users can select only One or Multiple answers.  Percentages can be shown in-app.'
+                class='widget_btn'>
+                <div><img (click)='loadWidgets("survey")' src='assets/img/survey1.png' /></div>
+                <div><label>Questionnaire</label></div>
+              </div>
 
-            <div id='widgetQuestionnaire' block='questionnaire' data-toggle='tooltip' data-toggle='tooltip' title='Multiple questions where users can select only One or Multiple answers.  Percentages can be shown in-app.'
-              class='widget_btn'>
-              <div><img src='assets/img/survey.png' /></div>
-              <div><label>Cascading Questionnaire</label></div>
-            </div>
+              <div id='widgetQuestionnaire' block='questionnaire' data-toggle='tooltip' data-toggle='tooltip' title='Multiple questions where users can select only One or Multiple answers.  Percentages can be shown in-app.'
+                class='widget_btn'>
+                <div><img src='assets/img/survey.png' /></div>
+                <div><label>Cascading Questionnaire</label></div>
+              </div>
 
-            <div id='widgetQuestions' block='questions' data-toggle='tooltip' title='One or more questions requiring users to type their answers.'
-              class='widget_btn'>
-              <div><img src='assets/img/QA.png' /></div>
-              <div><label>Q & A</label></div>
-            </div>
+              <div id='widgetQuestions' block='questions' data-toggle='tooltip' title='One or more questions requiring users to type their answers.'
+                class='widget_btn'>
+                <div><img src='assets/img/QA.png' /></div>
+                <div><label>Q & A</label></div>
+              </div>
 
-            <div id='widgetInquiry' block='inquiry' data-toggle='tooltip' title='Add Inquiry at the bottom of a Tile to allow users to send inquiries about the subject discussed in that Tile. Inquiries are directed to the email entered in the Tile.'
-              class='widget_btn'>
-              <div><img (click)='loadWidgets("inquiry")' src='assets/img/inquery.png' /></div>
-              <div><label>Inquiry</label></div>
-            </div>
+              <div id='widgetInquiry' block='inquiry' data-toggle='tooltip' title='Add Inquiry at the bottom of a Tile to allow users to send inquiries about the subject discussed in that Tile. Inquiries are directed to the email entered in the Tile.'
+                class='widget_btn'>
+                <div><img (click)='loadWidgets("inquiry")' src='assets/img/inquery.png' /></div>
+                <div><label>Inquiry</label></div>
+              </div>
 
-            <div id='widgetProfile' block='Profile' data-toggle='tooltip' title='Add profile to update user information' class='widget_btn'>
-              <div><img src='assets/img/my-account.png' /></div>
-              <div><label>Profile</label></div>
-            </div>
+              <div id='widgetProfile' block='Profile' data-toggle='tooltip' title='Add profile to update user information' class='widget_btn'>
+                <div><img src='assets/img/my-account.png' /></div>
+                <div><label>Profile</label></div>
+              </div>
 
-            <div id='widgetConfirmation' block='confirmation' data-toggle='tooltip' title='Confirmation page after user submits a form. In case there is no confirmation page, a default message is shown in the app. If you use a confirmation, then your own message appears.'
-              class='widget_btn'>
-              <div><img src='assets/img/confirm.png' /></div>
-              <div><label>Confirmation</label></div>
-            </div>
+              <div id='widgetConfirmation' block='confirmation' data-toggle='tooltip' title='Confirmation page after user submits a form. In case there is no confirmation page, a default message is shown in the app. If you use a confirmation, then your own message appears.'
+                class='widget_btn'>
+                <div><img src='assets/img/confirm.png' /></div>
+                <div><label>Confirmation</label></div>
+              </div>
 
-            <div id='widgetPassword' block='password' data-toggle='tooltip' title='Password allows us to change the password for the registered users'
-              class='widget_btn'>
-              <div><img src='assets/img/icon_password.png' /></div>
-              <div><label>Password</label></div>
-            </div>
+              <div id='widgetPassword' block='password' data-toggle='tooltip' title='Password allows us to change the password for the registered users'
+                class='widget_btn'>
+                <div><img src='assets/img/icon_password.png' /></div>
+                <div><label>Password</label></div>
+              </div>
 
-            <div id='widgetNext' block='next' data-toggle='tooltip' title='Next tile page shows after user submits a form.' class='widget_btn'>
-              <div><img src='assets/img/arrow_next_icon.png' /></div>
-              <div><label>Next</label></div>
-            </div>
-            <!-- html += "<div id='widgetUser' block='user' data-toggle='tooltip' title='User is to update and add new user.' class='widget_btn'>";
+              <div id='widgetNext' block='next' data-toggle='tooltip' title='Next tile page shows after user submits a form.' class='widget_btn'>
+                <div><img src='assets/img/arrow_next_icon.png' /></div>
+                <div><label>Next</label></div>
+              </div>
+              <!-- html += "<div id='widgetUser' block='user' data-toggle='tooltip' title='User is to update and add new user.' class='widget_btn'>";
                 <div><img src='/img/user_widget_icon.png'/></div>
                 <div><label>User</label></div>
               </div> -->
-            <div id='widgetFormPhoto' block='FormPhoto' data-toggle='tooltip' title='Attach Photos to the form' class='widget_btn'>
-              <div><img src='assets/img/form_photo_widget.png' /></div>
-              <div><label>Form Media</label></div>
-            </div>
+              <div id='widgetFormPhoto' block='FormPhoto' data-toggle='tooltip' title='Attach Photos to the form' class='widget_btn'>
+                <div><img src='assets/img/form_photo_widget.png' /></div>
+                <div><label>Form Media</label></div>
+              </div>
 
-            <div id='widgetPainLevel' block='PainLevel' data-toggle='tooltip' title='Denotes pain level' class='widget_btn'>
-              <div><img src='assets/img/pain_level.png' /></div>
-              <div><label>Pain Level</label></div>
-            </div>
+              <div id='widgetPainLevel' block='PainLevel' data-toggle='tooltip' title='Denotes pain level' class='widget_btn'>
+                <div><img src='assets/img/pain_level.png' /></div>
+                <div><label>Pain Level</label></div>
+              </div>
 
-            <div id='widgetDrawTool' block='DrawTool' data-toggle='tooltip' title='You can draw on a picture or just on a blank screen to draw angles and pictures of a angle iron for instance'
-              class='widget_btn'>
-              <div><img src='assets/img/draw_tool.png' /></div>
-              <div><label>Draw Tool</label></div>
-            </div>
+              <div id='widgetDrawTool' block='DrawTool' data-toggle='tooltip' title='You can draw on a picture or just on a blank screen to draw angles and pictures of a angle iron for instance'
+                class='widget_btn'>
+                <div><img src='assets/img/draw_tool.png' /></div>
+                <div><label>Draw Tool</label></div>
+              </div>
 
-            <div id='widgetPhysician' block='Physician' data-toggle='tooltip' title='Assign a physician to the patient' class='widget_btn'>
-              <div><img src='assets/img/physician.png' /></div>
-              <div><label>Physician</label></div>
-            </div>
-            <!-- <div id='widgetMobileVideo' block='MobileVideo' data-toggle='tooltip' title='Upload Mobile Video' class='widget_btn'>
+              <div id='widgetPhysician' block='Physician' data-toggle='tooltip' title='Assign a physician to the patient' class='widget_btn'>
+                <div><img src='assets/img/physician.png' /></div>
+                <div><label>Physician</label></div>
+              </div>
+              <!-- <div id='widgetMobileVideo' block='MobileVideo' data-toggle='tooltip' title='Upload Mobile Video' class='widget_btn'>
                 <div><img src='/img/mobile-video.png'/></div>
                 <div><label>Mobile Video</label></div>
               </div>-->
-            <div id='widgetEndWrapper' block='EndWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form' class='widget_btn'>
-              <div><img src='assets/img/stop_wrapper.png' /></div>
-              <div><label>End Wrapper</label></div>
+              <div id='widgetEndWrapper' block='EndWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form' class='widget_btn'>
+                <div><img src='assets/img/stop_wrapper.png' /></div>
+                <div><label>End Wrapper</label></div>
+              </div>
+
+              <div class='widgets-load-more'>. . .</div>
             </div>
 
-            <div class='widgets-load-more'>. . .</div>
-          </div>
+            <div class='widget-restricted-collapse'>
+              <div class='widget_btn_separator'>
+                <div class='separator-text'><span class='line-left line-restricted'></span><span class='line-center' title='A restricted widget cannot be combined with a form widget.'>Restricted</span>
+                  <span
+                    class='line-right line-restricted'></span>
+                </div>
+              </div>
+              <div id='widgetFill' block='fill' data-toggle='tooltip' title='Fill-in the blanks. Type the text and let users fill-in the blanks. Enter 3 underscores ___ for the blank words.  You may use multiple 3 underscores in a row, but add a space after the 3rd.'
+                class='widget_btn'>
+                <div><img src='assets/img/fill.png' /></div>
+                <div><label>Fill-In</label></div>
+              </div>
 
-          <div class='widget-restricted-collapse'>
-            <div class='widget_btn_separator'>
-              <div class='separator-text'><span class='line-left line-restricted'></span><span class='line-center' title='A restricted widget cannot be combined with a form widget.'>Restricted</span><span class='line-right line-restricted'></span></div>
-            </div>
-            <div id='widgetFill' block='fill' data-toggle='tooltip' title='Fill-in the blanks. Type the text and let users fill-in the blanks. Enter 3 underscores ___ for the blank words.  You may use multiple 3 underscores in a row, but add a space after the 3rd.'
-              class='widget_btn'>
-              <div><img src='assets/img/fill.png' /></div>
-              <div><label>Fill-In</label></div>
-            </div>
+              <div id='widgetNotes' block='notes' data-toggle='tooltip' title='Users can take their own notes.' class='widget_btn'>
+                <div><img (click)='loadWidgets("notes")' src='assets/img/notes.png' /></div>
+                <div><label>Notes</label></div>
+              </div>
 
-            <div id='widgetNotes' block='notes' data-toggle='tooltip' title='Users can take their own notes.' class='widget_btn'>
-              <div><img (click)='loadWidgets("notes")' src='assets/img/notes.png' /></div>
-              <div><label>Notes</label></div>
-            </div>
+              <div id='widgetButtons' block='buttons' data-toggle='tooltip' title='Multiple buttons can be added, with before click and after click values. User can toggle between buttons, only the last value is taken into account.'
+                class='widget_btn'>
+                <div><img src='assets/img/buttons.png' /></div>
+                <div><label>Buttons</label></div>
+              </div>
 
-            <div id='widgetButtons' block='buttons' data-toggle='tooltip' title='Multiple buttons can be added, with before click and after click values. User can toggle between buttons, only the last value is taken into account.'
-              class='widget_btn'>
-              <div><img src='assets/img/buttons.png' /></div>
-              <div><label>Buttons</label></div>
-            </div>
+              <div id='widgetContactUs' block='contactus' data-toggle='tooltip' title='Users enter their information requesting you to contact them.  You will receive an email with their contact info.'
+                class='widget_btn'>
+                <div><img src='assets/img/icon-email.png' /></div>
+                <div><label>Contact Us</label></div>
+              </div>
 
-            <div id='widgetContactUs' block='contactus' data-toggle='tooltip' title='Users enter their information requesting you to contact them.  You will receive an email with their contact info.'
-              class='widget_btn'>
-              <div><img src='assets/img/icon-email.png' /></div>
-              <div><label>Contact Us</label></div>
-            </div>
+              <div id='widgetPlacefull' block='placefull' data-toggle='tooltip' title='PlaceFull event booking and ticketing' class='widget_btn'>
+                <div><img src='assets/img/pf_logo.png' /></div>
+                <div><label>PlaceFull</label></div>
+              </div>
 
-            <div id='widgetPlacefull' block='placefull' data-toggle='tooltip' title='PlaceFull event booking and ticketing' class='widget_btn'>
-              <div><img src='assets/img/pf_logo.png' /></div>
-              <div><label>PlaceFull</label></div>
-            </div>
+              <div id='widgetAddToCart' block='AddToCart' data-toggle='tooltip' title='You can cart your order' class='widget_btn'>
+                <div><img src='assets/img/icon_add_to_cart.png' /></div>
+                <div><label>Add to Cart</label></div>
+              </div>
 
-            <div id='widgetAddToCart' block='AddToCart' data-toggle='tooltip' title='You can cart your order' class='widget_btn'>
-              <div><img src='assets/img/icon_add_to_cart.png' /></div>
-              <div><label>Add to Cart</label></div>
-            </div>
+              <div id='widgetCart' block='Cart' data-toggle='tooltip' title='You can view all your carts' class='widget_btn'>
+                <div><img src='assets/img/icon_cart.png' /></div>
+                <div><label>Cart</label></div>
+              </div>
 
-            <div id='widgetCart' block='Cart' data-toggle='tooltip' title='You can view all your carts' class='widget_btn'>
-              <div><img src='assets/img/icon_cart.png' /></div>
-              <div><label>Cart</label></div>
-            </div>
+              <div id='widgetBlanksForm' block='blanksform' data-toggle='tooltip' title='In-app form fill with picture upload and email alert'
+                class='widget_btn'>
+                <div><img src='assets/img/blank_form.png' /></div>
+                <div><label>Blank Form</label></div>
+              </div>
 
-            <div id='widgetBlanksForm' block='blanksform' data-toggle='tooltip' title='In-app form fill with picture upload and email alert'
-              class='widget_btn'>
-              <div><img src='assets/img/blank_form.png' /></div>
-              <div><label>Blank Form</label></div>
+              <div class='widgets-load-more'>. . .</div>
             </div>
+            <div class='widget-exclusive-collapse'>
+              <div class='widget_btn_separator'>
+                <div class='separator-text'><span class='line-left line-exclusive'></span><span class='line-center' title='An exclusive widget cannot be combined with other widgets.'>Exclusive</span>
+                  <span
+                    class='line-right line-exclusive'></span>
+                </div>
+              </div>
 
-            <div class='widgets-load-more'>. . .</div>
-          </div>
-          <div class='widget-exclusive-collapse'>
-            <div class='widget_btn_separator'>
-              <div class='separator-text'><span class='line-left line-exclusive'></span><span class='line-center' title='An exclusive widget cannot be combined with other widgets.'>Exclusive</span><span class='line-right line-exclusive'></span></div>
-            </div>
+              <div id='widgetExclusiveUrl' block='exclusiveUrl' data-toggle='tooltip' title='Integrate URL' class='widget_btn'>
+                <div><img src='assets/img/icon_url.png' /></div>
+                <div><label>URL</label></div>
+              </div>
 
-            <div id='widgetExclusiveUrl' block='exclusiveUrl' data-toggle='tooltip' title='Integrate URL' class='widget_btn'>
-              <div><img src='assets/img/icon_url.png' /></div>
-              <div><label>URL</label></div>
-            </div>
+              <div id='widgetFileUpload' block='fileupload' data-toggle='tooltip' title='Upload PDF or other format files' class='widget_btn'>
+                <div><img src='assets/img/uploads-icon.png' /></div>
+                <div><label>File Upload</label></div>
+              </div>
 
-            <div id='widgetFileUpload' block='fileupload' data-toggle='tooltip' title='Upload PDF or other format files' class='widget_btn'>
-              <div><img src='assets/img/uploads-icon.png' /></div>
-              <div><label>File Upload</label></div>
-            </div>
+              <div id='widgetPushpay' block='pushpay' data-toggle='tooltip' title='Integrate PushPay' class='widget_btn'>
+                <div><img src='assets/img/pushpay.png' /></div>
+                <div><label>PushPay</label></div>
+              </div>
+              <div block='threedcart' data-toggle='tooltip' title='Integrate 3dcart' class='widget_btn'>
+                <div><img src='assets/img/3d-cart.png' /></div>
+                <div><label>3dcart</label></div>
+              </div>
 
-            <div id='widgetPushpay' block='pushpay' data-toggle='tooltip' title='Integrate PushPay' class='widget_btn'>
-              <div><img src='assets/img/pushpay.png' /></div>
-              <div><label>PushPay</label></div>
-            </div>
-            <div block='threedcart' data-toggle='tooltip' title='Integrate 3dcart' class='widget_btn'>
-              <div><img src='assets/img/3d-cart.png' /></div>
-              <div><label>3dcart</label></div>
-            </div>
+              <div id='widgetBlogs' block='blogs' data-toggle='tooltip' title='Integrate Blogs' class='widget_btn'>
+                <div><img src='assets/img/icon-blogs.png' /></div>
+                <div><label>Blogs</label></div>
+              </div>
 
-            <div id='widgetBlogs' block='blogs' data-toggle='tooltip' title='Integrate Blogs' class='widget_btn'>
-              <div><img src='assets/img/icon-blogs.png' /></div>
-              <div><label>Blogs</label></div>
+              <div id='widgetChat' block='chat' data-toggle='tooltip' title='Enable chat within the app.' class='widget_btn'>
+                <div><img src='assets/img/chat.png' /></div>
+                <div><label>Chat</label></div>
+              </div>
+              <div class='exclusive-widgets-load-more'>. . .</div>
             </div>
-            
-            <div id='widgetChat' block='chat' data-toggle='tooltip' title='Enable chat within the app.' class='widget_btn'>
-              <div><img src='assets/img/chat.png' /></div>
-              <div><label>Chat</label></div>
-            </div>
-            <div class='exclusive-widgets-load-more'>. . .</div>
           </div>
         </div>
       </div>
       <!-- Tile Widgets Blocks -->
 
       <div class="page_block tile_blocks-content">
-        <div style="width:98.9%; height: 833px" slimScroll [options]="opts">
+        <div class="scroll-window" style="width:98.9%; height: 833px" slimScroll [options]="opts">
           <ng-template block-selected></ng-template>
         </div>
-       
+
       </div>
     </div>
 

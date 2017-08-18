@@ -101,20 +101,22 @@ export class NotesBlockComponent implements BlockComponent {
              <input class="chk-results" type="checkbox">Show results in app</label>
              <label style="font-size: 11px;" class="checkbox-inline"><input class="enable-note" type="checkbox">Take Notes</label>
              </div></div>
-             <div class="row survey_text_row">
-             <span class="options-count">1.</span>
-             <input type="text" class="form-control input-sm survey_option_box"  placeholder="Type option here" />
-             <img class="delete-quest-option" src="assets/img/close_bg.png">
-             <button class="btn btn-questionnaire btn-info btn-xs btn-add-text-box">Add Option</button>
+             <div class="survey-option-btn">
+             <button (click)="addOption($event)" class="btn btn-questionnaire btn-info btn-xs btn-add-text-box">Add Option</button>
+             </div>
+             <div *ngFor="let question of block.data.questions; let i = index; trackBy:trackByIndex" class="row survey_text_row">
+             <span class="options-count">{{i + 1}}.</span>
+             <input [(ngModel)]="block.data.questions[i]" type="text" class="form-control input-sm survey_option_box"  placeholder="Type option here" />
+             <img class="delete-quest-option" (click)="removeOption(question)" src="assets/img/close_bg.png">
              </div>
              </div>
              <div class="row survey_add_alert">
-               <button class="btn btn-info btn-xs survey-confirmation" style="display: block;">Add Confirmation</button>
-               <button class="btn btn-ques-alert btn-info btn-xs">Add Alert</button>
-               <button  class="btn btn-popup-alert btn-info btn-xs">Pop Up</button>
+             <button class="btn btn-info btn-xs survey-confirmation" style="display: block;">Add Confirmation</button>
+             <button class="btn btn-ques-alert btn-info btn-xs">Add Alert</button>
+             <button  class="btn btn-popup-alert btn-info btn-xs">Pop Up</button>
              </div>
              <div style="margin-top: 8px;" class="row">
-               <div style="width:98%; margin-top: 7px;" class="col-md-11">
+              <div style="width:98%; margin-top: 7px;" class="col-md-11">
                  <ng2-summernote [(ngModel)]="data2"></ng2-summernote>
                </div>
              </div>
@@ -128,6 +130,18 @@ export class SurveyBlockComponent implements BlockComponent {
   surveyView = new EventEmitter<any>();
 
   data2 = '<font style="background-color: rgb(239, 198, 49);" color="#0000ff">Dev Test</font>';
+
+  addOption(e: any){
+    this.block.data.questions.push("");
+  }
+
+  removeOption(opt: any){
+    opt.remove();
+  }
+
+  trackByIndex(index: number, obj: any): any {
+    return index;
+  }
 
   deleteSurvey(view: any) {
     this.surveyView.emit(view);

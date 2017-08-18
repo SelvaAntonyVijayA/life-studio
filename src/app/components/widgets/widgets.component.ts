@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild, ElementRef, ComponentFactoryResolv
 import { TileBlocksDirective } from './tileblocks.directive';
 import { BlockItem } from './block-item';
 import { BlockComponent } from './block.component';
-import { InquiryBlockComponent, NotesBlockComponent, SurveyBlockComponent} from './tileblocks.components';
+import { InquiryBlockComponent, NotesBlockComponent, SurveyBlockComponent } from './tileblocks.components';
 import { ISlimScrollOptions } from 'ng2-slimscroll';
 
 declare var $: any;
@@ -22,6 +22,19 @@ export class WidgetsComponent implements OnInit {
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver, elemRef: ElementRef) { }
 
+  /* Set Scroll Options */
+
+  setScrollOptions() {
+    this.opts = {
+      position: 'right',
+      barBackground: '#8A8A8A',
+      gridBackground: '#D9D9D9',
+      barBorderRadius: '10',
+      barWidth: '4',
+      gridWidth: '2'
+    };
+  }
+
 
   /* Checking the block by block type */
 
@@ -30,17 +43,18 @@ export class WidgetsComponent implements OnInit {
     var viewName = "";
 
     if (type === "notes") {
-      this.blocks.push(new BlockItem(NotesBlockComponent, {"type": "notes", "blockName": "Notes"}));
+      this.blocks.push(new BlockItem(NotesBlockComponent, { "type": "notes", "blockName": "Notes" }));
       viewName = "notesView"
     }
 
     if (type === "inquiry") {
-      blocks.push(new BlockItem(InquiryBlockComponent, {"type": "inquiry", "blockName": "Inquiry" , "data": {"email": "", "inquiryText": ""}}));
+      blocks.push(new BlockItem(InquiryBlockComponent, { "type": "inquiry", "blockName": "Inquiry", "data": { "email": "", "inquiryText": "" } }));
       viewName = "inquiryView"
     }
 
     if (type === "survey") {
-      blocks.push(new BlockItem(SurveyBlockComponent, {"type": "survey", "blockName": "Questionnaire", "data":{"controls": "radio", "multiple": "true"}}));
+      blocks.push(new BlockItem(SurveyBlockComponent, { "type": "survey", "blockName": "Questionnaire", "data": 
+      { "controls": "radio", "multiple": "true", "showInApp": "false", "isNote": "false", "questions": [""]  }}));
       viewName = "surveyView"
     }
 
@@ -49,13 +63,7 @@ export class WidgetsComponent implements OnInit {
 
   ngOnInit() {
     this.blocks = [];
-
-    this.opts = {
-      position: 'right',
-      barBackground: '#8A8A8A',
-      barWidth: "4",
-      gridWidth: "2"
-    };
+    this.setScrollOptions();
   }
 
   deleteBlock(view: any) {
