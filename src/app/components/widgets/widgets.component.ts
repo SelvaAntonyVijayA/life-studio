@@ -2,7 +2,10 @@ import { Component, OnInit, Input, ViewChild, ElementRef, ComponentFactoryResolv
 import { TileBlocksDirective } from './tileblocks.directive';
 import { BlockItem } from './block-item';
 import { BlockComponent } from './block.component';
-import { InquiryBlockComponent, NotesBlockComponent, SurveyBlockComponent } from './tileblocks.components';
+import {
+  InquiryBlockComponent, NotesBlockComponent,
+  SurveyBlockComponent, QuestionnaireBlockComponent
+} from './tileblocks.components';
 import { ISlimScrollOptions } from 'ng2-slimscroll';
 
 declare var $: any;
@@ -43,19 +46,53 @@ export class WidgetsComponent implements OnInit {
     var viewName = "";
 
     if (type === "notes") {
-      this.blocks.push(new BlockItem(NotesBlockComponent, { "type": "notes", "blockName": "Notes" }));
-      viewName = "notesView"
+      this.blocks.push(new BlockItem(NotesBlockComponent, {
+        "type": "notes", "blockName": "Notes"
+      }));
+      viewName = "notesView";
     }
 
     if (type === "inquiry") {
-      blocks.push(new BlockItem(InquiryBlockComponent, { "type": "inquiry", "blockName": "Inquiry", "data": { "email": "", "inquiryText": "" } }));
-      viewName = "inquiryView"
+      blocks.push(new BlockItem(InquiryBlockComponent, {
+        "type": "inquiry",
+        "blockName": "Inquiry",
+        "data": { "email": "", "inquiryText": "" }
+      }));
+      viewName = "inquiryView";
     }
 
     if (type === "survey") {
-      blocks.push(new BlockItem(SurveyBlockComponent, { "type": "survey", "blockName": "Questionnaire", "data": 
-      { "controls": "radio", "multiple": "true", "showInApp": "false", "isNote": "false", "questions": [""]  }}));
-      viewName = "surveyView"
+      blocks.push(new BlockItem(SurveyBlockComponent, {
+        "type": "survey", "blockName": "Questionnaire", "data": {
+          "controls": "radio", "multiple": "false", "showInApp": false, "isNote": false, "questions": [""],
+          "confirmation": [], "popup": [], "alerts": []
+        }
+      }));
+      viewName = "surveyView";
+    }
+
+    if (type === "questionnaire") {
+      blocks.push(new BlockItem(QuestionnaireBlockComponent, {
+        "type": "questionnaire", "blockName": "Cascading Questionnaire", "data": {
+          "mandatory": false,
+          "questionText": "",
+          "inputControlType": "radio",
+          "questionType": "single",
+          "isNote": false,
+          "options": [{
+            "option": "",
+            "alert" : "",
+            "confirmation": "",
+            "popup": "",
+            "subQuestions": []
+          }],
+          "confirmation": [],
+          "popup": [], 
+          "alerts": []
+        }
+      }));
+
+      viewName = "questionnaireView";
     }
 
     this.loadComponent(viewName);

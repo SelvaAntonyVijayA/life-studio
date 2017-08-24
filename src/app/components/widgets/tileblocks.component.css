@@ -85,7 +85,7 @@
     color: #666;
 }
 
-  /* Questionnaire Block */
+  /* Survey Block */
 
 .survey_panel {
     width: 98%;
@@ -97,7 +97,7 @@
 }
 
 .text_header_content {
-    font-size: 92%;
+    font-size: 11px;
     float: left;
     text-align: justify;
     padding: 0 2%;
@@ -135,7 +135,7 @@
 .survey_controls{
     float: left;
     margin-right: 11px;
-    width: 275px;
+    width: 202px;
     margin-bottom: 12px;
 }
 
@@ -143,6 +143,7 @@
     float: left;
     margin-right: 12px;
     margin-bottom: 12px;
+    width: 233px;    
 }
 
 .survey_text_row {
@@ -207,7 +208,247 @@
 }
 
 .survey-option-btn{
-  float: right;
-  margin-right: 14px;
+   float: right;
+   margin-right: 14px;
 }
+
+.ques_alert_row {
+    width: 100%;
+    height: 5%;
+    margin-top: 1%;
+    padding: 0px 4%;
+    margin-bottom: 1%;
+}
+
+.ques-alert-count {
+    float: left;
+    padding: 4px 5px 0px 0px;
+}
+
+.ques_alert_box {
+   width: 97%;
+   float: left;
+}
+
+/* Cascading Questionnaire Block */
+
+.cc_text_header_content {
+    font-size: 11px;
+    float: left;
+    text-align: justify;
+    padding: 0 2%;
+}
+
+.cc_ques_panel {
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px;
+}
+
+.cc-questions-block{
+    position:relative;
+    float: left; 
+    width: 98.5%; 
+    height: 30px;
+}
+
+.cc-question-survey-md{
+    margin-right:10px; 
+    float:left;
+}
+
+.cc_questionare_text{
+    width: 509px; 
+    margin-right:10px;
+    float: left;
+}
+
+.cc-btn-add-text-box {
+    margin-bottom: 1px;
+    margin-left: 3px;
+    float: left;
+    width: 90px;
+    height: 24px;
+}
+
+.cc-questionare-row{ 
+    width: 97%;
+    margin-left:15px; 
+    margin-right:0px;
+    float:left;
+    margin-bottom:5px;
+}
+
+.cc-decription-questionare{
+    margin-right: 10px;
+    float:left;
+    padding: 0;
+    font-size: 11px; 
+    margin-top:2px;
+}
+
+.cc-ques-one, .cc-ques-multiple, .cc-ques-radio, .cc-ques-dropdown{
+    margin-top: 2px;
+}
+
+.cc_questionnaire_controls{
+    float: left;
+    margin-right: 11px;
+    width: 202px;
+    margin-bottom: 12px;
+}
+
+.cc-chk-enable-note{
+    float: left; 
+    margin: 1px 5px 0 0;    
+}
+
+.cc-take-notes{
+    float: left; 
+    margin-top: 2px; 
+    font-size: 11px; 
+    margin-right: 10px;
+}
+
+.cc-ques-opts{
+    float: left;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    width: 233px;    
+}
+
+.cc_questionare_text{
+    width: 509px; 
+    margin-right:10px;
+}
+
+.cc-options-main-row{
+    width: 100%;
+    margin-top: 1%;
+    padding: 0 4%;
+}
+
+.cc-options-row {
+    width: 100%;
+    position: relative;
+    float: left;
+}
+
+.cc-options-count {
+    float: left;
+    padding: 4px 5px 0 0;
+}
+
+.cc_survey_option_box {
+    width: 473px;
+    float: left;
+    margin-bottom: 5px;
+}
+
+.cc-delete-quest-option {
+    margin-left: 8px;
+    margin-top: 3px;
+    cursor: pointer;
+}
+
+.cc_ques_add_alert {
+    width: 100%;
+}
+
+/* Sub Option Questionnaire */
+
+.cc-options-sub-row{
+    width: 100%;
+    margin-left: 15px;
+    margin-top: 10px;
+    padding: 0px;
+    float:left
+}
+
+.cc-options-sub-questionaire {
+    width: 105%;
+    margin-bottom: 10px; 
+    margin-top: 0px; 
+    margin-left: 0px;
+    float:left;
+}
+
+.cc-sub-question-no{
+    float: left; 
+    margin-right: 5px; 
+    margin-top: 5px;
+}
+
+.cc-sub-questionaire{
+    width: 499px; 
+    margin-left: 0px; 
+    float:left;
+}
+
+.cc-sub-add-options{
+    margin-bottom: 0px; 
+    margin-top: 1px; 
+    margin-left: 5px;
+    float:left;
+}
+
+.cc-delete-quest-option{
+    margin-left: 8px; 
+    margin-top: 3px; 
+    cursor: pointer;
+}
+
+.cc-sub-questionare-options{
+    margin-bottom: 5px;
+    margin-top: 5px;
+    float:left;
+    width: 90.5%;
+    margin-left: 21px;
+}
+
+.cc-sub-questionare-decription{
+  margin-right: 10px; 
+  float:left; 
+  font-size: 11px; 
+  margin-top:2px;
+}
+
+.cc_sub_questionnaire_controls{
+    float: left;
+    margin-right: 11px;
+    width: 202px;
+    margin-bottom: 12px;
+}
+
+.cc-sub-ques-opts{
+    float: left;
+    margin-right: 12px;
+    margin-bottom: 12px;
+    width: 233px;    
+}
+
+.cc-sub-questions-row{
+    float: left;
+    width: 100%;
+    margin-top: 0px; 
+    margin-left: 21px;
+}
+
+.cc-sub-ques-list-input{
+    padding: 2px;
+    margin-left: 0px; 
+    width: 95%;  
+    float: left;
+}
+
+.cc_ques_option_box{
+    width: 486px; 
+    float: left;
+     margin-bottom:5px;
+}
+
+
 
