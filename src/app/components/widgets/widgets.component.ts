@@ -4,7 +4,11 @@ import { BlockItem } from './block-item';
 import { BlockComponent } from './block.component';
 import {
   InquiryBlockComponent, NotesBlockComponent,
-  SurveyBlockComponent, QuestionnaireBlockComponent
+  SurveyBlockComponent, QuestionnaireBlockComponent,
+  StartWrapperBlockComponent, FormTitleBlockComponent,
+  QuestionsBlockComponent, AttendanceBlockComponent, ConfirmationBlockComponent,
+  PasswordBlockComponent, NextBlockComponent, FormPhotoComponent, PainLevelComponent,
+  DrawToolBlockComponent, PhysicianBlockComponent, EndWrapperBlockComponent
 } from './tileblocks.components';
 import { ISlimScrollOptions } from 'ng2-slimscroll';
 
@@ -37,7 +41,6 @@ export class WidgetsComponent implements OnInit {
       gridWidth: '2'
     };
   }
-
 
   /* Checking the block by block type */
 
@@ -81,18 +84,140 @@ export class WidgetsComponent implements OnInit {
           "isNote": false,
           "options": [{
             "option": "",
-            "alert" : "",
+            "alert": "",
             "confirmation": "",
             "popup": "",
             "subQuestions": []
           }],
           "confirmation": [],
-          "popup": [], 
+          "popup": [],
           "alerts": []
         }
       }));
 
       viewName = "questionnaireView";
+    }
+
+    if (type === "startwrapper") {
+      blocks.push(new BlockItem(StartWrapperBlockComponent, {
+        "type": "startwrapper", "blockName": "Start Wrapper", "data": {
+          "refresh": false, "close": false, "redirectApp": false
+        }
+      }));
+
+      viewName = "startWrapperView";
+    }
+
+    if (type === "title") {
+      blocks.push(new BlockItem(FormTitleBlockComponent, {
+        "type": "title", "blockName": "Form Title", "data": {
+          "titletext": "", "title": false
+        }
+      }));
+
+      viewName = "formTitleView";
+    }
+
+    if (type === "questions") {
+      blocks.push(new BlockItem(QuestionsBlockComponent, {
+        "type": "questions", "blockName": "Questions & Answers", "data": {
+          "questions": [""], "mandatory": [false], "answerTypes": ["text"], "notes": [false],
+          "category": "", "categoryName": "", "redirectApp": false
+        }
+      }));
+
+      viewName = "questionsView";
+    }
+
+    if (type === "attendance") {
+      blocks.push(new BlockItem(AttendanceBlockComponent, {
+        "type": "attendance", "blockName": "Attendance", "data": {
+          "title": "", "person": false, "online": false,
+          "addMember": false, "addQuestion": "Additional Family members attending (not added from another app)", "options": [], "redirectApp": false
+        }
+      }));
+
+      viewName = "attendanceView";
+    }
+
+    if (type === "confirmation") {
+      blocks.push(new BlockItem(ConfirmationBlockComponent, {
+        "type": "confirmation", "blockName": "Confirmation", "data": {
+          "text": new String(""), "submittext": ""
+        }
+      }));
+
+      viewName = "confirmationView";
+    }
+
+    if (type === "password") {
+      blocks.push(new BlockItem(PasswordBlockComponent, {
+        "type": "password", "blockName": "Password", "data": {
+          "password": false
+        }
+      }));
+
+      viewName = "passwordView";
+    }
+
+    if (type === "next") {
+      blocks.push(new BlockItem(NextBlockComponent, {
+        "type": "next", "blockName": "Next", "data": {
+          "text": "", "tileId": "", "tileTile": "", "type": "tile"
+        }
+      }));
+
+      viewName = "nextView";
+    }
+
+    if (type === "formphoto") {
+      blocks.push(new BlockItem(FormPhotoComponent, {
+        "type": "formphoto", "blockName": "Form Media", "data": {
+          "text": new String(""), "isVideo": false
+        }
+      }));
+
+      viewName = "formPhotoView";
+    }
+
+    if (type === "painlevel") {
+      blocks.push(new BlockItem(PainLevelComponent, {
+        "type": "painlevel", "blockName": "Pain Level", "data": {
+          "painlevel": true, "question": "", "mandatory": false, "level": "image"
+        }
+      }));
+
+      viewName = "painLevelView";
+    }
+
+    if (type === "drawtool") {
+      blocks.push(new BlockItem(DrawToolBlockComponent, {
+        "type": "drawtool", "blockName": "Draw tool", "data": {
+          "drawtool": true, "text": ""
+        }
+      }));
+
+      viewName = "drawToolView";
+    }
+
+    if (type === "physician") {
+      blocks.push(new BlockItem(PhysicianBlockComponent, {
+        "type": "physician", "blockName": "Physician", "data": {
+          "isPhysician": true, "mandatory": false, "text": "Physician"
+        }
+      }));
+
+      viewName = "physicianView";
+    }
+
+    if (type === "endwrapper") {
+      blocks.push(new BlockItem(EndWrapperBlockComponent, {
+        "type": "endwrapper", "blockName": "End Wrapper", "data": {
+          "text": "", "submitConfirmation": false
+        }
+      }));
+
+      viewName = "endWrapperView";
     }
 
     this.loadComponent(viewName);

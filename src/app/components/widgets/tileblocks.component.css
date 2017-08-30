@@ -21,7 +21,22 @@
 }
 
 .notes_panel {
-    width: 97%;
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px;
+}
+
+.inquiry_panel{
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px;
+    padding-left: 17px;
 }
 
 .contents_input_account {
@@ -66,10 +81,11 @@
 }
 
 .tigger_btn{
-    margin-right: 11px; 
-    margin-top: 2px; 
-    cursor: pointer; 
+    margin-right: 9px;
+    margin-top: 2px;
+    cursor: pointer;
     float: right;
+    font-size: 11px;
 }
 
 .redirect-app-submit{
@@ -85,7 +101,7 @@
     color: #666;
 }
 
-  /* Survey Block */
+                /* Survey Block */
 
 .survey_panel {
     width: 98%;
@@ -230,7 +246,7 @@
    float: left;
 }
 
-/* Cascading Questionnaire Block */
+                /* Cascading Questionnaire Block */
 
 .cc_text_header_content {
     font-size: 11px;
@@ -261,8 +277,8 @@
 }
 
 .cc_questionare_text{
-    width: 509px; 
-    margin-right:10px;
+    width: 507px; 
+    margin-right: 1px;
     float: left;
 }
 
@@ -358,7 +374,7 @@
     width: 100%;
 }
 
-/* Sub Option Questionnaire */
+                /* Sub Cascading  Questionnaire */
 
 .cc-options-sub-row{
     width: 100%;
@@ -383,7 +399,6 @@
 }
 
 .cc-sub-questionaire{
-    width: 499px; 
     margin-left: 0px; 
     float:left;
 }
@@ -393,6 +408,8 @@
     margin-top: 1px; 
     margin-left: 5px;
     float:left;
+    width:73px;
+    height: 24px;
 }
 
 .cc-delete-quest-option{
@@ -445,10 +462,453 @@
 }
 
 .cc_ques_option_box{
-    width: 486px; 
     float: left;
-     margin-bottom:5px;
+    margin-bottom:5px;
 }
+
+                /* Start Wrapper Block */
+
+.wrapper_block{
+  padding-left: 3px;   
+}
+
+.wrapper_start {
+  font-weight: normal;
+  font-size: 11px;
+  position: absolute;
+  left: 78px;
+}
+
+.wrapper-row-refresh {
+   height: 5px;
+}
+
+.wrapper_row {
+   margin-left: 1px;
+}
+
+.refresh-assign-group {
+   float: right;
+   margin-right: 4px;
+   margin-top: 2px;
+}
+
+.lbl-txt-clear-fields {
+   float: right;
+   font-weight: normal;
+   font-size: 11px;
+   margin-right: 5px;
+   margin-left: 5px;
+}
+
+.refresh_form {
+   float: right;
+}
+
+.close_form{
+   margin-top: 1px;   
+}
+
+.main-wrapper-text{
+    float: right;
+    margin-top: 1px;
+}
+
+                /* Form Title Block */
+
+.text_row {
+    width: 100%;
+    height: 5%;
+    margin-top: 1%;
+    padding: 0% 0% 1% 4%;
+}
+
+.form_title_text {
+    font-size: 11px;
+    float: left;
+    text-align: justify;
+    padding: 0 2%;
+    color: #ffffff;
+}
+
+.form_title_panel{
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px;
+}
+
+
+                /* Questions Block */
+
+.questions_panel{
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px;
+}
+
+.qus_text_row {
+    width: 105%;
+    float: left;
+    height: 60px;
+    margin-top: 1%;
+    padding: 0 4%;
+}
+
+.ques-blk-mandate{
+    margin-right:.5%; 
+    float:left;    
+}
+
+.ques-block-text{
+    width: 83%;
+    float: left;
+}
+
+.answer-type{
+    float:left; 
+    width:12%; 
+    margin-top: 10px; 
+    margin-left: 3.3%; 
+    font-size: 92%;
+}
+
+.qus_select{
+    width:360px;
+    float: left;
+    margin-top: 5px; 
+    margin-right:10px;
+    text-align: left !important;
+    color: #000;
+}
+
+input[type="checkbox"].chk-ques-enable-note {
+    float: left;
+    margin: 8px 5px 0 0;
+}
+
+.qus-notes {
+    float: left;
+    margin-top: 10px;
+    font-size: 92%;
+    margin-right: 10px;
+}
+
+.btn-add-ques-ans {
+    margin-left: 4px;
+    font-size: 11px;
+    height: 25px;
+    width: 84px;
+}
+
+                /* Attendance Block */
+
+.attendance_panel{
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px;
+}
+
+.attendance_title_row {
+    width: 100%;
+    height: 3%;
+    margin-top: 1%;
+    padding: 0 4%;
+}
+
+.attendance_text_row{
+    width: 100%; 
+    margin-top: 1%; 
+    padding: 1% 4%;
+}
+
+.attendance-inapp-text{
+   color: #ffffff; 
+   font-size: 12px;
+}
+
+.btn-option-box{
+    margin-left: 2%;
+    margin-top: 0px;
+}
+
+input[type="checkbox"].chk-attendance-in-person{
+    float: left; 
+    margin: 3px 8px 0 0;
+}
+
+.attendance-main-text-in-person{
+    width: 69px; 
+    float: left; 
+    margin: 1px 0 0 0;
+    font-size: 12px;
+}
+
+.attendance-online {
+    padding-left: 10px;
+    float: left;
+}
+
+input[type="checkbox"].chk-attendance-online{
+    float: left; 
+    margin: 3px 7px 0 0;
+}
+
+.attendance-main-text-online{
+    width: 70px; 
+    margin-top: 1px;
+    font-size: 12px;
+}
+
+.attendance_options_row {
+    padding-left: 2%;
+    width: 102.5%;
+    margin-top: 1%;
+}
+
+.attendance_member_row {
+    width: 100%;
+    height: 5%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    padding: 0 4%;
+}
+
+                /* Confirmation Block */
+
+.confirmation_panel{
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px;
+}    
+
+.confirmation_text_block {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.submit_row {
+    width: 696px;
+    height: 5%;
+    margin-top: 1%;
+}
+
+.confirm_header_text{
+    padding: 5px 3px 1px 14px;
+    font-size: 11px;
+}
+
+.confirm_submit_text{
+    width: 93%;
+    padding-left: 15px; 
+    margin-bottom: 11px; 
+}
+
+.confirmation_text{
+    font-size: 12px;
+    float: left;
+    margin-left: 15px;
+} 
+
+.main_confirm_content{
+    width: 94.7%;
+    float: left;
+    margin-left: 2px;
+}
+
+                /* Password Block */
+
+.password_panel{
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px;
+} 
+
+.password_content {
+    margin-bottom: 1%;
+    margin-top: 1%;
+    width: 98%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+        /* Next Block */
+
+.next_panel{
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px; 
+    padding: 4px 0px 0px 14px;
+}
+
+.next-label {
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 8px;
+    font-size: 92%;
+    margin-top: 2px;
+}
+
+input[type="radio"].next-tile {
+    margin-top: 4px;
+    float: left;
+}
+
+.next-options {
+    float: left;
+    font-size: 92%;
+    margin: 3px 2px 0 0;
+}
+
+.tile_link_block {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 30px;
+}
+
+.next_tile_submit_row {
+    width: 550px;
+    float: left;
+}
+
+.btn-tile-link {
+    margin-left: 4px;
+    height: 30px;
+    width: 86px
+}
+
+.header-next-block{
+    font-size: 12px;
+}
+
+                /* Form Media Row */
+
+.form_media_main_content{
+    width: 97.5%;
+    float: left;
+    margin-left: 1px;
+}
+
+                /* Pain Level Block */
+
+.pain_level_panel{
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px; 
+}  
+
+.pain_level_content {
+    margin-bottom: 1%;
+    margin-top: 1%;
+    width: 98%;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 11px;
+}
+
+                /* Draw Tool Block */
+
+.draw_tool_panel{
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px;     
+    padding: 3px 3px 3px 3px;
+}
+
+.draw_tool_content {
+    margin-bottom: 1%;
+    margin-top: 1%;
+    width: 98%;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 11px;
+}
+
+                /* Draw Tool Block */
+
+physician_panel{
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px;     
+    padding: 3px 3px 3px 3px;
+}
+
+.physician_content {
+    margin-bottom: 1%;
+    margin-top: 1%;
+    width: 98%;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 11px;
+}
+
+                /* End Wrapper Block */
+
+.end-wrapper-submit-text {
+    width: 219px;
+    height: 24px;
+    border: 1px;
+    background-color: #F3F3F3;
+    box-shadow: 0px 0px 3px #DBE0EA;
+    padding: 0px 0px 0px 5px;
+    font-size: 12px;
+    float: right;
+    margin-right: 12px;
+    margin-top: -4px;
+}
+
+.lbl-disable-confirm {
+    float: right;
+    font-weight: normal;
+    font-size: 11px;
+    margin-top: 1px;
+    margin-right: 9px;
+}
+
+input[type="checkbox"].end_wrapper_disable {
+    float: right;
+    margin-right: 8px;
+    margin-top: 2px;
+}
+
+.wrapper_end {
+    font-weight: normal;
+    font-size: 11px;
+    float: right;
+    margin-top: 1px;
+    padding-right: 4px;
+}
+
+
+
+
 
 
 

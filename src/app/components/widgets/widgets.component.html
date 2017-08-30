@@ -108,12 +108,12 @@
 
               <div id='widgetStartWrapper' block='StartWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form'
                 class='widget_btn'>
-                <div><img src='assets/img/start_wrapper.png' /></div>
+                <div><img (click)='loadWidgets("startwrapper")' src='assets/img/start_wrapper.png' /></div>
                 <div><label>Start Wrapper</label></div>
               </div>
 
               <div id='widgetTitle' block='title' data-toggle='tooltip' title='Title that will appear over any form you create' class='widget_btn'>
-                <div><img src='assets/img/form.png' /></div>
+                <div><img (click)='loadWidgets("title")' src='assets/img/form.png' /></div>
                 <div><label>Form Title</label></div>
               </div>
 
@@ -125,14 +125,14 @@
 
               <div id='widgetAttendance' block='Attendance' data-toggle='tooltip' title='Users can select if they are attending In-Person or Online'
                 class='widget_btn'>
-                <div><img src='assets/img/clock.png' /></div>
+                <div><img (click)='loadWidgets("attendance")' src='assets/img/clock.png' /></div>
                 <div><label>Attendance</label></div>
               </div>
 
               <div id='widgetSurvey' block='Survey' data-toggle='tooltip' data-toggle='tooltip' title='Multiple questions where users can select only One or Multiple answers.  Percentages can be shown in-app.'
                 class='widget_btn'>
                 <div><img (click)='loadWidgets("survey")' src='assets/img/survey1.png' /></div>
-                <div><label>Questionnaire</label></div>
+                <div><label>Simple Questionnaire</label></div>
               </div>
 
               <div id='widgetQuestionnaire' block='questionnaire' data-toggle='tooltip' data-toggle='tooltip' title='Multiple questions where users can select only One or Multiple answers.  Percentages can be shown in-app.'
@@ -143,7 +143,7 @@
 
               <div id='widgetQuestions' block='questions' data-toggle='tooltip' title='One or more questions requiring users to type their answers.'
                 class='widget_btn'>
-                <div><img src='assets/img/QA.png' /></div>
+                <div><img (click)='loadWidgets("questions")' src='assets/img/QA.png' /></div>
                 <div><label>Q & A</label></div>
               </div>
 
@@ -160,18 +160,18 @@
 
               <div id='widgetConfirmation' block='confirmation' data-toggle='tooltip' title='Confirmation page after user submits a form. In case there is no confirmation page, a default message is shown in the app. If you use a confirmation, then your own message appears.'
                 class='widget_btn'>
-                <div><img src='assets/img/confirm.png' /></div>
+                <div><img (click)='loadWidgets("confirmation")' src='assets/img/confirm.png' /></div>
                 <div><label>Confirmation</label></div>
               </div>
 
               <div id='widgetPassword' block='password' data-toggle='tooltip' title='Password allows us to change the password for the registered users'
                 class='widget_btn'>
-                <div><img src='assets/img/icon_password.png' /></div>
+                <div><img (click)='loadWidgets("password")' src='assets/img/icon_password.png' /></div>
                 <div><label>Password</label></div>
               </div>
 
               <div id='widgetNext' block='next' data-toggle='tooltip' title='Next tile page shows after user submits a form.' class='widget_btn'>
-                <div><img src='assets/img/arrow_next_icon.png' /></div>
+                <div><img (click)='loadWidgets("next")' src='assets/img/arrow_next_icon.png' /></div>
                 <div><label>Next</label></div>
               </div>
               <!-- html += "<div id='widgetUser' block='user' data-toggle='tooltip' title='User is to update and add new user.' class='widget_btn'>";
@@ -179,31 +179,31 @@
                 <div><label>User</label></div>
               </div> -->
               <div id='widgetFormPhoto' block='FormPhoto' data-toggle='tooltip' title='Attach Photos to the form' class='widget_btn'>
-                <div><img src='assets/img/form_photo_widget.png' /></div>
+                <div><img (click)='loadWidgets("formphoto")' src='assets/img/form_photo_widget.png' /></div>
                 <div><label>Form Media</label></div>
-              </div>
+              </div>   
 
               <div id='widgetPainLevel' block='PainLevel' data-toggle='tooltip' title='Denotes pain level' class='widget_btn'>
-                <div><img src='assets/img/pain_level.png' /></div>
+                <div><img (click)='loadWidgets("painlevel")' src='assets/img/pain_level.png' /></div>
                 <div><label>Pain Level</label></div>
               </div>
 
               <div id='widgetDrawTool' block='DrawTool' data-toggle='tooltip' title='You can draw on a picture or just on a blank screen to draw angles and pictures of a angle iron for instance'
                 class='widget_btn'>
-                <div><img src='assets/img/draw_tool.png' /></div>
+                <div><img (click)='loadWidgets("drawtool")' src='assets/img/draw_tool.png' /></div>
                 <div><label>Draw Tool</label></div>
-              </div>
+              </div>  
 
               <div id='widgetPhysician' block='Physician' data-toggle='tooltip' title='Assign a physician to the patient' class='widget_btn'>
-                <div><img src='assets/img/physician.png' /></div>
+                <div><img (click)='loadWidgets("physician")' src='assets/img/physician.png' /></div>
                 <div><label>Physician</label></div>
               </div>
               <!-- <div id='widgetMobileVideo' block='MobileVideo' data-toggle='tooltip' title='Upload Mobile Video' class='widget_btn'>
                 <div><img src='/img/mobile-video.png'/></div>
                 <div><label>Mobile Video</label></div>
-              </div>-->
+              </div>-->  
               <div id='widgetEndWrapper' block='EndWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form' class='widget_btn'>
-                <div><img src='assets/img/stop_wrapper.png' /></div>
+                <div><img (click)='loadWidgets("endwrapper")' src='assets/img/stop_wrapper.png' /></div>
                 <div><label>End Wrapper</label></div>
               </div>
 
