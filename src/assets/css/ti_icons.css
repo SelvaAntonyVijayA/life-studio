@@ -1,0 +1,14 @@
+.step {display: inline-block;line-height: 1;position: relative;}
+.step i {-webkit-transition: opacity .3s;-moz-transition: opacity .3s;-ms-transition: opacity .3s;	-o-transition: opacity .3s;	transition: opacity .3s;}
+.step:hover i {	opacity: 0.85;}
+.smarticon {float: right;font-size: 18px;color: #FFFFFF;margin-right: 3px;}
+.smarticon:hover {color:#FFFFFF}
+.noteicon {padding-top: 1px;float: right;font-size: 18px;color: #FFFFFF;margin-right: 3px;}
+.noteicon:hover {color: #FFFFFF}
+.weight {float: right;font-size: 18px;margin-top: 5px;height: 14px;width: 14px; margin-right: 3px;
+background: url( "assets/img/weight.png" ) no-repeat scroll left top rgba(0, 0, 0, 0);}
+.weight:hover {background: url( "assets/img/weight.png" ) no-repeat scroll left top rgba(0, 0, 0, 0);}
+.tile_icons{position: relative; right: 0; bottom: 2px;width: 100%; float: left;}
+.report-rule-tile{font-size: 19px;}
+.hsr-rules-tile{font-size: 19px;}
+.smarticon-tile-content{margin-top:2px; }

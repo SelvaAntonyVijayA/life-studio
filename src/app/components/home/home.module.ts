@@ -6,8 +6,8 @@ import { HomeComponent } from '../../components/home/home.component';
 import { WidgetsComponent } from '../../components/widgets/widgets.component';
 import { HomeRoutingModule } from '../../app-routes/home-routing.module';
 import { HeaderComponent } from '../../components/header/header.component';
-import { TilesListComponent } from '../../components/tiles-list/tiles-list.component';
-import { TileBlocksComponents } from '../../components/widgets/tileblocks.components';
+import { TilesListComponent, TilesComponent } from '../../components/tiles-list/tiles-list.component';
+import { TileBlocksComponents, SafePipe } from '../../components/widgets/tileblocks.components';
 import { HeaderService } from '../../services/header.service';
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
@@ -22,7 +22,7 @@ import { SlimScrollModule } from 'ng2-slimscroll';
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
-    TilesListComponent, TileBlocksComponents,
+    TilesListComponent, TilesComponent, TileBlocksComponents, SafePipe,
     TileBlocksDirective, DyBindDirective, Ng2Summernote],
   providers: [HeaderService]
 })

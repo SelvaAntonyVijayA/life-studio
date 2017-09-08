@@ -11,7 +11,6 @@ import { LoginComponent } from './components/login/login.component';
 import { LoginService } from './services/login.service';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,

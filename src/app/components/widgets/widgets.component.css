@@ -216,7 +216,7 @@
 }
 
 .widget-basic-collapse:hover{
-  max-height: 387px; 
+  max-height: 397px; 
   overflow: hidden; 
   cursor: pointer; 
   transition: 1s;
@@ -295,7 +295,7 @@
 }
 
 .widget-forms-collapse:hover{
-  max-height: 545px; 
+  max-height: 565px; 
   overflow: hidden; 
   cursor: pointer; 
   transition: 2s;
@@ -332,7 +332,7 @@
 }
 
 .widget-exclusive-collapse:hover{
-  max-height: 190px; 
+  max-height: 210px; 
   overflow: hidden; 
   cursor: pointer; 
   transition: 1s;
