@@ -1,7 +1,35 @@
 <div class="page_tile_content">
   <div class="widget-container">
-    <div class="tiles_head">
+    <div class="page_block tiles_head">
+      <div class="tile_form">
+        <input id="txtTileTitle" class="ili-form tile_title" placeholder="Title" type="text">
+        <div class="tile_language">
+          <select class="form-control input-sm" id="tileLanguage" placeholder="Select Language"></select>
+        </div>
+        <input id="txtTileTags" class="ili-form tile_notes" placeholder="Tags" type="text">
+        <select id="tileTemplate" class="ili-form template_box" placeholder="Select Template"></select>
+        <select id="tileCategory" class="ili-form tile_cat_box" placeholder="Select / Add Category"></select>
+      </div>
+      <div class='tile_prime'>
+        <div style="margin-top: 4px; padding-left: 0px; margin-bottom: 10px;" class="checkbox">
+          <label style="font-size: 11px;"><input style="margin-top: 2px;" type="checkbox" >Right To Left</label>
+        </div>
+        <div style="margin-top: 2px; padding-left: 0px;" class="checkbox">
+          <label style="font-size: 11px;"><input style="margin-top: 2px;" type="checkbox">Requires Login</label>
+        </div>
+      </div>
+
+      <div class="tile_art">
+        <img class="tile_art_img" src="/assets/img/ili-bg/bg_panels/tile_art_panel.png">
+        <a href="#" class="tile_art_btn" title="recommended size 640x300">
+            UPLOAD TILE ART
+        </a>
+      </div>
+
       <div class="tile_form_btns">
+        <button id="btnTilePreview" class="ili-btn preview_tile_btn">
+              Preview
+          </button>
         <button id="btnTileNew" (click)="resetTile($event)" class="ili-btn reset_tile_btn">
           New
         </button>
@@ -14,61 +42,37 @@
         <button id="btnTileDelete" class="ili-btn delete_tile_btn">
           Delete
         </button>
-        <button id="btnTilePreview" class="ili-btn preview_tile_btn">
-          Preview
-      </button>
-      </div>
-      <div class='tile_prime'>
-        <div class="checkbox">
-          <label><input id="chkRtl" type="checkbox"> Right To Left</label>
-        </div>
-        <div class="checkbox" style="margin-left: 4px; margin-top: 10px; float: left;">
-          <label> <input id="chkPrime" type="checkbox">Premium</label>
-        </div>
-        <div class="tile_language">
-          <select class="form-control input-sm" id="tileLanguage" placeholder="Select Language"></select>
-        </div>
-      </div>
-      <div class="tile_form">
-        <input id="txtTileTitle" class="ili-form tile_title" placeholder="Title" type="text">
-        <input id="txtTileTags" class="ili-form tile_notes" placeholder="Tags" type="text">
-        <select id="tileTemplate" class="ili-form template_box" placeholder="Select Template"></select>
-        <select id="tileCategory" class="ili-form tile_cat_box" placeholder="Select / Add Category"></select>
       </div>
     </div>
-    <div class="tile_art">
-      <img class="tile_art_img" src="/assets/img/ili-bg/bg_panels/tile_art_panel.png">
-      <div class="tile_art_name" style="display: block;">
-      </div>
-    </div>
-
     <div class="widgets_content_blocks">
       <div class="page_block widgets_block">
-        <div class="scroll-window" slimScroll [options]="opts" style="height: 833px;">
-          <div class="content_widget_btns">
+        <div class="tile_widget_text">
+          <span> WIDGETS </span>
+        </div>
+       <!-- <div class="scroll-window" slimScroll [options]="opts" style="height: 833px;"> -->
+          <div slimScroll [options]="opts" style="height: 833px;" class="content_widget_btns scroll-window">
             <div class='widget-basic-collapse'>
               <div class='widget_btn_separator'>
                 <div class='separator-text'><span class='line-left line-basic'></span><span class='line-center' title='Basic widgets can be intermixed, or mixed with any other widgets.'>Basic</span>
-                  <span
-                    class='line-right line-basic'></span>
+                  <span class='line-right line-basic'></span>
                 </div>
-              </div>  
+              </div>
 
               <div id='widgetEditor' block='Text' data-placement='top' title='Add any description in multiple paragraphs.' class='widget_btn'>
                 <div><img (click)='loadWidgets("text")' src='assets/img/text_32.png' /></div>
                 <div><label>Editor</label></div>
-              </div>  
+              </div>
 
               <div id='widgetUploadVideo' block='Video' data-toggle='tooltip' title='Upload a video file' class='widget_btn'>
                 <div><img (click)='loadWidgets("video")' src='assets/img/video_32.png' /></div>
                 <div><label>Upload Video</label></div>
-              </div> 
+              </div>
 
               <div id='widgetPicture' block='picture' data-toggle='tooltip' title='Allow users to upload their own pictures.  Select Moderate if you want pictures to be moderated before being published.'
                 class='widget_btn'>
                 <div><img (click)='loadWidgets("picture")' src='assets/img/camara.png' /></div>
                 <div><label>Event Media</label></div>
-              </div>  
+              </div>
 
               <div id='widgetDisqus' block='disqus' data-toggle='tooltip' title='Disqus allows to create a discussion room amongst users. It helps you build a community of active readers and commenters.'
                 class='widget_btn'>
@@ -79,12 +83,12 @@
               <div id='widgetSocialFeed' block='feed' data-toggle='tooltip' title='Integrate FB and Twitter' class='widget_btn'>
                 <div><img (click)='loadWidgets("feed")' src='assets/img/icon-feed.png' /></div>
                 <div><label>Social Feed</label></div>
-              </div>   
+              </div>
 
               <div id='widgetCalendar' block='calendar' data-toggle='tooltip' title='This Widget allows to create calendar' class='widget_btn'>
                 <div><img (click)='loadWidgets("calendar")' src='assets/img/calendar.png' /></div>
                 <div><label>Calendar</label></div>
-              </div>  
+              </div>
 
               <div id='widgetShare' block='share' data-toggle='tooltip' title='Share this Tile as a URL.' class='widget_btn'>
                 <div><img (click)='loadWidgets("share")' src='assets/img/share_this.png' /></div>
@@ -101,8 +105,7 @@
             <div id='divTileWidgetFormsCollapse' class='widget-forms-collapse'>
               <div class='widget_btn_separator'>
                 <div class='separator-text'><span class='line-left line-form'></span><span class='line-center' title='Multiple Form widgets may be used in the same Tile. Each has its own Submit button. To create a Form with a group of widgets and a unique submit button, add the Form widgets between a Title and a Confirmation.'>Form</span>
-                  <span
-                    class='line-right line-form'></span>
+                  <span class='line-right line-form'></span>
                 </div>
               </div>
 
@@ -181,7 +184,7 @@
               <div id='widgetFormPhoto' block='FormPhoto' data-toggle='tooltip' title='Attach Photos to the form' class='widget_btn'>
                 <div><img (click)='loadWidgets("formphoto")' src='assets/img/form_photo_widget.png' /></div>
                 <div><label>Form Media</label></div>
-              </div>   
+              </div>
 
               <div id='widgetPainLevel' block='PainLevel' data-toggle='tooltip' title='Denotes pain level' class='widget_btn'>
                 <div><img (click)='loadWidgets("painlevel")' src='assets/img/pain_level.png' /></div>
@@ -192,7 +195,7 @@
                 class='widget_btn'>
                 <div><img (click)='loadWidgets("drawtool")' src='assets/img/draw_tool.png' /></div>
                 <div><label>Draw Tool</label></div>
-              </div>  
+              </div>
 
               <div id='widgetPhysician' block='Physician' data-toggle='tooltip' title='Assign a physician to the patient' class='widget_btn'>
                 <div><img (click)='loadWidgets("physician")' src='assets/img/physician.png' /></div>
@@ -201,7 +204,7 @@
               <!-- <div id='widgetMobileVideo' block='MobileVideo' data-toggle='tooltip' title='Upload Mobile Video' class='widget_btn'>
                 <div><img src='/img/mobile-video.png'/></div>
                 <div><label>Mobile Video</label></div>
-              </div>-->  
+              </div>-->
               <div id='widgetEndWrapper' block='EndWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form' class='widget_btn'>
                 <div><img (click)='loadWidgets("endwrapper")' src='assets/img/stop_wrapper.png' /></div>
                 <div><label>End Wrapper</label></div>
@@ -213,8 +216,7 @@
             <div class='widget-restricted-collapse'>
               <div class='widget_btn_separator'>
                 <div class='separator-text'><span class='line-left line-restricted'></span><span class='line-center' title='A restricted widget cannot be combined with a form widget.'>Restricted</span>
-                  <span
-                    class='line-right line-restricted'></span>
+                  <span class='line-right line-restricted'></span>
                 </div>
               </div>
               <div id='widgetFill' block='fill' data-toggle='tooltip' title='Fill-in the blanks. Type the text and let users fill-in the blanks. Enter 3 underscores ___ for the blank words.  You may use multiple 3 underscores in a row, but add a space after the 3rd.'
@@ -232,28 +234,28 @@
                 class='widget_btn'>
                 <div><img (click)='loadWidgets("buttons")' src='assets/img/buttons.png' /></div>
                 <div><label>Buttons</label></div>
-              </div>  
+              </div>
 
               <div id='widgetContactUs' block='contactus' data-toggle='tooltip' title='Users enter their information requesting you to contact them.  You will receive an email with their contact info.'
                 class='widget_btn'>
                 <div><img (click)='loadWidgets("contactus")' src='assets/img/icon-email.png' /></div>
                 <div><label>Contact Us</label></div>
-              </div>  
+              </div>
 
               <div id='widgetPlacefull' block='placefull' data-toggle='tooltip' title='PlaceFull event booking and ticketing' class='widget_btn'>
                 <div><img (click)='loadWidgets("placefull")' src='assets/img/pf_logo.png' /></div>
                 <div><label>PlaceFull</label></div>
-              </div>  
+              </div>
 
               <div id='widgetAddToCart' block='AddToCart' data-toggle='tooltip' title='You can cart your order' class='widget_btn'>
                 <div><img (click)='loadWidgets("addtocart")' src='assets/img/icon_add_to_cart.png' /></div>
                 <div><label>Add to Cart</label></div>
-              </div>  
+              </div>
 
               <div id='widgetCart' block='Cart' data-toggle='tooltip' title='You can view all your carts' class='widget_btn'>
                 <div><img (click)='loadWidgets("cart")' src='assets/img/icon_cart.png' /></div>
                 <div><label>Cart</label></div>
-              </div>  
+              </div>
 
               <div id='widgetBlanksForm' block='blanksform' data-toggle='tooltip' title='In-app form fill with picture upload and email alert'
                 class='widget_btn'>
@@ -261,25 +263,24 @@
                 <div><label>Blank Form</label></div>
               </div>
 
-              <div class='widgets-load-more'>. . .</div>   
+              <div class='widgets-load-more'>. . .</div>
             </div>
             <div class='widget-exclusive-collapse'>
               <div class='widget_btn_separator'>
                 <div class='separator-text'><span class='line-left line-exclusive'></span><span class='line-center' title='An exclusive widget cannot be combined with other widgets.'>Exclusive</span>
-                  <span
-                    class='line-right line-exclusive'></span>
+                  <span class='line-right line-exclusive'></span>
                 </div>
               </div>
 
               <div id='widgetExclusiveUrl' block='exclusiveUrl' data-toggle='tooltip' title='Integrate URL' class='widget_btn'>
                 <div><img (click)='loadWidgets("exclusiveurl")' src='assets/img/icon_url.png' /></div>
                 <div><label>URL</label></div>
-              </div>  
+              </div>
 
               <div id='widgetFileUpload' block='fileupload' data-toggle='tooltip' title='Upload PDF or other format files' class='widget_btn'>
                 <div><img (click)='loadWidgets("fileupload")' src='assets/img/uploads-icon.png' /></div>
                 <div><label>File Upload</label></div>
-              </div>  
+              </div>
 
               <div id='widgetPushpay' block='pushpay' data-toggle='tooltip' title='Integrate PushPay' class='widget_btn'>
                 <div><img (click)='loadWidgets("pushpay")' src='assets/img/pushpay.png' /></div>
@@ -288,12 +289,12 @@
               <div block='threedcart' data-toggle='tooltip' title='Integrate 3dcart' class='widget_btn'>
                 <div><img (click)='loadWidgets("threedcart")' src='assets/img/3d-cart.png' /></div>
                 <div><label>3dcart</label></div>
-              </div>  
+              </div>
 
               <div id='widgetBlogs' block='blogs' data-toggle='tooltip' title='Integrate Blogs' class='widget_btn'>
                 <div><img (click)='loadWidgets("blogs")' src='assets/img/icon-blogs.png' /></div>
                 <div><label>Blogs</label></div>
-              </div> 
+              </div>
 
               <div id='widgetChat' block='chat' data-toggle='tooltip' title='Enable chat within the app.' class='widget_btn'>
                 <div><img (click)='loadWidgets("chat")' src='assets/img/chat.png' /></div>
@@ -303,17 +304,18 @@
             </div>
           </div>
         </div>
-      </div>
+    <!--  </div> -->
       <!-- Tile Widgets Blocks -->
 
       <div class="page_block tile_blocks-content">
-        <div class="scroll-window" style="width:98.9%; height: 833px" slimScroll [options]="opts">
+        <div class="scroll-window" style="width:98.9%; height: 877px" slimScroll [options]="opts">
           <ng-template block-selected></ng-template>
         </div>
-
       </div>
-    </div>
 
+      <!-- Tiles List -->
+
+      <tiles-list (tileContent)="getTileContent($event)" [page]="'tiles'"></tiles-list>
+    </div>
   </div>
-  <tiles-list></tiles-list>
 </div>

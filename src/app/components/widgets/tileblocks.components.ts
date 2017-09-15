@@ -5,8 +5,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 @Pipe({ name: 'safe' })
 export class SafePipe implements PipeTransform {
-  constructor(private sanitizer: DomSanitizer) {}
-  
+  constructor(private sanitizer: DomSanitizer) { }
+
   transform(url) {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
@@ -80,7 +80,7 @@ export class TextBlockComponent implements BlockComponent {
 export class VideoBlockComponent implements BlockComponent {
   @Input() block: any;
 
-  constructor(public sanitizer: DomSanitizer){}
+  constructor(public sanitizer: DomSanitizer) { }
 
   videoView = new EventEmitter<any>();
 
@@ -88,8 +88,8 @@ export class VideoBlockComponent implements BlockComponent {
     this.videoView.emit(view);
   };
 
-  checkDisabled(e: any){
-    return this.block.data.url !== "" && this.block.data.url !== null && typeof this.block.data.url !== "undefined"? true : false;  
+  checkDisabled(e: any) {
+    return this.block.data.url !== "" && this.block.data.url !== null && typeof this.block.data.url !== "undefined" ? true : false;
   }
 };
 
@@ -1070,12 +1070,19 @@ export class FillBlockComponent implements BlockComponent {
              <div class="content_buttons">
              <block-controls (blockView)="getNotes($event)" [(block)]= "block"> </block-controls></div>
              <div class='ili-panel notes_panel'>
-             <div class="input-group input-group-sm contents_input_account">
-             <span class="input-group-addon"><input value="true" (change)="notesAssign('notes')" [checked]="block.data.notes" [(ngModel)]="block.data.notes" type="radio"></span>
-             <span class="form-control">Notes</span></div>
-             <div class="input-group input-group-sm contents_input_account">
-             <span class="input-group-addon"><input value="true" (change)="notesAssign('allNotes')" [checked]="block.data.allNotes" [(ngModel)]="block.data.allNotes" type="radio"></span>
-             <span class="form-control"> Notes Archive </span></div></div></div>`,
+             <div class="row contents_input_account">
+             <div class="input-group input-group-sm">
+             <span class="input-group-addon">
+             <input value="true" (change)="notesAssign($event, 'notes')" [checked]="block.data.notes" [(ngModel)]="block.data.notes" type="checkbox"></span>
+             <span class="form-control">Notes</span>
+             </div></div>
+             <div class="row contents_input_account">
+             <div class="input-group input-group-sm">
+             <span class="input-group-addon">
+             <input value="true" (change)="notesAssign($event, 'allnotes')" [checked]="block.data.allNotes" [(ngModel)]="block.data.allNotes" type="checkbox"></span>
+             <span class="form-control"> Notes Archive </span>
+             </div></div>
+             </div></div>`,
   styleUrls: ['./tileblocks.component.css']
 })
 
@@ -1088,21 +1095,13 @@ export class NotesBlockComponent implements BlockComponent {
     this.notesView.emit(view);
   };
 
-  notesAssign(type: string) {
-    if (type === "notes") {
-      if (this.block.data.notes) {
-        this.block.data.allNotes = false;
-      } else {
-        this.block.data.allNotes = true;
-      }
+  notesAssign(e: any, type: string) {
+    if (type === "allnotes") {
+      this.block.data.notes = this.block.data.allNotes ? false : true;
     }
 
-    if (type === "allNotes") {
-      if (this.block.data.allNotes) {
-        this.block.data.notes = false;
-      } else {
-        this.block.data.notes = true;
-      }
+    if (type === "notes") {
+      this.block.data.allNotes = this.block.data.notes ? false : true;
     }
   };
 };
@@ -1506,8 +1505,7 @@ export class BlogsBlockComponent implements BlockComponent {
     this.blogsView.emit(view);
   };
 
-  openWordPress(e: any){
-    
+  openWordPress(e: any) {
   }
 };
 

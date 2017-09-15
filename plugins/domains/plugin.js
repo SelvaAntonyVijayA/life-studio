@@ -6,7 +6,6 @@ var options = {};
 var domains = require(path.join(process.cwd(), 'models', 'domains'));
 
 var init = function () {
-
 };
 
 var get = function (req, res, next) {
@@ -18,7 +17,7 @@ var get = function (req, res, next) {
     if (err) {
       res.send(err);
     }
-     
+
     res.send(result);
   });
 };

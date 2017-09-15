@@ -33,6 +33,8 @@ export class WidgetsComponent implements OnInit {
   @ViewChild(TileBlocksDirective) blockSelected: TileBlocksDirective;
   interval: any;
   opts: ISlimScrollOptions;
+  tileBlocks: any[] = [];
+  selectedTile: Object = {};
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver, elemRef: ElementRef) { }
 
@@ -44,14 +46,14 @@ export class WidgetsComponent implements OnInit {
       barBackground: '#8A8A8A',
       gridBackground: '#D9D9D9',
       barBorderRadius: '10',
-      barWidth: '4',
-      gridWidth: '2'
+      barWidth: '2',
+      gridWidth: '1'
     };
   }
 
   /* Checking the block by block type */
 
-  loadWidgets(type: any, data: any) {
+  loadWidgets(type: any, blockData: any) {
     var blocks = this.blocks;
     var viewName = "";
 
@@ -59,7 +61,7 @@ export class WidgetsComponent implements OnInit {
       blocks.push(new BlockItem(TextBlockComponent, {
         "type": type,
         "blockName": "Editor",
-        "data": { "text": new String("") }
+        "data": blockData.hasOwnProperty("data")? blockData.data : { "text": new String("")}
       }));
 
       viewName = "textView";
@@ -69,7 +71,7 @@ export class WidgetsComponent implements OnInit {
       blocks.push(new BlockItem(VideoBlockComponent, {
         "type": type,
         "blockName": "Upload Video",
-        "data": {
+        "data": blockData.hasOwnProperty("data")? blockData.data :{
           "caption": "",
           "url": "",
           "videoid": ""
@@ -83,7 +85,7 @@ export class WidgetsComponent implements OnInit {
       blocks.push(new BlockItem(PictureBlockComponent, {
         "type": type,
         "blockName": "Event Media",
-        "data": {
+        "data": blockData.hasOwnProperty("data")? blockData.data : {
           "text": new String(""),
           "moderated": "false",
           "rate": "false",
@@ -98,7 +100,7 @@ export class WidgetsComponent implements OnInit {
       blocks.push(new BlockItem(DisqusBlockComponent, {
         "type": type,
         "blockName": "Disqus",
-        "data": {
+        "data": blockData.hasOwnProperty("data")? blockData.data : {
           "disqus": false
         }
       }));
@@ -110,7 +112,7 @@ export class WidgetsComponent implements OnInit {
       blocks.push(new BlockItem(SocialFeedBlockComponent, {
         "type": type,
         "blockName": "Social Feed",
-        "data": {
+        "data": blockData.hasOwnProperty("data")? blockData.data : {
           "facebook": false,
           "facebookurl": "",
           "twitter": false,
@@ -128,7 +130,7 @@ export class WidgetsComponent implements OnInit {
       blocks.push(new BlockItem(CalendarBlockComponent, {
         "type": type,
         "blockName": "Calendar",
-        "data": {
+        "data": blockData.hasOwnProperty("data")? blockData.data : {
           "text": new String("")
         }
       }));
@@ -140,10 +142,10 @@ export class WidgetsComponent implements OnInit {
       blocks.push(new BlockItem(ShareBlockComponent, {
         "type": type,
         "blockName": "Facebook, Twitter & Email Sharing",
-        "data": {
-         "facebook": false,
-         "twitter": false,
-         "email": false
+        "data": blockData.hasOwnProperty("data")? blockData.data : {
+          "facebook": false,
+          "twitter": false,
+          "email": false
         }
       }));
 
@@ -154,7 +156,7 @@ export class WidgetsComponent implements OnInit {
       blocks.push(new BlockItem(PatientsBlockComponent, {
         "type": type,
         "blockName": "Patients",
-        "data": {
+        "data": blockData.hasOwnProperty("data")? blockData.data :{
           "patients": true,
           "text": "Patients"
         }
@@ -167,14 +169,14 @@ export class WidgetsComponent implements OnInit {
       blocks.push(new BlockItem(InquiryBlockComponent, {
         "type": type,
         "blockName": "Inquiry",
-        "data": { "email": "", "inquiryText": "" }
+        "data": blockData.hasOwnProperty("data")? blockData.data :{ "email": "", "inquiryText": "" }
       }));
       viewName = "inquiryView";
     }
 
     if (type === "survey") {
       blocks.push(new BlockItem(SurveyBlockComponent, {
-        "type": type, "blockName": "Questionnaire", "data": {
+        "type": type, "blockName": "Questionnaire", "data": blockData.hasOwnProperty("data")? blockData.data :{
           "controls": "radio", "multiple": "false", "showInApp": false, "isNote": false, "questions": [""],
           "confirmation": [], "popup": [], "alerts": []
         }
@@ -184,7 +186,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "questionnaire") {
       blocks.push(new BlockItem(QuestionnaireBlockComponent, {
-        "type": type, "blockName": "Cascading Questionnaire", "data": {
+        "type": type, "blockName": "Cascading Questionnaire", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "mandatory": false,
           "questionText": "",
           "inputControlType": "radio",
@@ -197,9 +199,9 @@ export class WidgetsComponent implements OnInit {
             "popup": "",
             "subQuestions": []
           }],
-          "confirmation": [],
-          "popup": [],
-          "alerts": []
+          "confirmation": blockData.hasOwnProperty("confirmation")? blockData.confirmation : [],
+          "popup": blockData.hasOwnProperty("popup")? blockData.popup : [],
+          "alerts": blockData.hasOwnProperty("alerts")? blockData.alerts : []
         }
       }));
 
@@ -208,7 +210,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "startwrapper") {
       blocks.push(new BlockItem(StartWrapperBlockComponent, {
-        "type": type, "blockName": "Start Wrapper", "data": {
+        "type": type, "blockName": "Start Wrapper", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "refresh": false, "close": false, "redirectApp": false
         }
       }));
@@ -218,7 +220,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "title") {
       blocks.push(new BlockItem(FormTitleBlockComponent, {
-        "type": type, "blockName": "Form Title", "data": {
+        "type": type, "blockName": "Form Title", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "titletext": "", "title": false
         }
       }));
@@ -228,7 +230,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "questions") {
       blocks.push(new BlockItem(QuestionsBlockComponent, {
-        "type": type, "blockName": "Questions & Answers", "data": {
+        "type": type, "blockName": "Questions & Answers", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "questions": [""], "mandatory": [false], "answerTypes": ["text"], "notes": [false],
           "category": "", "categoryName": "", "redirectApp": false
         }
@@ -239,7 +241,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "attendance") {
       blocks.push(new BlockItem(AttendanceBlockComponent, {
-        "type": type, "blockName": "Attendance", "data": {
+        "type": type, "blockName": "Attendance", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "title": "", "person": false, "online": false,
           "addMember": false, "addQuestion": "Additional Family members attending (not added from another app)", "options": [], "redirectApp": false
         }
@@ -250,7 +252,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "confirmation") {
       blocks.push(new BlockItem(ConfirmationBlockComponent, {
-        "type": type, "blockName": "Confirmation", "data": {
+        "type": type, "blockName": "Confirmation", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "text": new String(""), "submittext": ""
         }
       }));
@@ -260,7 +262,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "password") {
       blocks.push(new BlockItem(PasswordBlockComponent, {
-        "type": type, "blockName": "Password", "data": {
+        "type": type, "blockName": "Password", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "password": false
         }
       }));
@@ -270,7 +272,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "next") {
       blocks.push(new BlockItem(NextBlockComponent, {
-        "type": type, "blockName": "Next", "data": {
+        "type": type, "blockName": "Next", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "text": "", "tileId": "", "tileTile": "", "type": "tile"
         }
       }));
@@ -280,7 +282,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "formphoto") {
       blocks.push(new BlockItem(FormPhotoComponent, {
-        "type": type, "blockName": "Form Media", "data": {
+        "type": type, "blockName": "Form Media", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "text": new String(""), "isVideo": false
         }
       }));
@@ -290,7 +292,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "painlevel") {
       blocks.push(new BlockItem(PainLevelComponent, {
-        "type": type, "blockName": "Pain Level", "data": {
+        "type": type, "blockName": "Pain Level", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "painlevel": true, "question": "", "mandatory": false, "level": "image"
         }
       }));
@@ -300,7 +302,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "drawtool") {
       blocks.push(new BlockItem(DrawToolBlockComponent, {
-        "type": type, "blockName": "Draw tool", "data": {
+        "type": type, "blockName": "Draw tool", "data": blockData.hasOwnProperty("data")? blockData.data :{
           "drawtool": true, "text": ""
         }
       }));
@@ -310,7 +312,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "physician") {
       blocks.push(new BlockItem(PhysicianBlockComponent, {
-        "type": type, "blockName": "Physician", "data": {
+        "type": type, "blockName": "Physician", "data": blockData.hasOwnProperty("data")? blockData.data :{
           "isPhysician": true, "mandatory": false, "text": "Physician"
         }
       }));
@@ -320,7 +322,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "endwrapper") {
       blocks.push(new BlockItem(EndWrapperBlockComponent, {
-        "type": type, "blockName": "End Wrapper", "data": {
+        "type": type, "blockName": "End Wrapper", "data": blockData.hasOwnProperty("data")? blockData.data :{
           "text": "", "submitConfirmation": false
         }
       }));
@@ -330,7 +332,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "fill") {
       blocks.push(new BlockItem(FillBlockComponent, {
-        "type": type, "blockName": "Fill-in the blanks", "data": {
+        "type": type, "blockName": "Fill-in the blanks", "data": blockData.hasOwnProperty("data")? blockData.data :{
           "text": new String(""),
         }
       }));
@@ -340,8 +342,8 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "notes") {
       this.blocks.push(new BlockItem(NotesBlockComponent, {
-        "type": type, "blockName": "Notes", "data": {
-          "notes": "true", "allNotes": "false"
+        "type": type, "blockName": "Notes", "data": blockData.hasOwnProperty("data")? blockData.data :{
+          "notes": true, "allNotes": false
         }
       }));
 
@@ -350,8 +352,8 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "buttons") {
       this.blocks.push(new BlockItem(ButtonsBlockComponent, {
-        "type": type, "blockName": "Buttons", "data": [{ "beforeText": "", "afterText": "" }],
-        "alerts": []
+        "type": type, "blockName": "Buttons", "data": blockData.hasOwnProperty("data")? blockData.data : [{ "beforeText": "", "afterText": "" }],
+        "alerts": blockData.hasOwnProperty("alerts")? blockData.alerts : []
       }));
 
       viewName = "buttonsView";
@@ -359,7 +361,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "contactus") {
       this.blocks.push(new BlockItem(ContactUsBlockComponent, {
-        "type": type, "blockName": "ContactUs", "data": { "email": "" }
+        "type": type, "blockName": "ContactUs", "data": blockData.hasOwnProperty("data")? blockData.data : { "email": "" }
       }));
 
       viewName = "contactusView";
@@ -367,7 +369,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "placefull") {
       this.blocks.push(new BlockItem(PlacefullBlockComponent, {
-        "type": type, "blockName": "PlaceFull", "data": { "text": "" }
+        "type": type, "blockName": "PlaceFull", "data": blockData.hasOwnProperty("data")? blockData.data : { "text": "" }
       }));
 
       viewName = "placefullView";
@@ -375,7 +377,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "addtocart") {
       this.blocks.push(new BlockItem(AddToCartBlockComponent, {
-        "type": type, "blockName": "Add To Cart", "data": {
+        "type": type, "blockName": "Add To Cart", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "productName": "", "description": "", "price": "", "currency": "", "textCartButton": "",
           "confirmationMessage": "", "productImage": "", "isProductName": true, "isProductDescription": true,
           "isProductImage": true, "isProductPrice": true
@@ -387,7 +389,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "cart") {
       this.blocks.push(new BlockItem(CartBlockComponent, {
-        "type": type, "blockName": "Cart", "data": {
+        "type": type, "blockName": "Cart", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "productTitle": "", "notificationEmail": "", "textConfirmButton": "", "confirmationMessage": ""
         }
       }));
@@ -397,7 +399,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "blanksform") {
       this.blocks.push(new BlockItem(BlanksFormBlockComponent, {
-        "type": type, "blockName": "Blanks Form", "data": {
+        "type": type, "blockName": "Blanks Form", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "email": "", "text": new String(""),
           "imageLimit": "", "redirectApp": false
         }
@@ -408,7 +410,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "exclusiveurl") {
       this.blocks.push(new BlockItem(ExclusiveUrlBlockComponent, {
-        "type": type, "blockName": "URL", "data": {
+        "type": type, "blockName": "URL", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "url": "", "window": false, "iphonewindow": false
         }
       }));
@@ -418,7 +420,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "fileupload") {
       this.blocks.push(new BlockItem(FileUploadBlockComponent, {
-        "type": type, "blockName": "File Upload", "data": {
+        "type": type, "blockName": "File Upload", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "url": ""
         }
       }));
@@ -428,7 +430,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "pushpay") {
       this.blocks.push(new BlockItem(PushpayBlockComponent, {
-        "type": type, "blockName": "PushPay", "data": {
+        "type": type, "blockName": "PushPay", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "pushpay": false,
           "url": "",
           "window": false,
@@ -441,7 +443,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "threedcart") {
       this.blocks.push(new BlockItem(ThreedCartBlockComponent, {
-        "type": type, "blockName": "3dCart", "data": {
+        "type": type, "blockName": "3dCart", "data": blockData.hasOwnProperty("data")? blockData.data : {
           "cart": false, "url": "", "window": false, "iphonewindow": false
         }
       }));
@@ -451,7 +453,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "blogs") {
       this.blocks.push(new BlockItem(BlogsBlockComponent, {
-        "type": type, "blockName": "Blogs", "data": {
+        "type": type, "blockName": "Blogs", "data": blockData.hasOwnProperty("data")? blockData.data :{
           "wordPress": false, "wordPressUrl": "",
           "wordPressTitle": "", "wordPressContent": new String("")
         }
@@ -462,7 +464,7 @@ export class WidgetsComponent implements OnInit {
 
     if (type === "chat") {
       this.blocks.push(new BlockItem(ChatBlockComponent, {
-        "type": type, "blockName": "Blogs", "data": {
+        "type": type, "blockName": "Blogs", "data": blockData.hasOwnProperty("data")? blockData.data :{
           "chat": true, "isPrivate": false
         }
       }));
@@ -512,6 +514,20 @@ export class WidgetsComponent implements OnInit {
 
   saveBlocks(e: any) {
     var result = this.blocks;
+  };
+
+  getTileContent(tileObj: any) {
+    this.resetTile("");
+    this.tileBlocks = tileObj.blocks;
+    this.selectedTile = tileObj.tile;
+
+    if(this.tileBlocks.length > 0){
+      for (let i = 0; i < this.tileBlocks.length; i++) {
+        var currentBlock = this.tileBlocks[i];
+        var type = this.tileBlocks[i].hasOwnProperty("type")? this.tileBlocks[i].type : ""; 
+        this.loadWidgets(type, currentBlock);
+      }
+    }
   };
 
 

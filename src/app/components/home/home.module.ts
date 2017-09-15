@@ -9,6 +9,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { TilesListComponent, TilesComponent } from '../../components/tiles-list/tiles-list.component';
 import { TileBlocksComponents, SafePipe } from '../../components/widgets/tileblocks.components';
 import { HeaderService } from '../../services/header.service';
+import { TileService } from '../../services/tile.service';
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 import { DyBindDirective } from '../../components/widgets/dynamic-bind.directive';
@@ -24,7 +25,7 @@ import { SlimScrollModule } from 'ng2-slimscroll';
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, TilesComponent, TileBlocksComponents, SafePipe,
     TileBlocksDirective, DyBindDirective, Ng2Summernote],
-  providers: [HeaderService]
+  providers: [HeaderService, TileService]
 })
 
 export class HomeModule { }

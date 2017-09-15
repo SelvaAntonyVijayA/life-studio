@@ -1,4 +1,4 @@
-var pluginNames = ["user", "general", "organization", "role", "authtoken", "domains"];
+var pluginNames = ["user", "general", "organization", "role", "authtoken", "domains", "tile", "tileblock"];
 
 module.exports = function (appPath, dirName, app) {
   var plugsPath = appPath.join(dirName, 'plugins');

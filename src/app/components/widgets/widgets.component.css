@@ -7,14 +7,15 @@
 
 
 .tiles_head {
-    width: 739px;
+    width: 100%;
     height: 78px;
     float: left;
+    margin-bottom: 1px;
 }
 
 .widgets_content_blocks {
   position: relative;
-  width: 879px;
+  width: 100%;
   height: 833px;
   float: left;
 }
@@ -61,21 +62,14 @@
 
 .tile_prime{
   float:left;
-}
-
-.tile_prime .checkbox{
-  font-size: 11px;
-  color: #FFFFFF;
-  float: left;
-  padding-left: 10px;
-}
-
-.tile_prime .checkbox input[type="checkbox"]{
-  margin-top: 2px;
+  width: 9%;
+  margin-top: 12px;
 }
 
 .tile_language{
   display: inline-block;
+  float: left;
+  margin-left: 7px;
 }
 
 .tile_language .custom_combobox{
@@ -83,25 +77,26 @@
 }
 
 #tileLanguage{
-  margin: 10px 2px 2px 11px; 
-  height: 23px; 
+  height: 25px; 
   width: 166px;
 }
 
 .tile_form{
   margin-top: 10px;
-  float:left;
+  float: left;
+  width: 45%;
+  margin-left: 2px;
 }
 
 .tile_title {
-    width: 255px;
+    width: 345px;
     display: inline-block;
     float: left;
 }
 
 .tile_notes {
-    width: 175px;
-    margin-left: 5px;
+    width: 196px;
+    margin-top: 6px;
     margin-right: 5px;
     display: inline-block;
     float: left;
@@ -109,30 +104,24 @@
 
 .template_box {
     float: left;
-    margin-right: 5px;
-    width: 126px;
+    margin-right: 7px;
+    width: 144px;
     display: inline-block;
+    margin-top: 6px;
 }
 
 .tile_art{
-  width: 135px; 
-  height: 77px;
-  float:left;
-  margin-left: 2px;
-  text-align: center;
+    width: 10%;
+    height: 77px;
+    float: left;
+    text-align: center;
+    margin-right: 4px;
 }
 
 .tile_art_img{
-    max-width: 120px;
-    max-height: 66px;
-    margin-top: 9px;
-}
-
-.tile_art_btn{
-  position: absolute; 
-  top: 13; 
-  left: 31px; 
-  z-index: 1;
+    max-width: 100px;
+    max-height: 50px;
+    margin-top: 6px;
 }
 
 .custom_combobox {
@@ -144,25 +133,36 @@
 }
 
 .tile_cat_box{
-  width:167px;
+    width: 166px;
+    margin-top: 6px;
 }
 
 .widgets_block {
-    width: 150px;
-    height: 833px;
+    width: 162px;
+    height: 880px;
     text-align: center;
     position:relative; 
     float: left;
     margin-left: -1px;
 }
 
-  .widget-container{
+.widget-container{
     float: left;
-    width: 876px;
+    width: 99.99%;
     height: 911px;
-  }
+}
    
   /*Tile Widgets */
+  
+  .tile_widget_text {
+    position: relative;
+    font-size: 16px;
+    top: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+    float: left;
+    width: 150px;
+}
 
 .content_widget_btns{
   position:relative; 
@@ -272,16 +272,16 @@
 }
 
 .widgets-load-more{
-  position: absolute; 
-  bottom: -4px; 
-  right: 20px; 
-  font-weight: bolder;
+    position: absolute; 
+    bottom: -4px; 
+    right: 20px; 
+    font-weight: bolder;
 }
 
 .tile_blocks-content {
     position: relative;
     width: 726px;
-    height: 833px;
+    height: 880px;
     float: left;
     margin-left: 1px;
 }
@@ -352,6 +352,13 @@
   top: 124px; 
   right: 20px; 
   font-weight: bolder;
+}
+
+.tile_art_btn {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 10px;
+    z-index: 1;
 }
 
 
