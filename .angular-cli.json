@@ -9,6 +9,11 @@
       "outDir": "public",
       "assets": [
         "assets",
+        "img",
+        "css",
+        "js",
+        "views",
+        "fonts",
         "ili-favicon.png"
       ],
       "index": "index.html",
@@ -22,15 +27,15 @@
         "../node_modules/bootstrap/dist/css/bootstrap.min.css",
         "../node_modules/jquery-ui-dist/jquery-ui.min.css",
         "../node_modules/summernote/dist/summernote.css",
-         "../src/assets/css/ili_theme.css",
+         "../src/css/ili_theme.css",
         "styles.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",
         "../node_modules/bootstrap/dist/js/bootstrap.min.js",
         "../node_modules/jquery-ui-dist/jquery-ui.min.js",
-         "../src/assets/js/jquery.custom.combo.js",
-         "../node_modules/summernote/dist/summernote.min.js"
+        "../src/js/jquery.custom.combo.js",
+        "../node_modules/summernote/dist/summernote.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

@@ -17,6 +17,8 @@ export class TilesListComponent implements OnInit {
   @Input('page') page: string;
   tileContent = new EventEmitter<any>();
 
+  protected loading: boolean;
+
   constructor(private tileService: TileService) {
   }
 
@@ -42,7 +44,7 @@ export class TilesListComponent implements OnInit {
   ngOnInit() {
     this.setScrollOptions();
 
-    this.tileService.getTiles("56d8847b74ae9b5201144c7d")
+    this.tileService.getTiles("546c35cb41278ffc2f000093")
       .then(tiles => this.tiles = tiles);
   }
 }
@@ -52,7 +54,7 @@ export class TilesListComponent implements OnInit {
   outputs: ["tileData"],
   template: `<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" />
              <link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
-             <link rel="stylesheet" href="assets/css/ti_icons.css">
+             <link rel="stylesheet" href="/css/ti_icons.css">
              <div [style.cursor]="cursor" class="main_tile_block tiles_list_single"> 
              <img class="tile_list_art tile-content-img" [src]="tile?.art | safe">
              <div class="tile_list_title tile-content-title">{{tile?.title}}</div>

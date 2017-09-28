@@ -2,7 +2,7 @@
   <div class="widget-container">
     <div class="page_block tiles_head">
       <div class="tile_form">
-        <input id="txtTileTitle" class="ili-form tile_title" placeholder="Title" type="text">
+        <input id="txtTileTitle" [(ngModel)]="selectedTile!.title" class="ili-form tile_title" placeholder="Title" type="text">
         <div class="tile_language">
           <select class="form-control input-sm" id="tileLanguage" placeholder="Select Language"></select>
         </div>
@@ -20,7 +20,7 @@
       </div>
 
       <div class="tile_art">
-        <img class="tile_art_img" src="/assets/img/ili-bg/bg_panels/tile_art_panel.png">
+        <img class="tile_art_img" src="/img/ili-bg/bg_panels/tile_art_panel.png">
         <a href="#" class="tile_art_btn" title="recommended size 640x300">
             UPLOAD TILE ART
         </a>
@@ -59,44 +59,44 @@
               </div>
 
               <div id='widgetEditor' block='Text' data-placement='top' title='Add any description in multiple paragraphs.' class='widget_btn'>
-                <div><img (click)='loadWidgets("text")' src='assets/img/text_32.png' /></div>
+                <div><img (click)='loadWidgets("text")' src='/img/text_32.png' /></div>
                 <div><label>Editor</label></div>
               </div>
 
               <div id='widgetUploadVideo' block='Video' data-toggle='tooltip' title='Upload a video file' class='widget_btn'>
-                <div><img (click)='loadWidgets("video")' src='assets/img/video_32.png' /></div>
+                <div><img (click)='loadWidgets("video")' src='/img/video_32.png' /></div>
                 <div><label>Upload Video</label></div>
               </div>
 
               <div id='widgetPicture' block='picture' data-toggle='tooltip' title='Allow users to upload their own pictures.  Select Moderate if you want pictures to be moderated before being published.'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("picture")' src='assets/img/camara.png' /></div>
+                <div><img (click)='loadWidgets("picture")' src='/img/camara.png' /></div>
                 <div><label>Event Media</label></div>
               </div>
 
               <div id='widgetDisqus' block='disqus' data-toggle='tooltip' title='Disqus allows to create a discussion room amongst users. It helps you build a community of active readers and commenters.'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("disqus")' src='assets/img/disqus.png' /></div>
+                <div><img (click)='loadWidgets("disqus")' src='/img/disqus.png' /></div>
                 <div><label>Disqus</label></div>
               </div>
 
               <div id='widgetSocialFeed' block='feed' data-toggle='tooltip' title='Integrate FB and Twitter' class='widget_btn'>
-                <div><img (click)='loadWidgets("feed")' src='assets/img/icon-feed.png' /></div>
+                <div><img (click)='loadWidgets("feed")' src='/img/icon-feed.png' /></div>
                 <div><label>Social Feed</label></div>
               </div>
 
               <div id='widgetCalendar' block='calendar' data-toggle='tooltip' title='This Widget allows to create calendar' class='widget_btn'>
-                <div><img (click)='loadWidgets("calendar")' src='assets/img/calendar.png' /></div>
+                <div><img (click)='loadWidgets("calendar")' src='/img/calendar.png' /></div>
                 <div><label>Calendar</label></div>
               </div>
 
               <div id='widgetShare' block='share' data-toggle='tooltip' title='Share this Tile as a URL.' class='widget_btn'>
-                <div><img (click)='loadWidgets("share")' src='assets/img/share_this.png' /></div>
+                <div><img (click)='loadWidgets("share")' src='/img/share_this.png' /></div>
                 <div><label>Share</label></div>
               </div>
 
               <div id='widgetPatient' block='patients' data-toggle='tooltip' title='Show the list of patients by clinic' class='widget_btn'>
-                <div><img (click)='loadWidgets("patients")' src='assets/img/patient.png' /></div>
+                <div><img (click)='loadWidgets("patients")' src='/img/patient.png' /></div>
                 <div><label>Patients</label></div>
               </div>
 
@@ -111,70 +111,70 @@
 
               <div id='widgetStartWrapper' block='StartWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("startwrapper")' src='assets/img/start_wrapper.png' /></div>
+                <div><img (click)='loadWidgets("startwrapper")' src='/img/start_wrapper.png' /></div>
                 <div><label>Start Wrapper</label></div>
               </div>
 
               <div id='widgetTitle' block='title' data-toggle='tooltip' title='Title that will appear over any form you create' class='widget_btn'>
-                <div><img (click)='loadWidgets("title")' src='assets/img/form.png' /></div>
+                <div><img (click)='loadWidgets("title")' src='/img/form.png' /></div>
                 <div><label>Form Title</label></div>
               </div>
 
               <div id='widgetAccount' block='Account' data-toggle='tooltip' title='Name, DOB, Gender, Phone, email etc. Select the fields you want to appear in the app.'
                 class='widget_btn'>
-                <div><img src='assets/img/profile.png' /></div>
-                <div><label>Connection&nbsp;Card</label></div>
+                <div><img (click)='loadWidgets("account")' src='/img/profile.png' /></div>
+                <div><label>Connection&nbsp;Card</label></div>  
               </div>
 
               <div id='widgetAttendance' block='Attendance' data-toggle='tooltip' title='Users can select if they are attending In-Person or Online'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("attendance")' src='assets/img/clock.png' /></div>
+                <div><img (click)='loadWidgets("attendance")' src='/img/clock.png' /></div>
                 <div><label>Attendance</label></div>
               </div>
 
               <div id='widgetSurvey' block='Survey' data-toggle='tooltip' data-toggle='tooltip' title='Multiple questions where users can select only One or Multiple answers.  Percentages can be shown in-app.'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("survey")' src='assets/img/survey1.png' /></div>
+                <div><img (click)='loadWidgets("survey")' src='/img/survey1.png' /></div>
                 <div><label>Simple Questionnaire</label></div>
               </div>
 
               <div id='widgetQuestionnaire' block='questionnaire' data-toggle='tooltip' data-toggle='tooltip' title='Multiple questions where users can select only One or Multiple answers.  Percentages can be shown in-app.'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("questionnaire")' src='assets/img/survey.png' /></div>
+                <div><img (click)='loadWidgets("questionnaire")' src='/img/survey.png' /></div>
                 <div><label>Cascading Questionnaire</label></div>
               </div>
 
               <div id='widgetQuestions' block='questions' data-toggle='tooltip' title='One or more questions requiring users to type their answers.'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("questions")' src='assets/img/QA.png' /></div>
+                <div><img (click)='loadWidgets("questions")' src='/img/QA.png' /></div>
                 <div><label>Q & A</label></div>
               </div>
 
               <div id='widgetInquiry' block='inquiry' data-toggle='tooltip' title='Add Inquiry at the bottom of a Tile to allow users to send inquiries about the subject discussed in that Tile. Inquiries are directed to the email entered in the Tile.'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("inquiry")' src='assets/img/inquery.png' /></div>
+                <div><img (click)='loadWidgets("inquiry")' src='/img/inquery.png' /></div>
                 <div><label>Inquiry</label></div>
               </div>
 
               <div id='widgetProfile' block='Profile' data-toggle='tooltip' title='Add profile to update user information' class='widget_btn'>
-                <div><img src='assets/img/my-account.png' /></div>
+                <div><img (click)='loadWidgets("profile")' src='/img/my-account.png' /></div>
                 <div><label>Profile</label></div>
               </div>
 
               <div id='widgetConfirmation' block='confirmation' data-toggle='tooltip' title='Confirmation page after user submits a form. In case there is no confirmation page, a default message is shown in the app. If you use a confirmation, then your own message appears.'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("confirmation")' src='assets/img/confirm.png' /></div>
+                <div><img (click)='loadWidgets("confirmation")' src='/img/confirm.png' /></div>
                 <div><label>Confirmation</label></div>
               </div>
 
               <div id='widgetPassword' block='password' data-toggle='tooltip' title='Password allows us to change the password for the registered users'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("password")' src='assets/img/icon_password.png' /></div>
+                <div><img (click)='loadWidgets("password")' src='/img/icon_password.png' /></div>
                 <div><label>Password</label></div>
               </div>
 
               <div id='widgetNext' block='next' data-toggle='tooltip' title='Next tile page shows after user submits a form.' class='widget_btn'>
-                <div><img (click)='loadWidgets("next")' src='assets/img/arrow_next_icon.png' /></div>
+                <div><img (click)='loadWidgets("next")' src='/img/arrow_next_icon.png' /></div>
                 <div><label>Next</label></div>
               </div>
               <!-- html += "<div id='widgetUser' block='user' data-toggle='tooltip' title='User is to update and add new user.' class='widget_btn'>";
@@ -182,23 +182,23 @@
                 <div><label>User</label></div>
               </div> -->
               <div id='widgetFormPhoto' block='FormPhoto' data-toggle='tooltip' title='Attach Photos to the form' class='widget_btn'>
-                <div><img (click)='loadWidgets("formphoto")' src='assets/img/form_photo_widget.png' /></div>
+                <div><img (click)='loadWidgets("formphoto")' src='/img/form_photo_widget.png' /></div>
                 <div><label>Form Media</label></div>
               </div>
 
               <div id='widgetPainLevel' block='PainLevel' data-toggle='tooltip' title='Denotes pain level' class='widget_btn'>
-                <div><img (click)='loadWidgets("painlevel")' src='assets/img/pain_level.png' /></div>
+                <div><img (click)='loadWidgets("painlevel")' src='/img/pain_level.png' /></div>
                 <div><label>Pain Level</label></div>
               </div>
 
               <div id='widgetDrawTool' block='DrawTool' data-toggle='tooltip' title='You can draw on a picture or just on a blank screen to draw angles and pictures of a angle iron for instance'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("drawtool")' src='assets/img/draw_tool.png' /></div>
+                <div><img (click)='loadWidgets("drawtool")' src='/img/draw_tool.png' /></div>
                 <div><label>Draw Tool</label></div>
               </div>
 
               <div id='widgetPhysician' block='Physician' data-toggle='tooltip' title='Assign a physician to the patient' class='widget_btn'>
-                <div><img (click)='loadWidgets("physician")' src='assets/img/physician.png' /></div>
+                <div><img (click)='loadWidgets("physician")' src='/img/physician.png' /></div>
                 <div><label>Physician</label></div>
               </div>
               <!-- <div id='widgetMobileVideo' block='MobileVideo' data-toggle='tooltip' title='Upload Mobile Video' class='widget_btn'>
@@ -206,7 +206,7 @@
                 <div><label>Mobile Video</label></div>
               </div>-->
               <div id='widgetEndWrapper' block='EndWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form' class='widget_btn'>
-                <div><img (click)='loadWidgets("endwrapper")' src='assets/img/stop_wrapper.png' /></div>
+                <div><img (click)='loadWidgets("endwrapper")' src='/img/stop_wrapper.png' /></div>
                 <div><label>End Wrapper</label></div>
               </div>
 
@@ -221,45 +221,45 @@
               </div>
               <div id='widgetFill' block='fill' data-toggle='tooltip' title='Fill-in the blanks. Type the text and let users fill-in the blanks. Enter 3 underscores ___ for the blank words.  You may use multiple 3 underscores in a row, but add a space after the 3rd.'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("fill")' src='assets/img/fill.png' /></div>
+                <div><img (click)='loadWidgets("fill")' src='/img/fill.png' /></div>
                 <div><label>Fill-In</label></div>
               </div>
 
               <div id='widgetNotes' block='notes' data-toggle='tooltip' title='Users can take their own notes.' class='widget_btn'>
-                <div><img (click)='loadWidgets("notes")' src='assets/img/notes.png' /></div>
+                <div><img (click)='loadWidgets("notes")' src='/img/notes.png' /></div>
                 <div><label>Notes</label></div>
               </div>
 
               <div id='widgetButtons' block='buttons' data-toggle='tooltip' title='Multiple buttons can be added, with before click and after click values. User can toggle between buttons, only the last value is taken into account.'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("buttons")' src='assets/img/buttons.png' /></div>
+                <div><img (click)='loadWidgets("buttons")' src='/img/buttons.png' /></div>
                 <div><label>Buttons</label></div>
               </div>
 
               <div id='widgetContactUs' block='contactus' data-toggle='tooltip' title='Users enter their information requesting you to contact them.  You will receive an email with their contact info.'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("contactus")' src='assets/img/icon-email.png' /></div>
+                <div><img (click)='loadWidgets("contactus")' src='/img/icon-email.png' /></div>
                 <div><label>Contact Us</label></div>
               </div>
 
               <div id='widgetPlacefull' block='placefull' data-toggle='tooltip' title='PlaceFull event booking and ticketing' class='widget_btn'>
-                <div><img (click)='loadWidgets("placefull")' src='assets/img/pf_logo.png' /></div>
+                <div><img (click)='loadWidgets("placefull")' src='/img/pf_logo.png' /></div>
                 <div><label>PlaceFull</label></div>
               </div>
 
               <div id='widgetAddToCart' block='AddToCart' data-toggle='tooltip' title='You can cart your order' class='widget_btn'>
-                <div><img (click)='loadWidgets("addtocart")' src='assets/img/icon_add_to_cart.png' /></div>
+                <div><img (click)='loadWidgets("addtocart")' src='/img/icon_add_to_cart.png' /></div>
                 <div><label>Add to Cart</label></div>
               </div>
 
               <div id='widgetCart' block='Cart' data-toggle='tooltip' title='You can view all your carts' class='widget_btn'>
-                <div><img (click)='loadWidgets("cart")' src='assets/img/icon_cart.png' /></div>
+                <div><img (click)='loadWidgets("cart")' src='/img/icon_cart.png' /></div>
                 <div><label>Cart</label></div>
               </div>
 
               <div id='widgetBlanksForm' block='blanksform' data-toggle='tooltip' title='In-app form fill with picture upload and email alert'
                 class='widget_btn'>
-                <div><img (click)='loadWidgets("blanksform")' src='assets/img/blank_form.png' /></div>
+                <div><img (click)='loadWidgets("blanksform")' src='/img/blank_form.png' /></div>
                 <div><label>Blank Form</label></div>
               </div>
 
@@ -273,31 +273,31 @@
               </div>
 
               <div id='widgetExclusiveUrl' block='exclusiveUrl' data-toggle='tooltip' title='Integrate URL' class='widget_btn'>
-                <div><img (click)='loadWidgets("exclusiveurl")' src='assets/img/icon_url.png' /></div>
+                <div><img (click)='loadWidgets("exclusiveurl")' src='/img/icon_url.png' /></div>
                 <div><label>URL</label></div>
               </div>
 
               <div id='widgetFileUpload' block='fileupload' data-toggle='tooltip' title='Upload PDF or other format files' class='widget_btn'>
-                <div><img (click)='loadWidgets("fileupload")' src='assets/img/uploads-icon.png' /></div>
+                <div><img (click)='loadWidgets("fileupload")' src='/img/uploads-icon.png' /></div>
                 <div><label>File Upload</label></div>
               </div>
 
               <div id='widgetPushpay' block='pushpay' data-toggle='tooltip' title='Integrate PushPay' class='widget_btn'>
-                <div><img (click)='loadWidgets("pushpay")' src='assets/img/pushpay.png' /></div>
+                <div><img (click)='loadWidgets("pushpay")' src='/img/pushpay.png' /></div>
                 <div><label>PushPay</label></div>
               </div>
               <div block='threedcart' data-toggle='tooltip' title='Integrate 3dcart' class='widget_btn'>
-                <div><img (click)='loadWidgets("threedcart")' src='assets/img/3d-cart.png' /></div>
+                <div><img (click)='loadWidgets("threedcart")' src='/img/3d-cart.png' /></div>
                 <div><label>3dcart</label></div>
               </div>
 
               <div id='widgetBlogs' block='blogs' data-toggle='tooltip' title='Integrate Blogs' class='widget_btn'>
-                <div><img (click)='loadWidgets("blogs")' src='assets/img/icon-blogs.png' /></div>
+                <div><img (click)='loadWidgets("blogs")' src='/img/icon-blogs.png' /></div>
                 <div><label>Blogs</label></div>
               </div>
 
               <div id='widgetChat' block='chat' data-toggle='tooltip' title='Enable chat within the app.' class='widget_btn'>
-                <div><img (click)='loadWidgets("chat")' src='assets/img/chat.png' /></div>
+                <div><img (click)='loadWidgets("chat")' src='/img/chat.png' /></div>
                 <div><label>Chat</label></div>
               </div>
               <div class='exclusive-widgets-load-more'>. . .</div>

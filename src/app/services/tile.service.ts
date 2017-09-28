@@ -21,20 +21,26 @@ export class TileService {
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);
-  }
+  };
 
   getTileBlocks(blockIds: string[]) {
     return this.http
       .post("/tileblock/tile/", JSON.stringify({ "blockIds": blockIds }), { headers: this.headers })
       .toPromise()
-      .then(
-        response => response.json()
-      )
+      .then(response => response.json())
       .catch(this.handleError);
-  }
+  };
+
+  getProfileDatas(orgId: string) {
+    return this.http
+      .get("/tileblock/getprofile/" + orgId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
 
   private handleError(error: any): Promise<any> {
-    console.error('An error occurred', error);
+    console.log('An error occurred', error);
     return Promise.reject(error.message || error);
   }
 }

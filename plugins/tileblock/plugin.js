@@ -10,15 +10,37 @@ var init = function () {
 
 var get = function (req, res, next) {
   options.lean = true;
-
   query = { "_id": { $in: req.body.blockIds } };
 
-  console.dir(query);
-
   tileBlock.find(query, {}, options, function (err, result) {
-    console.dir(result);
     res.send(result);
   });
 };
 
-module.exports = { "init": init, "get": get };
+var getProfile = function (req, res, next) {
+  var orgId = req.params.orgId;
+  var language = (!__util.isNullOrEmpty(req.params.language) ? req.params.language : "en");
+  var authDomain = req.app.get('settings').authDomain;
+
+  var url = authDomain + '/migrate/get_org_structure/' + orgId + '/' + language;
+
+  var options = {
+    url: url,
+    method: "GET"
+  };
+
+  $general.getUrlResponseWithSecurity(options, function (error, response, body) {
+    if (error) {
+      console.log(error);
+    }
+
+    var urlResult = (!error && response.statusCode == 200) ? body : [];
+    res.send(urlResult);
+  });
+};
+
+module.exports = {
+  "init": init,
+  "get": get,
+  "getProfile": getProfile
+};

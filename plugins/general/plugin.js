@@ -1,7 +1,30 @@
 var crypto = require('crypto');
 var mongoose = require('mongoose');
+var request = require('request');
+var secretkey = "m@tsya@0!#";
 var hexType = 'hex';
 var utfType = 'utf8';
+
+
+var encrypt = function (str) {
+  var encrypted = _cryptString(str, utfType, hexType);
+
+  return encrypted;
+};
+
+var decrypt = function (str) {
+  var decrypted = _cryptString(str, hexType, utfType);
+
+  return decrypted;
+};
+
+var _cryptString = function (str, fromType, toType) {
+  var cipher = crypto.createCipher('des-ede3-cbc', secretkey);
+  var cryptedPassword = cipher.update(str, fromType, toType);
+  cryptedPassword += cipher.final(toType);
+
+  return cryptedPassword;
+};
 
 var convertToObjectId = function (data) {
   var mongoId = "";
@@ -16,35 +39,42 @@ var convertToObjectId = function (data) {
       mongoId.push(curMgId)
     });
   }
-  
+
   return mongoId;
 };
 
-var _cryptString = function (str, fromType, toType) {
-  var secretkey = "m@tsya@0!#";
-  var cipher = crypto.createCipher('des-ede3-cbc', secretkey);
-  var cryptedPassword = cipher.update(str, fromType, toType);
-  cryptedPassword += cipher.final(toType);
+var getMobileSecurityKey = function () {
+  return "mretFFc7OXNAos2yXyiHsdVGZqqj5ZoZgjcZvlvSWYHVOut1";
+};
 
-  return cryptedPassword;
+var getUrlResponseWithSecurity = function (options, cb) {
+  options.headers = {
+    "SECURITY-KEY": getMobileSecurityKey()
+  };
+
+  options.timeout = 10000;
+
+  request(options, function (error, response, body) {
+    if (error) {
+      if (error.code === "ETIMEDOUT") {
+        console.log("request timeout : " + JSON.stringify(options));
+      }
+
+      console.log("Error on request : " + JSON.stringify(error));
+    }
+
+    if (cb) {
+      cb(error, response, body);
+    }
+  });
 };
 
 module.exports = {
   init: function () {
-
   },
-  encrypt: function (str) {
-    var encrypted = _cryptString(str, utfType, hexType);
-
-    return encrypted;
-  },
-
-  decrypt: function (str) {
-    var decrypted = _cryptString(str, hexType, utfType);
-
-    return decrypted;
-  },
-
-  convertToObjectId: convertToObjectId
+  encrypt: encrypt,
+  decrypt: decrypt,
+  convertToObjectId: convertToObjectId,
+  getUrlResponseWithSecurity: getUrlResponseWithSecurity
 };
 

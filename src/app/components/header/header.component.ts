@@ -172,7 +172,6 @@ export class HeaderComponent implements OnInit {
     self.menusDatas[ulBind] = menuDatas;
   };
 
-
   getAssignedPageRefresh() {
     var accesses = this.dmDatas[1][0].assignedAccess;
     accesses = this.engineAccesses(accesses);
@@ -302,7 +301,6 @@ export class HeaderComponent implements OnInit {
     this.headerService.getDomainMenus(this.domainName).subscribe(domainDatas => {
       this.dmDatas = domainDatas;
       this.cms.rAcesss = !$.isEmptyObject(domainDatas[2]) && domainDatas[2].hasOwnProperty("role") ? domainDatas[2]["role"] : {};
-
 
       if (domainDatas[1].length > 0) {
         if (domainDatas[1][0].hasOwnProperty('organizations')) {

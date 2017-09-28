@@ -9,5 +9,6 @@ module.exports = function (app) {
   router.post('/domain/get/', $domains.get);
   router.post('/tile/list/', $tile.list);
   router.post('/tileblock/tile/', $tileblock.get);
+  router.get('/tileblock/getprofile/:orgId/:language*?',  $tileblock.getProfile);
   app.use('/', router);
 };

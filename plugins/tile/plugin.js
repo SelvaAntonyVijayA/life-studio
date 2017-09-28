@@ -15,10 +15,7 @@ var list = function (req, res, next) {
   query = { "appSettings": { "$nin": [true] } };
   query["organizationId"] = req.body.organizationId;
 
-  console.dir(query);
-
-  tile.find(query, {}, options, function (err, result) {
-    console.dir(result);
+  tile.find(query, {"blocksData": 0}, options, function (err, result) {
     res.send(result);
   });
 };

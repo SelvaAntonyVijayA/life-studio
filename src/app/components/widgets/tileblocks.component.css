@@ -1476,6 +1476,27 @@ input[type=checkbox].cart-product-image-disable {
     margin-right: auto;
 }
 
+            /* Account Panel */
+
+.account_panel{
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px;         
+}
+
+            /* Profile Panel */
+
+.profile_panel{
+    width: 98%;
+    float: left;
+    margin-top: 5px;
+    border-radius: 0px;
+    border-color: #ddd;
+    margin-bottom: 8px;         
+}
 
 
 

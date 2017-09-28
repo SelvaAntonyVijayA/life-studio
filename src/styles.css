@@ -4,7 +4,7 @@ body{
    overflow-x: hidden;
    font-family: Arial;
    font-size: 12px;
-   background: url(assets/img/ili-bg/ili-bg-layer.png) no-repeat center center fixed;
+   background: url(/img/ili-bg/ili-bg-layer.png) no-repeat center center fixed;
    -webkit-background-size: cover;
    -moz-background-size: cover;
    -o-background-size: cover;

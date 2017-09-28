@@ -2,6 +2,10 @@ import { Component, OnInit, Input, ViewChild, ElementRef, ComponentFactoryResolv
 import { TileBlocksDirective } from './tileblocks.directive';
 import { BlockItem } from './block-item';
 import { BlockComponent } from './block.component';
+import { BlockChecker } from './block-checker';
+import { Utils } from '../../helpers/utils';
+import { TileService } from '../../services/tile.service';
+
 import {
   TextBlockComponent, VideoBlockComponent, PictureBlockComponent, DisqusBlockComponent,
   SocialFeedBlockComponent, CalendarBlockComponent, ShareBlockComponent, PatientsBlockComponent,
@@ -14,7 +18,7 @@ import {
   FillBlockComponent, ButtonsBlockComponent, ContactUsBlockComponent,
   PlacefullBlockComponent, AddToCartBlockComponent, CartBlockComponent, BlanksFormBlockComponent,
   ExclusiveUrlBlockComponent, FileUploadBlockComponent, PushpayBlockComponent, ThreedCartBlockComponent,
-  BlogsBlockComponent, ChatBlockComponent
+  BlogsBlockComponent, ChatBlockComponent, AccountBlockComponent, ProfileBlockComponent
 } from './tileblocks.components';
 
 import { ISlimScrollOptions } from 'ng2-slimscroll';
@@ -35,8 +39,12 @@ export class WidgetsComponent implements OnInit {
   opts: ISlimScrollOptions;
   tileBlocks: any[] = [];
   selectedTile: Object = {};
+  utils: any;
+  profileDatas: any[] = [];
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver, elemRef: ElementRef) { }
+  constructor(private componentFactoryResolver: ComponentFactoryResolver, elemRef: ElementRef, private tileService: TileService) {
+    this.utils = Utils;
+  }
 
   /* Set Scroll Options */
 
@@ -49,29 +57,34 @@ export class WidgetsComponent implements OnInit {
       barWidth: '2',
       gridWidth: '1'
     };
-  }
+  };
 
   /* Checking the block by block type */
 
   loadWidgets(type: any, blockData: any) {
     var blocks = this.blocks;
     var viewName = "";
+    var blkLength = blocks.length;
 
     if (type === "text") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(TextBlockComponent, {
         "type": type,
         "blockName": "Editor",
-        "data": blockData.hasOwnProperty("data")? blockData.data : { "text": new String("")}
+        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : { "text": new String("") }
       }));
 
       viewName = "textView";
     }
 
     if (type === "video") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(VideoBlockComponent, {
         "type": type,
         "blockName": "Upload Video",
-        "data": blockData.hasOwnProperty("data")? blockData.data :{
+        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "caption": "",
           "url": "",
           "videoid": ""
@@ -82,10 +95,12 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "picture") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(PictureBlockComponent, {
         "type": type,
         "blockName": "Event Media",
-        "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "text": new String(""),
           "moderated": "false",
           "rate": "false",
@@ -97,10 +112,12 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "disqus") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(DisqusBlockComponent, {
         "type": type,
         "blockName": "Disqus",
-        "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "disqus": false
         }
       }));
@@ -109,10 +126,12 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "feed") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(SocialFeedBlockComponent, {
         "type": type,
         "blockName": "Social Feed",
-        "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "facebook": false,
           "facebookurl": "",
           "twitter": false,
@@ -127,10 +146,12 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "calendar") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(CalendarBlockComponent, {
         "type": type,
         "blockName": "Calendar",
-        "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "text": new String("")
         }
       }));
@@ -139,10 +160,12 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "share") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(ShareBlockComponent, {
         "type": type,
         "blockName": "Facebook, Twitter & Email Sharing",
-        "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "facebook": false,
           "twitter": false,
           "email": false
@@ -153,10 +176,12 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "patients") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(PatientsBlockComponent, {
         "type": type,
         "blockName": "Patients",
-        "data": blockData.hasOwnProperty("data")? blockData.data :{
+        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "patients": true,
           "text": "Patients"
         }
@@ -166,17 +191,22 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "inquiry") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(InquiryBlockComponent, {
         "type": type,
         "blockName": "Inquiry",
-        "data": blockData.hasOwnProperty("data")? blockData.data :{ "email": "", "inquiryText": "" }
+        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : { "email": "", "inquiryText": "" }
       }));
       viewName = "inquiryView";
     }
 
     if (type === "survey") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(SurveyBlockComponent, {
-        "type": type, "blockName": "Questionnaire", "data": blockData.hasOwnProperty("data")? blockData.data :{
+        "type": type, "blockName": "Questionnaire", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
+          "mandatory": false, "questionText": "",
           "controls": "radio", "multiple": "false", "showInApp": false, "isNote": false, "questions": [""],
           "confirmation": [], "popup": [], "alerts": []
         }
@@ -185,8 +215,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "questionnaire") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(QuestionnaireBlockComponent, {
-        "type": type, "blockName": "Cascading Questionnaire", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "Cascading Questionnaire", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "mandatory": false,
           "questionText": "",
           "inputControlType": "radio",
@@ -199,9 +231,9 @@ export class WidgetsComponent implements OnInit {
             "popup": "",
             "subQuestions": []
           }],
-          "confirmation": blockData.hasOwnProperty("confirmation")? blockData.confirmation : [],
-          "popup": blockData.hasOwnProperty("popup")? blockData.popup : [],
-          "alerts": blockData.hasOwnProperty("alerts")? blockData.alerts : []
+          "confirmation": blockData.hasOwnProperty("confirmation") ? blockData.confirmation : [],
+          "popup": blockData.hasOwnProperty("popup") ? blockData.popup : [],
+          "alerts": blockData.hasOwnProperty("alerts") ? blockData.alerts : []
         }
       }));
 
@@ -209,8 +241,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "startwrapper") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(StartWrapperBlockComponent, {
-        "type": type, "blockName": "Start Wrapper", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "Start Wrapper", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "refresh": false, "close": false, "redirectApp": false
         }
       }));
@@ -219,8 +253,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "title") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(FormTitleBlockComponent, {
-        "type": type, "blockName": "Form Title", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "Form Title", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "titletext": "", "title": false
         }
       }));
@@ -229,8 +265,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "questions") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(QuestionsBlockComponent, {
-        "type": type, "blockName": "Questions & Answers", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "Questions & Answers", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "questions": [""], "mandatory": [false], "answerTypes": ["text"], "notes": [false],
           "category": "", "categoryName": "", "redirectApp": false
         }
@@ -240,8 +278,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "attendance") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(AttendanceBlockComponent, {
-        "type": type, "blockName": "Attendance", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "Attendance", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "title": "", "person": false, "online": false,
           "addMember": false, "addQuestion": "Additional Family members attending (not added from another app)", "options": [], "redirectApp": false
         }
@@ -251,8 +291,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "confirmation") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(ConfirmationBlockComponent, {
-        "type": type, "blockName": "Confirmation", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "Confirmation", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "text": new String(""), "submittext": ""
         }
       }));
@@ -261,8 +303,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "password") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(PasswordBlockComponent, {
-        "type": type, "blockName": "Password", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "Password", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "password": false
         }
       }));
@@ -271,8 +315,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "next") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(NextBlockComponent, {
-        "type": type, "blockName": "Next", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "Next", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "text": "", "tileId": "", "tileTile": "", "type": "tile"
         }
       }));
@@ -281,8 +327,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "formphoto") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(FormPhotoComponent, {
-        "type": type, "blockName": "Form Media", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "Form Media", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "text": new String(""), "isVideo": false
         }
       }));
@@ -291,8 +339,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "painlevel") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(PainLevelComponent, {
-        "type": type, "blockName": "Pain Level", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "Pain Level", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "painlevel": true, "question": "", "mandatory": false, "level": "image"
         }
       }));
@@ -301,8 +351,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "drawtool") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(DrawToolBlockComponent, {
-        "type": type, "blockName": "Draw tool", "data": blockData.hasOwnProperty("data")? blockData.data :{
+        "type": type, "blockName": "Draw tool", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "drawtool": true, "text": ""
         }
       }));
@@ -311,8 +363,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "physician") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(PhysicianBlockComponent, {
-        "type": type, "blockName": "Physician", "data": blockData.hasOwnProperty("data")? blockData.data :{
+        "type": type, "blockName": "Physician", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "isPhysician": true, "mandatory": false, "text": "Physician"
         }
       }));
@@ -321,8 +375,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "endwrapper") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(EndWrapperBlockComponent, {
-        "type": type, "blockName": "End Wrapper", "data": blockData.hasOwnProperty("data")? blockData.data :{
+        "type": type, "blockName": "End Wrapper", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "text": "", "submitConfirmation": false
         }
       }));
@@ -331,8 +387,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "fill") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       blocks.push(new BlockItem(FillBlockComponent, {
-        "type": type, "blockName": "Fill-in the blanks", "data": blockData.hasOwnProperty("data")? blockData.data :{
+        "type": type, "blockName": "Fill-in the blanks", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "text": new String(""),
         }
       }));
@@ -341,8 +399,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "notes") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       this.blocks.push(new BlockItem(NotesBlockComponent, {
-        "type": type, "blockName": "Notes", "data": blockData.hasOwnProperty("data")? blockData.data :{
+        "type": type, "blockName": "Notes", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "notes": true, "allNotes": false
         }
       }));
@@ -351,33 +411,41 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "buttons") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       this.blocks.push(new BlockItem(ButtonsBlockComponent, {
-        "type": type, "blockName": "Buttons", "data": blockData.hasOwnProperty("data")? blockData.data : [{ "beforeText": "", "afterText": "" }],
-        "alerts": blockData.hasOwnProperty("alerts")? blockData.alerts : []
+        "type": type, "blockName": "Buttons", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : [{ "beforeText": "", "afterText": "" }],
+        "alerts": blockData.hasOwnProperty("alerts") ? blockData.alerts : []
       }));
 
       viewName = "buttonsView";
     }
 
     if (type === "contactus") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       this.blocks.push(new BlockItem(ContactUsBlockComponent, {
-        "type": type, "blockName": "ContactUs", "data": blockData.hasOwnProperty("data")? blockData.data : { "email": "" }
+        "type": type, "blockName": "ContactUs", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : { "email": "" }
       }));
 
       viewName = "contactusView";
     }
 
     if (type === "placefull") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       this.blocks.push(new BlockItem(PlacefullBlockComponent, {
-        "type": type, "blockName": "PlaceFull", "data": blockData.hasOwnProperty("data")? blockData.data : { "text": "" }
+        "type": type, "blockName": "PlaceFull", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : { "text": "" }
       }));
 
       viewName = "placefullView";
     }
 
     if (type === "addtocart") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       this.blocks.push(new BlockItem(AddToCartBlockComponent, {
-        "type": type, "blockName": "Add To Cart", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "Add To Cart", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "productName": "", "description": "", "price": "", "currency": "", "textCartButton": "",
           "confirmationMessage": "", "productImage": "", "isProductName": true, "isProductDescription": true,
           "isProductImage": true, "isProductPrice": true
@@ -388,8 +456,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "cart") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       this.blocks.push(new BlockItem(CartBlockComponent, {
-        "type": type, "blockName": "Cart", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "Cart", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "productTitle": "", "notificationEmail": "", "textConfirmButton": "", "confirmationMessage": ""
         }
       }));
@@ -398,8 +468,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "blanksform") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       this.blocks.push(new BlockItem(BlanksFormBlockComponent, {
-        "type": type, "blockName": "Blanks Form", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "Blanks Form", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "email": "", "text": new String(""),
           "imageLimit": "", "redirectApp": false
         }
@@ -409,8 +481,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "exclusiveurl") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       this.blocks.push(new BlockItem(ExclusiveUrlBlockComponent, {
-        "type": type, "blockName": "URL", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "URL", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "url": "", "window": false, "iphonewindow": false
         }
       }));
@@ -419,8 +493,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "fileupload") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       this.blocks.push(new BlockItem(FileUploadBlockComponent, {
-        "type": type, "blockName": "File Upload", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "File Upload", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "url": ""
         }
       }));
@@ -429,8 +505,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "pushpay") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       this.blocks.push(new BlockItem(PushpayBlockComponent, {
-        "type": type, "blockName": "PushPay", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "PushPay", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "pushpay": false,
           "url": "",
           "window": false,
@@ -442,8 +520,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "threedcart") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       this.blocks.push(new BlockItem(ThreedCartBlockComponent, {
-        "type": type, "blockName": "3dCart", "data": blockData.hasOwnProperty("data")? blockData.data : {
+        "type": type, "blockName": "3dCart", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "cart": false, "url": "", "window": false, "iphonewindow": false
         }
       }));
@@ -452,8 +532,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "blogs") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       this.blocks.push(new BlockItem(BlogsBlockComponent, {
-        "type": type, "blockName": "Blogs", "data": blockData.hasOwnProperty("data")? blockData.data :{
+        "type": type, "blockName": "Blogs", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "wordPress": false, "wordPressUrl": "",
           "wordPressTitle": "", "wordPressContent": new String("")
         }
@@ -463,8 +545,10 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (type === "chat") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
+
       this.blocks.push(new BlockItem(ChatBlockComponent, {
-        "type": type, "blockName": "Blogs", "data": blockData.hasOwnProperty("data")? blockData.data :{
+        "type": type, "blockName": "Blogs", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
           "chat": true, "isPrivate": false
         }
       }));
@@ -472,12 +556,34 @@ export class WidgetsComponent implements OnInit {
       viewName = "chatView";
     }
 
-    this.loadComponent(viewName);
-  }
+    if (type === "account") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData, this.profileDatas) : {};
 
-  ngOnInit() {
-    this.blocks = [];
-    this.setScrollOptions();
+      this.blocks.push(new BlockItem(AccountBlockComponent, {
+        "type": type, "blockName": "Connection Card", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
+          "connectionCard": this.connectData("account"), "submember": []
+        }, "profileData": this.profileDatas
+      }));
+
+      viewName = "accountView";
+    }
+
+    if (type === "profile") {
+      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData, this.profileDatas) : {};
+
+      this.blocks.push(new BlockItem(ProfileBlockComponent, {
+        "type": type, "blockName": "Profile", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
+          "profile": this.connectData("profile")
+        }, "profileData": this.profileDatas
+      }));
+
+      viewName = "profileView";
+    }
+
+
+    if (blkLength < blocks.length) {
+      this.loadComponent(viewName);
+    }
   }
 
   getViewBlock(view: any, opt: string) {
@@ -521,15 +627,47 @@ export class WidgetsComponent implements OnInit {
     this.tileBlocks = tileObj.blocks;
     this.selectedTile = tileObj.tile;
 
-    if(this.tileBlocks.length > 0){
+    if (this.tileBlocks.length > 0) {
       for (let i = 0; i < this.tileBlocks.length; i++) {
         var currentBlock = this.tileBlocks[i];
-        var type = this.tileBlocks[i].hasOwnProperty("type")? this.tileBlocks[i].type : ""; 
+        var type = this.tileBlocks[i].hasOwnProperty("type") ? this.tileBlocks[i].type : "";
         this.loadWidgets(type, currentBlock);
       }
     }
   };
 
+  connectData(type: string) {
+    var profileData = this.profileDatas.length > 0 ? this.profileDatas.map(x => Object.assign({}, x)) : [];
+
+    if (type === "account") {
+      profileData.push({
+        required: false,
+        assigned: false,
+        name: "Add Family Member ?",
+        tag: "addMember",
+        type: "addMember"
+      });
+    }
+
+    if (profileData.length > 0) {
+      for (let i = 0; i < profileData.length; i++) {
+        var currData = profileData[i];
+        profileData[i]["assigned"] = currData.hasOwnProperty("required") && currData.required ? true : false;
+      }
+    }
+
+    return profileData;
+  };
+
+  checkBlockExists(blk: any) {
+    var blkResult = false;
+
+    if (typeof blk === "object" && blk.hasOwnProperty("data")) {
+      blkResult = true;
+    }
+
+    return blkResult;
+  };
 
   /* Loading the block components */
 
@@ -547,5 +685,18 @@ export class WidgetsComponent implements OnInit {
     componentRef.instance[viewName].subscribe(blk => this.getViewBlock(blk.view, blk.opt));
 
     (<BlockComponent>componentRef.instance).block = adBlock.block;
+  }
+
+  /*   Get Organization profile datas    */
+
+  getOrgProfileDatas(orgId: string) {
+    this.tileService.getProfileDatas(orgId)
+      .then(profOrgDatas => this.profileDatas = profOrgDatas);
+  };
+
+  ngOnInit() {
+    this.blocks = [];
+    this.setScrollOptions();
+    this.getOrgProfileDatas("546c35cb41278ffc2f000093");
   }
 }

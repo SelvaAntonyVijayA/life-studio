@@ -5,7 +5,7 @@ module.exports = function (mongoose, app) {
     server: { poolSize: 50 },
     db: { native_parser: false }
   };
-
+  
   _.each(databaseNames, function (dbName, index) {
     var dbAuth = app.get('settings').dbauth[dbName];
     var dbHost = app.get('settings').dbhost;

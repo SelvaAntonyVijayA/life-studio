@@ -1,4 +1,4 @@
-import { Component, EventEmitter, forwardRef, Input, SkipSelf, ViewContainerRef, PipeTransform, Pipe, ComponentFactoryResolver, ViewChild, ElementRef } from '@angular/core';
+import { Component, EventEmitter, OnInit, forwardRef, Input, SkipSelf, ViewContainerRef, PipeTransform, Pipe, ComponentFactoryResolver, ViewChild, ElementRef } from '@angular/core';
 import { BlockComponent } from './block.component';
 import { WidgetsComponent } from './widgets.component';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -290,8 +290,8 @@ export class InquiryBlockComponent implements BlockComponent {
              <p class='text_header_content'>This widget allows you to add one or multiple questions, with one or more possible replies, with the choice of showing results in the app in real time.
              It can be used for Polls, Surveys, Votes, Requests to volunteer, etc.</p>
              <b style='float: left;margin-left:11px;'>*</b>
-             <input style='margin-right:.5%; float:left;' title='Field is mandatory' class='question-survey-md' type='checkbox'>
-             <input type='text' class='form-control input-sm survey_question_text' value='' placeholder='Type question or text here '/>
+             <input value="true" [checked]="block.data.mandatory" [(ngModel)]="block.data.mandatory" style='margin-right:.5%; float:left;' title='Field is mandatory'  class='question-survey-md' type='checkbox'>
+             <input type='text' class='form-control input-sm survey_question_text' [(ngModel)]="block.data.questionText" placeholder='Type question or text here '/>
              <div class="row control_survey">
              <span class="decription-survey">User can select</span>
              <div class="survey_controls">
@@ -299,7 +299,7 @@ export class InquiryBlockComponent implements BlockComponent {
              <label style="font-size: 11px;" class="radio-inline"><input #ctrlSingle (change)="controlChange(ctrlSingle.value)" value="false" [(ngModel)]="block.data.multiple" type="radio" class="ques-one" name="optradio">One Answer</label>
              <label style="font-size: 11px;" class="radio-inline"><input #ctrlMultiple (change)="controlChange(ctrlMultiple.value)" value="true" [(ngModel)]="block.data.multiple" type="radio" class="ques-multiple" name="optradio">Multiple Answers</label></form>
              </div>
-             <div *ngIf="block.data.multiple.indexOf('false') !== -1" class="survey-opts">
+             <div *ngIf="block.data!.multiple && block.data.multiple === 'false'" class="survey-opts">
              <form>
              <label style="font-size: 11px;" class="radio-inline"><input value="radio" [(ngModel)]="block.data.controls" type="radio" class="ques-radio" name="optradio">Radio Button</label>
              <label style="font-size: 11px;" class="radio-inline"><input value="dropdown" [(ngModel)]="block.data.controls" type="radio" class="ques-dropdown" name="optradio">Dropdown</label></form>
@@ -315,7 +315,7 @@ export class InquiryBlockComponent implements BlockComponent {
              <div *ngFor="let question of block.data.questions; let i = index; trackBy:trackByIndex" class="row survey_text_row">
              <span class="options-count">{{i + 1}}.</span>
              <input [(ngModel)]="block.data.questions[i]" type="text" class="form-control input-sm survey_option_box"  placeholder="Type option here" />
-             <img class="delete-quest-option" (click)="removeOption(question)" src="assets/img/close_bg.png">
+             <img class="delete-quest-option" (click)="removeOption(question)" src="/img/close_bg.png">
              </div>
              </div>
              <div class="row survey_add_alert">
@@ -472,9 +472,9 @@ export class SurveyBlockComponent implements BlockComponent {
              <div class="cc-options-row">
              <span class="options-count">{{i + 1}}.</span>
              <input type="text" [(ngModel)]="block.data.options[i].option" class="form-control input-sm cc_survey_option_box" value="" placeholder="Type option here">
-             <img (click)="removeOption(opt)"  class="cc-delete-quest-option" src="assets/img/close_bg.png">
-             <img width="19" title="Add Question" (click)="addSubOption(opt)" class="cc-delete-quest-option" src="assets/img/add_sub_questionnaire.png">
-             <img width="19" title="Add Textbox" class="cc-delete-quest-option" src="assets/img/add_sub_entry.png"></div>
+             <img (click)="removeOption(opt)"  class="cc-delete-quest-option" src="/img/close_bg.png">
+             <img width="19" title="Add Question" (click)="addSubOption(opt)" class="cc-delete-quest-option" src="/img/add_sub_questionnaire.png">
+             <img width="19" title="Add Textbox" class="cc-delete-quest-option" src="/img/add_sub_entry.png"></div>
              <questionnaire-sub-option [questionWidth]="499" [optionWidth]="486" [isLevel]="true" (removeSubLevel)="deleteLevel($event)" [levelIndex]="1" [currentIndex]="subIndex" [parentIndex]="i" [subOption]="subOpt" *ngFor="let subOpt of opt?.subQuestions; let subIndex = index"> 
              </questionnaire-sub-option>
              </div>
@@ -546,7 +546,7 @@ export class QuestionnaireBlockComponent implements BlockComponent {
              <span class="cc-sub-question-no">{{getLevelIndex()}}.{{getAlphaLetter(currentIndex)}}</span>
              <input [style.width]="questionWidth + 'px'" type="text" [(ngModel)]="subOption.questionText" class="form-control input-sm cc-sub-questionaire" placeholder="Type question or text here ">
              <button (click)="addOption($event)" class="btn btn-info btn-xs cc-sub-add-options">Add Option</button>
-             <img (click)="deleteSubLevel($event)" class="cc-delete-quest-option" src="assets/img/close_bg.png">
+             <img (click)="deleteSubLevel($event)" class="cc-delete-quest-option" src="/img/close_bg.png">
              <div class="cc-sub-questionare-options">
              <span class="cc-sub-questionare-decription">User can select</span>
              <div class="cc_sub_questionnaire_controls">
@@ -563,9 +563,9 @@ export class QuestionnaireBlockComponent implements BlockComponent {
              <div *ngFor="let subMain of subOption.options; let opI = index; trackBy:trackByIndex" class="row cc-sub-questions-row">
              <div class="cc-sub-ques-list-input">
              <input [style.width]="optionWidth + 'px'" [(ngModel)]="subOption.options[opI]!.option" type="text" class="form-control input-sm cc_ques_option_box" placeholder="Type option here"> 
-             <img (click)="removeOption(subMain)" class="cc-delete-quest-option" src="assets/img/close_bg.png">
-             <img *ngIf="isLevel" width="19" title="Add Question" (click)="addSubOption(subMain)" class="cc-delete-quest-option" src="assets/img/add_sub_questionnaire.png">
-             <img *ngIf="isLevel" width="19" title="Add Textbox" class="cc-delete-quest-option" src="assets/img/add_sub_entry.png"></div>
+             <img (click)="removeOption(subMain)" class="cc-delete-quest-option" src="/img/close_bg.png">
+             <img *ngIf="isLevel" width="19" title="Add Question" (click)="addSubOption(subMain)" class="cc-delete-quest-option" src="/img/add_sub_questionnaire.png">
+             <img *ngIf="isLevel" width="19" title="Add Textbox" class="cc-delete-quest-option" src="/img/add_sub_entry.png"></div>
              <questionnaire-sub-option [questionWidth]="461" [optionWidth]="460" [isLevel]="false" (removeSubLevel)="deleteLevel($event)" [levelIndex]="2" [currentIndex]="subIndex" [parentIndex]="opI" [subOption]="subOpt" *ngFor="let subOpt of subOption.options[opI]?.subQuestions; let subIndex = index"> 
              </questionnaire-sub-option>
              </div>
@@ -1536,6 +1536,128 @@ export class ChatBlockComponent implements BlockComponent {
   };
 };
 
+@Component({
+  selector: 'account-block',
+  outputs: ["accountView"],
+  template: `<div class='page_block tile_block'>
+             <div class="content_buttons">
+             <block-controls (blockView)="getAccount($event)" [(block)]= "block"></block-controls></div>
+             <div class='ili-panel account_panel'>
+             <div *ngFor="let connCard of block.data.connectionCard; let i = index; trackBy:trackByIndex" class='input-group input-group-sm contents_input_account'>
+             <span class="input-group-addon">
+             <b *ngIf="connCard!.tag !== 'addMember'" style="margin-right:2%">*</b>
+             <input *ngIf="connCard!.tag !== 'addMember'" value="true" [checked]="connCard!.required" [(ngModel)]="connCard!.required" style="margin-right: 4%;" title="Field is mandatory" class="mandatory" type="checkbox">
+             <input value="true" (change)="connCard!.tag === 'addMember'? addSubMember($event, -1, 'main') : false" [checked]="connCard!.assigned" [(ngModel)]="connCard!.assigned" class="profile-assigned account-main " title="Field appears in the app" type="checkbox">
+             </span>
+             <span type="text" class="form-control profile-name">{{connCard!.name}}</span>
+             </div>
+             </div>
+             <div *ngFor="let sbMem of block.data.submember; let mIdx = index; trackBy:trackByIndex" class='ili-panel account_panel'>
+             <div *ngFor="let sM of sbMem; let sIdx = index; trackBy:trackByIndex" class='input-group input-group-sm contents_input_account'>
+             <span class="input-group-addon">
+             <b *ngIf="sM!.tag !== 'addMember'"style="margin-right:2%">*</b>
+             <input *ngIf="sM!.tag !== 'addMember'" value="true" [checked]="sM!.required" [(ngModel)]="sM!.required" style="margin-right: 4%;" title="Field is mandatory" class="mandatory" type="checkbox">
+             <input value="true" (change)="sM!.tag === 'addMember'? addSubMember($event, mIdx, 'sub') : false" [checked]="sM!.assigned" [(ngModel)]="sM!.assigned" class="profile-assigned account-main " title="Field appears in the app" type="checkbox">
+             </span>
+             <span type="text" class="form-control profile-name">{{sM!.name}}</span>
+             </div>
+             </div>
+             </div>`,
+  styleUrls: ['./tileblocks.component.css']
+})
+
+export class AccountBlockComponent implements BlockComponent, OnInit {
+  @Input() block: any;
+  accountView = new EventEmitter<any>();
+
+  getAccount(view: any) {
+    this.accountView.emit(view);
+  };
+
+  trackByIndex(index: number, obj: any): any {
+    return index;
+  };
+
+  addSubMember(e: any, idx: number, memFrom: string) {
+    if (e.target.checked) {
+      var subMemData = this.connectData();
+
+      if (subMemData.length > 0) {
+        this.block.data.submember.push(subMemData)
+      }
+    } else {
+      if (memFrom === "sub") {
+        var currIdx = idx + 1;
+        var subMemLength = this.block.data.submember.length;
+
+        if (currIdx < subMemLength) {
+          this.block.data.submember.length = currIdx;
+        }
+      } else if (memFrom === "main") {
+        this.block.data.submember = [];
+      }
+    }
+  };
+
+  connectData() {
+    var profileData = this.block.profileData.length > 0 ? this.block.profileData.map(x => Object.assign({}, x)) : [];
+
+    profileData.push({
+      required: false,
+      assigned: false,
+      name: "Add Family Member ?",
+      tag: "addMember",
+      type: "addMember"
+    });
+
+    if (profileData.length > 0) {
+      for (let i = 0; i < profileData.length; i++) {
+        var currData = profileData[i];
+        profileData[i]["assigned"] = currData.hasOwnProperty("required") && currData.required ? true : false;
+      }
+    }
+
+    return profileData;
+  };
+
+  ngOnInit() {
+
+  }
+};
+
+@Component({
+  selector: 'profile-block',
+  outputs: ["profileView"],
+  template: `<div class='page_block tile_block'>
+             <div class="content_buttons">
+             <block-controls (blockView)="getProfile($event)" [(block)]= "block"></block-controls></div>
+             <div class='ili-panel profile_panel'>
+             <div *ngFor="let prof of block.data.profile; let i = index; trackBy:trackByIndex"  class='input-group input-group-sm contents_input_account'>
+             <span class="input-group-addon">
+             <b style="margin-right:2%">*</b>
+             <input [checked]="prof!.required" [(ngModel)]="prof!.required" style="margin-right: 4%;" title="Field is mandatory" class="mandatory" type="checkbox">
+             <input [checked]="prof!.assigned" [(ngModel)]="prof!.assigned" class="profile-assigned account-main " title="Field appears in the app" type="checkbox">
+             </span>
+             <span type="text" class="form-control profile-name">{{prof!.name}}</span>
+             </div>
+             </div></div>`,
+  styleUrls: ['./tileblocks.component.css']
+})
+
+export class ProfileBlockComponent implements BlockComponent {
+  @Input() block: any;
+
+  profileView = new EventEmitter<any>();
+
+  getProfile(view: any) {
+    this.profileView.emit(view);
+  };
+
+  trackByIndex(index: number, obj: any): any {
+    return index;
+  };
+};
+
 export const TileBlocksComponents = [
   TextBlockComponent, VideoBlockComponent, PictureBlockComponent, DisqusBlockComponent,
   SocialFeedBlockComponent, CalendarBlockComponent, ShareBlockComponent, PatientsBlockComponent,
@@ -1547,7 +1669,7 @@ export const TileBlocksComponents = [
   FillBlockComponent, ButtonsBlockComponent, ContactUsBlockComponent, PlacefullBlockComponent,
   AddToCartBlockComponent, CartBlockComponent, BlanksFormBlockComponent, ExclusiveUrlBlockComponent,
   FileUploadBlockComponent, PushpayBlockComponent, ThreedCartBlockComponent, BlogsBlockComponent,
-  ChatBlockComponent
+  ChatBlockComponent, AccountBlockComponent, ProfileBlockComponent
 ];
 
 

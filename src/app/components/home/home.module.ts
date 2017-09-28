@@ -16,16 +16,17 @@ import { DyBindDirective } from '../../components/widgets/dynamic-bind.directive
 
 import { Ng2Summernote } from 'ng2-summernote/ng2-summernote';
 import { SlimScrollModule } from 'ng2-slimscroll';
+import { VirtualScrollModule } from 'angular2-virtual-scroll';
 
 @NgModule({
   imports: [
-    CommonModule, FormsModule, HomeRoutingModule, SlimScrollModule
+    CommonModule, FormsModule, HomeRoutingModule, SlimScrollModule, VirtualScrollModule
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, TilesComponent, TileBlocksComponents, SafePipe,
     TileBlocksDirective, DyBindDirective, Ng2Summernote],
-  providers: [HeaderService, TileService]
+    providers: [HeaderService, TileService]
 })
 
 export class HomeModule { }
