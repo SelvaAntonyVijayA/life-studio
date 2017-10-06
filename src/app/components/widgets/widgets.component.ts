@@ -5,6 +5,10 @@ import { BlockComponent } from './block.component';
 import { BlockChecker } from './block-checker';
 import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
+import { Cookie } from 'ng2-cookies/ng2-cookies';
+import { ISlimScrollOptions } from 'ng2-slimscroll';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CMS } from '../../helpers/common';
 
 import {
   TextBlockComponent, VideoBlockComponent, PictureBlockComponent, DisqusBlockComponent,
@@ -21,14 +25,14 @@ import {
   BlogsBlockComponent, ChatBlockComponent, AccountBlockComponent, ProfileBlockComponent
 } from './tileblocks.components';
 
-import { ISlimScrollOptions } from 'ng2-slimscroll';
 
 declare var $: any;
 
 @Component({
   selector: 'app-widgets',
   templateUrl: './widgets.component.html',
-  styleUrls: ['./widgets.component.css']
+  styleUrls: ['./widgets.component.css'],
+  providers: [CMS]
 })
 
 export class WidgetsComponent implements OnInit {
@@ -41,9 +45,22 @@ export class WidgetsComponent implements OnInit {
   selectedTile: Object = {};
   utils: any;
   profileDatas: any[] = [];
+  tileCategories: any[] = [];
+  selectedTileCategory: Object = {};
+  defaultSelected = -1;
+  oid: string = "";
+  private orgChangeDetect: any;
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver, elemRef: ElementRef, private tileService: TileService) {
+  constructor(private componentFactoryResolver: ComponentFactoryResolver, 
+    elemRef: ElementRef, private tileService: TileService, private route: ActivatedRoute, public cms : CMS) {
     this.utils = Utils;
+    this.oid = Cookie.get('oid');
+  }
+
+  /* Change Tile Category */
+
+  tileCategoryChange(tileCat: any) {
+    this.selectedTileCategory = tileCat;
   }
 
   /* Set Scroll Options */
@@ -688,15 +705,48 @@ export class WidgetsComponent implements OnInit {
   }
 
   /*   Get Organization profile datas    */
-
   getOrgProfileDatas(orgId: string) {
     this.tileService.getProfileDatas(orgId)
       .then(profOrgDatas => this.profileDatas = profOrgDatas);
   };
 
+  /*   Get Tile Categories datas    */
+
+  getTileCategory(orgId: string) {
+    this.tileService.getTileCategory(orgId)
+      .then(tileCategories => this.tileCategories = tileCategories);
+  };
+
+  resetWidgetDatas() {
+    this.resetTile("");
+    this.tileBlocks = [];
+    this.selectedTile = {};
+    this.profileDatas = [];
+    this.tileCategories = [];
+    this.selectedTileCategory = {};
+  };
+
+  setWidgetDatas() {
+    this.getOrgProfileDatas(this.oid);
+    this.getTileCategory(this.oid);
+  };
+
   ngOnInit() {
-    this.blocks = [];
     this.setScrollOptions();
-    this.getOrgProfileDatas("546c35cb41278ffc2f000093");
+    let data = this.cms.getCms;
+
+    this.orgChangeDetect = this.route.queryParams.subscribe(params => {
+      if (!this.utils.isArray(this.blocks)) {
+        this.blocks = [];
+      }
+
+      this.oid = Cookie.get('oid');
+      this.resetWidgetDatas();
+      this.setWidgetDatas();
+    });
+  }
+
+  ngOnDestroy() {
+    this.orgChangeDetect.unsubscribe();
   }
 }

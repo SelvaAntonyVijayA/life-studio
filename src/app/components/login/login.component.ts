@@ -22,7 +22,7 @@ export class LoginComponent {
         var dateTime = new Date().toISOString();
         Cookie.set('page', 'ili'); 
         Cookie.set('pageUpdated', dateTime);
-        this.router.navigate(['/home']);
+        this.router.navigate(['/home'], {queryParams: { "_dt": '1467038311', 'index': 'ili'} });
       } else {
         this.error = 'Username or password is incorrect';
         //this.loading = false;

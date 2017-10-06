@@ -7,7 +7,6 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class TileService {
-
   constructor(private http: Http) { }
 
   private headers = new Headers({
@@ -39,8 +38,16 @@ export class TileService {
       .catch(this.handleError);
   };
 
+  getTileCategory(orgId: string) {
+    return this.http
+      .get("/tilecategory/list/" + orgId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);
-  }
+  };
 }

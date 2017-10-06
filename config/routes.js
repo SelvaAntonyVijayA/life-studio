@@ -10,5 +10,6 @@ module.exports = function (app) {
   router.post('/tile/list/', $tile.list);
   router.post('/tileblock/tile/', $tileblock.get);
   router.get('/tileblock/getprofile/:orgId/:language*?',  $tileblock.getProfile);
+  router.get('/tilecategory/list/:orgId',  $tilecategory.get);
   app.use('/', router);
 };

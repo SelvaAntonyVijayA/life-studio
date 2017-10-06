@@ -3,6 +3,8 @@ import { Tile } from '../../models/tile';
 import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
 import { ISlimScrollOptions } from 'ng2-slimscroll';
+import { Cookie } from 'ng2-cookies/ng2-cookies';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'tiles-list',
@@ -16,11 +18,21 @@ export class TilesListComponent implements OnInit {
   opts: ISlimScrollOptions;
   @Input('page') page: string;
   tileContent = new EventEmitter<any>();
+  organziations: any[] = [];
+  defaultSelected = "-1";
+  selectedOrg: Object = {};
+  oid: string = "";
+  private orgChangeDetect: any;
+
+  constructor(private tileService: TileService, private route: ActivatedRoute) {
+    this.oid = Cookie.get('oid');
+  }
 
   protected loading: boolean;
 
-  constructor(private tileService: TileService) {
-  }
+  orgChange(org: any) {
+    this.selectedOrg = org;
+  };
 
   trackByIndex(index: number, obj: any): any {
     return index;
@@ -39,14 +51,32 @@ export class TilesListComponent implements OnInit {
       barWidth: '2',
       gridWidth: '1'
     };
+  };
+
+
+  getTiles() {
+    this.tileService.getTiles(this.oid)
+      .then(tiles => this.tiles = tiles);
   }
+
+  resetTiles() {
+    this.tiles = [];
+    this.selectedOrg = {};
+  };
 
   ngOnInit() {
     this.setScrollOptions();
 
-    this.tileService.getTiles("546c35cb41278ffc2f000093")
-      .then(tiles => this.tiles = tiles);
-  }
+    this.orgChangeDetect = this.route.queryParams.subscribe(params => {
+      this.oid = Cookie.get('oid');
+      this.resetTiles();
+      this.getTiles();
+    });
+  };
+
+  ngOnDestroy() {
+    this.orgChangeDetect.unsubscribe();
+  };
 }
 
 @Component({

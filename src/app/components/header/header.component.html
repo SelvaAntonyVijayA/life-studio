@@ -6,8 +6,8 @@
          	<option [value]=-1 disabled>Select Organization</option>
          <option [attr.id]="'orgOption' + i" [attr.type]="org.type_id" *ngFor="let org of orgs; let i = index" [selected]="org === selectedOrg" [ngValue]="org" >{{org.name}}</option>
       </select>
-      <a class="header_username" (click)="accountPage()" href="javascript:void(0);"></a>
-      <a class="header_logout" href="javascript:void(0);">Logout</a>
+      <a class="header_username" (click)="accountPage()" href="javascript:void(0);">{{userName}}</a>
+      <a (click)="userLogout()" class="header_logout" href="javascript:void(0);">Logout</a>
     </div>
     <div class="navbar navbar-default" id="ili_menu">
       <ul class="nav navbar-nav" id="ili_menu_ulLeft">

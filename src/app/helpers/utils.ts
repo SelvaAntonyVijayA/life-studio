@@ -19,7 +19,7 @@ export class Utils {
   };
 
   public static isNullOrEmpty(str: any) {
-    return (typeof str === "undefined" || str === null || str === "") ? true : (typeof str === "string" && str.trim().length > 0) || (typeof str=== "boolean" || typeof str === "object" || typeof str === "number" || typeof str === "function") ? false : true;
+    return (typeof str === "undefined" || str === null || str === "") ? true : (typeof str === "string" && str.trim().length > 0) || (typeof str === "boolean" || typeof str === "object" || typeof str === "number" || typeof str === "function") ? false : true;
   };
 
   public static convertToBoolean(value: any) {
@@ -29,4 +29,15 @@ export class Utils {
   public static isEmptyObject(obj: any) {
     return (obj && (Object.keys(obj).length === 0));
   }
+
+  public static getParameterByName(name: any) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
+
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+  };
+
+  public static isArray(obj: any) {
+    return !!obj && obj.constructor === Array;
+  };
 }

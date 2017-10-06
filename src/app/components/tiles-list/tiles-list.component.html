@@ -4,7 +4,9 @@
   </div>
   <div class='tiles_list_search'>
     <input id='txtTileSearch' class='form-control input-sm search_box' type='text' placeholder='Search Tiles' />
-    <select id='drpdnTileOrgs' class="form-control input-sm filter_select_box orgs_box"></select>
+    <select id='drpdnTileOrgs' [(ngModel)]="defaultSelected" (ngModelChange)="orgChange($event)"  class="form-control input-sm filter_select_box orgs_box">
+      <option *ngFor="let org of organizations; let i = index" [selected]="org === selectedOrg" [ngValue]="org" >{{org?.name}}</option>
+    </select>
     <select id='drpdnTileCategory' class="form-control input-sm filter_select_box category_box"></select>
   </div>
   <div class="tiles_sort">

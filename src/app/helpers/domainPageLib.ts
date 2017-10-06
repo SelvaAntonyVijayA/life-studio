@@ -41,3 +41,16 @@ export class DomainPageLib {
   Clinics_and_Physicians: string = "/clinicphysicians";
   QA_Weights: string = "/qaweights";
 };
+
+export class DomainTools {
+  Controller: string = '/controller';
+  Photos: string = '/tilephotos';
+  Notification_Controller: string = '/notifycontoller';
+  Background_Generator: string = 'http://bg.siteorigin.com/';
+  Button_Generator: string = 'http://www.bestcssbuttongenerator.com/';
+  Data_Usage_Estimator: string = 'https://www.cableone.net/pages/datacalculator.html';
+  Help: string = 'http://www.interactivelife.com/how-to-create-mobile-apps-help-and-training/';
+  How_to_Video_Help: string = 'https://1drv.ms/w/s!AvUh0SADHG9ajZNp7iV5FokhyzKLOA';
+  MailTo: string = 'mailto:support@interactivelife.com';
+  Terms: string = 'http://www.interactivelife.com/terms';
+};

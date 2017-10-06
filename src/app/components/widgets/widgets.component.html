@@ -8,7 +8,10 @@
         </div>
         <input id="txtTileTags" class="ili-form tile_notes" placeholder="Tags" type="text">
         <select id="tileTemplate" class="ili-form template_box" placeholder="Select Template"></select>
-        <select id="tileCategory" class="ili-form tile_cat_box" placeholder="Select / Add Category"></select>
+        <select id="tileCategory" [(ngModel)]="defaultSelected" (ngModelChange)="tileCategoryChange($event)" class="ili-form tile_cat_box" placeholder="Select / Add Category">
+          <option [value]="-1" disabled>All Categories</option>
+          <option *ngFor="let tileCat of tileCategories; let i = index" [selected]="tileCat === selectedTileCategory" [ngValue]="tileCat" >{{tileCat?.name}}</option>
+        </select>
       </div>
       <div class='tile_prime'>
         <div style="margin-top: 4px; padding-left: 0px; margin-bottom: 10px;" class="checkbox">

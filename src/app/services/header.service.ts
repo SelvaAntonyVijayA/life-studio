@@ -15,19 +15,17 @@ export class HeaderService {
     'charset': 'UTF-8'
   });
 
-  domainUrl: [any] = ["/domain/get/", "/user/get", "/user/session"];
+  headerUrls: Object = {
+    "domain": "/domain/get/",
+    "user": "/user/get",
+    "session": "/user/session"
+  };
 
   getDomainMenus(name: string) {
+    let domainMenus = this.http.post(this.headerUrls["domain"], JSON.stringify({ "domainName": name }), { headers: this.headers }).toPromise().then(response => response.json()).catch(this.handleError);
+    let userOrgs = this.http.get(this.headerUrls["user"]).toPromise().then(response => response.json()).catch(this.handleError);
+    let rAccess = this.http.get(this.headerUrls["session"]).toPromise().then(response => response.json()).catch(this.handleError);
 
-    let domainMenus = this.http.post(this.domainUrl[0], JSON.stringify({ "domainName": name }), { headers: this.headers }).toPromise().then(response => response.json()).catch(this.handleError);
-    let userOrgs = this.http.get(this.domainUrl[1]).toPromise().then(response => response.json()).catch(this.handleError);
-    let rAccess = this.http.get(this.domainUrl[2]).toPromise().then(response => response.json()).catch(this.handleError);
-
-    /*return this.http
-      .post(this.domainUrl, JSON.stringify({ "domainName": name }), { headers: this.headers })
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError);*/
 
     return Observable.forkJoin([domainMenus, userOrgs, rAccess]);
   }
