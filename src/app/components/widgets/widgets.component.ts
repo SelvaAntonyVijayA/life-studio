@@ -5,10 +5,11 @@ import { BlockComponent } from './block.component';
 import { BlockChecker } from './block-checker';
 import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
+import { CommonService } from '../../services/common.service';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { ISlimScrollOptions } from 'ng2-slimscroll';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CMS } from '../../helpers/common';
+
 
 import {
   TextBlockComponent, VideoBlockComponent, PictureBlockComponent, DisqusBlockComponent,
@@ -31,8 +32,7 @@ declare var $: any;
 @Component({
   selector: 'app-widgets',
   templateUrl: './widgets.component.html',
-  styleUrls: ['./widgets.component.css'],
-  providers: [CMS]
+  styleUrls: ['./widgets.component.css']
 })
 
 export class WidgetsComponent implements OnInit {
@@ -48,20 +48,22 @@ export class WidgetsComponent implements OnInit {
   tileCategories: any[] = [];
   selectedTileCategory: Object = {};
   defaultSelected = -1;
+  organizations: any[] = [];
   oid: string = "";
+  selectedOrganization: string = "-1";
   private orgChangeDetect: any;
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver, 
-    elemRef: ElementRef, private tileService: TileService, private route: ActivatedRoute, public cms : CMS) {
+  constructor(private componentFactoryResolver: ComponentFactoryResolver,
+    elemRef: ElementRef, private tileService: TileService, private route: ActivatedRoute, private cms: CommonService) {
     this.utils = Utils;
-    this.oid = Cookie.get('oid');
+    //this.oid = Cookie.get('oid');
   }
 
   /* Change Tile Category */
 
   tileCategoryChange(tileCat: any) {
     this.selectedTileCategory = tileCat;
-  }
+  };
 
   /* Set Scroll Options */
 
@@ -633,7 +635,7 @@ export class WidgetsComponent implements OnInit {
       this.blocks = [];
       this.currentAddIndex = -1;
     }
-  }
+  };
 
   saveBlocks(e: any) {
     var result = this.blocks;
@@ -641,14 +643,33 @@ export class WidgetsComponent implements OnInit {
 
   getTileContent(tileObj: any) {
     this.resetTile("");
-    this.tileBlocks = tileObj.blocks;
-    this.selectedTile = tileObj.tile;
+    
+    if (tileObj.hasOwnProperty("tileCategories")) {
+      this.tileCategories = tileObj.tileCategories; 
+    }
 
-    if (this.tileBlocks.length > 0) {
-      for (let i = 0; i < this.tileBlocks.length; i++) {
-        var currentBlock = this.tileBlocks[i];
-        var type = this.tileBlocks[i].hasOwnProperty("type") ? this.tileBlocks[i].type : "";
-        this.loadWidgets(type, currentBlock);
+    if (tileObj.hasOwnProperty("orgId")) {
+      this.resetWidgetDatas();
+      this.selectedOrganization = tileObj.orgId;
+
+      if (this.organizations.length > 0) {
+        this.setWidgetDatas();
+      }
+    }
+
+    if (tileObj.hasOwnProperty("tile")) {
+      this.selectedTile = tileObj.tile;
+    }
+
+    if (tileObj.hasOwnProperty("blocks")) {
+      this.tileBlocks = tileObj.blocks;
+
+      if (this.tileBlocks.length > 0) {
+        for (let i = 0; i < this.tileBlocks.length; i++) {
+          var currentBlock = this.tileBlocks[i];
+          var type = this.tileBlocks[i].hasOwnProperty("type") ? this.tileBlocks[i].type : "";
+          this.loadWidgets(type, currentBlock);
+        }
       }
     }
   };
@@ -702,20 +723,21 @@ export class WidgetsComponent implements OnInit {
     componentRef.instance[viewName].subscribe(blk => this.getViewBlock(blk.view, blk.opt));
 
     (<BlockComponent>componentRef.instance).block = adBlock.block;
-  }
+  };
 
   /*   Get Organization profile datas    */
-  getOrgProfileDatas(orgId: string) {
-    this.tileService.getProfileDatas(orgId)
+
+  getOrgProfileDatas() {
+    this.tileService.getProfileDatas(this.selectedOrganization)
       .then(profOrgDatas => this.profileDatas = profOrgDatas);
   };
 
   /*   Get Tile Categories datas    */
 
-  getTileCategory(orgId: string) {
-    this.tileService.getTileCategory(orgId)
+  /*getTileCategory() {
+    this.tileService.getTileCategory(this.selectedOrganization)
       .then(tileCategories => this.tileCategories = tileCategories);
-  };
+  };*/
 
   resetWidgetDatas() {
     this.resetTile("");
@@ -727,26 +749,36 @@ export class WidgetsComponent implements OnInit {
   };
 
   setWidgetDatas() {
-    this.getOrgProfileDatas(this.oid);
-    this.getTileCategory(this.oid);
+    this.getOrgProfileDatas();
+    //this.getTileCategory();
+  };
+
+  setOrganizations() {
+    if (this.organizations.length == 0) {
+      this.organizations = this.cms["appDatas"].hasOwnProperty("organizations") ? this.cms["appDatas"]["organizations"] : [];
+    }
   };
 
   ngOnInit() {
     this.setScrollOptions();
-    let data = this.cms.getCms;
 
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       if (!this.utils.isArray(this.blocks)) {
         this.blocks = [];
       }
 
+      this.setOrganizations();
       this.oid = Cookie.get('oid');
+      this.selectedOrganization = this.oid;
       this.resetWidgetDatas();
-      this.setWidgetDatas();
+
+      if (this.organizations.length > 0) {
+        this.setWidgetDatas();
+      }
     });
-  }
+  };
 
   ngOnDestroy() {
     this.orgChangeDetect.unsubscribe();
-  }
+  };
 }

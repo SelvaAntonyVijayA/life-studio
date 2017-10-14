@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
+import { CommonModule} from '@angular/common';
 
 import { AppRoutesModule } from './app-routes/app-routes.module';
 import { AppComponent } from './app.component';

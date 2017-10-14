@@ -3,34 +3,42 @@
     <span> TILES </span>
   </div>
   <div class='tiles_list_search'>
-    <input id='txtTileSearch' class='form-control input-sm search_box' type='text' placeholder='Search Tiles' />
-    <select id='drpdnTileOrgs' [(ngModel)]="defaultSelected" (ngModelChange)="orgChange($event)"  class="form-control input-sm filter_select_box orgs_box">
-      <option *ngFor="let org of organizations; let i = index" [selected]="org === selectedOrg" [ngValue]="org" >{{org?.name}}</option>
+    <input id='txtTileSearch' [(ngModel)]="tileSearchText" class='form-control input-sm search_box' type='text' placeholder='Search Tiles'
+    />
+    <select id='drpdnTileOrgs' [ngModel]="selectedOrg" (ngModelChange)="orgChange($event)" class="form-control input-sm filter_select_box orgs_box">
+      <option *ngFor="let org of organizations; let i = index" [value]="org?._id">{{org?.name}}</option>
     </select>
-    <select id='drpdnTileCategory' class="form-control input-sm filter_select_box category_box"></select>
+    <select id='drpdnTileCategory' [ngModel]="selectedCategory" (ngModelChange)="categoryChange($event)" class="form-control input-sm filter_select_box category_box">
+      <option [value]="-1" disabled>All Categories</option>
+      <option *ngFor="let tileCat of tileCategories; let i = index" [value]="tileCat?._id">{{tileCat?.name}}</option>
+    </select>
   </div>
   <div class="tiles_sort">
     <label class="txt_arrange">Sort by: </label>
-    <select id='drpdnTileSort' class="form-control input-sm sort_box" placeholder='Search'>
-        <option>Date</option>
-        <option value="name">Title</option>
-        <option class="tile_content tile_url">Category</option>
-        <option class="tile_content tile_url">Author</option>
-        </select>
-    <div class="not_show do_sort date_sort">
-      <div id='divDateOrderAsc' class='not_show date_asc'>
-        Oldest on top<img class="sort_image" src='/img/sort_up.png' />
+    <select id='drpdnTileSort' [ngModel]="sortOpt['selectedOpt']" (ngModelChange)="sortChange($event)" class="form-control input-sm sort_box" placeholder='Search'>
+      <option [value]="'date'">Date</option>
+      <option [value]="'title'">Title</option>
+      <option class="tile_content tile_url" [value]="'category'">Category</option>
+      <option class="tile_content tile_url" [value]="'author'">Author</option>
+    </select>
+    <div *ngIf="sortOpt['selectedOpt'] === 'date'" class="do_sort date_sort">
+      <div *ngIf="sortOpt['isAsc']" (click)="doSort(false)" class='date_asc'>
+        Oldest on top
+        <img class="sort_image" src='/img/sort_up.png' />
       </div>
-      <div id='divDateOrderDesc' class='not_show date_desc'>
-        Newest on top<img class="sort_image" src='/img/sort_down.png' />
+      <div *ngIf="!sortOpt['isAsc']" (click)="doSort(true)" class='date_desc'>
+        Newest on top
+        <img class="sort_image" src='/img/sort_down.png' />
       </div>
     </div>
-    <div class="not_show do_sort text_sort">
-      <div class='not_show text_asc'>
-        A on top<img class="sort_image" src='/img/sort_up.png' />
+    <div *ngIf="sortOpt['selectedOpt'] !== 'date'" class="do_sort text_sort">
+      <div *ngIf="sortOpt['isAsc']" (click)="doSort(false)" class='text_asc'>
+        A on top
+        <img class="sort_image" src='/img/sort_up.png' />
       </div>
-      <div class='not_show text_desc'>
-        Z on top<img class="sort_image" src='/img/sort_down.png' />
+      <div *ngIf="!sortOpt['isAsc']" (click)="doSort(true)" class='text_desc'>
+        Z on top
+        <img class="sort_image" src='/img/sort_down.png' />
       </div>
     </div>
   </div>
@@ -39,11 +47,12 @@
       <img id='imgTileViewDetail' src="/img/details.png" alt="" title="Details" />
       <img id='imgTileViewList' src="/img/list.png" alt="" title="List" />
     </div>
-    <div class='tiles_list_count'></div>
+    <div class='tiles_list_count'>
+    </div>
   </div>
   <div class='tiles_list_show_tiles'>
     <div style="overflow: hidden; width: 100%; float: left; height: 723px;" slimScroll [options]="opts">
-      <tiles (tileData)="getTileData($event)" [page]="page" [tile]="tile" *ngFor="let tile of tiles; let i = index; trackBy: trackByIndex"></tiles>
+      <tiles (tileData)="getTileData($event)" [page]="page" [tile]="tile" *ngFor="let tile of (tiles | filterByText:'title':tileSearchText | orderBy:sortOpt['isAsc']:sortOpt['values'][sortOpt['selectedOpt']][0]: sortOpt['values'][sortOpt['selectedOpt']][1]); let i = index; trackBy: trackByIndex"></tiles>
     </div>
   </div>
 </div>

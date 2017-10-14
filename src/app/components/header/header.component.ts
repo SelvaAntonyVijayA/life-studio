@@ -1,8 +1,9 @@
 import { Component, Input, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { HeaderService } from '../../services/header.service';
+import { CommonService } from '../../services/common.service';
 import { DomainPageLib, DomainTools } from '../../helpers/domainPageLib';
-import { CMS } from '../../helpers/common';
+//import { CMS } from '../../helpers/common';
 import { Organization } from '../../models/organization';
 import { Utils } from '../../helpers/utils';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
@@ -12,19 +13,20 @@ declare var $: any;
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
-  providers: [CMS, DomainPageLib, DomainTools]
+  providers: [DomainPageLib, DomainTools]
 })
 
 export class HeaderComponent implements OnInit {
-  constructor(private headerService: HeaderService, 
-    private pageLib: DomainPageLib, 
-    private el: ElementRef, 
-    private route: ActivatedRoute, 
+  constructor(private headerService: HeaderService,
+    private cms: CommonService,
+    private pageLib: DomainPageLib,
+    private el: ElementRef,
+    private route: ActivatedRoute,
     private router: Router) {
     //this.cms = cms;
     this.utils = Utils;
   }
-  
+
   userName: string = "";
   utils: any;
   accessList: Object = {};
@@ -37,7 +39,7 @@ export class HeaderComponent implements OnInit {
   defaultOrg = -1;
   selectedOrg: Organization;
   selectedPage: Object = {};
-  
+
   menusDatas: Object = {
     "left": [],
     "right": []
@@ -209,7 +211,7 @@ export class HeaderComponent implements OnInit {
       let link = [currPage];
       var currDate = Date.parse(new Date().toString());
 
-      this.router.navigate(link, { queryParams: { "_dt": currDate}, relativeTo: this.route});
+      this.router.navigate(link, { queryParams: { "_dt": currDate }, relativeTo: this.route });
     }
   };
 
@@ -264,7 +266,7 @@ export class HeaderComponent implements OnInit {
   };
 
   getAssignedPages() {
-    this.userName = this.userObj[0] && this.userObj[0].hasOwnProperty("name")? this.userObj[0].name : "";
+    this.userName = this.userObj[0] && this.userObj[0].hasOwnProperty("name") ? this.userObj[0].name : "";
     var accessByOrg = this.userObj[0].assignedOrgAccess && !$.isEmptyObject(this.selectedOrg) && this.selectedOrg.hasOwnProperty("_id") && this.userObj[0].assignedOrgAccess[this.selectedOrg["_id"]] ? this.userObj[0].assignedOrgAccess[this.selectedOrg["_id"]] : [];
     var accesses = this.userObj[0].assignedAccess;
 
@@ -412,8 +414,6 @@ export class HeaderComponent implements OnInit {
       this.userObj = domainDatas[1] && domainDatas[1].length > 0 ? domainDatas[1] : [];
       this.rAcesss = !$.isEmptyObject(domainDatas[2]) && domainDatas[2].hasOwnProperty("role") ? domainDatas[2]["role"] : {};
 
-      
-
       if (this.userObj.length > 0) {
         if (this.userObj[0].hasOwnProperty('organizations')) {
           this.orgs = this.userObj[0]['organizations'];
@@ -422,8 +422,8 @@ export class HeaderComponent implements OnInit {
         }
       }
 
-      let cms = new CMS();
-      cms.organizations = this.orgs;
+      //let cms = new CMS();
+      this.cms.setCms("organizations", this.orgs);
 
       if (this.userObj && this.userObj.length > 0) {
         this.pageList();

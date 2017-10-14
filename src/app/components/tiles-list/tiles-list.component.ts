@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Renderer, EventEmitter, ElementRef, ViewChild
 import { Tile } from '../../models/tile';
 import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
+import { CommonService } from '../../services/common.service';
 import { ISlimScrollOptions } from 'ng2-slimscroll';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,33 +14,66 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./tiles-list.component.css']
 })
 
-export class TilesListComponent implements OnInit {
+export class TilesListComponent {
   tiles: Tile[] = [];
   opts: ISlimScrollOptions;
   @Input('page') page: string;
+  @Input('organizations') organizations: any[];
   tileContent = new EventEmitter<any>();
-  organziations: any[] = [];
+  //private organizations: any[] = [];
+  tileCategories: any[] = [];
+  tileSearchText: string = "";
   defaultSelected = "-1";
-  selectedOrg: Object = {};
+  selectedOrg: string = "-1";
+  selectedCategory: string = "-1";
   oid: string = "";
-  private orgChangeDetect: any;
+  sortOpt: Object = {
+    "selectedOpt": "date", "isAsc": true, "values": {
+      "date": ["lastUpdatedOn", "dateCreated"],
+      "title": ["title"],
+      "category": ["categoryName"],
+      "author": ["userName"]
+    }
+  };
 
-  constructor(private tileService: TileService, private route: ActivatedRoute) {
+  private orgChangeDetect: any;
+  protected loading: boolean;
+  utils: any;
+
+  constructor(private tileService: TileService, private route: ActivatedRoute, private cms: CommonService) {
+    this.utils = Utils;
     this.oid = Cookie.get('oid');
   }
 
-  protected loading: boolean;
+  orgChange(orgId: string) {
+    this.resetTiles();
+    this.selectedOrg = orgId;
+    this.setTileListData();
+    this.tileContent.emit({ "orgId": orgId });
+  };
 
-  orgChange(org: any) {
-    this.selectedOrg = org;
+  sortChange(sortVal: string){
+    this.sortOpt["selectedOpt"] = sortVal;
+  };
+
+  categoryChange(catId: string) {
+    this.selectedCategory = catId;
   };
 
   trackByIndex(index: number, obj: any): any {
     return index;
-  }
+  };
+
+  doSort(isVal :boolean){
+    this.sortOpt["isAsc"] = isVal;
+  };
 
   getTileData(data: any) {
     this.tileContent.emit(data);
+  };
+
+  emitCategories(categories: any[]) {
+    this.tileContent.emit({ "tileCategories": categories });
   };
 
   setScrollOptions() {
@@ -53,29 +87,84 @@ export class TilesListComponent implements OnInit {
     };
   };
 
+  getTilesCategories() {
+    /*this.tileService.getTilesCategories(this.selectedOrg)
+      .then(tiles => this.tiles = tiles);*/
 
-  getTiles() {
-    this.tileService.getTiles(this.oid)
-      .then(tiles => this.tiles = tiles);
-  }
+    this.tileService.getTilesCategories(this.selectedOrg).subscribe(tileCat => {
+      this.tileCategories = tileCat[0];
+      this.tiles = tileCat[1];
+      this.emitCategories(this.tileCategories);
+      this.setTileSearch();
+    });
+  };
 
   resetTiles() {
     this.tiles = [];
-    this.selectedOrg = {};
+    this.sortOpt["selectedOpt"] = "date";
+    this.sortOpt["isAsc"] = false;
+    //this.selectedOrg = "-1";
+    this.selectedCategory = "-1"
+  };
+
+  setTileSearch() {
+    var tilesData = this.tiles;
+
+    if (this.utils.isArray(tilesData) && tilesData.length > 0) {
+      for (let i = 0; i < tilesData.length; i++) {
+        var category = this.getCategoryName(tilesData[i]["category"]);
+        var categoryName = category[0] && category[0].hasOwnProperty("name") ? category[0]["name"] : "";
+        tilesData[i]["search"] = this.utils.htmlEncode(tilesData[i].title) + " " + tilesData["title"];
+        tilesData[i]["categoryName"] = categoryName;
+      }
+    }
+  };
+
+  getCategoryName(id: string) {
+    return this.tileCategories.filter(function (cat) {
+      return cat["_id"] === id;
+    });
+  };
+
+  /*setOrganizations() {
+    if (this.organizations.length == 0) {
+      this.organizations = this.cms["appDatas"].hasOwnProperty("organizations") ? this.cms["appDatas"]["organizations"] : [];
+    }
+  };*/
+
+  setTileListData() {
+    if (this.organizations.length > 0) {
+      this.getTilesCategories();
+    }
   };
 
   ngOnInit() {
     this.setScrollOptions();
 
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
+      //this.setOrganizations();
       this.oid = Cookie.get('oid');
+      this.selectedOrg = this.oid;
       this.resetTiles();
-      this.getTiles();
+      this.setTileListData();
     });
   };
 
   ngOnDestroy() {
     this.orgChangeDetect.unsubscribe();
+  };
+
+  ngOnChanges(cHObj: any) {
+    if (cHObj.hasOwnProperty("organizations") && cHObj["organizations"]["currentValue"].length > 0) {
+      if (!cHObj["organizations"]["firstChange"] && this.utils.isArray(cHObj["organizations"]["previousValue"]) && cHObj["organizations"]["previousValue"].length == 0) {
+        this.setTileListData();
+      }
+
+      /*this.setScrollOptions();
+      this.oid = Cookie.get('oid');
+      this.resetTiles();
+      this.setTileListData();*/
+    }
   };
 }
 
@@ -116,6 +205,7 @@ export class TilesComponent implements OnInit {
 
   ngOnInit() {
     this.showSymbols();
+
     if (this.page === "tiles") {
       this.cursor = "pointer";
       this.tileSelect = this.renderer.listen(this.e1.nativeElement, 'click', (event) => {
@@ -125,16 +215,16 @@ export class TilesComponent implements OnInit {
           .then(blocks => this.assignTileData(blocks));
       });
     }
-  }
+  };
 
   assignTileData(blocks: any[]) {
     var data = { "tile": this.tile, "blocks": blocks };
     this.tileData.emit(data);
-  }
+  };
 
   ngOnDestroy() {
     this.tileSelect();
-  }
+  };
 
   showSymbols() {
     var tileNotifications = "";
@@ -226,5 +316,5 @@ export class TilesComponent implements OnInit {
     this.symbols["tileApps"] = pageApps;
     this.symbols["tileProcedure"] = tileProcedure;
     this.symbols["tileHealthStatusRules"] = tileRules;
-  }
+  };
 }

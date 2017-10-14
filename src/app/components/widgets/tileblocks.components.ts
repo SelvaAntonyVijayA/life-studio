@@ -370,14 +370,14 @@ export class SurveyBlockComponent implements BlockComponent {
     if (confirmLength > 0) {
       this.addConfirm("");
     }
-  }
+  };
 
   controlChange(isMultiple: any) {
     if (isMultiple == "true") {
       this.block.data.showInApp = false;
       this.block.data.isNote = false;
     }
-  }
+  };
 
   addPopup(e: any) {
     var quesLength = this.block.data.questions.length;
@@ -405,7 +405,7 @@ export class SurveyBlockComponent implements BlockComponent {
         this.block.data.alerts.push("");
       }
     }
-  }
+  };
 
   addConfirm(e: any) {
     var quesLength = this.block.data.questions.length;
@@ -418,7 +418,7 @@ export class SurveyBlockComponent implements BlockComponent {
         this.block.data.confirmation.push("content");
       }
     }
-  }
+  };
 
   removeOption(opt: any) {
     let index: number = this.block.data.questions.indexOf(opt);
@@ -429,11 +429,11 @@ export class SurveyBlockComponent implements BlockComponent {
       this.block.data.alerts.splice(index, 1);
       this.block.data.confirmation.splice(index, 1);
     }
-  }
+  };
 
   trackByIndex(index: number, obj: any): any {
     return index;
-  }
+  };
 
   getSurvey(view: any) {
     this.surveyView.emit(view);
@@ -505,7 +505,7 @@ export class QuestionnaireBlockComponent implements BlockComponent {
     };
 
     this.block.data.options.push(optData);
-  }
+  };
 
   addSubOption(data: any) {
     if (!data.hasOwnProperty("subQuestions")) {
@@ -519,15 +519,15 @@ export class QuestionnaireBlockComponent implements BlockComponent {
       "inputControlType": "radio",
       "options": [{ "option": "" }, { "option": "" }]
     });
-  }
+  };
 
   trackByIndex(index: number, obj: any): any {
     return index;
-  }
+  };
 
   deleteLevel(level: any) {
     this.block.data.options[level.parentIndex].subQuestions.splice(level.currentIndex, 1);
-  }
+  };
 
   removeOption(option: any) {
     let index: number = this.block.data.options.indexOf(option);
@@ -535,7 +535,7 @@ export class QuestionnaireBlockComponent implements BlockComponent {
     if (index !== -1 && this.block.data.options.length >= 2) {
       this.block.data.options.splice(index, 1);
     }
-  }
+  };
 };
 
 @Component({
@@ -587,7 +587,7 @@ export class QuestionnaireSubOptionComponent implements BlockComponent {
 
   getAlphaLetter(i: number) {
     return (i >= 26 ? this.getAlphaLetter((i / 26 >> 0) - 1) : '') + 'abcdefghijklmnopqrstuvwxyz'[i % 26 >> 0];
-  }
+  };
 
   addOption(e: any) {
     var optionObj = { "option": "" };
@@ -606,11 +606,11 @@ export class QuestionnaireSubOptionComponent implements BlockComponent {
       "inputControlType": "radio",
       "options": [{ "option": "" }, { "option": "" }]
     });
-  }
+  };
 
   trackByIndex(index: number, obj: any): any {
     return index;
-  }
+  };
 
   getLevelIndex() {
     var idx = "i";
@@ -620,16 +620,16 @@ export class QuestionnaireSubOptionComponent implements BlockComponent {
     }
 
     return idx;
-  }
+  };
 
   deleteSubLevel() {
     var level = { "parentIndex": this.parentIndex, "currentIndex": this.currentIndex };
     this.removeSubLevel.emit(level);
-  }
+  };
 
   deleteLevel(level: any) {
     this.subOption.options[level.parentIndex].subQuestions.splice(level.currentIndex, 1);
-  }
+  };
 
   removeOption(option: any) {
     let index: number = this.subOption.options.indexOf(option);
@@ -637,7 +637,7 @@ export class QuestionnaireSubOptionComponent implements BlockComponent {
     if (index !== -1 && this.subOption.options.length >= 2) {
       this.subOption.options.splice(index, 1);
     }
-  }
+  };
 };
 
 @Component({
@@ -749,14 +749,14 @@ export class QuestionsBlockComponent implements BlockComponent {
 
   trackByIndex(index: number, obj: any): any {
     return index;
-  }
+  };
 
   addQuestions(e: any) {
     this.block.data.notes.push(false);
     this.block.data.answerTypes.push("text");
     this.block.data.mandatory.push(false);
     this.block.data.questions.push("");
-  }
+  };
 
   getQuestions(view: any) {
     this.questionsView.emit(view);
@@ -800,17 +800,17 @@ export class AttendanceBlockComponent implements BlockComponent {
 
   addOption(e: any) {
     this.block.data.options.push("");
-  }
+  };
 
   attendanceView = new EventEmitter<any>();
 
   getAttendance(view: any) {
     this.attendanceView.emit(view);
-  }
+  };
 
   trackByIndex(index: number, obj: any): any {
     return index;
-  }
+  };
 };
 
 @Component({
@@ -844,7 +844,7 @@ export class ConfirmationBlockComponent implements BlockComponent {
 
   getConfirmation(view: any) {
     this.confirmationView.emit(view);
-  }
+  };
 };
 
 @Component({
@@ -868,7 +868,7 @@ export class PasswordBlockComponent implements BlockComponent {
 
   getPassword(view: any) {
     this.passwordView.emit(view);
-  }
+  };
 };
 
 @Component({
@@ -903,7 +903,7 @@ export class NextBlockComponent implements BlockComponent {
 
   getNext(view: any) {
     this.nextView.emit(view);
-  }
+  };
 };
 
 @Component({
@@ -926,7 +926,7 @@ export class FormPhotoComponent implements BlockComponent {
 
   getFormPhoto(view: any) {
     this.formPhotoView.emit(view);
-  }
+  };
 };
 
 @Component({
@@ -957,7 +957,7 @@ export class PainLevelComponent implements BlockComponent {
 
   getPainLevel(view: any) {
     this.painLevelView.emit(view);
-  }
+  };
 };
 
 @Component({
@@ -982,7 +982,7 @@ export class DrawToolBlockComponent implements BlockComponent {
 
   getDrawTool(view: any) {
     this.drawToolView.emit(view);
-  }
+  };
 };
 
 @Component({
@@ -1009,7 +1009,7 @@ export class PhysicianBlockComponent implements BlockComponent {
 
   getPhysician(view: any) {
     this.physicianView.emit(view);
-  }
+  };
 };
 
 @Component({
@@ -1034,7 +1034,7 @@ export class EndWrapperBlockComponent implements BlockComponent {
 
   getEndWrapper(view: any) {
     this.endWrapperView.emit(view);
-  }
+  };
 };
 
 @Component({
@@ -1060,7 +1060,7 @@ export class FillBlockComponent implements BlockComponent {
 
   getFill(view: any) {
     this.fillView.emit(view);
-  }
+  };
 };
 
 @Component({
@@ -1141,12 +1141,12 @@ export class ButtonsBlockComponent implements BlockComponent {
 
   trackByIndex(index: number, obj: any): any {
     return index;
-  }
+  };
 
   addButton(e: any) {
     var btnData = { "beforeText": "", "afterText": "" };
     this.block.data.push(btnData);
-  }
+  };
 
   addConfirmation(btnData: any) {
     btnData["confirmation"] = new String("");
@@ -1170,7 +1170,7 @@ export class ButtonsBlockComponent implements BlockComponent {
     for (let i = 1; i <= alertsIndx; i++) {
       this.block.alerts.push("");
     }
-  }
+  };
 
   getButtons(view: any) {
     this.buttonsView.emit(view);
@@ -1368,7 +1368,7 @@ export class ExclusiveUrlBlockComponent implements BlockComponent {
     if (opt === "iphonewindow") {
       this.block.data.window = this.block.data.iphonewindow ? false : true;
     }
-  }
+  };
 };
 
 @Component({
@@ -1434,7 +1434,7 @@ export class PushpayBlockComponent implements BlockComponent {
     if (opt === "iphonewindow") {
       this.block.data.window = this.block.data.iphonewindow ? false : true;
     }
-  }
+  };
 };
 
 @Component({
@@ -1474,7 +1474,7 @@ export class ThreedCartBlockComponent implements BlockComponent {
     if (opt === "iphonewindow") {
       this.block.data.window = this.block.data.iphonewindow ? false : true;
     }
-  }
+  };
 };
 
 @Component({
@@ -1506,7 +1506,7 @@ export class BlogsBlockComponent implements BlockComponent {
   };
 
   openWordPress(e: any) {
-  }
+  };
 };
 
 @Component({

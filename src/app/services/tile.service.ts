@@ -46,6 +46,13 @@ export class TileService {
       .catch(this.handleError);
   };
 
+  getTilesCategories(orgId: string) {
+    let categories = this.getTileCategory(orgId);
+    let tiles = this.getTiles(orgId);
+    
+    return Observable.forkJoin([categories, tiles]);
+  };
+
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);
