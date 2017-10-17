@@ -27,6 +27,7 @@ export class TilesListComponent {
   selectedOrg: string = "-1";
   selectedCategory: string = "-1";
   oid: string = "";
+  listType: string = "list";
   sortOpt: Object = {
     "selectedOpt": "date", "isAsc": true, "values": {
       "date": ["lastUpdatedOn", "dateCreated"],
@@ -52,7 +53,7 @@ export class TilesListComponent {
     this.tileContent.emit({ "orgId": orgId });
   };
 
-  sortChange(sortVal: string){
+  sortChange(sortVal: string) {
     this.sortOpt["selectedOpt"] = sortVal;
   };
 
@@ -64,7 +65,7 @@ export class TilesListComponent {
     return index;
   };
 
-  doSort(isVal :boolean){
+  doSort(isVal: boolean) {
     this.sortOpt["isAsc"] = isVal;
   };
 
@@ -74,6 +75,10 @@ export class TilesListComponent {
 
   emitCategories(categories: any[]) {
     this.tileContent.emit({ "tileCategories": categories });
+  };
+
+  changeTileView(view: string){
+    this.listType = view;
   };
 
   setScrollOptions() {
@@ -159,11 +164,6 @@ export class TilesListComponent {
       if (!cHObj["organizations"]["firstChange"] && this.utils.isArray(cHObj["organizations"]["previousValue"]) && cHObj["organizations"]["previousValue"].length == 0) {
         this.setTileListData();
       }
-
-      /*this.setScrollOptions();
-      this.oid = Cookie.get('oid');
-      this.resetTiles();
-      this.setTileListData();*/
     }
   };
 }
@@ -175,7 +175,7 @@ export class TilesListComponent {
              <link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
              <link rel="stylesheet" href="/css/ti_icons.css">
              <div [style.cursor]="cursor" class="main_tile_block tiles_list_single"> 
-             <img class="tile_list_art tile-content-img" [src]="tile?.art | safe">
+             <img [ngClass]="listType === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
              <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
              <div class="tile_icons">
              <span [title]="symbols!.tileApps" [style.display]="symbols!.isWeight" class="step weight"></span>
@@ -193,6 +193,7 @@ export class TilesListComponent {
 export class TilesComponent implements OnInit {
   @Input() tile: any;
   @Input('page') page: string;
+  @Input('listType') listType: string;
   tileData = new EventEmitter<any>();
 
   emptyString: string = "";
