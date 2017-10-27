@@ -8,6 +8,8 @@ import { HomeRoutingModule } from '../../app-routes/home-routing.module';
 import { HeaderComponent } from '../../components/header/header.component';
 import { TilesListComponent, TilesComponent } from '../../components/tiles-list/tiles-list.component';
 import { TileBlocksComponents, SafePipe } from '../../components/widgets/tileblocks.components';
+import { EventsComponent } from '../../components/events/events.component';
+
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
 import { CommonService } from '../../services/common.service'
@@ -16,19 +18,20 @@ import { TileBlocksDirective } from '../../components/widgets/tileblocks.directi
 import { DyBindDirective } from '../../components/widgets/dynamic-bind.directive';
 
 import { Ng2Summernote } from 'ng2-summernote/ng2-summernote';
-import { SlimScrollModule } from 'ng2-slimscroll';
-import { VirtualScrollModule } from 'angular2-virtual-scroll';
+//import { SlimScrollModule } from 'ng2-slimscroll';
+//import { VirtualScrollModule } from 'angular2-virtual-scroll';
 
 import { FilterByTextPipe, OrderByPipe} from '../../helpers/filters.pipe';
+import { MalihuScrollbarModule } from 'ngx-malihu-scrollbar';
 
 @NgModule({
   imports: [
-    CommonModule, FormsModule, HomeRoutingModule, SlimScrollModule, VirtualScrollModule
+    CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe,  TilesComponent, TileBlocksComponents, SafePipe,
-    TileBlocksDirective, DyBindDirective, Ng2Summernote],
+    TileBlocksDirective, DyBindDirective, Ng2Summernote, EventsComponent],
   providers: [HeaderService, TileService, CommonService]
 })
 

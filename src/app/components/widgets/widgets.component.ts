@@ -7,8 +7,9 @@ import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
 import { CommonService } from '../../services/common.service';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
-import { ISlimScrollOptions } from 'ng2-slimscroll';
+//import { ISlimScrollOptions } from 'ng2-slimscroll';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
 
 
 import {
@@ -40,7 +41,7 @@ export class WidgetsComponent implements OnInit {
   currentAddIndex: number = -1;
   @ViewChild(TileBlocksDirective) blockSelected: TileBlocksDirective;
   interval: any;
-  opts: ISlimScrollOptions;
+  //opts: ISlimScrollOptions;
   tileBlocks: any[] = [];
   selectedTile: Object = {};
   utils: any;
@@ -52,9 +53,12 @@ export class WidgetsComponent implements OnInit {
   oid: string = "";
   selectedOrganization: string = "-1";
   private orgChangeDetect: any;
+  public scrollbarOptions = { axis: 'y', theme: 'light-2' };
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
-    elemRef: ElementRef, private tileService: TileService, private route: ActivatedRoute, private cms: CommonService) {
+    elemRef: ElementRef, private tileService: TileService, private route: ActivatedRoute, private cms: CommonService,
+    private mScrollbarService: MalihuScrollbarService
+  ) {
     this.utils = Utils;
     //this.oid = Cookie.get('oid');
   }
@@ -67,7 +71,7 @@ export class WidgetsComponent implements OnInit {
 
   /* Set Scroll Options */
 
-  setScrollOptions() {
+  /*setScrollOptions() {
     this.opts = {
       position: 'right',
       barBackground: '#8A8A8A',
@@ -76,7 +80,7 @@ export class WidgetsComponent implements OnInit {
       barWidth: '2',
       gridWidth: '1'
     };
-  };
+  };*/
 
   /* Checking the block by block type */
 
@@ -643,9 +647,9 @@ export class WidgetsComponent implements OnInit {
 
   getTileContent(tileObj: any) {
     this.resetTile("");
-    
+
     if (tileObj.hasOwnProperty("tileCategories")) {
-      this.tileCategories = tileObj.tileCategories; 
+      this.tileCategories = tileObj.tileCategories;
     }
 
     if (tileObj.hasOwnProperty("orgId")) {
@@ -759,8 +763,18 @@ export class WidgetsComponent implements OnInit {
     }
   };
 
+  setScrollList() {
+    if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
+      this.cms["appDatas"]["scrollList"].push("#main-widget-container");
+      this.cms["appDatas"]["scrollList"].push('#main-container-tile-blocks');
+    } else {
+      this.cms["appDatas"]["scrollList"] = ["#main-widget-container", "#main-container-tile-blocks"];
+    }
+  };
+
   ngOnInit() {
-    this.setScrollOptions();
+    //this.setScrollOptions();
+    this.setScrollList();
 
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       if (!this.utils.isArray(this.blocks)) {
@@ -780,5 +794,6 @@ export class WidgetsComponent implements OnInit {
 
   ngOnDestroy() {
     this.orgChangeDetect.unsubscribe();
+    this.cms.destroyScroll(["#main-widget-container", "#main-container-tile-blocks"]);
   };
 }

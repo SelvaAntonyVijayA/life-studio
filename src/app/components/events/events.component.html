@@ -1,0 +1,72 @@
+<div class="page_events_content">
+  <div class="events_container">
+    <div class="page_block events_head">
+      <div class="events_inputs">
+        <input class="form-control input-sm event_name" type="text" placeholder="Event Name">
+        <select class="form-control input-sm language" placeholder="Select Language">
+        </select>
+        <div style="margin-top: 5px;" class="checkbox">
+          <label>
+            <input style="margin-top: 2px;" type="checkbox" value="">Use as Timeline</label>
+        </div>
+        <div class="event_dates">
+          <span class="lbl_avail_text">Available in the app from: </span>
+          <input class="form-control input-sm event_avail_date_time" type="text">
+          <span class="lbl_until_text">Until: </span>
+          <input class="form-control input-sm event_until_date_time" type="text">
+          <select class="form-control input-sm event_type" placeholder="Select / Add Type">
+          </select>
+        </div>
+      </div>
+      <div class="event_btns">
+        <button class="ili-btn event_new">
+          New
+        </button>
+        <button class="ili-btn btn event_save">
+          Save
+        </button>
+        <button class="ili-btn event_duplicate">
+          Duplicate
+        </button>
+        <button class="ili-btn event_delete">
+          Delete
+        </button>
+        <button class="ili-btn page_setup">
+          Page Setup
+        </button>
+        <button class="ili-btn default_page_setup">
+          Default Page Setup
+        </button>
+      </div>
+    </div>
+    <div class="event_main_content">
+      <div class="page_block events_block">
+        <div class="events_text ">
+          <span> EVENTS </span>
+        </div>
+        <input class="form-control input-sm search_box_tilist" type="text" placeholder="Search Events">
+        <select class="form-control input-sm filter_event">
+
+        </select>
+        <select class="form-control input-sm sort_event">
+          <option value="date_desc">Latest on top</option>
+          <option value="date_asc">Oldest on top</option>
+          <option value="name_asc">Name - A on top</option>
+          <option value="name_desc">Name - Z on top</option>
+          <option value="type_asc">Type - A on top</option>
+          <option value="type_desc">Type - Z on top</option>
+        </select>
+      </div>
+      <div class="page_block main_event_container">
+        <div class="ili-panel main_event_content">
+          <div class="draggable_label">To add Tiles to this Event, simply drag them in this space.
+            <br>
+            <br>Add Tiles in order you want them to appear in the app.
+            <br>
+            <br>Triggered Tiles will appear above Permanent Tiles in the app.</div>
+        </div>
+      </div>
+      <tiles-list (tileContent)="getTileContent($event)" [organizations]="organizations" [page]="'events'"></tiles-list>
+    </div>
+  </div>
+</div>

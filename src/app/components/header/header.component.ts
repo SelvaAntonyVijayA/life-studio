@@ -7,6 +7,7 @@ import { DomainPageLib, DomainTools } from '../../helpers/domainPageLib';
 import { Organization } from '../../models/organization';
 import { Utils } from '../../helpers/utils';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
+import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
 declare var $: any;
 
 @Component({
@@ -22,7 +23,8 @@ export class HeaderComponent implements OnInit {
     private pageLib: DomainPageLib,
     private el: ElementRef,
     private route: ActivatedRoute,
-    private router: Router) {
+    private router: Router,
+    private mScrollbarService: MalihuScrollbarService) {
     //this.cms = cms;
     this.utils = Utils;
   }
@@ -206,16 +208,18 @@ export class HeaderComponent implements OnInit {
     let oid = Cookie.get('oid');
 
     if (!this.utils.isNullOrEmpty(token) && !this.utils.isNullOrEmpty(oid)) {
-      this.selectedPage = page;
-      var currPage = "." + page;
+      var pageAddress = typeof page === "string" ? page : typeof page === "object" && page.hasOwnProperty("url") ? page["url"] : "";
+      this.selectedPage = pageAddress;
+      var currPage = "." + pageAddress;
       let link = [currPage];
       var currDate = Date.parse(new Date().toString());
-
+      this.cms.destroyScroll();
       this.router.navigate(link, { queryParams: { "_dt": currDate }, relativeTo: this.route });
     }
   };
 
   userLogout() {
+    this.cms.destroyScroll();
     Cookie.deleteAll();
     this.router.navigate(['/login'], { relativeTo: this.route });
   };

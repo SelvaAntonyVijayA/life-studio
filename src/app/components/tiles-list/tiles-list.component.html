@@ -44,15 +44,15 @@
   </div>
   <div class='tiles_count_main'>
     <div class="tile-view-change">
-      <img *ngIf="listType === 'details'" (click)="changeTileView('list')" src="/img/details.png" alt="" title="Details" />
-      <img *ngIf="listType === 'list'" (click)="changeTileView('details')" src="/img/list.png" alt="" title="List" />
+      <img *ngIf="listType === 'list'" (click)="changeTileView('details')" src="/img/details.png" alt="" title="Details" />
+      <img *ngIf="listType === 'details'" (click)="changeTileView('list')" src="/img/list.png" alt="" title="List" />
     </div>
     <div class='tiles_list_count'>
     </div>
   </div>
-  <div class='tiles_list_show_tiles'>
-    <div style="overflow: hidden; width: 100%; float: left; height: 723px;" slimScroll [options]="opts">
+  <div id="main-tiles-container" malihu-scrollbar [scrollbarOptions]="scrollbarOptions" class='tiles_list_show_tiles'>
+  <!--  <div style="overflow: hidden; width: 100%; float: left; height: 723px;" slimScroll [options]="opts"> -->
       <tiles (tileData)="getTileData($event)" [listType]="listType" [page]="page" [tile]="tile" *ngFor="let tile of (tiles | filterByText:'title':tileSearchText | orderBy:sortOpt['isAsc']:sortOpt['values'][sortOpt['selectedOpt']][0]: sortOpt['values'][sortOpt['selectedOpt']][1]); let i = index; trackBy: trackByIndex"></tiles>
-    </div>
+   <!-- </div> -->
   </div>
 </div>

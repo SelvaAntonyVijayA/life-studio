@@ -3,9 +3,10 @@ import { Tile } from '../../models/tile';
 import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
 import { CommonService } from '../../services/common.service';
-import { ISlimScrollOptions } from 'ng2-slimscroll';
+//import { ISlimScrollOptions } from 'ng2-slimscroll';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
 
 @Component({
   selector: 'tiles-list',
@@ -16,7 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 export class TilesListComponent {
   tiles: Tile[] = [];
-  opts: ISlimScrollOptions;
+  //opts: ISlimScrollOptions;
   @Input('page') page: string;
   @Input('organizations') organizations: any[];
   tileContent = new EventEmitter<any>();
@@ -39,9 +40,17 @@ export class TilesListComponent {
 
   private orgChangeDetect: any;
   protected loading: boolean;
+  public scrollbarOptions = { axis: 'y', theme: 'light-2' };
   utils: any;
 
-  constructor(private tileService: TileService, private route: ActivatedRoute, private cms: CommonService) {
+  constructor(private tileService: TileService,
+    private route: ActivatedRoute,
+    private cms: CommonService,
+    private e1: ElementRef,
+    private renderer: Renderer,
+    private mScrollbarService: MalihuScrollbarService,
+  ) {
+
     this.utils = Utils;
     this.oid = Cookie.get('oid');
   }
@@ -77,11 +86,21 @@ export class TilesListComponent {
     this.tileContent.emit({ "tileCategories": categories });
   };
 
-  changeTileView(view: string){
+  changeTileView(view: string) {
     this.listType = view;
+
+
+    if (view === "details") {
+      var slimScrollGrid = this.e1.nativeElement.querySelectorAll('.tiles_list_show_tiles .slimscroll-wrapper .slimscroll-grid');
+
+      if (slimScrollGrid && slimScrollGrid[0]) {
+        slimScrollGrid[0].style.display = "block";
+      }
+    }
+    //this.tiles = tileCloneData;
   };
 
-  setScrollOptions() {
+  /*setScrollOptions() {
     this.opts = {
       position: 'right',
       barBackground: '#8A8A8A',
@@ -90,7 +109,7 @@ export class TilesListComponent {
       barWidth: '2',
       gridWidth: '1'
     };
-  };
+  };*/
 
   getTilesCategories() {
     /*this.tileService.getTilesCategories(this.selectedOrg)
@@ -137,6 +156,14 @@ export class TilesListComponent {
     }
   };*/
 
+  setScrollList() {
+    if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
+      this.cms["appDatas"]["scrollList"].push("#main-tiles-container");
+    } else {
+      this.cms["appDatas"]["scrollList"] = ["#main-tiles-container"];
+    }
+  };
+
   setTileListData() {
     if (this.organizations.length > 0) {
       this.getTilesCategories();
@@ -144,7 +171,8 @@ export class TilesListComponent {
   };
 
   ngOnInit() {
-    this.setScrollOptions();
+    //this.setScrollOptions();
+    this.setScrollList();
 
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       //this.setOrganizations();
@@ -156,7 +184,7 @@ export class TilesListComponent {
   };
 
   ngOnDestroy() {
-    this.orgChangeDetect.unsubscribe();
+    this.cms.destroyScroll(["#main-tiles-container"]);
   };
 
   ngOnChanges(cHObj: any) {
@@ -224,7 +252,9 @@ export class TilesComponent implements OnInit {
   };
 
   ngOnDestroy() {
-    this.tileSelect();
+    if (this.page === "tiles") {
+      this.tileSelect();
+    }
   };
 
   showSymbols() {
