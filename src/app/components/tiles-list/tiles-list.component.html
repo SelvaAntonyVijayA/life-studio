@@ -15,7 +15,8 @@
   </div>
   <div class="tiles_sort">
     <label class="txt_arrange">Sort by: </label>
-    <select id='drpdnTileSort' [ngModel]="sortOpt['selectedOpt']" (ngModelChange)="sortChange($event)" class="form-control input-sm sort_box" placeholder='Search'>
+    <select id='drpdnTileSort' [ngModel]="sortOpt['selectedOpt']" (ngModelChange)="sortChange($event)" class="form-control input-sm sort_box"
+      placeholder='Search'>
       <option [value]="'date'">Date</option>
       <option [value]="'title'">Title</option>
       <option class="tile_content tile_url" [value]="'category'">Category</option>
@@ -51,8 +52,10 @@
     </div>
   </div>
   <div id="main-tiles-container" malihu-scrollbar [scrollbarOptions]="scrollbarOptions" class='tiles_list_show_tiles'>
-  <!--  <div style="overflow: hidden; width: 100%; float: left; height: 723px;" slimScroll [options]="opts"> -->
+    <!--  <div style="overflow: hidden; width: 100%; float: left; height: 723px;" slimScroll [options]="opts"> -->
+    <!-- <div [iliDraggable]="{data: tile}" *ngFor="let tile of (tiles | filterByText:'title':tileSearchText | orderBy:sortOpt['isAsc']:sortOpt['values'][sortOpt['selectedOpt']][0]: sortOpt['values'][sortOpt['selectedOpt']][1]); let i = index; trackBy: trackByIndex"> -->
       <tiles (tileData)="getTileData($event)" [listType]="listType" [page]="page" [tile]="tile" *ngFor="let tile of (tiles | filterByText:'title':tileSearchText | orderBy:sortOpt['isAsc']:sortOpt['values'][sortOpt['selectedOpt']][0]: sortOpt['values'][sortOpt['selectedOpt']][1]); let i = index; trackBy: trackByIndex"></tiles>
+      <!-- </div> -->
    <!-- </div> -->
   </div>
 </div>

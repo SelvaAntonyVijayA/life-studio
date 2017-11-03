@@ -8,7 +8,7 @@
 .weight {float: right;font-size: 18px;margin-top: 3px;height: 14px;width: 14px; margin-right: 3px;
 background: url("/img/weight.png") no-repeat scroll left top rgba(0, 0, 0, 0);}
 .weight:hover {background: url("/img/weight.png") no-repeat scroll left top rgba(0, 0, 0, 0);}
-.tile_icons{position: relative; right: 0; bottom: 2px;width: 100%; float: left;}
+.tile_icons{position: relative; right: 0; bottom: 2px;width: 100%; float: right;}
 .report-rule-tile{font-size: 19px;}
 .hsr-rules-tile{font-size: 19px;}
 .smarticon-tile-content{margin-top:2px; }

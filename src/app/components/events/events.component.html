@@ -57,16 +57,71 @@
           <option value="type_desc">Type - Z on top</option>
         </select>
       </div>
-      <div class="page_block main_event_container">
-        <div class="ili-panel main_event_content">
+      <div id="event_main_container" malihu-scrollbar [scrollbarOptions]="scrollbarOptions" class="page_block main_event_container">
+        <div iliDropTarget (myDrop)="onDrop($event)" class="ili-panel main_event_content drop_target">
           <div class="draggable_label">To add Tiles to this Event, simply drag them in this space.
             <br>
             <br>Add Tiles in order you want them to appear in the app.
             <br>
             <br>Triggered Tiles will appear above Permanent Tiles in the app.</div>
         </div>
+        <div *ngFor="let tile of draggedTiles; let i = index; trackBy: trackByIndex" class="ili-panel event_content">
+          <div class="event_content_left">
+            <div class="event_tile_single">
+              <img class='tile_list_art tile-content-img' [src]="tile?.art | safe">
+              <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
+            </div>
+            <div class="activity-title">
+              <input class="form-control input-sm tile-activity-title" value="" placeholder="Activity Title" type="text">
+            </div>
+            <div class="short-desc">
+              <input class="form-control input-sm tile-short-desc" value="" placeholder="Short Description" type="text">
+            </div>
+            <div class="activity-date">
+              <input class="form-control input-sm tile-activity-date" value="" placeholder="Activity Date" type="text">
+            </div>
+            <div class="hide-act-date">
+              <div style="padding-left: 10px;" class="checkbox">
+                <label>
+                  <input style="margin-top: 1px;" type="checkbox">Hide Date</label>
+              </div>
+            </div>
+          </div>
+          <div class="event_content_right">
+            <div class="drag_buttons">
+              <button class="trigger_btn" title="Add Space">
+                <span class="glyphicon glyphicon-plus"></span>
+              </button>
+              <button class="trigger_btn" title="Replicate">
+                <span class="glyphicon glyphicon-retweet"></span>
+              </button>
+              <button class="trigger_btn" title="MoveUp">
+                <span class="glyphicon glyphicon-arrow-up"></span>
+              </button>
+              <button class="trigger_btn" title="MoveDown">
+                <span class="glyphicon glyphicon-arrow-down"></span>
+              </button>
+              <button class="trigger_btn" title="Remove">
+                <span class="glyphicon glyphicon-remove"></span>
+              </button>
+            </div>
+            <div class="trigger_types">
+              <div class="main_trigger_type">   
+                <select class="form-control input-sm trigger_type_option">
+                  <option value="-1">Select trigger</option>
+                  <option value="always">Permanent</option>
+                  <option value="manual">Manually through the Control Panel</option>
+                  <option value="delay">No. of Minutes after the start of previous tile</option>
+                  <option value="time">At a specific date and time</option>
+                </select>
+                <span style="float: right; margin-right: 7px; margin-top: 4px;" class="label_small">Activate: </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <tiles-list (tileContent)="getTileContent($event)" [organizations]="organizations" [page]="'events'"></tiles-list>
+      <tiles-list class="dragItem" (tileContent)="getTileContent($event)" [droppedTile]="droppedTile" [organizations]="organizations"
+        [page]="'events'"></tiles-list>
     </div>
   </div>
 </div>

@@ -439,6 +439,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.domainName = "ili";
+    this.cms.destroyScroll();
     this.domainDatas();
   };
 };

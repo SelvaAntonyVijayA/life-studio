@@ -142,6 +142,7 @@
     height: 880px;
     float: left;
     margin-left: 1px;
+    overflow: hidden;
 }
 
 .main_event_content{
@@ -150,7 +151,7 @@
     margin-top: 9px;
     margin-left: 5px;
     min-height: 220px;
-    width: 712px;
+    width: 708px;
     padding-top: 10px;
     margin-bottom: 2px;
     border-color: #ddd;
@@ -189,6 +190,161 @@
     width: 84%;
     display: inline;
 }
+
+.event_content{
+    position: relative;
+    padding-bottom: 1px;
+    margin-top: 9px;
+    margin-left: 5px;
+    min-height: 220px;
+    width: 708px;
+    padding-top: 10px;
+    margin-bottom: 2px;
+    border-color: #ddd;
+}
+
+.event_tile_single{
+    display: table;
+    position: relative;
+    text-align: left;
+    margin-left: 7px;
+    margin-bottom: 4px;
+    width: 257px;
+    margin-left: 8px;
+    min-height: 32px;
+    padding-bottom: 2px;
+    background-color: #FFFFFF;
+    color: #000000;
+    border: 1px solid #FF69B4;
+}
+
+.tile_list_art {
+    max-width: 240px;
+    margin-top: 8px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    margin-right: 4px;
+    float: left; 
+}
+
+.tile_list_art.tile-content-img{
+    max-width: 30px;
+    max-height: 25px; 
+    margin-top: 3px;
+}
+
+.tile_list_title{
+    float:left;
+    width: 235px; 
+    margin-top: 2px; 
+    margin-left: 5px; 
+    font-size: 11px; 
+    text-align: justify; 
+    word-wrap: break-word;
+}
+
+.tile_list_title.tile-content-title{  
+    width: 200px;
+}
+
+.event_content_left{
+    width: 45%;
+    float: left;
+    height: 207px;
+}
+
+.event_content_right{
+    width: 55%;
+    float: right;
+    height: 207px;
+}
+
+                /* Tile Activity Title */
+
+.activity-title{
+    float: left;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.tile-activity-title {
+    width: 256px;
+    height: 30px;
+    float: left;
+    margin-left: 9px;
+}
+
+                /*Short Description */
+.short-desc{
+    float: left;
+    width: 100%;
+    margin-top: 4px;
+}
+
+.tile-short-desc {
+    width: 256px;
+    height: 51px;
+    float: left;
+    margin-left: 9px;
+}
+
+                /* Tile Activity Date */
+
+.activity-date{
+    float: left;
+    width: 100%;   
+    margin-top: 5px;
+}
+
+.tile-activity-date {
+    width: 256px;
+    height: 30px;
+    margin-left: 9px;
+}
+
+                /* Hide Activity Date */
+.hide-act-date{
+    float: left;
+    width: 100%;
+}
+
+                /* Drag buttons */
+.drag_buttons {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+    text-align: right;
+    float: right;
+    padding-right: 7px;
+}
+
+.trigger_btn {
+    margin-right: 5px;
+    color: #000000;
+    border: 1px solid #A9A9A9;
+}
+
+                /* Trigger Types */
+
+.trigger_types{
+    position: relative;
+    width: 100%;
+    margin-bottom: 5px;
+    float: right;
+}
+
+.main_trigger_type{
+   float: right;
+   width:100%;
+}
+
+.trigger_type_option {
+    float: right;
+    width: 280px;
+    margin-right: 46px;
+}
+
+
 
       
 

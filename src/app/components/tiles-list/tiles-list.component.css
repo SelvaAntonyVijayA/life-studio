@@ -180,5 +180,15 @@ virtual-scroll {
     height: 723px;
 }
 
+.highlight{
+    width: 258px;
+    min-height: 32px;
+    padding-right: 13px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    float: left;
+}
+
+
 
 

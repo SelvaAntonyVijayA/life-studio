@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Renderer, EventEmitter, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, Renderer, EventEmitter, ElementRef, ComponentRef, ComponentFactoryResolver, ViewContainerRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Tile } from '../../models/tile';
 import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
@@ -20,6 +20,7 @@ export class TilesListComponent {
   //opts: ISlimScrollOptions;
   @Input('page') page: string;
   @Input('organizations') organizations: any[];
+  @Input('droppedTile') droppedTile: Object;
   tileContent = new EventEmitter<any>();
   //private organizations: any[] = [];
   tileCategories: any[] = [];
@@ -79,7 +80,11 @@ export class TilesListComponent {
   };
 
   getTileData(data: any) {
-    this.tileContent.emit(data);
+    if (data.hasOwnProperty("dropped")) {
+      this.releaseDrop(data["dropped"]);
+    } else {
+      this.tileContent.emit(data);
+    }
   };
 
   emitCategories(categories: any[]) {
@@ -170,6 +175,14 @@ export class TilesListComponent {
     }
   };
 
+  private releaseDrop(currTile) {
+    let index = this.tiles.map(function (t) { return t['_id']; }).indexOf(currTile._id);
+    
+    if (index >= 0) {
+      this.tiles.splice(index, 1);
+    }
+  }
+
   ngOnInit() {
     //this.setScrollOptions();
     this.setScrollList();
@@ -193,6 +206,10 @@ export class TilesListComponent {
         this.setTileListData();
       }
     }
+
+    if (cHObj.hasOwnProperty("droppedTile") && !this.utils.isEmptyObject(cHObj["droppedTile"]["currentValue"])) {
+      this.releaseDrop(cHObj["droppedTile"]["currentValue"]);
+    }
   };
 }
 
@@ -202,7 +219,7 @@ export class TilesListComponent {
   template: `<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" />
              <link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
              <link rel="stylesheet" href="/css/ti_icons.css">
-             <div [style.cursor]="cursor" class="main_tile_block tiles_list_single"> 
+             <div [iliDraggable]="{data: tile, page: page}" [style.cursor]="cursor" class="main_tile_block tiles_list_single"> 
              <img [ngClass]="listType === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
              <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
              <div class="tile_icons">
@@ -223,13 +240,20 @@ export class TilesComponent implements OnInit {
   @Input('page') page: string;
   @Input('listType') listType: string;
   tileData = new EventEmitter<any>();
+  dropped = new EventEmitter<any>();
+  @ViewChild(this, { read: ViewContainerRef }) tileListSingle;
 
   emptyString: string = "";
   symbols = {};
   tileSelect: Function;
   cursor: string = "crosshair";
 
-  constructor(private e1: ElementRef, private renderer: Renderer, private tileService: TileService) {
+  constructor(private e1: ElementRef,
+    private renderer: Renderer,
+    private tileService: TileService,
+    private viewContainerRef: ViewContainerRef,
+    private resolver: ComponentFactoryResolver) {
+
   }
 
   ngOnInit() {

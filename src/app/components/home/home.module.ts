@@ -12,10 +12,12 @@ import { EventsComponent } from '../../components/events/events.component';
 
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
-import { CommonService } from '../../services/common.service'
+import { CommonService } from '../../services/common.service';
+import { DragService } from '../../services/drag.service'
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 import { DyBindDirective } from '../../components/widgets/dynamic-bind.directive';
+//import { DragDropDirectiveModule} from "angular4-drag-drop";
 
 import { Ng2Summernote } from 'ng2-summernote/ng2-summernote';
 //import { SlimScrollModule } from 'ng2-slimscroll';
@@ -23,6 +25,8 @@ import { Ng2Summernote } from 'ng2-summernote/ng2-summernote';
 
 import { FilterByTextPipe, OrderByPipe} from '../../helpers/filters.pipe';
 import { MalihuScrollbarModule } from 'ngx-malihu-scrollbar';
+import { DraggableDirective } from '../../helpers/draggable.directive';
+import { DropTargetDirective } from '../../helpers/drop-target.directive';
 
 @NgModule({
   imports: [
@@ -31,8 +35,8 @@ import { MalihuScrollbarModule } from 'ngx-malihu-scrollbar';
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe,  TilesComponent, TileBlocksComponents, SafePipe,
-    TileBlocksDirective, DyBindDirective, Ng2Summernote, EventsComponent],
-  providers: [HeaderService, TileService, CommonService]
+    TileBlocksDirective, DyBindDirective, DraggableDirective, DropTargetDirective, Ng2Summernote, EventsComponent],
+  providers: [HeaderService, TileService, CommonService, DragService]
 })
 
 export class HomeModule { }
