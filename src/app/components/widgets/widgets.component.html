@@ -1,5 +1,5 @@
-<div class="page_tile_content">
-  <div class="widget-container">
+<div class="container page_tile_content">
+ <!-- <div class="widget-container"> -->
     <div class="page_block tiles_head">
       <div class="tile_form">
         <input id="txtTileTitle" [(ngModel)]="selectedTile!.title" class="ili-form tile_title" placeholder="Title" type="text">
@@ -487,5 +487,5 @@
 
       <tiles-list (tileContent)="getTileContent($event)" [organizations]="organizations" [page]="'tiles'"></tiles-list>
     </div>
-  </div>
+ <!-- </div> -->
 </div>
