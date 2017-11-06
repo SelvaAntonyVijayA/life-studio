@@ -1,14 +1,12 @@
-.page_tile_content {
+.widgets_container {
     height: 920px;
-    float: left;
-    margin: 1px 0px 0px 91px;
 }
 
-
 .tiles_head {
-    width: 99.98%;
+    width: 99.97%;
     height: 78px;
     float: left;
+    margin-left: 1px;
     margin-bottom: 1px;
 }
 
@@ -16,6 +14,7 @@
   position: relative;
   width: 100%;
   height: 833px;
+  margin-left: 2px;
   float: left;
 }
 
@@ -137,7 +136,7 @@
 }
 
 .widgets_block {
-    width: 162px;
+    width: 161px;
     height: 880px;
     text-align: center;
     position:relative; 
@@ -145,11 +144,11 @@
     margin-left: -1px;
 }
 
-.widget-container{
+/*.widget-container{
     float: left;
     width: 99.99%;
     height: 911px;
-}
+}*/
    
   /*Tile Widgets */
   
