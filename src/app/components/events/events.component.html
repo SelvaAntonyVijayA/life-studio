@@ -1,84 +1,88 @@
 <div class="container events_container">
-<!--  <div class="events_container">  -->
-    <div class="page_block events_head">
-      <div class="events_inputs">
-        <input class="form-control input-sm event_name" type="text" placeholder="Event Name">
-        <select class="form-control input-sm language" placeholder="Select Language">
-        </select>
-        <div style="margin-top: 5px;" class="checkbox">
-          <label>
-            <input style="margin-top: 2px;" type="checkbox" value="">Use as Timeline</label>
-        </div>
-        <div class="event_dates">
-          <span class="lbl_avail_text">Available in the app from: </span>
-          <input class="form-control input-sm event_avail_date_time" type="text">
-          <span class="lbl_until_text">Until: </span>
-          <input class="form-control input-sm event_until_date_time" type="text">
-          <select class="form-control input-sm event_type" placeholder="Select / Add Type">
-          </select>
-        </div>
+  <!--  <div class="events_container">  -->
+  <div class="page_block events_head">
+    <div class="events_inputs">
+      <input class="form-control input-sm event_name" type="text" placeholder="Event Name">
+      <select class="form-control input-sm language" placeholder="Select Language">
+      </select>
+      <div style="margin-top: 5px;" class="checkbox">
+        <label>
+          <input style="margin-top: 2px;" type="checkbox" value="">Use as Timeline</label>
       </div>
-      <div class="event_btns">
-        <button class="ili-btn event_new">
-          New
-        </button>
-        <button class="ili-btn btn event_save">
-          Save
-        </button>
-        <button class="ili-btn event_duplicate">
-          Duplicate
-        </button>
-        <button class="ili-btn event_delete">
-          Delete
-        </button>
-        <button class="ili-btn page_setup">
-          Page Setup
-        </button>
-        <button class="ili-btn default_page_setup">
-          Default Page Setup
-        </button>
+      <div class="event_dates">
+        <span class="lbl_avail_text">Available in the app from: </span>
+        <input ILIDateTimePicker class="form-control input-sm event_avail_date_time" type="text" />
+        <span class="lbl_until_text">Until: </span>
+        <input ILIDateTimePicker class="form-control input-sm event_until_date_time" type="text" />
+        <select class="form-control input-sm event_type" placeholder="Select / Add Type">
+        </select>
       </div>
     </div>
-    <div class="event_main_content">
-      <div class="page_block events_block">
-        <div class="events_text ">
-          <span> EVENTS </span>
-        </div>
-        <input class="form-control input-sm search_box_tilist" type="text" placeholder="Search Events">
-        <select class="form-control input-sm filter_event">
-
-        </select>
-        <select class="form-control input-sm sort_event">
-          <option value="date_desc">Latest on top</option>
-          <option value="date_asc">Oldest on top</option>
-          <option value="name_asc">Name - A on top</option>
-          <option value="name_desc">Name - Z on top</option>
-          <option value="type_asc">Type - A on top</option>
-          <option value="type_desc">Type - Z on top</option>
-        </select>
+    <div class="event_btns">
+      <button class="ili-btn event_new">
+        New
+      </button>
+      <button class="ili-btn btn event_save">
+        Save
+      </button>
+      <button class="ili-btn event_duplicate">
+        Duplicate
+      </button>
+      <button class="ili-btn event_delete">
+        Delete
+      </button>
+      <button class="ili-btn page_setup">
+        Page Setup
+      </button>
+      <button class="ili-btn default_page_setup">
+        Default Page Setup
+      </button>
+    </div>
+  </div>
+  <div class="event_main_content">
+    <div class="page_block events_block">
+      <div class="events_text ">
+        <span> EVENTS </span>
       </div>
-      <div id="event_main_container" malihu-scrollbar [scrollbarOptions]="scrollbarOptions" class="page_block main_event_container">
-        <div iliDropTarget (myDrop)="onDrop($event)" class="ili-panel main_event_content drop_target">
-          <div class="draggable_label">To add Tiles to this Event, simply drag them in this space.
-            <br>
-            <br>Add Tiles in order you want them to appear in the app.
-            <br>
-            <br>Triggered Tiles will appear above Permanent Tiles in the app.</div>
-        </div>
-        <div *ngFor="let tile of draggedTiles; let i = index; trackBy: trackByIndex" class="ili-panel event_content">
+      <input class="form-control input-sm search_box_tilist" type="text" placeholder="Search Events">
+      <select class="form-control input-sm filter_event">
+
+      </select>
+      <select class="form-control input-sm sort_event">
+        <option value="date_desc">Latest on top</option>
+        <option value="date_asc">Oldest on top</option>
+        <option value="name_asc">Name - A on top</option>
+        <option value="name_desc">Name - Z on top</option>
+        <option value="type_asc">Type - A on top</option>
+        <option value="type_desc">Type - Z on top</option>
+      </select>
+    </div>
+    <div id="event_main_container" malihu-scrollbar [scrollbarOptions]="scrollbarOptions" class="page_block main_event_container">
+      <div iliDropTarget (myDrop)="onDrop($event)" class="ili-panel main_event_content drop_target">
+        <div class="draggable_label">To add Tiles to this Event, simply drag them in this space.
+          <br>
+          <br>Add Tiles in order you want them to appear in the app.
+          <br>
+          <br>Triggered Tiles will appear above Permanent Tiles in the app.</div>
+      </div>
+      <div *ngFor="let dragTile of event!.draggedTiles | reverse; let i = index; trackBy: trackByUniqueId" class="ili-panel event_content">
+        <div *ngIf="!dragTile.hasOwnProperty('eventDragContainer')" class="event_main_panel">
           <div class="event_content_left">
             <div class="event_tile_single">
-              <img class='tile_list_art tile-content-img' [src]="tile?.art | safe">
-              <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
+              <img class='tile_list_art tile-content-img' [src]="dragTile?.tile?.art | safe">
+              <div class="tile_list_title tile-content-title">{{dragTile?.tile?.title}}</div>
             </div>
             <div class="activity-title">
-              <input class="form-control input-sm tile-activity-title" value="" placeholder="Activity Title" type="text">
+              <input class="form-control input-sm tile-activity-title" [(ngModel)]="dragTile!.activityTitle" placeholder="Activity Title"
+                type="text">
             </div>
             <div class="short-desc">
-              <input class="form-control input-sm tile-short-desc" value="" placeholder="Short Description" type="text">
+              <input class="form-control input-sm tile-short-desc" [(ngModel)]="dragTile!.shortDescription" placeholder="Short Description"
+                type="text">
             </div>
             <div class="activity-date">
-              <input class="form-control input-sm tile-activity-date" value="" placeholder="Activity Date" type="text">
+              <input ILIDateTimePicker [attr.id]="dragTile?.tile?._id" class="form-control input-sm tile-activity-date" [(ngModel)]="dragTile!.activityDate"
+                placeholder="Activity Date" type="text">
             </div>
             <div class="hide-act-date">
               <div style="padding-left: 10px;" class="checkbox">
@@ -89,7 +93,7 @@
           </div>
           <div class="event_content_right">
             <div class="drag_buttons">
-              <button class="trigger_btn" title="Add Space">
+              <button (click)="addDraggable(i)" class="trigger_btn" title="Add Space">
                 <span class="glyphicon glyphicon-plus"></span>
               </button>
               <button class="trigger_btn" title="Replicate">
@@ -98,30 +102,64 @@
               <button class="trigger_btn" title="MoveUp">
                 <span class="glyphicon glyphicon-arrow-up"></span>
               </button>
-              <button class="trigger_btn" title="MoveDown">
+              <button  class="trigger_btn" title="MoveDown">
                 <span class="glyphicon glyphicon-arrow-down"></span>
               </button>
-              <button class="trigger_btn" title="Remove">
+              <button (click)="deleteDraggedTile(i)" class="trigger_btn" title="Remove">
                 <span class="glyphicon glyphicon-remove"></span>
               </button>
             </div>
             <div class="trigger_types">
-              <div class="main_trigger_type">   
-                <select class="form-control input-sm trigger_type_option">
-                  <option value="-1">Select trigger</option>
-                  <option value="always">Permanent</option>
-                  <option value="manual">Manually through the Control Panel</option>
-                  <option value="delay">No. of Minutes after the start of previous tile</option>
-                  <option value="time">At a specific date and time</option>
+              <div class="main_trigger_type">
+                <select #tileTrigger [ngModel]="dragTile?.type" (ngModelChange)="setDragTile($event, dragTile, 'activate')" class="form-control input-sm trigger_type_option">
+                  <option [value]="'-1'">Select trigger</option>
+                  <option [value]="'always'">Permanent</option>
+                  <option [value]="'manual'">Manually through the Control Panel</option>
+                  <option [value]="'delay'">No. of Minutes after the start of previous tile</option>
+                  <option [value]="'time'">At a specific date and time</option>
                 </select>
-                <span style="float: right; margin-right: 7px; margin-top: 4px;" class="label_small">Activate: </span>
+                <span style="float: right; margin-right: 7px; margin-top: 4px; font-size: 11px;" class="label_small">Activate: </span>
+              </div>
+              <div *ngIf="dragTile?.type === 'always'" class="tile_permanent">
+                <span class="label_small">No Trigger - Always available in the app</span>
+              </div>
+              <div *ngIf="dragTile?.type === 'delay'" class="activate_delay">
+                <input style="width:172px;" type="text" [(ngModel)]="dragTile.delayToActivate" class="form-control input-sm" placeholder="Delay in minutes">
+              </div>
+              <div *ngIf="dragTile?.type === 'time'" class="activate_time">
+                <input ILIDateTimePicker style="width:172px;" type="text" [(ngModel)]="dragTile.timeToActivate" class="form-control input-sm"
+                  placeholder="DateTime">
+              </div>
+              <div *ngIf="(dragTile?.type === 'manual' || dragTile?.type === 'delay' || dragTile?.type === 'time')" class="tile_manual">
+                <select #tileDeactivate [ngModel]="dragTile?.stopType" (ngModelChange)="setDragTile($event, dragTile, 'deactivate')" class="form-control input-sm trigger_type_option">
+                  <option [value]="'-1'">Keep active or deactivate manually</option>
+                  <option [value]="'aftertrigger'">No. of min. after being triggered</option>
+                  <option [value]="'aftertile'">No. of minutes after the next tile</option>
+                  <option [value]="'time'">At a specific date and time</option>
+                </select>
+                <span style="float: right; margin-right: 7px; margin-top: 4px; font-size: 11px;" class="label_small">Deactivate: </span>
+              </div>
+              <div *ngIf="(dragTile?.stopType === 'aftertile' || dragTile?.stopType === 'aftertrigger')" class="deactivate_delay">
+                <input style="width:172px;" type="text" [(ngModel)]="dragTile.delayToDeActivate" class="form-control input-sm" placeholder="Delay in minutes">
+              </div>
+              <div *ngIf="dragTile?.stopType === 'time'" class="deactivate_time">
+                <input ILIDateTimePicker style="width:172px;" [(ngModel)]="dragTile.timeToDeActivate" type="text" class="form-control input-sm "
+                  placeholder="DateTime">
               </div>
             </div>
           </div>
         </div>
+        <div iliDropTarget (myDrop)="onDrop($event)" *ngIf="dragTile.hasOwnProperty('eventDragContainer')" class="draggable_label drop_target">
+          To add Tiles to this Event, simply drag them in this space.
+          <br>
+          <br>Add Tiles in order you want them to appear in the app.
+          <br>
+          <br>Triggered Tiles will appear above Permanent Tiles in the app.
+        </div>
       </div>
-      <tiles-list class="dragItem" (tileContent)="getTileContent($event)" [droppedTile]="droppedTile" [organizations]="organizations"
-        [page]="'events'"></tiles-list>
     </div>
-<!--  </div> -->
+    <tiles-list class="dragItem" (tileContent)="getTileContent($event)" [droppedTile]="droppedTile" [organizations]="organizations"
+      [page]="'events'"></tiles-list>
+  </div>
+  <!--  </div> -->
 </div>

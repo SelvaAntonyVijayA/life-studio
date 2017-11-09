@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Utils } from '../helpers/utils';
 
 @Pipe({
-  name: 'filterByText'
+  name: 'filterByText',
+  pure: false
 })
 export class FilterByTextPipe implements PipeTransform {
   constructor() {
@@ -24,7 +25,8 @@ export class FilterByTextPipe implements PipeTransform {
 };
 
 @Pipe({
-  name: 'orderBy'
+  name: 'orderBy',
+  pure: false
 })
 export class OrderByPipe implements PipeTransform {
   constructor() {
@@ -58,5 +60,17 @@ export class OrderByPipe implements PipeTransform {
     }
   };
 };
+
+@Pipe({
+  name: 'reverse',
+  pure: false
+})
+export class ReversePipe {
+  transform (values) {
+    if (values) {
+      return values.reverse();
+    }
+  }
+}
 
 

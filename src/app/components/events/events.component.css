@@ -1,5 +1,6 @@
 .events_container  {
     height: 920px;
+    position: relative;
 }
 
 /*.events_container {
@@ -14,6 +15,7 @@
     float: left;
     margin-bottom: 1px;
     margin-left: 1px;
+    position: relative;
 }
 
 .events_inputs{
@@ -22,6 +24,7 @@
     height: 60px;
     margin-top: 7px;
     margin-left: 13px;
+    position: relative;
 }
 
 .event_name{
@@ -39,6 +42,7 @@
 .event_dates{
     float: left;
     width: 100%;
+    position: relative;
 }
 
 .lbl_avail_text, .lbl_until_text{
@@ -249,6 +253,7 @@
     width: 45%;
     float: left;
     height: 207px;
+    position: relative;
 }
 
 .event_content_right{
@@ -292,6 +297,7 @@
     float: left;
     width: 100%;   
     margin-top: 5px;
+    position: relative;
 }
 
 .tile-activity-date {
@@ -340,6 +346,57 @@
     float: right;
     width: 280px;
     margin-right: 46px;
+}
+
+.tile_permanent {
+    position: relative;
+    width: 97.6%;
+    float: right;
+    margin-top: 28px;
+    font-size: 11px;
+}
+
+.tile_manual{
+    position: relative;
+    width: 100%;
+    float: right;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.deactivate_delay{
+    position: relative;
+    width: 83.8%;
+    float: right;
+    margin-bottom: 10px; 
+}
+
+.deactivate_time{
+    position: relative;
+    width: 83.8%;
+    float: right;
+    margin-bottom: 10px; 
+}
+
+.activate_delay{
+    margin-top: 10px;
+    position: relative;
+    width: 83.8%;
+    float: right;
+}
+
+.activate_time{
+    margin-top: 10px;
+    position: relative;
+    width: 83.8%;
+    float: right;
+}
+
+.event_main_panel{
+    position: relative;
+    float: left;
+    width: 100%;
+    min-height: 220px;
 }
 
 

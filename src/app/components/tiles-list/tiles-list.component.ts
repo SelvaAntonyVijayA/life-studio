@@ -177,9 +177,11 @@ export class TilesListComponent {
 
   private releaseDrop(currTile) {
     let index = this.tiles.map(function (t) { return t['_id']; }).indexOf(currTile._id);
-    
+
     if (index >= 0) {
       this.tiles.splice(index, 1);
+    } else {
+      this.tiles.push(currTile);
     }
   }
 

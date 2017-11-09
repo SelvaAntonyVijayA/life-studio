@@ -40,4 +40,14 @@ export class Utils {
   public static isArray(obj: any) {
     return !!obj && obj.constructor === Array;
   };
+
+  public static arrayMove(arr: any[], fromIndex: number, toIndex: number) {
+    var element = arr[fromIndex];
+    arr.splice(fromIndex, 1);
+    arr.splice(toIndex, 0, element);
+  };
+
+  public static isDecimal(num: number) {
+    return isNaN(num)? false : num % 1 === 0 ? false : true;
+  };
 }
