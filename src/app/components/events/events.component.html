@@ -66,6 +66,7 @@
           <br>Triggered Tiles will appear above Permanent Tiles in the app.</div>
       </div>
       <div *ngFor="let dragTile of event!.draggedTiles | reverse; let i = index; trackBy: trackByUniqueId" class="ili-panel event_content">
+        {{ setDragIndex(i, dragTile) }}
         <div *ngIf="!dragTile.hasOwnProperty('eventDragContainer')" class="event_main_panel">
           <div class="event_content_left">
             <div class="event_tile_single">
@@ -96,13 +97,13 @@
               <button (click)="addDraggable(i)" class="trigger_btn" title="Add Space">
                 <span class="glyphicon glyphicon-plus"></span>
               </button>
-              <button class="trigger_btn" title="Replicate">
+              <button (click)="replicateTile(dragTile)" class="trigger_btn" title="Replicate">
                 <span class="glyphicon glyphicon-retweet"></span>
               </button>
-              <button class="trigger_btn" title="MoveUp">
+              <button (click)="moveUpDown('up', i)" class="trigger_btn" title="MoveUp">
                 <span class="glyphicon glyphicon-arrow-up"></span>
               </button>
-              <button  class="trigger_btn" title="MoveDown">
+              <button (click)="moveUpDown('down', i)" class="trigger_btn" title="MoveDown">
                 <span class="glyphicon glyphicon-arrow-down"></span>
               </button>
               <button (click)="deleteDraggedTile(i)" class="trigger_btn" title="Remove">
@@ -149,7 +150,7 @@
             </div>
           </div>
         </div>
-        <div iliDropTarget (myDrop)="onDrop($event)" *ngIf="dragTile.hasOwnProperty('eventDragContainer')" class="draggable_label drop_target">
+        <div iliDropTarget (myDrop)="onDrop($event, true)" *ngIf="dragTile.hasOwnProperty('eventDragContainer')" class="draggable_label drop_target">
           To add Tiles to this Event, simply drag them in this space.
           <br>
           <br>Add Tiles in order you want them to appear in the app.

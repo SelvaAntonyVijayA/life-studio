@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, EventEmitter, ContentChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ContentChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
 import { CommonService } from '../../services/common.service';
@@ -20,6 +20,8 @@ export class EventsComponent implements OnInit {
     private mScrollbarService: MalihuScrollbarService) {
     this.utils = Utils;
   }
+  
+          /* Variables Intialization*/
 
   organizations: any[] = [];
   selectedOrganization: string = "-1";
@@ -34,12 +36,16 @@ export class EventsComponent implements OnInit {
   event: Object = {};
   dragIndex: number = -1;
   utils: any;
+  //currObj: any = this;
+            
+          /* Organizations Intialization */
 
   setOrganizations() {
     if (this.organizations.length == 0) {
       this.organizations = this.cms["appDatas"].hasOwnProperty("organizations") ? this.cms["appDatas"]["organizations"] : [];
     }
   };
+          /* Setting for default dragged tile */
 
   setDefaultDraggedTile(tile: any) {
     var dragged = {
@@ -50,6 +56,8 @@ export class EventsComponent implements OnInit {
 
     return dragged;
   };
+  
+          /* Setting dragged tile */
 
   setDragTile(triggerType: any, dragTile: any, type: string) {
     this.resetTriggerTypes(dragTile, type);
@@ -80,6 +88,8 @@ export class EventsComponent implements OnInit {
       }
     }
   }
+  
+          /* Resetting dragged tile trigger resetting */
 
   resetTriggerTypes(dragTile: any, type: string) {
     if (type == "activate") {
@@ -90,9 +100,11 @@ export class EventsComponent implements OnInit {
 
     delete dragTile["delayToDeActivate"];
     delete dragTile["timeToDeActivate"];
-  }
+  };
 
-  private onDrop(event) {
+          /* Dragged tile on drop*/
+
+  private onDrop(event, isDynamic) {
     var draggedTile = this.setDefaultDraggedTile(event);
 
     if (this.event.hasOwnProperty("draggedTiles")) {
@@ -100,7 +112,13 @@ export class EventsComponent implements OnInit {
         this.event["draggedTiles"].push(draggedTile);
       } else {
         var currIdx = this.dragIndex;
-        this.event["draggedTiles"][currIdx] = draggedTile;
+
+        if (!isDynamic) {
+          this.event["draggedTiles"].splice(currIdx, 1);
+        } else {
+          this.event["draggedTiles"][currIdx] = draggedTile;
+        }
+
         this.dragIndex = -1;
       }
     } else {
@@ -109,13 +127,17 @@ export class EventsComponent implements OnInit {
 
     this.droppedTile = event;
   };
+  
+           /* Deleting current dragged tile */
 
   deleteDraggedTile(idx: number) {
     this.droppedTile = {};
+    var totalIdx = this.event["draggedTiles"].length - 1;
+    var currIdx = totalIdx - idx;
 
-    var tile = this.event["draggedTiles"][idx]["tile"];
+    var tile = this.event["draggedTiles"][currIdx]["tile"];
     this.droppedTile = !this.utils.isEmptyObject(tile) ? Object.assign({}, tile) : {};
-    this.event["draggedTiles"].splice(idx, 1);
+    this.event["draggedTiles"].splice(currIdx, 1);
   };
 
   getTileContent(tileObj: any) {
@@ -124,9 +146,20 @@ export class EventsComponent implements OnInit {
   trackByIndex(index: number, obj: any): any {
     return index;
   };
+            /* Dragged tile by uniqueId */
 
-  trackByUniqueId(index: number, obj: any) {
+  trackByUniqueId(index: number, obj: any, currObj: any) {
     return obj["uniqueId"];
+  };
+            
+            /* Setting Drag Index for every tile index change */
+
+  setDragIndex(idx: number, obj: any) {
+    if (this.dragIndex !== -1 && !this.utils.isEmptyObject(obj) && obj.hasOwnProperty("eventDragContainer")) {
+      var totalIdx = this.event["draggedTiles"].length - 1;
+
+      this.dragIndex = !idx ? -1 : totalIdx - idx;
+    }
   };
 
   getUniqueId() {
@@ -134,7 +167,8 @@ export class EventsComponent implements OnInit {
 
     return uniqueId;
   };
-  /* Adding Dynamic draggable */
+
+            /* Adding Dynamic draggable */
 
   addDraggable(idx: number) {
     var dragged = { "uniqueId": this.getUniqueId(), "eventDragContainer": true };
@@ -146,17 +180,17 @@ export class EventsComponent implements OnInit {
       this.event["draggedTiles"].splice(this.dragIndex, 0, dragged);
     } else if (this.dragIndex > -1) {
       var fromIdx = this.dragIndex;
-      //var halfIndex = (totalIdx) / 2;
-      //var isDecimalIdx = this.utils.isDecimal(halfIndex);
       var toIdx = totalIdx === idx ? 0 : idx === 0 ? totalIdx - 1 : (totalIdx - idx) - 1 === this.dragIndex ? this.dragIndex : this.dragIndex > totalIdx - idx ? totalIdx - idx : (totalIdx - idx) - 1;
 
       if (fromIdx !== toIdx) {
         this.utils.arrayMove(this.event["draggedTiles"], fromIdx, toIdx);
         var move = this.event["draggedTiles"];
-        this.dragIndex = toIdx;
+        //this.dragIndex = toIdx;
       }
     }
   };
+
+          /* Intial scroll list intialization */
 
   setScrollList() {
     if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
@@ -166,15 +200,33 @@ export class EventsComponent implements OnInit {
     }
   };
 
+  moveUpDown(move: string, idx: number) {
+    var totalIdx = this.event["draggedTiles"].length - 1;
+    var fromIdx = totalIdx === idx ? 0 : idx === 0 ? totalIdx : totalIdx - idx; 
+    var toIdx = totalIdx === 0 ? 0 : move === "up" ? fromIdx + 1 : fromIdx - 1;
+
+    this.utils.arrayMove(this.event["draggedTiles"], fromIdx, toIdx);
+  };
+
   resetEventDatas() {
     //this.draggedTiles = [];
+    this.dragIndex = -1;
     this.droppedTile = {};
+    this.event = {};
+    this.oid = "";
+  };
+
+  replicateTile(obj: any){ 
+    var replicateTile = !this.utils.isEmptyObject(obj) && obj.hasOwnProperty("tile")? obj["tile"] : {};
+    var replicatedTile = this.setDefaultDraggedTile(replicateTile);
+    this.event["draggedTiles"].push(replicatedTile);
   };
 
   ngOnInit() {
     this.setScrollList();
 
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
+      this.resetEventDatas();
       this.setOrganizations();
       this.oid = Cookie.get('oid');
       this.selectedOrganization = this.oid;

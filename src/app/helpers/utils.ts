@@ -27,7 +27,7 @@ export class Utils {
   };
 
   public static isEmptyObject(obj: any) {
-    return (obj && (Object.keys(obj).length === 0));
+    return (typeof obj === "undefined" || obj === null || obj === "") ? false : (obj && (Object.keys(obj).length === 0));
   }
 
   public static getParameterByName(name: any) {
@@ -48,6 +48,6 @@ export class Utils {
   };
 
   public static isDecimal(num: number) {
-    return isNaN(num)? false : num % 1 === 0 ? false : true;
+    return isNaN(num) ? false : num % 1 === 0 ? false : true;
   };
 }
