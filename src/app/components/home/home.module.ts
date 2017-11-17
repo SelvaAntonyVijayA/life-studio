@@ -14,6 +14,7 @@ import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
 import { CommonService } from '../../services/common.service';
 import { DragService } from '../../services/drag.service'
+import { EventService } from '../../services/event.service';
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 import { DyBindDirective } from '../../components/widgets/dynamic-bind.directive';
@@ -23,7 +24,7 @@ import { Ng2Summernote } from 'ng2-summernote/ng2-summernote';
 //import { SlimScrollModule } from 'ng2-slimscroll';
 //import { VirtualScrollModule } from 'angular2-virtual-scroll';
 
-import { FilterByTextPipe, OrderByPipe, ReversePipe} from '../../helpers/filters.pipe';
+import { FilterByTextPipe, OrderByPipe, ReversePipe } from '../../helpers/filters.pipe';
 import { MalihuScrollbarModule } from 'ngx-malihu-scrollbar';
 import { DraggableDirective } from '../../helpers/draggable.directive';
 import { DropTargetDirective } from '../../helpers/drop-target.directive';
@@ -36,9 +37,9 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
-    TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe,  TilesComponent, TileBlocksComponents, SafePipe,
+    TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
     TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, Ng2Summernote, EventsComponent],
-  providers: [HeaderService, TileService, CommonService, DragService]
+  providers: [HeaderService, TileService, CommonService, DragService, EventService]
 })
 
 export class HomeModule { }

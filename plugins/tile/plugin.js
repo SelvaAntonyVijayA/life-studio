@@ -5,9 +5,6 @@ var query = {};
 
 var tile = require(path.join(process.cwd(), 'models', 'tile'));
 
-var init = function () {
-};
-
 var list = function (req, res, next) {
   options.sort = { 'lastUpdatedOn': -1 };
   options.lean = true;
@@ -20,4 +17,4 @@ var list = function (req, res, next) {
   });
 };
 
-module.exports = { "init": init, "list": list };
+module.exports = {"list": list };

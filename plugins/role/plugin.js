@@ -5,10 +5,6 @@ var query = {};
 
 var role = require(path.join(process.cwd(), 'models', 'role'));
 
-var init = function () {
-
-};
-
 var _get = function (query, options, cb) {
   options.lean = true;
 
@@ -17,4 +13,4 @@ var _get = function (query, options, cb) {
   });
 };
 
-module.exports = { "init": init, "_get": _get };
+module.exports = { "_get": _get };

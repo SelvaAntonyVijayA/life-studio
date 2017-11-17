@@ -3,9 +3,6 @@ var mongoose = require('mongoose');
 
 var organization = require(path.join(process.cwd(), 'models', 'organization'));
 
-var init = function () {
-};
-
 var getList = function (query, options, cb) {
   options.sort = {'name': 1};
   options.lean = true;
@@ -16,5 +13,5 @@ var getList = function (query, options, cb) {
 };
 
 
-module.exports = { "init": init, "getList": getList };
+module.exports = {"getList": getList };
 

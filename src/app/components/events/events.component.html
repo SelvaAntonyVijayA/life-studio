@@ -11,10 +11,16 @@
       </div>
       <div class="event_dates">
         <span class="lbl_avail_text">Available in the app from: </span>
-        <input ILIDateTimePicker class="form-control input-sm event_avail_date_time" type="text" />
+        <input ILIDateTimePicker class="form-control input-sm event_avail_date_time" [(ngModel)]="eventStart" type="text" />
         <span class="lbl_until_text">Until: </span>
-        <input ILIDateTimePicker class="form-control input-sm event_until_date_time" type="text" />
-        <select class="form-control input-sm event_type" placeholder="Select / Add Type">
+        <input ILIDateTimePicker class="form-control input-sm event_until_date_time" [(ngModel)]="availableEnd" type="text" />
+        <!--   <select class="form-control input-sm event_type" placeholder="Select / Add Type">
+          <option *ngFor="let evtCat of eventCategories; let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
+        </select> -->
+        <select #mySelect placeholder="Select / Add Type">
+          <option [value]="'115x175 mm'">115x175 mm</option>
+          <option [value]="'120x160 mm'">120x160 mm</option>
+          <option [value]="'120x287 mm'">120x287 mm</option>
         </select>
       </div>
     </div>
@@ -22,7 +28,7 @@
       <button class="ili-btn event_new">
         New
       </button>
-      <button class="ili-btn btn event_save">
+      <button (click)="saveEvent($event)" class="ili-btn btn event_save">
         Save
       </button>
       <button class="ili-btn event_duplicate">
@@ -46,7 +52,8 @@
       </div>
       <input class="form-control input-sm search_box_tilist" type="text" placeholder="Search Events">
       <select class="form-control input-sm filter_event">
-
+        <option [value]="-1">Show All Types</option>
+        <option *ngFor="let evtCat of eventCategories; let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
       </select>
       <select class="form-control input-sm sort_event">
         <option value="date_desc">Latest on top</option>
@@ -56,8 +63,35 @@
         <option value="type_asc">Type - A on top</option>
         <option value="type_desc">Type - Z on top</option>
       </select>
+      <div class="group-view-change">
+        <img class="img-event-view-group" *ngIf="groupType === 'list'" (click)="changeGroupView()" src="/img/details.png" alt=""
+          title="Details" />
+        <img class="img-event-view-group group-list-view" *ngIf="groupType === 'details'" (click)="changeGroupView()" src="/img/list.png"
+          alt="" title="List" />
+      </div>
+      <div id="main-container-events" class="tilist_list_show">
+        <div class="event_list_single" *ngFor="let evt of events; let i = index; trackBy: trackByIndex">
+          {{eventNotificationIcon(evt)}}
+          <div [ngClass]="groupType === 'list'? 'event-art' : 'event-art details'">
+            <img [ngClass]="groupType === 'list'? 'tilist_list_art' : 'tilist_list_art tilist-detail-content'" [src]="evt?.art | safe">
+          </div>
+          <div [title]="evt?.name" class="event_list_title">{{evt?.name}}</div>
+          <div class="event-notify-icons">
+            <span [title]="evt?.tileNotifications" class='step smart noteicon smarticon-groups' [style.display]="evt?.tileNotifications ? 'block' : 'none'"
+              aria-hidden="true">
+              <i class='icon ion-android-notifications-none'></i>
+            </span>
+            <span [title]="evt?.tileSmart" [style.display]="evt?.tileSmart ? 'block' : 'none'" class="step smart smarticon smarticon-groups">
+              <i class="icon ion-lightbulb"></i>
+            </span>
+            <span [title]="evt?.pageApps" [style.display]="evt?.pageApps?'block' : 'none'" class="step smart smarticon smarticon-groups">
+              <i class="icon ion-android-person"></i>
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="event_main_container" malihu-scrollbar [scrollbarOptions]="scrollbarOptions" class="page_block main_event_container">
+    <div id="dragged-event-tiles" class="page_block main_event_container">
       <div iliDropTarget (myDrop)="onDrop($event)" class="ili-panel main_event_content drop_target">
         <div class="draggable_label">To add Tiles to this Event, simply drag them in this space.
           <br>

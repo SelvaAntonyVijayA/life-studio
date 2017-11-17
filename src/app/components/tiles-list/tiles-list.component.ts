@@ -41,7 +41,7 @@ export class TilesListComponent {
 
   private orgChangeDetect: any;
   protected loading: boolean;
-  public scrollbarOptions = { axis: 'y', theme: 'light-2' };
+  scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
   utils: any;
 
   constructor(private tileService: TileService,
@@ -104,22 +104,9 @@ export class TilesListComponent {
     }
     //this.tiles = tileCloneData;
   };
-
-  /*setScrollOptions() {
-    this.opts = {
-      position: 'right',
-      barBackground: '#8A8A8A',
-      gridBackground: '#D9D9D9',
-      barBorderRadius: '10',
-      barWidth: '2',
-      gridWidth: '1'
-    };
-  };*/
-
+  
+  /* Tile Categories based on organization*/
   getTilesCategories() {
-    /*this.tileService.getTilesCategories(this.selectedOrg)
-      .then(tiles => this.tiles = tiles);*/
-
     this.tileService.getTilesCategories(this.selectedOrg).subscribe(tileCat => {
       this.tileCategories = tileCat[0];
       this.tiles = tileCat[1];
@@ -127,7 +114,8 @@ export class TilesListComponent {
       this.setTileSearch();
     });
   };
-
+  
+  /* Resetting the datas for the component*/
   resetTiles() {
     this.tiles = [];
     this.sortOpt["selectedOpt"] = "date";
@@ -161,12 +149,20 @@ export class TilesListComponent {
     }
   };*/
 
+  /* Intilalize scroll for the component */
   setScrollList() {
+    this.mScrollbarService.initScrollbar("#main-tiles-container", this.scrollbarOptions);
+
     if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
       this.cms["appDatas"]["scrollList"].push("#main-tiles-container");
     } else {
       this.cms["appDatas"]["scrollList"] = ["#main-tiles-container"];
     }
+  };
+
+  /*Destroy scroll for the component*/
+  destroyScroll() {
+    this.cms.destroyScroll(["#main-tiles-container"]);
   };
 
   setTileListData() {
@@ -186,11 +182,9 @@ export class TilesListComponent {
   }
 
   ngOnInit() {
-    //this.setScrollOptions();
-    this.setScrollList();
-
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       //this.setOrganizations();
+      this.setScrollList();
       this.oid = Cookie.get('oid');
       this.selectedOrg = this.oid;
       this.resetTiles();
@@ -199,7 +193,8 @@ export class TilesListComponent {
   };
 
   ngOnDestroy() {
-    this.cms.destroyScroll(["#main-tiles-container"]);
+    this.orgChangeDetect.unsubscribe();
+    this.destroyScroll();
   };
 
   ngOnChanges(cHObj: any) {

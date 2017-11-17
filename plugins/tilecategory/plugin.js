@@ -5,10 +5,6 @@ var query = {};
 
 var tileCategory = require(path.join(process.cwd(), 'models', 'tilecategory'));
 
-var init = function () {
-
-};
-
 var get = function (req, res, next) {
   query = {};
   options = {};
@@ -22,7 +18,6 @@ var get = function (req, res, next) {
 };
 
 module.exports = {
-  "init": init,
   "get": get
 };
 

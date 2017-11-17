@@ -4,7 +4,7 @@ var user = require(path.join(process.cwd(), 'models', 'user'));
 var query = {};
 
 var init = function (req, res, next) {
-  console.log("ILI Itialized");
+  console.log("ILI Intialized");
 };
 
 var getLogin = function (req, res, next) {

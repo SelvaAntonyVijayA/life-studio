@@ -262,8 +262,7 @@
     height: 207px;
 }
 
-                /* Tile Activity Title */
-
+/* Tile Activity Title */
 .activity-title{
     float: left;
     width: 100%;
@@ -277,7 +276,7 @@
     margin-left: 9px;
 }
 
-                /*Short Description */
+/*Short Description */
 .short-desc{
     float: left;
     width: 100%;
@@ -291,8 +290,7 @@
     margin-left: 9px;
 }
 
-                /* Tile Activity Date */
-
+/* Tile Activity Date */
 .activity-date{
     float: left;
     width: 100%;   
@@ -306,13 +304,13 @@
     margin-left: 9px;
 }
 
-                /* Hide Activity Date */
+/* Hide Activity Date */
 .hide-act-date{
     float: left;
     width: 100%;
 }
 
-                /* Drag buttons */
+/* Drag buttons */
 .drag_buttons {
     position: relative;
     width: 100%;
@@ -328,8 +326,7 @@
     border: 1px solid #A9A9A9;
 }
 
-                /* Trigger Types */
-
+/* Trigger Types */
 .trigger_types{
     position: relative;
     width: 100%;
@@ -398,6 +395,103 @@
     width: 100%;
     min-height: 220px;
 }
+
+.group-view-change{
+    float: right;
+    width:100%;
+}
+
+.tilist_list_show{
+    position: relative;
+    margin-top: 3px;
+    float: left;
+    width: 100%;
+    height: 738px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.img-event-view-group{
+    float: right; 
+    margin-top: 7px; 
+    margin-right: 13px;
+    cursor: pointer;
+}
+
+.img-event-view-group.group-list-view{
+    margin-right: 14px;
+}
+
+/*Event List */
+.event_list_single{
+    display: inline-block;
+    position: relative;
+    background-color: #FFFFFF;
+    text-align: left;
+    margin-right: 5px;
+    width: 138px;
+    min-height: 42px;
+    color: #000000;
+}
+
+.event-art{
+    width: 20%;
+    float: left;
+    text-align: left;
+    margin-left: 2px
+}
+
+.event-art.details{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.tilist_list_art{
+    float: left;
+    max-width: 30px;
+    max-height: 25px;
+    margin-top: 3px;
+    text-align: center;
+}
+
+.tilist_list_art.tilist-detail-content{
+    max-width: 110px;
+    max-height: 110px;
+}    
+
+.event_list_title{
+    float: left;
+    margin-top: 3px;
+    margin-left: 8px;
+    width: 100px;
+    font-size: 11px;
+    color: #000000;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+.event-notify-icons{
+    width: 100%;
+    float: right;
+}
+
+:host /deep/ .custom_combobox{color:black; height: 25px; position: relative; width:165px; display: inline-block; top:0px;background-color:#FFFFFF;}
+:host /deep/ .custom_combobox_toggle{ position: absolute;top: 0;bottom: 0;margin-left: -1px; }
+:host /deep/ .custom_combobox_input{font-weight:bold;color:black; margin: 0;padding: 3px 3px 3px 6px;font-size:11px;width:150px; }
+:host /deep/ .combo_left_corner{height: 25px; border-bottom-left-radius: 5px; border-top-left-radius: 5px; }
+:host /deep/ .combo_right_corner{border-bottom-right-radius: 0px; border-top-right-radius: 0px; }
+:host /deep/ .ui-autocomplete{ width: 190px; border-radius: 0px; font-size: 11px; max-height: 300px; overflow-y: auto; }
+:host /deep/ .ui-button-icon-only{ width: 1.5em; }
+:host /deep/ .custom_combobox .ui-state-default{border: 1px solid #d3d3d3; font-weight: normal; color: black; font-size: 11px; border-radius: 0;}
+:host /deep/ .custom_combobox a.ui-state-default{border-left: 0;background-color: #FFFFFF;background:none;}
+:host /deep/ .custom_combobox a.ui-state-default:hover{border-left: 0;background-color: #FFFFFF; background:none;}
+:host /deep/ .custom_combobox input.ui-state-default{border-right: 0; outline: 0; background: none;}
+
+
+   
+
+
 
 
 

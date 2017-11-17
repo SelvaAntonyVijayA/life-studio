@@ -5,7 +5,6 @@ var secretkey = "m@tsya@0!#";
 var hexType = 'hex';
 var utfType = 'utf8';
 
-
 var encrypt = function (str) {
   var encrypted = _cryptString(str, utfType, hexType);
 
@@ -70,8 +69,6 @@ var getUrlResponseWithSecurity = function (options, cb) {
 };
 
 module.exports = {
-  init: function () {
-  },
   encrypt: encrypt,
   decrypt: decrypt,
   convertToObjectId: convertToObjectId,

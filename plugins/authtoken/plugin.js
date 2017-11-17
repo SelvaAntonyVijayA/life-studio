@@ -1,9 +1,6 @@
 var jwt = require("jsonwebtoken");
 var secretKey = "b4083c7032a419bb4a84ce53426c6bbe";
 
-var init = function (alias) {
-};
-
 var generate = function (data) {
   var options = {};
   /*
@@ -58,4 +55,4 @@ var refresh = function (token, cb) {
   });
 };
 
-module.exports = { "init": init, "get": get, "verify": verify, "refresh": refresh, "generate": generate };
+module.exports = {"get": get, "verify": verify, "refresh": refresh, "generate": generate };

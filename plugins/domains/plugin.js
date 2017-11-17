@@ -5,9 +5,6 @@ var options = {};
 
 var domains = require(path.join(process.cwd(), 'models', 'domains'));
 
-var init = function () {
-};
-
 var get = function (req, res, next) {
   var domainName = req.body.domainName;
   query = { "name": domainName };
@@ -22,4 +19,4 @@ var get = function (req, res, next) {
   });
 };
 
-module.exports = { "init": init, "get": get };
+module.exports = {"get": get };

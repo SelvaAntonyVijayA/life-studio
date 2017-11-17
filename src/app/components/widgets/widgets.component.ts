@@ -53,10 +53,13 @@ export class WidgetsComponent implements OnInit {
   oid: string = "";
   selectedOrganization: string = "-1";
   private orgChangeDetect: any;
-  public scrollbarOptions = { axis: 'y', theme: 'light-2' };
+  scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
-    elemRef: ElementRef, private tileService: TileService, private route: ActivatedRoute, private cms: CommonService,
+    elemRef: ElementRef, 
+    private tileService: TileService, 
+    private route: ActivatedRoute, 
+    private cms: CommonService,
     private mScrollbarService: MalihuScrollbarService
   ) {
     this.utils = Utils;
@@ -712,7 +715,6 @@ export class WidgetsComponent implements OnInit {
   };
 
   /* Loading the block components */
-
   loadComponent(viewName: string) {
     this.currentAddIndex = this.currentAddIndex + 1;
     let adBlock = this.blocks[this.currentAddIndex];
@@ -764,6 +766,11 @@ export class WidgetsComponent implements OnInit {
   };
 
   setScrollList() {
+    //this.destroyScroll();
+
+    this.mScrollbarService.initScrollbar('#main-widget-container', this.scrollbarOptions);
+    this.mScrollbarService.initScrollbar('#main-container-tile-blocks', this.scrollbarOptions);
+
     if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
       this.cms["appDatas"]["scrollList"].push("#main-widget-container");
       this.cms["appDatas"]["scrollList"].push('#main-container-tile-blocks');
@@ -771,16 +778,21 @@ export class WidgetsComponent implements OnInit {
       this.cms["appDatas"]["scrollList"] = ["#main-widget-container", "#main-container-tile-blocks"];
     }
   };
+  
+  /*Destroy Scroll for the component elements*/
+  destroyScroll(){
+    this.cms.destroyScroll(["#main-widget-container", "#main-container-tile-blocks"]);
+  };
 
   ngOnInit() {
     //this.setScrollOptions();
-    this.setScrollList();
 
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       if (!this.utils.isArray(this.blocks)) {
         this.blocks = [];
       }
 
+      this.setScrollList();
       this.setOrganizations();
       this.oid = Cookie.get('oid');
       this.selectedOrganization = this.oid;
@@ -794,6 +806,6 @@ export class WidgetsComponent implements OnInit {
 
   ngOnDestroy() {
     this.orgChangeDetect.unsubscribe();
-    this.cms.destroyScroll(["#main-widget-container", "#main-container-tile-blocks"]);
+    this.destroyScroll();
   };
 }
