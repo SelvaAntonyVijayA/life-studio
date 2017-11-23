@@ -1,17 +1,20 @@
-var path = require("path");
+//var path = require("path");
 
-var user = require(path.join(process.cwd(), 'models', 'user'));
+//var user = require(path.join(process.cwd(), 'models', 'user'));
+var settingsConf;
 var query = {};
+var options = {};
 
-var init = function (req, res, next) {
+var init = function (app) {
   console.log("ILI Intialized");
+  settingsConf = app.get('settings');
 };
 
 var getLogin = function (req, res, next) {
   res.render('index.html');
 };
 
-var login = function (req, res, next) {
+/*var login = function (req, res, next) {
   var obj = req.body.form_data;
 
   query = {};
@@ -77,9 +80,82 @@ var login = function (req, res, next) {
     }
 
   });
+};*/
+
+var login = function (req, res, next) {
+  var user = req.body.form_data;;
+
+  query = {
+    $or: [{ email: user.email }, { email: user.email.toLowerCase() }],
+    password: $general.encrypt(user.password)
+  };
+
+  try {
+    $async.waterfall([
+      function (callback) {
+        $db.select(settingsConf.dbname.tilist_users, settingsConf.collections.orgmembers, query, options, function (result) {
+          callback(null, result);
+        });
+      },
+      function (userResult, callback) {
+        if (userResult.length > 0) {
+          $async.parallel({
+            organizations: function (cb) {
+              $organization.getList({
+                _id: userResult[0].organizationId
+              }, function (result) {
+                cb(null, result);
+              });
+            },
+            role: function (cb) {
+              $role._get({
+                _id: userResult[0].role_id
+              }, {}, function (result) {
+                cb(null, result);
+              });
+            }
+          }, function (err, result) {
+            callback(null, userResult, result);
+          });
+
+        } else {
+          callback(null, []);
+        }
+      }], function (err, userResult, result) {
+        var userObj = {};
+        var returnVal = {};
+        returnVal.userfound = false;
+
+        if (userResult.length > 0) {
+          returnVal.userfound = true;
+
+          userObj.name = userResult[0].name;
+          userObj.email = userResult[0].email;
+          userObj.isAdmin = userResult[0].isAdmin;
+          userObj.pin = userResult[0].pin;
+          userObj.roleId = !__util.isNullOrEmpty(userResult[0].role_id) ? userResult[0].role_id : "";
+          userObj.role = result.role[0];
+
+          //var firstOrgId = result.organizations.length > 0 ? (result.organizations.length > 1 ? "-1" : result.organizations[0]._id) : '';
+          var tokenJSON = {
+            uid: userResult[0]._id,
+            user: userObj
+          };
+
+          var token = $authtoken.generate(tokenJSON);
+          res.cookie('token', token);
+          res.send(returnVal);
+        } else {
+          res.send(returnVal);
+        }
+      });
+  } catch (e) {
+    console.error('logged user error: ' + e);
+    res.send({});
+  }
 };
 
-var get = function (req, res, next) {
+/*var get = function (req, res, next) {
   var obj = $authtoken.get(req.cookies.token);
   var uid = obj.uid;
   query = { "_id": uid };
@@ -94,11 +170,37 @@ var get = function (req, res, next) {
       res.send([]);
     }
   });
+};*/
+
+var get = function (req, res, next) {
+  query = {};
+  options = {};
+
+  if (!__util.isNullOrEmpty(req.params.userId)) {
+    query._id = req.params.userId;
+  } else {
+    var obj = $authtoken.get(req.cookies.token);
+    query = { "_id": obj.uid };
+  }
+
+  $db.select(settingsConf.dbname.tilist_users, settingsConf.collections.orgmembers, query, options, function (result) {
+    if (result.length > 0) {
+      query = {};
+      query._id = result[0].organizationId;
+
+      $organization.getList(query, function (organizations) {
+        result[0].organizations = organizations;
+        res.send(result);
+      });
+    } else {
+      res.send([]);
+    }
+  });
 };
 
 var getsession = function (req, res, next) {
   var obj = $authtoken.get(req.cookies.token);
-  
+
   res.send({
     name: obj.user.name,
     pin: obj.user.pin,
@@ -111,11 +213,32 @@ var getsession = function (req, res, next) {
   });
 };
 
+var getList = function (userIds, cb) {
+  query = {};
+  options = {};
+  query._id = userIds;
+
+  $db.select(settingsConf.dbname.tilist_users, settingsConf.collections.orgmembers, query, options, function (result) {
+    cb(result);
+  });
+};
+
+var _getOrgMembers = function (queryGet, cb) {
+  options = {};
+  options.sort = [['name', 'asc']];
+
+  $db.select(settingsConf.dbname.tilist_users, settingsConf.collections.orgmembers, queryGet, options, function (result) {
+    cb(result);
+  });
+};
+
 module.exports = {
   "init": init,
   "login": login,
   "getLogin": getLogin,
   "login": login,
   "get": get,
-  "getsession": getsession
+  "getsession": getsession,
+  "getList": getList,
+  "_getOrgMembers": _getOrgMembers
 };

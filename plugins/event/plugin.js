@@ -1,9 +1,14 @@
-var path = require("path");
-var mongoose = require('mongoose');
+// var path = require("path");
+// var mongoose = require('mongoose');
+var settingsConf;
 var options = {};
 var query = {};
 
-var event = require(path.join(process.cwd(), 'models', 'event'));
+//var event = require(path.join(process.cwd(), 'models', 'event'));
+
+var init = function (app) {
+  settingsConf = app.get('settings');
+};
 
 var list = function (req, res, next) {
   $async.waterfall([
@@ -19,9 +24,8 @@ var list = function (req, res, next) {
         query._id = req.params.eventId;
       }
 
-      options.lean = true;
-
-      event.find(query, {}, options, function (err, events) {
+      //options.lean = true;
+      $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.event, query, options, function (events) {
         callback(null, events);
       });
     },
@@ -30,13 +34,9 @@ var list = function (req, res, next) {
         callback(null, events, []);
       } else {
         options = {};
-        var roleQuery = {
-          "orgId": req.params.orgId, "menuTiles": { $exists: true, $ne: [] },
-          "menuTiles": { $elemMatch: { isPrivate: true, linkTo: "event" } }
-        };
+        var roleQuery = { "orgId": req.params.orgId };
 
-        $page.isRoleGroup(roleQuery, options, function (groups) {
-          console.dir(groups);
+        $page.isRoleGroup(roleQuery, options, 'event', function (groups) {
           callback(null, events, groups);
         });
       }
@@ -64,4 +64,7 @@ var list = function (req, res, next) {
     });
 };
 
-module.exports = { "list": list };
+module.exports = {
+  "init": init,
+  "list": list
+};

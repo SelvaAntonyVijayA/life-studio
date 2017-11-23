@@ -33,7 +33,7 @@
 }
 
 .language{
-    width: 165px;
+    width: 175px;
     margin-left: 6px;
     float: left;
     margin-right: 7px;
@@ -476,17 +476,84 @@
     float: right;
 }
 
-:host /deep/ .custom_combobox{color:black; height: 25px; position: relative; width:165px; display: inline-block; top:0px;background-color:#FFFFFF;}
-:host /deep/ .custom_combobox_toggle{ position: absolute;top: 0;bottom: 0;margin-left: -1px; }
-:host /deep/ .custom_combobox_input{font-weight:bold;color:black; margin: 0;padding: 3px 3px 3px 6px;font-size:11px;width:150px; }
-:host /deep/ .combo_left_corner{height: 25px; border-bottom-left-radius: 5px; border-top-left-radius: 5px; }
-:host /deep/ .combo_right_corner{border-bottom-right-radius: 0px; border-top-right-radius: 0px; }
-:host /deep/ .ui-autocomplete{ width: 190px; border-radius: 0px; font-size: 11px; max-height: 300px; overflow-y: auto; }
-:host /deep/ .ui-button-icon-only{ width: 1.5em; }
-:host /deep/ .custom_combobox .ui-state-default{border: 1px solid #d3d3d3; font-weight: normal; color: black; font-size: 11px; border-radius: 0;}
-:host /deep/ .custom_combobox a.ui-state-default{border-left: 0;background-color: #FFFFFF;background:none;}
-:host /deep/ .custom_combobox a.ui-state-default:hover{border-left: 0;background-color: #FFFFFF; background:none;}
-:host /deep/ .custom_combobox input.ui-state-default{border-right: 0; outline: 0; background: none;}
+/* Combo box*/
+:host /deep/ .custom_combobox{
+    color:black; 
+    height: 25px; 
+    position: relative; 
+    width:165px; 
+    display: inline-block; 
+    top:0px;
+    background-color:#FFFFFF;
+}
+
+:host /deep/ .custom_combobox_toggle{ 
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin-left: -1px; 
+}
+
+:host /deep/ .custom_combobox_input{
+    font-weight:bold;
+    color:black; 
+    margin: 0;
+    padding: 3px 3px 3px 6px;
+    font-size:11px;
+    width:151px; 
+}
+
+:host /deep/ .combo_left_corner{
+    height: 25px; 
+    border-bottom-left-radius: 5px; 
+    border-top-left-radius: 5px; 
+}
+
+:host /deep/ .combo_right_corner{    
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+    background: #FFFF;
+    border: 1px solid #c5c5c5;
+    border-left: none;
+}
+
+:host /deep/ .ui-autocomplete{ 
+    width: 190px; 
+    border-radius: 0px; 
+    font-size: 11px; 
+    max-height: 300px; 
+    overflow-y: auto; 
+}
+
+:host /deep/ .ui-button-icon-only{ 
+    width: 1.5em; 
+}
+
+:host /deep/ .custom_combobox .ui-state-default{
+    font-weight: normal; 
+    color: black; 
+    font-size: 11px; 
+    border-radius: 0;
+}
+
+:host /deep/ .custom_combobox > a.ui-state-default{
+    border-left: 0;
+    background-color: #FFFFFF;
+    background:none; border:none; 
+}
+
+:host /deep/ .custom_combobox > a.ui-state-default:hover{
+    border-left: 0;
+    background-color: #FFFFFF; 
+    background:none; 
+    border:none;
+}
+
+:host /deep/ .custom_combobox > input.ui-state-default{
+    border-right: 0; 
+    outline: 0; 
+    background: none;
+}
 
 
    

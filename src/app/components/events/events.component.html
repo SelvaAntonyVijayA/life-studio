@@ -17,10 +17,8 @@
         <!--   <select class="form-control input-sm event_type" placeholder="Select / Add Type">
           <option *ngFor="let evtCat of eventCategories; let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
         </select> -->
-        <select #mySelect placeholder="Select / Add Type">
-          <option [value]="'115x175 mm'">115x175 mm</option>
-          <option [value]="'120x160 mm'">120x160 mm</option>
-          <option [value]="'120x287 mm'">120x287 mm</option>
+        <select #mySelect class="form-control input-sm event_type" placeholder="Select / Add Type">
+          <option *ngFor="let evtCat of eventCategories; let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
         </select>
       </div>
     </div>
@@ -50,18 +48,18 @@
       <div class="events_text ">
         <span> EVENTS </span>
       </div>
-      <input class="form-control input-sm search_box_tilist" type="text" placeholder="Search Events">
-      <select class="form-control input-sm filter_event">
+      <input [(ngModel)]="eventFilter['eventSearch']" class="form-control input-sm search_box_tilist" type="text" placeholder="Search Events">
+      <select [ngModel]="eventFilter['eventCategory']['_id']" (ngModelChange)="filterChange($event, 'eventCategory')" class="form-control input-sm filter_event">
         <option [value]="-1">Show All Types</option>
         <option *ngFor="let evtCat of eventCategories; let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
       </select>
-      <select class="form-control input-sm sort_event">
-        <option value="date_desc">Latest on top</option>
-        <option value="date_asc">Oldest on top</option>
-        <option value="name_asc">Name - A on top</option>
-        <option value="name_desc">Name - Z on top</option>
-        <option value="type_asc">Type - A on top</option>
-        <option value="type_desc">Type - Z on top</option>
+      <select [ngModel]="eventFilter['sort']['selected']" (ngModelChange)="filterChange($event, 'sort')" class="form-control input-sm sort_event">
+        <option [value]="'date_desc'">Latest on top</option>
+        <option [value]="'date_asc'">Oldest on top</option>
+        <option [value]="'name_asc'">Name - A on top</option>
+        <option [value]="'name_desc'">Name - Z on top</option>
+        <option [value]="'type_asc'">Type - A on top</option>
+        <option [value]="'type_desc'">Type - Z on top</option>
       </select>
       <div class="group-view-change">
         <img class="img-event-view-group" *ngIf="groupType === 'list'" (click)="changeGroupView()" src="/img/details.png" alt=""
@@ -70,7 +68,7 @@
           alt="" title="List" />
       </div>
       <div id="main-container-events" class="tilist_list_show">
-        <div class="event_list_single" *ngFor="let evt of events; let i = index; trackBy: trackByIndex">
+        <div class="event_list_single" *ngFor="let evt of (events | filterByText:'name':eventFilter['eventSearch'] | filterByText:eventFilter['eventCategory']['fieldName']:eventFilter['eventCategory']['_id'] | orderBy:eventFilter['sort']['isAsc']: eventFilter['sort']['fieldNames'][splitKey(eventFilter['sort']['selected'])][0]: eventFilter['sort']['fieldNames'][splitKey(eventFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
           {{eventNotificationIcon(evt)}}
           <div [ngClass]="groupType === 'list'? 'event-art' : 'event-art details'">
             <img [ngClass]="groupType === 'list'? 'tilist_list_art' : 'tilist_list_art tilist-detail-content'" [src]="evt?.art | safe">

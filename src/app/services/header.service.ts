@@ -17,7 +17,7 @@ export class HeaderService {
 
   headerUrls: Object = {
     "domain": "/domain/get/",
-    "user": "/user/get",
+    "user": "/user/get/",
     "session": "/user/session"
   };
 

@@ -38,6 +38,21 @@ export class EventService {
       .catch(this.handleError);
   };
 
+  saveEventCategory(eventCatObj: Object) {
+    return this.http
+      .post("/eventcategory/save", JSON.stringify({ "form_data": eventCatObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  eventCategoriesList(orgId: string) {
+    let categories = this.getEventCategories(orgId);
+    let events = this.eventList(orgId);
+    
+    return Observable.forkJoin([categories, events]);
+  };
+
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);

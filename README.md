@@ -13,5 +13,3 @@ Step 4: Build the angular server
 
 Step 5: After build the angular server run the express by below mentioned command
         set DEBUG=ili:* & npm start
-
-Note: For Scroll bar - 

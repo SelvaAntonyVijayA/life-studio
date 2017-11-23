@@ -55,4 +55,9 @@ var refresh = function (token, cb) {
   });
 };
 
-module.exports = {"get": get, "verify": verify, "refresh": refresh, "generate": generate };
+module.exports = {
+  "get": get,
+  "verify": verify,
+  "refresh": refresh,
+  "generate": generate
+};

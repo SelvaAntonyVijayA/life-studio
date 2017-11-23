@@ -13,7 +13,7 @@ export class FilterByTextPipe implements PipeTransform {
   utils: any;
 
   transform(reqArray: any[], propName?: string, searchTxt?: string): any {
-    if (this.utils.isArray(reqArray) && reqArray.length > 0 && !this.utils.isNullOrEmpty(propName) && !this.utils.isNullOrEmpty(searchTxt)) {
+    if (this.utils.isArray(reqArray) && reqArray.length > 0 && !this.utils.isNullOrEmpty(propName) && !this.utils.isNullOrEmpty(searchTxt) && searchTxt !== "-1") {
 
       return reqArray.filter(function (prop) {
         return prop.hasOwnProperty(propName) && prop[propName].toLowerCase().indexOf(searchTxt.toLowerCase()) > -1;
@@ -66,7 +66,7 @@ export class OrderByPipe implements PipeTransform {
   pure: false
 })
 export class ReversePipe {
-  transform (values) {
+  transform(values) {
     if (values) {
       return values.reverse();
     }

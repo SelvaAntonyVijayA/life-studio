@@ -1,9 +1,14 @@
+var settingsConf;
 var crypto = require('crypto');
-var mongoose = require('mongoose');
+//var mongoose = require('mongoose');
 var request = require('request');
 var secretkey = "m@tsya@0!#";
 var hexType = 'hex';
 var utfType = 'utf8';
+
+var init = function (app) {
+  settingsConf = app.get('settings');
+};
 
 var encrypt = function (str) {
   var encrypted = _cryptString(str, utfType, hexType);
@@ -25,7 +30,7 @@ var _cryptString = function (str, fromType, toType) {
   return cryptedPassword;
 };
 
-var convertToObjectId = function (data) {
+/*var convertToObjectId = function (data) {
   var mongoId = "";
 
   if (typeof data === "string") {
@@ -40,10 +45,10 @@ var convertToObjectId = function (data) {
   }
 
   return mongoId;
-};
+};*/
 
 var getMobileSecurityKey = function () {
-  return "mretFFc7OXNAos2yXyiHsdVGZqqj5ZoZgjcZvlvSWYHVOut1";
+  return settingsConf.general.mobileSecurityKey;
 };
 
 var getUrlResponseWithSecurity = function (options, cb) {
@@ -68,10 +73,23 @@ var getUrlResponseWithSecurity = function (options, cb) {
   });
 };
 
+var convertToJsonObject = function (obj) {
+  if (typeof obj == 'object') {
+    obj = JSON.stringify(obj);
+  }
+
+  if (typeof obj == 'string') {
+    obj = JSON.parse(obj);
+  }
+
+  return obj;
+};
+
 module.exports = {
-  encrypt: encrypt,
-  decrypt: decrypt,
-  convertToObjectId: convertToObjectId,
-  getUrlResponseWithSecurity: getUrlResponseWithSecurity
+  "init": init,
+  "encrypt": encrypt,
+  "decrypt": decrypt,
+  "getUrlResponseWithSecurity": getUrlResponseWithSecurity,
+  "convertToJsonObject": convertToJsonObject
 };
 

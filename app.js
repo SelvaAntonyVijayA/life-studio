@@ -10,8 +10,8 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const env = process.env.NODE_ENV || 'development';
-var mongoose = require('mongoose');
-var db = require('./config/db-connect');
+//var mongoose = require('mongoose');
+//var db = require('./config/db-connect');
 const app = express();
 var context = require('./app-middlewares/context');
 
@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use(context);
 
 var routes = require('./config/routes');
-db(mongoose, app);
+//db(mongoose, app);
 plugins(path, __dirname, app);
 routes(app);
 

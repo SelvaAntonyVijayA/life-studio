@@ -1,24 +1,43 @@
-var path = require("path");
-var mongoose = require('mongoose');
+//var path = require("path");
+//var mongoose = require('mongoose');
+//Schema = mongoose.Schema;
+var settingsConf;
 var options = {};
 var query = {};
 
-var eventCategory = require(path.join(process.cwd(), 'models', 'eventcategory'));
+//var eventCategory = require(path.join(process.cwd(), 'models', 'eventcategory'));
+var init = function (app) {
+  settingsConf = app.get('settings');
+};
+
+var save = function (req, res, next) {
+  query = {};
+  options = {};
+
+  var category = req.body.form_data;
+
+  $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.eventCategory, category, function (result) {
+    category = {};
+    category._id = result;
+    res.send(result);
+  });
+};
 
 var list = function (req, res, next) {
   query = {};
   options = {};
-  options.sort = { "name": 1};
-  options.lean = true; 
+  options.sort = [['name', 'asc']];
   query.organizationId = !__util.isNullOrEmpty(req.params.orgId) ? req.params.orgId : "-1";
 
-  eventCategory.find(query, {}, options, function (err, evtCategories) {
-    res.send(evtCategories);
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.eventCategory, query, options, function (result) {
+    res.send(result);
   });
 };
 
 
 module.exports = {
+  "init": init,
+  "save": save,
   "list": list
 };
 

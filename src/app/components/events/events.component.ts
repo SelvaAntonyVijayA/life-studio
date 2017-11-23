@@ -29,6 +29,7 @@ export class EventsComponent implements OnInit {
     this.utils = Utils;
   }
 
+
   /* Variables Intialization*/
 
   organizations: any[] = [];
@@ -50,16 +51,32 @@ export class EventsComponent implements OnInit {
   eventCategories: any[] = [];
   scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
   @ViewChild('mySelect') mySelect: ElementRef;
+  eventFilter: Object = {
+    "eventSearch": "",
+    "eventCategory": { "_id": "-1", "fieldName": "category" },
+    "sort": {
+      "selected": "date_desc", "isAsc": false, "fieldNames": {
+        "date": ["dateUpdated", "dateCreated"],
+        "name": ["name"],
+        "type": ["categoryName"]
+      }
+    }
+  };
 
   /* Organizations Intialization */
-
   setOrganizations() {
     if (this.organizations.length == 0) {
       this.organizations = this.cms["appDatas"].hasOwnProperty("organizations") ? this.cms["appDatas"]["organizations"] : [];
     }
   };
-  /* Setting for default dragged tile */
 
+  splitKey(val: string) {
+    var splittedVal = val.split("_");
+
+    return splittedVal[0];
+  }
+
+  /* Setting for default dragged tile */
   setDefaultDraggedTile(tile: any) {
     var dragged = {
       "uniqueId": this.getUniqueId(),
@@ -236,6 +253,10 @@ export class EventsComponent implements OnInit {
 
   resetEventDatas() {
     //this.draggedTiles = [];
+    this.eventFilter["eventSearch"] = ""
+    this.eventFilter["eventCategory"]["_id"] = "-1";
+    this.eventFilter["sort"]["selected"] = "date_desc";
+    this.eventFilter["sort"]["isAsc"] = false;
     this.events = [];
     this.dragIndex = -1;
     this.droppedTile = {};
@@ -259,7 +280,7 @@ export class EventsComponent implements OnInit {
     });*/
   };
 
-  /* Get Event datas */
+  /* Fetching Event datas */
   getEvents(eventId?: string) {
     this.eventService.eventList(this.oid, eventId).then(eventList => {
       this.events = eventList;
@@ -287,10 +308,33 @@ export class EventsComponent implements OnInit {
     }
   };
 
+  /* Fetching Event Categories */
   getEventCategories() {
     this.eventService.getEventCategories(this.oid).then(eventCategoriesList => {
       this.eventCategories = eventCategoriesList;
     });
+  };
+
+  /* Fetching both event and event categories */
+  listEventCategories() {
+    this.eventService.eventCategoriesList(this.oid).subscribe(listEvtCat => {
+      this.eventCategories = listEvtCat[0];
+      this.events = listEvtCat[1];
+      this.mergeCategoryName();
+    });
+  };
+
+  mergeCategoryName() {
+    for (let i = 0; i < this.events.length; i++) {
+      var evtCatId = this.events[i].hasOwnProperty("category") ? this.events[i]["category"] : "-1";
+      var index = -1;
+
+      if (evtCatId !== "-1" && this.eventCategories.length > 0) {
+        index = this.eventCategories.map(function (evtCat) { return evtCat['_id']; }).indexOf(evtCatId);
+      }
+
+      this.events[i]["categoryName"] = index !== -1 && this.eventCategories[index].hasOwnProperty("name") ? this.eventCategories[index]["name"] : "";
+    }
   };
 
   setEventType() {
@@ -298,7 +342,7 @@ export class EventsComponent implements OnInit {
     // var nous = combobox;
   };
 
-  selectFilter(e: any) {
+  /*selectFilter(e: any) {
     var text = e.target.value;
 
     if (!this.utils.isNullOrEmpty(text)) {
@@ -313,25 +357,71 @@ export class EventsComponent implements OnInit {
       //this.renderer.invokeElementMethod(
       //this.mySelect.nativeElement, 'dispatchEvent', [event]);
     }
+  };*/
+
+  setComboBox() {
+    var self = this;
+    var eventTypeElem = this.mySelect;
+    var customCombo = this.e1.nativeElement.querySelector('.custom_combobox');
+
+    if (this.utils.isNullOrEmpty(customCombo)) {
+      $(eventTypeElem.nativeElement).combobox({
+        selectchange: function (e, ui) {
+          if ($.trim(ui.inputbox.val()) == '') {
+            return;
+          }
+
+          var isConfirm = confirm("The entered category didn't match with existing, would you like to add press OK.");
+
+          if (isConfirm) {
+            var currEventCategory = ui.value;
+            var eventCatObj = {
+              "name": ui.value,
+              "organizationId": self.oid
+            };
+
+            self.eventService.saveEventCategory(eventCatObj)
+              .then(catObj => {
+                if (!self.utils.isEmptyObject(catObj) && catObj.hasOwnProperty("_id")) {
+                  eventCatObj["_id"] = catObj["_id"];
+                  self.eventCategories.push(eventCatObj);
+                } else if (!self.utils.isEmptyObject(catObj) && catObj.hasOwnProperty("error")) {
+                  console.log(catObj.error)
+                }
+              });
+          } else {
+            ui.element.val("");
+            ui.inputbox.val("");
+            ui.inputbox.data("ui-autocomplete").term = "";
+          }
+        }
+      });
+    }
   };
 
-  getDatas(val: any) {
-    var rolout = val;
-    console.log("This is settings")
-    console.log(val);
+  /* Filter Changing */
+  filterChange(val: any, fieldName: string) {
+    if (fieldName === "eventCategory") {
+      this.eventFilter[fieldName]["_id"] = val;
+    }
+
+    if (fieldName === "sort") {
+      var sortOpt = val.split("_");
+      this.eventFilter[fieldName]["selected"] = val;
+      this.eventFilter[fieldName]["isAsc"] = sortOpt[1] === "asc" ? true : false;
+    }
   };
 
   ngOnInit() {
-    var setl = this.mySelect;
-
-    this.orgChangeDetect =  this.route.queryParams.subscribe(params => {
-      $(setl.nativeElement).combobox();
+    this.orgChangeDetect = this.route.queryParams.subscribe(params => {
+      this.setComboBox();
       this.setScrollList();
       this.resetEventDatas();
       this.setOrganizations();
       this.oid = Cookie.get('oid');
-      this.getEvents();
-      this.getEventCategories();
+      //this.getEvents();
+      //this.getEventCategories();
+      this.listEventCategories();
       this.selectedOrganization = this.oid;
       //this.setEventType();
     });

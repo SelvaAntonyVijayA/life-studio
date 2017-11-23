@@ -16,7 +16,7 @@ export class TileService {
 
   getTiles(orgId: string) {
     return this.http
-      .post("/tile/list/", JSON.stringify({ "organizationId": orgId }), { headers: this.headers })
+      .post("/tile/list/" + orgId, JSON.stringify({}), { headers: this.headers })
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);
