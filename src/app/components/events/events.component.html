@@ -17,8 +17,8 @@
         <!--   <select class="form-control input-sm event_type" placeholder="Select / Add Type">
           <option *ngFor="let evtCat of eventCategories; let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
         </select> -->
-        <select #mySelect class="form-control input-sm event_type" placeholder="Select / Add Type">
-          <option *ngFor="let evtCat of eventCategories; let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
+        <select #evtCat class="form-control input-sm event_type" placeholder="Select / Add Type">
+          <option *ngFor="let evtCat of (eventCategories | orderBy: true : 'name'); let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
         </select>
       </div>
     </div>
@@ -51,7 +51,7 @@
       <input [(ngModel)]="eventFilter['eventSearch']" class="form-control input-sm search_box_tilist" type="text" placeholder="Search Events">
       <select [ngModel]="eventFilter['eventCategory']['_id']" (ngModelChange)="filterChange($event, 'eventCategory')" class="form-control input-sm filter_event">
         <option [value]="-1">Show All Types</option>
-        <option *ngFor="let evtCat of eventCategories; let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
+        <option *ngFor="let evtCat of (eventCategories | orderBy: true : 'name'); let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
       </select>
       <select [ngModel]="eventFilter['sort']['selected']" (ngModelChange)="filterChange($event, 'sort')" class="form-control input-sm sort_event">
         <option [value]="'date_desc'">Latest on top</option>
@@ -68,7 +68,8 @@
           alt="" title="List" />
       </div>
       <div id="main-container-events" class="tilist_list_show">
-        <div class="event_list_single" *ngFor="let evt of (events | filterByText:'name':eventFilter['eventSearch'] | filterByText:eventFilter['eventCategory']['fieldName']:eventFilter['eventCategory']['_id'] | orderBy:eventFilter['sort']['isAsc']: eventFilter['sort']['fieldNames'][splitKey(eventFilter['sort']['selected'])][0]: eventFilter['sort']['fieldNames'][splitKey(eventFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
+        <div [ngClass]="evt?._id === selectedEvent?._id ? 'event_list_single selected' : 'event_list_single'" (click)="selectEvent($event, evt)"
+          *ngFor="let evt of (events | filterByText:'name':eventFilter['eventSearch'] | filterByText:eventFilter['eventCategory']['fieldName']:eventFilter['eventCategory']['_id'] | orderBy:eventFilter['sort']['isAsc']: eventFilter['sort']['fieldNames'][splitKey(eventFilter['sort']['selected'])][0]: eventFilter['sort']['fieldNames'][splitKey(eventFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
           {{eventNotificationIcon(evt)}}
           <div [ngClass]="groupType === 'list'? 'event-art' : 'event-art details'">
             <img [ngClass]="groupType === 'list'? 'tilist_list_art' : 'tilist_list_art tilist-detail-content'" [src]="evt?.art | safe">

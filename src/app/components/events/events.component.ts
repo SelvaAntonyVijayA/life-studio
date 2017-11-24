@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, ElementRef, Renderer, ViewChild, EventEmitter, ContentChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, ElementRef, Renderer, ViewChild, EventEmitter, ContentChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
 import { CommonService } from '../../services/common.service';
@@ -15,8 +15,7 @@ declare var editableSelect: any;
   selector: 'app-events',
   outputs: ["dropped"],
   templateUrl: './events.component.html',
-  styleUrls: ['./events.component.css'],
-
+  styleUrls: ['./events.component.css']
 })
 export class EventsComponent implements OnInit {
 
@@ -50,7 +49,7 @@ export class EventsComponent implements OnInit {
   events: any[] = [];
   eventCategories: any[] = [];
   scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
-  @ViewChild('mySelect') mySelect: ElementRef;
+  @ViewChild('evtCat') evtCat: ElementRef;
   eventFilter: Object = {
     "eventSearch": "",
     "eventCategory": { "_id": "-1", "fieldName": "category" },
@@ -62,6 +61,8 @@ export class EventsComponent implements OnInit {
       }
     }
   };
+
+  selectedEvent: Object = {};
 
   /* Organizations Intialization */
   setOrganizations() {
@@ -93,7 +94,6 @@ export class EventsComponent implements OnInit {
   };
 
   /* Setting dragged tile */
-
   setDragTile(triggerType: any, dragTile: any, type: string) {
     this.resetTriggerTypes(dragTile, type);
 
@@ -136,7 +136,7 @@ export class EventsComponent implements OnInit {
     delete dragTile["timeToDeActivate"];
   };
 
-  /* Dragged tile on drop*/
+  /* Dragged tile on drop */
   private onDrop(event, isDynamic) {
     var draggedTile = this.setDefaultDraggedTile(event);
 
@@ -239,6 +239,7 @@ export class EventsComponent implements OnInit {
     }
   };
 
+  /* Destroy Scroll */
   destroyScroll() {
     this.cms.destroyScroll(["#event_main_container", "#dragged-event-tiles"]);
   };
@@ -361,7 +362,7 @@ export class EventsComponent implements OnInit {
 
   setComboBox() {
     var self = this;
-    var eventTypeElem = this.mySelect;
+    var eventTypeElem = this.evtCat;
     var customCombo = this.e1.nativeElement.querySelector('.custom_combobox');
 
     if (this.utils.isNullOrEmpty(customCombo)) {
@@ -385,8 +386,8 @@ export class EventsComponent implements OnInit {
                 if (!self.utils.isEmptyObject(catObj) && catObj.hasOwnProperty("_id")) {
                   eventCatObj["_id"] = catObj["_id"];
                   self.eventCategories.push(eventCatObj);
-                } else if (!self.utils.isEmptyObject(catObj) && catObj.hasOwnProperty("error")) {
-                  console.log(catObj.error)
+                } else {
+                  alert("Category not saved");
                 }
               });
           } else {
@@ -410,6 +411,15 @@ export class EventsComponent implements OnInit {
       this.eventFilter[fieldName]["selected"] = val;
       this.eventFilter[fieldName]["isAsc"] = sortOpt[1] === "asc" ? true : false;
     }
+  };
+
+  /* Select Event */
+  selectEvent(elem: any, obj: any) {
+    elem.preventDefault();
+    this.selectedEvent = obj;
+    //this.renderer.setElementClass(elem.target, 'selected', true);
+    //this.renderer.setElementClass(elem.srcElement, 'selected', true);
+    elem.stopPropagation();
   };
 
   ngOnInit() {

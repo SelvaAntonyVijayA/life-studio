@@ -432,6 +432,17 @@
     width: 138px;
     min-height: 42px;
     color: #000000;
+    cursor: pointer;
+    border: 1px outset #F2F2F2;
+}
+
+.event_list_single:hover{
+    background-color: #F2F2F2;
+}
+
+.event_list_single.selected{
+    background-color: #3c3c3c;
+    color: #FFFFFF;
 }
 
 .event-art{
@@ -464,9 +475,8 @@
     float: left;
     margin-top: 3px;
     margin-left: 8px;
-    width: 100px;
+    width: 98px;
     font-size: 11px;
-    color: #000000;
     text-align: left;
     word-wrap: break-word;
 }

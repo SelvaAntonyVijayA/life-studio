@@ -17,9 +17,9 @@ var save = function (req, res, next) {
   var category = req.body.form_data;
 
   $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.eventCategory, category, function (result) {
-    category = {};
-    category._id = result;
-    res.send(result);
+    var resultObj = {};
+    resultObj._id = result;
+    res.send(resultObj);
   });
 };
 
@@ -33,7 +33,6 @@ var list = function (req, res, next) {
     res.send(result);
   });
 };
-
 
 module.exports = {
   "init": init,

@@ -26,7 +26,6 @@ export class HeaderService {
     let userOrgs = this.http.get(this.headerUrls["user"]).toPromise().then(response => response.json()).catch(this.handleError);
     let rAccess = this.http.get(this.headerUrls["session"]).toPromise().then(response => response.json()).catch(this.handleError);
 
-
     return Observable.forkJoin([domainMenus, userOrgs, rAccess]);
   }
 

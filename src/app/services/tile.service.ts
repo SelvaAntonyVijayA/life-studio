@@ -37,7 +37,7 @@ export class TileService {
       .then(response => response.json())
       .catch(this.handleError);
   };
-
+  
   getTileCategory(orgId: string) {
     return this.http
       .get("/tilecategory/list/" + orgId)

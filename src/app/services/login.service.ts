@@ -8,7 +8,6 @@ import 'rxjs/add/operator/toPromise';
 @Injectable()
 export class LoginService {
   constructor(private http: Http) {
-
   };
 
   userUrl: string = "/user/login/";
@@ -27,9 +26,10 @@ export class LoginService {
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);
-  }
+  };
 
-  public handleError(error: any) {
-   
-  }
+  private handleError(error: any): Promise<any> {
+    console.log('An error occurred', error);
+    return Promise.reject(error.message || error);
+  };
 }
