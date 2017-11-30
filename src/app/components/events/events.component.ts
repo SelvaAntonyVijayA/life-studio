@@ -6,6 +6,7 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { DraggableDirective } from '../../helpers/draggable.directive';
 import { Utils } from '../../helpers/utils';
 import { EventService } from '../../services/event.service';
+import { TileService } from '../../services/tile.service';
 //declare var swal: any;
 declare var $: any;
 declare var combobox: any;
@@ -24,7 +25,9 @@ export class EventsComponent implements OnInit {
     private eventService: EventService,
     private mScrollbarService: MalihuScrollbarService,
     private e1: ElementRef,
-    private renderer: Renderer, ) {
+    private renderer: Renderer,
+    private tileService: TileService
+  ) {
     this.utils = Utils;
   }
 
@@ -34,9 +37,10 @@ export class EventsComponent implements OnInit {
   organizations: any[] = [];
   selectedOrganization: string = "-1";
   private orgChangeDetect: any;
+  //tileData = new EventEmitter<any>();
   oid: string = "";
   eventTiles: any[] = [];
-  //draggedTiles: any[] = [];
+  draggedTiles: any[] = [];
   tileDropped: Object = {};
   @ContentChild(DraggableDirective) dragDir: DraggableDirective;
   droppedTile: Object = {};
@@ -75,7 +79,7 @@ export class EventsComponent implements OnInit {
     var splittedVal = val.split("_");
 
     return splittedVal[0];
-  }
+  };
 
   /* Setting for default dragged tile */
   setDefaultDraggedTile(tile: any) {
@@ -122,7 +126,7 @@ export class EventsComponent implements OnInit {
         dragTile["timeToDeActivate"] = "";
       }
     }
-  }
+  };
 
   /* Resetting dragged tile trigger resetting */
   resetTriggerTypes(dragTile: any, type: string) {
@@ -173,6 +177,9 @@ export class EventsComponent implements OnInit {
   };
 
   getTileContent(tileObj: any) {
+    /*if (tileObj.hasOwnProperty("draggedTiles")) {
+      this.setDraggedTiles(tileObj["draggedTiles"]);
+    }*/
   };
 
   trackByIndex(index: number, obj: any): any {
@@ -199,9 +206,9 @@ export class EventsComponent implements OnInit {
     return uniqueId;
   };
 
-  getDate(dat: any) {
+  /*getDate(dat: any) {
     var corsus = dat;
-  };
+  };*/
 
   /* Adding Dynamic draggable */
   addDraggable(idx: number) {
@@ -258,11 +265,15 @@ export class EventsComponent implements OnInit {
     this.eventFilter["eventCategory"]["_id"] = "-1";
     this.eventFilter["sort"]["selected"] = "date_desc";
     this.eventFilter["sort"]["isAsc"] = false;
+    this.resetEvent();
     this.events = [];
+    this.oid = "";
+  };
+
+  resetEvent() {
     this.dragIndex = -1;
     this.droppedTile = {};
     this.event = {};
-    this.oid = "";
   };
 
   replicateTile(obj: any) {
@@ -336,11 +347,6 @@ export class EventsComponent implements OnInit {
 
       this.events[i]["categoryName"] = index !== -1 && this.eventCategories[index].hasOwnProperty("name") ? this.eventCategories[index]["name"] : "";
     }
-  };
-
-  setEventType() {
-    var eventType = this.e1.nativeElement.querySelector('.event_type');
-    // var nous = combobox;
   };
 
   /*selectFilter(e: any) {
@@ -419,7 +425,54 @@ export class EventsComponent implements OnInit {
     this.selectedEvent = obj;
     //this.renderer.setElementClass(elem.target, 'selected', true);
     //this.renderer.setElementClass(elem.srcElement, 'selected', true);
-    elem.stopPropagation();
+    ///var drgTiles = [];
+    this.resetEvent();
+    this.draggedTiles = [];
+
+    if (obj && obj.hasOwnProperty("tiles")) {
+      for (let i = 0; i < obj.tiles.length; i++) {
+        this.draggedTiles.push(obj.tiles[i]["_id"]);
+      }
+    }
+
+    this.eventService.getEventByTiles(obj._id, true)
+      .then(evtObj => {
+        if(evtObj.event.length > 0){
+          obj = evtObj.event[0];  
+        }
+
+        if (evtObj && evtObj.tiles.length > 0) {
+          var currTiles = evtObj.tiles;
+
+          for (let i = 0; i < currTiles.length; i++) {
+            this.assignDragged(currTiles[i]);
+          }
+        }
+      });
+
+    //elem.stopPropagation();
+  };
+
+  /*setDraggedTiles(draggedTiles: any) {
+    if (typeof draggedTiles === "object") {
+      if (this.utils.isArray(draggedTiles)) {
+        for (let i = 0; i < draggedTiles.length; i++) {
+          this.assignDragged(draggedTiles[i]);
+        }
+      } else {
+        this.assignDragged(draggedTiles);
+      }
+    }
+  };*/
+
+  assignDragged(currTile: any) {
+    var draggedTile = this.setDefaultDraggedTile(currTile);
+
+    if (this.event.hasOwnProperty("draggedTiles")) {
+      this.event["draggedTiles"].push(draggedTile);
+    } else {
+      this.event["draggedTiles"] = [draggedTile];
+    }
   };
 
   ngOnInit() {

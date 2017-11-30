@@ -46,6 +46,14 @@ export class EventService {
       .catch(this.handleError);
   };
 
+  getEventByTiles(eventId: string, isTile: boolean){
+    return this.http
+    .post("/event/eventbytiles/", JSON.stringify({ "eventId": eventId, "isTile": isTile }), { headers: this.headers })
+    .toPromise()
+    .then(response => response.json())
+    .catch(this.handleError);
+  };
+
   eventCategoriesList(orgId: string) {
     let categories = this.getEventCategories(orgId);
     let events = this.eventList(orgId);

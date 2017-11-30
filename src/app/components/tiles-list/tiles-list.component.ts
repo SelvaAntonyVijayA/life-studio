@@ -21,6 +21,8 @@ export class TilesListComponent {
   @Input('page') page: string;
   @Input('organizations') organizations: any[];
   @Input('droppedTile') droppedTile: Object;
+  @Input('draggedTiles') draggedTiles: any[];
+  @Input('isMerge') isMerge: string;
   tileContent = new EventEmitter<any>();
   //private organizations: any[] = [];
   tileCategories: any[] = [];
@@ -28,8 +30,10 @@ export class TilesListComponent {
   defaultSelected = "-1";
   selectedOrg: string = "-1";
   selectedCategory: string = "-1";
+  listTiles: any[] = [];
   oid: string = "";
   listType: string = "list";
+  draggedSeparatedTiles: Object = {};
   sortOpt: Object = {
     "selectedOpt": "date", "isAsc": true, "values": {
       "date": ["lastUpdatedOn", "dateCreated"],
@@ -104,7 +108,7 @@ export class TilesListComponent {
     }
     //this.tiles = tileCloneData;
   };
-  
+
   /* Tile Categories based on organization*/
   getTilesCategories() {
     this.tileService.getTilesCategories(this.selectedOrg).subscribe(tileCat => {
@@ -114,7 +118,7 @@ export class TilesListComponent {
       this.setTileSearch();
     });
   };
-  
+
   /* Resetting the datas for the component*/
   resetTiles() {
     this.tiles = [];
@@ -167,6 +171,7 @@ export class TilesListComponent {
 
   setTileListData() {
     if (this.organizations.length > 0) {
+      this.draggedSeparatedTiles = {};
       this.getTilesCategories();
     }
   };
@@ -175,11 +180,89 @@ export class TilesListComponent {
     let index = this.tiles.map(function (t) { return t['_id']; }).indexOf(currTile._id);
 
     if (index >= 0) {
+      var tileToPush = this.tiles[index];
+      this.deletePushDraggedTiles(false, tileToPush);
       this.tiles.splice(index, 1);
-    } else {
-      this.tiles.push(currTile);
+    } else if (this.draggedSeparatedTiles.hasOwnProperty(currTile._id)) {
+      var tileObj = this.draggedSeparatedTiles[currTile._id];
+      this.tiles.push(tileObj);
+      this.deletePushDraggedTiles(true, tileObj);
     }
-  }
+  };
+
+  /*getDraggedTiles(tileIds) {
+    var tileIndexes = [];
+    var tileDatas = this.tiles.filter(function (currTile) {
+      var tIndex = tileIds.indexOf(currTile["_id"]);
+
+      if (tIndex > -1) {
+        tileIndexes.push(tIndex);
+      }
+      return currTile && tileIds.indexOf(currTile["_id"]) > -1;
+    });
+
+    if (tileIndexes.length > 0) {
+      for (let i = 0; i < tileIndexes.length; i++) {
+        this.tiles.splice(tileIndexes[i], 1);
+      }
+    }
+
+    if (tileDatas.length > 0) {
+      this.tileContent.emit({ "draggedTiles": tileDatas });
+    }
+  };*/
+
+  deletePushDraggedTiles(isDelete: boolean, currTile: Object) {
+    if (!this.utils.isEmptyObject(this.draggedSeparatedTiles)) {
+      var tileId = !this.utils.isEmptyObject(currTile) && currTile.hasOwnProperty("_id") ? currTile["_id"] : "-1";
+
+      if (isDelete && tileId !== "-1") {
+        delete this.draggedSeparatedTiles[tileId]
+      } else if (tileId !== "-1") {
+        if (!this.draggedSeparatedTiles.hasOwnProperty(tileId)) {
+          this.draggedSeparatedTiles[tileId] = currTile;
+        }
+      }
+    }
+  };
+
+  separateDraggedTiles(tileIds) {
+    this.mergeSeparatedTiles();
+
+    if (tileIds && tileIds.length > 0) {
+      var matchedTileIds = [];
+
+      var tileDatas = this.tiles.filter(function (currTile, idx) {
+        if (tileIds.indexOf(currTile["_id"]) > -1) {
+          matchedTileIds.push(currTile["_id"]);
+        }
+
+        return currTile && tileIds.indexOf(currTile["_id"]) > -1;
+      });
+
+      if (matchedTileIds.length > 0) {
+        for (let i = 0; i < matchedTileIds.length; i++) {
+          let index = this.tiles.map(function (t) { return t['_id']; }).indexOf(matchedTileIds[i]);
+          this.tiles.splice(index, 1);
+        }
+
+        for (let j = 0; j < tileDatas.length; j++) {
+          this.draggedSeparatedTiles[tileDatas[j]["_id"]] = tileDatas[j];
+        }
+      }
+    };
+  };
+
+  mergeSeparatedTiles() {
+    if (!this.utils.isEmptyObject(this.draggedSeparatedTiles)) {
+      for (let tileId in this.draggedSeparatedTiles) {
+        var currTile = this.draggedSeparatedTiles[tileId];
+        this.tiles.push(currTile);
+      }
+
+      this.draggedSeparatedTiles = {};
+    }
+  };
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
@@ -206,6 +289,14 @@ export class TilesListComponent {
 
     if (cHObj.hasOwnProperty("droppedTile") && !this.utils.isEmptyObject(cHObj["droppedTile"]["currentValue"])) {
       this.releaseDrop(cHObj["droppedTile"]["currentValue"]);
+    }
+
+    if (cHObj.hasOwnProperty("draggedTiles") && cHObj["draggedTiles"]["currentValue"].length > 0) {
+      this.separateDraggedTiles(cHObj["draggedTiles"]["currentValue"]);
+    }
+
+    if (cHObj.hasOwnProperty("isMerge") && !this.utils.isNullOrEmpty(cHObj["isMerge"]["currentValue"]) && cHObj["isMerge"]["currentValue"] === "current") {
+      this.mergeSeparatedTiles();
     }
   };
 }

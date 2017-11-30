@@ -25,7 +25,8 @@ var list = function (req, res, next) {
       }
 
       //options.lean = true;
-      $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.event, query, options, function (events) {
+
+      getEvent(query, options, function (events) {
         callback(null, events);
       });
     },
@@ -64,7 +65,62 @@ var list = function (req, res, next) {
     });
 };
 
+var getEvent = function (evtQuery, evtOpts, cb) {
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.event, evtQuery, evtOpts, function (events) {
+    cb(events);
+  });
+};
+
+var eventByTiles = function (req, res, next) {
+  var eventId = req.body.eventId;
+  var isTile = req.body.isTile;
+
+  $async.waterfall([
+    function (callback) {
+      query = { "_id": eventId };
+      options = {};
+
+      getEvent(query, options, function (event) {
+        callback(null, event);
+      });
+    },
+    function (event, callback) {
+      if (isTile && event && event[0] && event[0].hasOwnProperty("tiles") && event[0].tiles.length > 0) {
+        var tileIds = [];
+
+        _.each(event[0].tiles, function (tile) {
+          if (tile && tile.hasOwnProperty("_id")) {
+            tileIds.push(tile._id)
+          }
+        });
+
+        if (tileIds.length > 0) {
+          query = { "_id": tileIds };
+          options = {};
+          var tileFields = { "_id": 1, "title": 1, "art": 1 };
+
+          $tile.getSpecificFields(tileFields, query, options, function (tiles) {
+            callback(null, event, tiles);
+          });
+        }
+      } else {
+        callback(null, event, []);
+      }
+    },
+    function (event, tiles, callback) {
+      var result = {
+        "event": event,
+        "tiles": tiles
+      };
+
+      callback(null, result);
+    }], function (err, result) {
+      res.send(result);
+    });
+};
+
 module.exports = {
   "init": init,
+  "eventByTiles": eventByTiles,
   "list": list
 };

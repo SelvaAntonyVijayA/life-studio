@@ -8,10 +8,12 @@ module.exports = function (app) {
   router.get('/user/session', $user.getsession);
   router.post('/domain/get/', $domains.get);
   router.all('/tile/list/:organizationId*?', $tile.list);
+  router.post('/tile/tilebyids/', $tile.tileByIds);
   router.all('/tileblock/tile/:tileId*?', $tileblock.getBlocks);
-  router.get('/tileblock/getprofile/:orgId/:language*?',  $tileblock.getProfile);
-  router.get('/tilecategory/list/:orgId',  $tilecategory.get);
+  router.get('/tileblock/getprofile/:orgId/:language*?', $tileblock.getProfile);
+  router.get('/tilecategory/list/:orgId', $tilecategory.get);
   router.get('/event/list/:orgId/:eventId*?', $event.list);
+  router.post('/event/eventbytiles/', $event.eventByTiles);
   router.post('/eventcategory/save', $eventcategory.save);
   router.get('/eventcategory/list/:orgId', $eventcategory.list);
   app.use('/', router);

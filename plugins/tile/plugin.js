@@ -37,7 +37,6 @@ var list = function (req, res, next) {
   });
 };
 
-
 var _getTiles = function (ids, cb) {
   $async.waterfall([
     function (callback) {
@@ -142,9 +141,20 @@ var getSpecificFields = function (fields, dataQuery, dataOptions, cb) {
   });
 };
 
+var tileByIds = function (req, res, next) {
+  query = { "_id": req.body.tileIds };
+  options = {};
+  var tileFields = { blocksData: 0 };
+
+  $tile.getSpecificFields(tileFields, query, options, function (tiles) {
+    callback(null, tiles);
+  });
+};
+
 module.exports = {
   "init": init,
   "list": list,
   "_getTiles": _getTiles,
+  "tileByIds": tileByIds,
   "getSpecificFields": getSpecificFields
 };

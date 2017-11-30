@@ -22,6 +22,14 @@ export class TileService {
       .catch(this.handleError);
   };
 
+  getTileByIds(tileIds: string[]) {
+    return this.http
+    .post("/tile/tilebyids/", JSON.stringify({ "tileIds": tileIds }), { headers: this.headers })
+    .toPromise()
+    .then(response => response.json())
+    .catch(this.handleError);
+  }
+
   getTileBlocks(blockIds: string[]) {
     return this.http
       .post("/tileblock/tile/", JSON.stringify({ "blockIds": blockIds }), { headers: this.headers })
