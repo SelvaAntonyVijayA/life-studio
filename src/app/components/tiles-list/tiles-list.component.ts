@@ -22,7 +22,7 @@ export class TilesListComponent {
   @Input('organizations') organizations: any[];
   @Input('droppedTile') droppedTile: Object;
   @Input('draggedTiles') draggedTiles: any[];
-  @Input('isMerge') isMerge: string;
+  @Input('isMerge') isMerge: Object;
   tileContent = new EventEmitter<any>();
   //private organizations: any[] = [];
   tileCategories: any[] = [];
@@ -295,8 +295,10 @@ export class TilesListComponent {
       this.separateDraggedTiles(cHObj["draggedTiles"]["currentValue"]);
     }
 
-    if (cHObj.hasOwnProperty("isMerge") && !this.utils.isNullOrEmpty(cHObj["isMerge"]["currentValue"]) && cHObj["isMerge"]["currentValue"] === "current") {
-      this.mergeSeparatedTiles();
+    if (cHObj.hasOwnProperty("isMerge") &&!this.utils.isEmptyObject(cHObj["isMerge"]["currentValue"])) {
+      if(cHObj["isMerge"]["currentValue"]["status"] === "merge"){
+        this.mergeSeparatedTiles();
+      } 
     }
   };
 }

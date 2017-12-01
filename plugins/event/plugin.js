@@ -119,8 +119,86 @@ var eventByTiles = function (req, res, next) {
     });
 };
 
+var get = function (req, res, next) {
+  query = {};
+  options = {};
+  query._id = req.params.eventId;
+
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.event, query, options, function (result) {
+    _eventTile(res, result);
+  });
+};
+
+var _eventTile = function (res, event) {
+  var tileIds = [];
+
+  var isTiles = !__util.isNullOrEmpty(req.params.isTiles) ? true : false;
+
+  if (event && event.length > 0) {
+    event[0].tiles.forEach(function (tile) {
+      tileIds.push(tile._id);
+    });
+
+    query = { "_id": tileIds };
+    options = {};
+    var tileFields = { "_id": 1, "title": 1, "art": 1 };
+
+    $tile.getSpecificFields(tileFields, query, options, function (tiles) {
+      var eventTiles = [];
+      tiles = $general.convertToJsonObject(tiles)
+
+      _.each(tileIds, function (id) {
+        var tileObj = _.findWhere(tiles, {
+          _id: id
+        });
+
+        if (tileObj) {
+          var tileResult = _.findWhere(event[0].tiles, {
+            "_id": tileObj._id
+          });
+
+          var trigger = tileResult.triggerdata;
+          var status = "";
+          var activate = !(trigger.availableFrom && (new Date(trigger.availableFrom)) < (new Date()));
+          var deactivate = trigger.deactivatedTime ? ((new Date(trigger.deactivatedTime)) < (new Date())) : false;
+
+          if (activate && !deactivate) {
+            status = "activate";
+          }
+
+          if (deactivate) {
+            status = "reactivate";
+          }
+
+          if (!activate && !deactivate) {
+            status = "deactivate";
+          }
+
+          tileResult.tileData = tileObj;
+          tileResult.tileActivate = activate;
+          tileResult.tileDeActivate = deactivate;
+          tileResult.status = status;
+
+          eventTiles.push(tileResult);
+        }
+      });
+
+      event.tileList = eventTiles;
+
+      if (isTiles) {
+        event["tilesObj"] = tiles;
+      }
+
+      res.send(event);
+    });
+  } else {
+    res.send([]);
+  }
+};
+
 module.exports = {
   "init": init,
   "eventByTiles": eventByTiles,
-  "list": list
+  "list": list,
+  "get": get
 };

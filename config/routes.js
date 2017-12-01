@@ -13,6 +13,7 @@ module.exports = function (app) {
   router.get('/tileblock/getprofile/:orgId/:language*?', $tileblock.getProfile);
   router.get('/tilecategory/list/:orgId', $tilecategory.get);
   router.get('/event/list/:orgId/:eventId*?', $event.list);
+  router.get('/event/get/:eventId', $event.get);
   router.post('/event/eventbytiles/', $event.eventByTiles);
   router.post('/eventcategory/save', $eventcategory.save);
   router.get('/eventcategory/list/:orgId', $eventcategory.list);

@@ -52,6 +52,7 @@ export class EventsComponent implements OnInit {
   groupType: string = "list";
   events: any[] = [];
   eventCategories: any[] = [];
+  isMerge: Object = {};
   scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
   @ViewChild('evtCat') evtCat: ElementRef;
   eventFilter: Object = {
@@ -84,12 +85,86 @@ export class EventsComponent implements OnInit {
   /* Setting for default dragged tile */
   setDefaultDraggedTile(tile: any) {
     var dragged = {
-      "uniqueId": this.getUniqueId(),
-      "tile": tile, "type": "-1", "activityTitle": "",
-      "shortDescription": "", "activityDate": ""
+      "uniqueId": this.getUniqueId(), "tile": {},
+      "triggerdata": { "type": "-1" }, "activityTitle": "",
+      "shortDescription": "", "activityDate": "", "dontShowTime": false,
     };
 
+    if (tile && !this.utils.isEmptyObject(tile)) {
+      var currTile = {
+        "_id": tile.hasOwnProperty("_id") ? tile["_id"] : "-1",
+        "title": tile.hasOwnProperty("title") && !this.utils.isNullOrEmpty(tile["title"]) ? tile["title"] : "",
+        "art": tile.hasOwnProperty("art") && !this.utils.isNullOrEmpty(tile["art"]) ? tile["art"] : ""
+      }
+
+      dragged["tile"] = currTile;
+    }
+
     return dragged;
+  };
+
+  setSelectedDraggedTile(dragTile: any, tile: any) {
+
+    var triggerData = dragTile && dragTile.hasOwnProperty("triggerdata") ? dragTile["triggerdata"] : {};
+    var dragged = {
+      "uniqueId": this.getUniqueId(),
+      "tile": tile,
+      "activityTitle": dragTile && dragTile.hasOwnProperty("activityTitle") ? dragTile.activityTitle : "",
+      "shortDescription": dragTile && dragTile.hasOwnProperty("shortDescription") ? dragTile.shortDescription : "",
+      "activityDate": dragTile && dragTile.hasOwnProperty("activityDate") ? this.utils.toLocalDateTime(dragTile.activityDate) : "",
+      "dontShowTime": dragTile && dragTile.hasOwnProperty("dontShowTime") && typeof dragTile.dontShowTime === "boolean" ? dragTile.dontShowTime : false,
+      "triggerData": {}
+    };
+
+    if (dragTile && dragTile.hasOwnProperty('tileActivate') && typeof dragTile.tileActivate === "boolean") {
+      dragged["activate"] = dragTile.tileActivate;
+    }
+
+    if (dragTile && dragTile.hasOwnProperty('tileDeActivate') && typeof dragTile.tileDeActivate === "boolean") {
+      dragged["deActivate"] = dragTile.tileDeActivate;
+    }
+
+    if (dragTile && dragTile.hasOwnProperty('status')) {
+      dragged["status"] = dragTile.status;
+    }
+
+    if (triggerData.hasOwnProperty("deactivatedTime")) {
+      dragged["triggerData"]["deactivatedTime"] = triggerData["deactivatedTime"]
+    };
+
+    if (triggerData.hasOwnProperty("deactivated")) {
+      dragged["triggerData"]["deactivated"] = tile["deactivated"];
+    }
+
+    if (triggerData.hasOwnProperty("setActiveTileId")) {
+      dragged["triggerData"]["setActiveTileId"] = triggerData["setActiveTileId"];
+    }
+
+    if (triggerData.hasOwnProperty("type")) {
+      dragged["triggerData"]["type"] = triggerData["type"];
+
+      if (triggerData["type"] === "manual" || triggerData["type"] === "delay" || triggerData["type"] === "time") {
+        dragged["triggerData"]["stopType"] = triggerData.hasOwnProperty("stopType") ? triggerData["stopType"] : "-1";
+
+        if (triggerData["type"] === "delay") {
+          dragged["triggerData"]["delayToActivate"] = triggerData.hasOwnProperty("delayToActivate") ? triggerData["delayToActivate"] : "";
+        }
+
+        if (triggerData["type"] === "time") {
+          dragged["triggerData"]["timeToActivate"] = triggerData.hasOwnProperty("timeToActivate") ? triggerData["timeToActivate"] : "";
+        }
+
+        if (triggerData["stopType"] !== "-1" && (triggerData["stopType"] === "aftertile" || triggerData["stopType"] === "aftertile")) {
+          dragged["triggerData"]["delayToDeActivate"] = triggerData.hasOwnProperty("delayToDeActivate") && !this.utils.isNullOrEmpty(triggerData["delayToDeActivate"]) ? this.utils.toLocalDateTime(triggerData["delayToDeActivate"]) : "";
+        }
+
+        if (triggerData["stopType"] !== "-1" && triggerData["stopType"] === "time") {
+          dragged["triggerData"]["timeToDeActivate"] = triggerData.hasOwnProperty("timeToDeActivate") && !this.utils.isNullOrEmpty(triggerData["timeToDeActivate"]) ? this.utils.toLocalDateTime(triggerData["timeToDeActivate"]) : "";
+        }
+      }
+    } else {
+      dragged["triggerData"]["type"] = "-1";
+    }
   };
 
   /* Detail and short view change for events */
@@ -98,46 +173,46 @@ export class EventsComponent implements OnInit {
   };
 
   /* Setting dragged tile */
-  setDragTile(triggerType: any, dragTile: any, type: string) {
-    this.resetTriggerTypes(dragTile, type);
+  setDragTile(triggerType: any, triggerData: any, type: string) {
+    this.resetTriggerTypes(triggerData, type);
 
     if (type == "activate") {
-      dragTile["type"] = triggerType;
+      triggerData["type"] = triggerType;
 
       if (triggerType == "manual" || triggerType == "delay" || triggerType == "time") {
-        dragTile["stopType"] = "-1";
+        triggerData["stopType"] = "-1";
       }
 
       if (triggerType == "delay") {
-        dragTile["delayToActivate"] = "";
+        triggerData["delayToActivate"] = "";
       }
 
       if (triggerType == "time") {
-        dragTile["timeToActivate"] = "";
+        triggerData["timeToActivate"] = "";
       }
     }
 
     if (type == "deactivate") {
-      dragTile["stopType"] = triggerType;
+      triggerData["stopType"] = triggerType;
 
       if (triggerType == "aftertile" || triggerType == "aftertrigger") {
-        dragTile["delayToDeActivate"] = "";
+        triggerData["delayToDeActivate"] = "";
       } else if (triggerType == "time") {
-        dragTile["timeToDeActivate"] = "";
+        triggerData["timeToDeActivate"] = "";
       }
     }
   };
 
   /* Resetting dragged tile trigger resetting */
-  resetTriggerTypes(dragTile: any, type: string) {
+  resetTriggerTypes(triggerData: any, type: string) {
     if (type == "activate") {
-      delete dragTile["stopType"];
-      delete dragTile["delayToActivate"];
-      delete dragTile["timeToActivate"];
+      delete triggerData["stopType"];
+      delete triggerData["delayToActivate"];
+      delete triggerData["timeToActivate"];
     }
 
-    delete dragTile["delayToDeActivate"];
-    delete dragTile["timeToDeActivate"];
+    delete triggerData["delayToDeActivate"];
+    delete triggerData["timeToDeActivate"];
   };
 
   /* Dragged tile on drop */
@@ -270,10 +345,12 @@ export class EventsComponent implements OnInit {
     this.oid = "";
   };
 
-  resetEvent() {
+  resetEvent(mergeReset?: string) {
     this.dragIndex = -1;
     this.droppedTile = {};
     this.event = {};
+
+    this.isMerge = mergeReset && mergeReset === "reset" ? { "status": "merge" } : {};
   };
 
   replicateTile(obj: any) {
@@ -422,11 +499,12 @@ export class EventsComponent implements OnInit {
   /* Select Event */
   selectEvent(elem: any, obj: any) {
     elem.preventDefault();
-    this.selectedEvent = obj;
+    //this.selectedEvent = obj;
     //this.renderer.setElementClass(elem.target, 'selected', true);
     //this.renderer.setElementClass(elem.srcElement, 'selected', true);
     ///var drgTiles = [];
     this.resetEvent();
+    this.event["obj"] = obj;
     this.draggedTiles = [];
 
     if (obj && obj.hasOwnProperty("tiles")) {
@@ -437,8 +515,8 @@ export class EventsComponent implements OnInit {
 
     this.eventService.getEventByTiles(obj._id, true)
       .then(evtObj => {
-        if(evtObj.event.length > 0){
-          obj = evtObj.event[0];  
+        if (evtObj.event.length > 0) {
+          obj = evtObj.event[0];
         }
 
         if (evtObj && evtObj.tiles.length > 0) {
@@ -473,6 +551,14 @@ export class EventsComponent implements OnInit {
     } else {
       this.event["draggedTiles"] = [draggedTile];
     }
+  };
+
+  newEvent(e: any) {
+    this.resetEvent("reset");
+  };
+
+  resetOrgTiles() {
+
   };
 
   ngOnInit() {
