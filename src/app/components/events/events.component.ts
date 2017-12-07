@@ -32,8 +32,7 @@ export class EventsComponent implements OnInit {
   }
 
 
-  /* Variables Intialization*/
-
+  /* Variables Intialization */
   organizations: any[] = [];
   selectedOrganization: string = "-1";
   private orgChangeDetect: any;
@@ -45,16 +44,22 @@ export class EventsComponent implements OnInit {
   @ContentChild(DraggableDirective) dragDir: DraggableDirective;
   droppedTile: Object = {};
   event: Object = {};
+  art: string = "";
   dragIndex: number = -1;
+  intervalId: any = -1;
   utils: any;
   eventStart: any = "";
   availableEnd: any = "";
   groupType: string = "list";
+  eventName: string = "";
   events: any[] = [];
   eventCategories: any[] = [];
+  languageList: any[] = [];
+  selectedLanguage: string = "en";
+  selectedEventCategory: string = "-1";
   isMerge: Object = {};
   scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
-  @ViewChild('evtCat') evtCat: ElementRef;
+  @ViewChild('evtCategory') evtCategory: ElementRef;
   eventFilter: Object = {
     "eventSearch": "",
     "eventCategory": { "_id": "-1", "fieldName": "category" },
@@ -64,7 +69,7 @@ export class EventsComponent implements OnInit {
         "name": ["name"],
         "type": ["categoryName"]
       }
-    }
+    },
   };
 
   selectedEvent: Object = {};
@@ -86,8 +91,16 @@ export class EventsComponent implements OnInit {
   setDefaultDraggedTile(tile: any) {
     var dragged = {
       "uniqueId": this.getUniqueId(), "tile": {},
-      "triggerdata": { "type": "-1" }, "activityTitle": "",
-      "shortDescription": "", "activityDate": "", "dontShowTime": false,
+      "triggerdata": {
+        "type": "-1",
+        "evtTileToActivate": false,
+        "evtTileToDeactivate": false,
+        "evtTileNotActivated": false
+      },
+      "activityTitle": "",
+      "shortDescription": "",
+      "activityDate": "",
+      "dontShowTime": false,
     };
 
     if (tile && !this.utils.isEmptyObject(tile)) {
@@ -103,17 +116,22 @@ export class EventsComponent implements OnInit {
     return dragged;
   };
 
-  setSelectedDraggedTile(dragTile: any, tile: any) {
-
+  setSelectedDraggedTile(dragTile: any) {
     var triggerData = dragTile && dragTile.hasOwnProperty("triggerdata") ? dragTile["triggerdata"] : {};
+    var currTile = {};
+
+    if (!this.utils.isEmptyObject(dragTile) && dragTile.hasOwnProperty("tileData")) {
+      currTile = dragTile["tileData"];
+    }
+
     var dragged = {
       "uniqueId": this.getUniqueId(),
-      "tile": tile,
+      "tile": currTile,
       "activityTitle": dragTile && dragTile.hasOwnProperty("activityTitle") ? dragTile.activityTitle : "",
       "shortDescription": dragTile && dragTile.hasOwnProperty("shortDescription") ? dragTile.shortDescription : "",
       "activityDate": dragTile && dragTile.hasOwnProperty("activityDate") ? this.utils.toLocalDateTime(dragTile.activityDate) : "",
       "dontShowTime": dragTile && dragTile.hasOwnProperty("dontShowTime") && typeof dragTile.dontShowTime === "boolean" ? dragTile.dontShowTime : false,
-      "triggerData": {}
+      "triggerdata": {}
     };
 
     if (dragTile && dragTile.hasOwnProperty('tileActivate') && typeof dragTile.tileActivate === "boolean") {
@@ -129,42 +147,70 @@ export class EventsComponent implements OnInit {
     }
 
     if (triggerData.hasOwnProperty("deactivatedTime")) {
-      dragged["triggerData"]["deactivatedTime"] = triggerData["deactivatedTime"]
-    };
+      dragged["triggerdata"]["deactivatedTime"] = this.utils.toLocalDateTime(triggerData["deactivatedTime"]);
+    }
 
     if (triggerData.hasOwnProperty("deactivated")) {
-      dragged["triggerData"]["deactivated"] = tile["deactivated"];
+      dragged["triggerdata"]["deactivated"] = triggerData["deactivated"];
     }
 
     if (triggerData.hasOwnProperty("setActiveTileId")) {
-      dragged["triggerData"]["setActiveTileId"] = triggerData["setActiveTileId"];
+      dragged["triggerdata"]["setActiveTileId"] = triggerData["setActiveTileId"];
+    }
+
+    if (triggerData.hasOwnProperty("availableFrom")) {
+      dragged["triggerdata"]["availableFrom"] = this.utils.toLocalDateTime(triggerData["availableFrom"]);
     }
 
     if (triggerData.hasOwnProperty("type")) {
-      dragged["triggerData"]["type"] = triggerData["type"];
+      dragged["triggerdata"]["type"] = triggerData["type"];
 
       if (triggerData["type"] === "manual" || triggerData["type"] === "delay" || triggerData["type"] === "time") {
-        dragged["triggerData"]["stopType"] = triggerData.hasOwnProperty("stopType") ? triggerData["stopType"] : "-1";
+        dragged["triggerdata"]["stopType"] = triggerData.hasOwnProperty("stopType") ? triggerData["stopType"] : "-1";
 
         if (triggerData["type"] === "delay") {
-          dragged["triggerData"]["delayToActivate"] = triggerData.hasOwnProperty("delayToActivate") ? triggerData["delayToActivate"] : "";
+          dragged["triggerdata"]["delayToActivate"] = triggerData.hasOwnProperty("delayToActivate") ? triggerData["delayToActivate"] : "";
         }
 
         if (triggerData["type"] === "time") {
-          dragged["triggerData"]["timeToActivate"] = triggerData.hasOwnProperty("timeToActivate") ? triggerData["timeToActivate"] : "";
+          dragged["triggerdata"]["timeToActivate"] = triggerData.hasOwnProperty("timeToActivate") ? this.utils.toLocalDateTime(triggerData["timeToActivate"]) : "";
         }
 
         if (triggerData["stopType"] !== "-1" && (triggerData["stopType"] === "aftertile" || triggerData["stopType"] === "aftertile")) {
-          dragged["triggerData"]["delayToDeActivate"] = triggerData.hasOwnProperty("delayToDeActivate") && !this.utils.isNullOrEmpty(triggerData["delayToDeActivate"]) ? this.utils.toLocalDateTime(triggerData["delayToDeActivate"]) : "";
+          dragged["triggerdata"]["delayToDeActivate"] = triggerData.hasOwnProperty("delayToDeActivate") && !this.utils.isNullOrEmpty(triggerData["delayToDeActivate"]) ? this.utils.toLocalDateTime(triggerData["delayToDeActivate"]) : "";
         }
 
         if (triggerData["stopType"] !== "-1" && triggerData["stopType"] === "time") {
-          dragged["triggerData"]["timeToDeActivate"] = triggerData.hasOwnProperty("timeToDeActivate") && !this.utils.isNullOrEmpty(triggerData["timeToDeActivate"]) ? this.utils.toLocalDateTime(triggerData["timeToDeActivate"]) : "";
+          dragged["triggerdata"]["timeToDeActivate"] = triggerData.hasOwnProperty("timeToDeActivate") && !this.utils.isNullOrEmpty(triggerData["timeToDeActivate"]) ? this.utils.toLocalDateTime(triggerData["timeToDeActivate"]) : "";
         }
       }
     } else {
-      dragged["triggerData"]["type"] = "-1";
+      dragged["triggerdata"]["type"] = "-1";
     }
+
+    dragged = this.setActivateDeactivate(dragged);
+
+    return dragged;
+  };
+
+  setActivateDeactivate(currDragTile: any) {
+    currDragTile["triggerdata"]["evtTileToActivate"] = false;
+    currDragTile["triggerdata"]["evtTileToDeactivate"] = false;
+    currDragTile["triggerdata"]["evtTileNotActivated"] = false;
+
+    var availableFrom = currDragTile['triggerdata'].hasOwnProperty('availableFrom') ? currDragTile['triggerdata']['availableFrom'] : "";
+
+    if (!this.utils.isEmptyObject(currDragTile)) {
+      if (currDragTile['triggerdata'].hasOwnProperty('deactivatedTime') && currDragTile.hasOwnProperty('deActivate') && currDragTile['deActivate']) {
+        currDragTile["triggerdata"]["evtTileToActivate"] = true;
+      } else if (currDragTile.hasOwnProperty('activate') && currDragTile.hasOwnProperty('deActivate') && !currDragTile['activate'] && !currDragTile['deActivate']) {
+        currDragTile["triggerdata"]["evtTileToDeactivate"] = true;
+      } else if (((availableFrom === '') || currDragTile.hasOwnProperty('activate') && !currDragTile['activate'])) {
+        currDragTile["triggerdata"]["evtTileNotActivated"] = true;
+      }
+    }
+
+    return currDragTile;
   };
 
   /* Detail and short view change for events */
@@ -290,7 +336,6 @@ export class EventsComponent implements OnInit {
     var dragged = { "uniqueId": this.getUniqueId(), "eventDragContainer": true };
     var totalIdx = this.event["draggedTiles"].length - 1;
 
-
     if (this.dragIndex === -1) {
       this.dragIndex = totalIdx === idx ? 0 : idx === 0 ? totalIdx : totalIdx - idx;
       this.event["draggedTiles"].splice(this.dragIndex, 0, dragged);
@@ -349,6 +394,11 @@ export class EventsComponent implements OnInit {
     this.dragIndex = -1;
     this.droppedTile = {};
     this.event = {};
+    this.eventName = "";
+    this.eventStart = "";
+    this.availableEnd = "";
+    this.selectedLanguage = "en";
+    this.selectedEventCategory = "-1";
 
     this.isMerge = mergeReset && mergeReset === "reset" ? { "status": "merge" } : {};
   };
@@ -445,7 +495,7 @@ export class EventsComponent implements OnInit {
 
   setComboBox() {
     var self = this;
-    var eventTypeElem = this.evtCat;
+    var eventTypeElem = this.evtCategory;
     var customCombo = this.e1.nativeElement.querySelector('.custom_combobox');
 
     if (this.utils.isNullOrEmpty(customCombo)) {
@@ -497,14 +547,15 @@ export class EventsComponent implements OnInit {
   };
 
   /* Select Event */
-  selectEvent(elem: any, obj: any) {
-    elem.preventDefault();
+  selectEvent(e: any, obj: any) {
+    e.preventDefault();
+    e.stopPropagation()
     //this.selectedEvent = obj;
     //this.renderer.setElementClass(elem.target, 'selected', true);
     //this.renderer.setElementClass(elem.srcElement, 'selected', true);
     ///var drgTiles = [];
     this.resetEvent();
-    this.event["obj"] = obj;
+    //this.event["obj"] = obj;
     this.draggedTiles = [];
 
     if (obj && obj.hasOwnProperty("tiles")) {
@@ -513,23 +564,38 @@ export class EventsComponent implements OnInit {
       }
     }
 
-    this.eventService.getEventByTiles(obj._id, true)
+    this.eventService.getEventByTiles(obj._id)
       .then(evtObj => {
-        if (evtObj.event.length > 0) {
-          obj = evtObj.event[0];
-        }
-
-        if (evtObj && evtObj.tiles.length > 0) {
-          var currTiles = evtObj.tiles;
-
-          for (let i = 0; i < currTiles.length; i++) {
-            this.assignDragged(currTiles[i]);
-          }
+        if (evtObj && evtObj[0]) {
+          this.assignEventDatas(evtObj[0]);
         }
       });
 
     //elem.stopPropagation();
   };
+
+  updateTileInterval() {
+    if (this.intervalId === -1) {
+      this.intervalId = setInterval(() => this.updateTileList, 1000);
+    } else {
+      this.clearInterval();
+      this.updateTileInterval();
+    }
+  }
+
+  clearInterval() {
+    if (this.intervalId !== -1) {
+      clearInterval(this.intervalId);
+    }
+  }
+
+  /*objectMatching() {
+
+  };*/
+
+  /*getEventObject() {
+
+  };*/
 
   /*setDraggedTiles(draggedTiles: any) {
     if (typeof draggedTiles === "object") {
@@ -544,7 +610,7 @@ export class EventsComponent implements OnInit {
   };*/
 
   assignDragged(currTile: any) {
-    var draggedTile = this.setDefaultDraggedTile(currTile);
+    var draggedTile = this.setSelectedDraggedTile(currTile);
 
     if (this.event.hasOwnProperty("draggedTiles")) {
       this.event["draggedTiles"].push(draggedTile);
@@ -558,7 +624,408 @@ export class EventsComponent implements OnInit {
   };
 
   resetOrgTiles() {
+    var currEvent = this.event;
+    var obj = Object.assign({}, currEvent);
+    var triggeredData = currEvent;
 
+    delete triggeredData["evtTileToActivate"];
+    delete triggeredData["evtTileToDeactivate"];
+    delete triggeredData["evtTileNotActivated"];
+    delete obj["tile"];
+    delete obj["uniqueId"];
+  };
+
+  updateTileList() {
+    var obj1 = {};
+    var obj2 = {};
+
+    if (!this.utils.isEmptyObject(this.event) && this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
+      var obj1Sring = JSON.stringify(this.event["obj"]);
+      obj1Sring = obj1Sring.replace(/&#39;/g, "'");
+      obj1 = JSON.parse(this.utils.htmlDecode(obj1Sring));
+
+      if (obj1.hasOwnProperty("tiles") && obj1["tiles"].length > 0) {
+        for (let i = 0; i < obj1["tiles"].length; i++) {
+          delete obj1["tiles"][i]['tileData']
+        }
+      }
+
+      delete obj1['createdBy'];
+      delete obj1['dateCreated'];
+      delete obj1['dateUpdated'];
+
+      this.eventService.getEventByTiles(obj1["_id"])
+        .then(evtObj => {
+          if (evtObj && evtObj[0]) {
+            var currEventobj = evtObj.length > 0 ? evtObj.map(x => Object.assign({}, x)) : [];
+            obj2 = currEventobj[0];
+            var obj2Sring = JSON.stringify(obj2);
+            obj2 = JSON.parse(this.utils.htmlDecode(obj2Sring));
+
+            for (let i = 0; i < obj2["tiles"].length; i++) {
+              delete obj2["tiles"][i]['tileData']
+            }
+
+            delete obj2['createdBy'];
+            delete obj2['dateCreated'];
+            delete obj2['dateUpdated'];
+
+            var isEventModified = this.newEventCompare();
+
+            var currObj = this.checkActivityObj(obj1, obj2);
+            obj1 = currObj.obj1;
+            obj2 = currObj.obj2;
+
+            var result = this.utils.compareObj(obj1, obj2);
+
+            if (!result && !isEventModified) {
+              if (confirm("The event has been updated by another user, click proceed to apply the changes") === true) {
+                this.assignEventDatas(evtObj[0]);
+              }
+            } else if (isEventModified) {
+              this.assignEventDatas(evtObj[0]);
+            }
+          }
+        });
+    }
+  };
+
+  assignEventDatas(objEvent: Object) {
+    this.event["obj"] = objEvent;
+
+    if (!this.utils.isEmptyObject(objEvent)) {
+      this.eventName = objEvent.hasOwnProperty("name") ? objEvent["name"] : "";
+      this.eventStart = objEvent.hasOwnProperty("eventStart") ? this.utils.toLocalDateTime(objEvent["eventStart"]) : "";
+      this.availableEnd = objEvent.hasOwnProperty("availableEnd") ? this.utils.toLocalDateTime(objEvent["availableEnd"]) : "";
+      this.selectedLanguage = "en";
+      $(this.evtCategory.nativeElement).combobox('setvalue', (objEvent.hasOwnProperty("category") && objEvent["category"]) ? objEvent["category"] : '-1');
+      //this.e1.nativeElement.querySelector('#eventCategory')
+
+      if (objEvent.hasOwnProperty("tiles") && objEvent["tiles"].length > 0) {
+        var currTiles = objEvent["tiles"];
+
+        for (let i = currTiles.length - 1; 0 <= i; i--) {
+          if (currTiles[i].hasOwnProperty("_id")) {
+            this.assignDragged(currTiles[i]);
+          }
+        }
+      }
+    }
+  };
+
+  newEventCompare() {
+    var id = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id") ? this.event["obj"]["_id"] : "-1";
+    var selectedLanguage = this.selectedLanguage;
+    var obj1 = this.getCompareValues();
+
+    var obj1Sring = JSON.stringify(obj1);
+    obj1 = JSON.parse(this.utils.htmlDecode(obj1Sring));
+
+    var obj2 = {};
+
+    if (!this.utils.isEmptyObject(this.event) && this.event.hasOwnProperty("obj") && this.utils.isEmptyObject(this.event["obj"])) {
+      var evtObj = this.event["obj"];
+      obj2 = Object.assign({}, evtObj);
+      var obj2Sring = JSON.stringify(obj2);
+      obj2 = JSON.parse(this.utils.htmlDecode(obj2Sring));
+      obj2["eventStart"] = obj2.hasOwnProperty("eventStart") ? this.utils.toUTCDateTime(obj2["eventStart"]) : "";
+      obj2["availableEnd"] = obj2.hasOwnProperty("availableEnd") ? this.utils.toUTCDateTime(obj2["availableEnd"]) : "";
+
+      var currTiles = obj2.hasOwnProperty("tiles") && obj2["tiles"].length > 0 ? obj2["tiles"] : [];
+      for (let i = 0; i < currTiles.length; i++) {
+        var tileData = currTiles[i];
+
+        if (tileData.hasOwnProperty("availableFrom")) {
+          tileData["triggerdata"]["availableFrom"] = this.utils.toUTCDateTime(tileData["triggerdata"]["availableFrom"]);
+        }
+
+        if (tileData.hasOwnProperty("deactivatedTime")) {
+          tileData["triggerdata"]["deactivatedTime"] = this.utils.toUTCDateTime(tileData["triggerdata"]["deactivatedTime"]);
+        }
+
+        if (tileData.hasOwnProperty("triggerdata") && tileData["triggerdata"].hasOwnProperty("type")) {
+          if (tileData["triggerdata"]["type"] === 'delay') {
+            delete tileData["triggerdata"]["timeToActivate"];
+          } else if (tileData["triggerdata"]["type"] === 'time') {
+            if (tileData["triggerdata"].hasOwnProperty("timeToActivate")) {
+              tileData["triggerdata"]["timeToActivate"] = this.utils.toUTCDateTime(tileData["triggerdata"]["timeToActivate"]);
+            }
+
+            if (tileData["triggerdata"].hasOwnProperty("timeToDeActivate")) {
+              tileData["triggerdata"]["timeToDeActivate"] = this.utils.toUTCDateTime(tileData["triggerdata"]["timeToDeActivate"]);
+            }
+
+            delete tileData["triggerdata"]["delayToActivate"];
+          }
+
+          if (tileData["triggerdata"]["type"] === 'manual') {
+            delete tileData["triggerdata"]["delayToActivate"];
+          }
+
+          if (tileData["triggerdata"].hasOwnProperty("stopType")) {
+            if (tileData["triggerdata"]["stopType"] === 'aftertile' || tileData["triggerdata"]["stopType"] === 'aftertrigger') {
+              if (tileData["triggerdata"].hasOwnProperty("delayToDeActivate") && !this.utils.isNullOrEmpty(tileData["triggerdata"]["delayToDeActivate"])) {
+                tileData["triggerdata"]["delayToDeActivate"] = tileData["triggerdata"]["delayToDeActivate"];
+              } else {
+                delete tileData["triggerdata"]["delayToDeActivate"];
+                delete tileData["triggerdata"]['stopType'];
+              }
+            } else if (tileData["triggerdata"]["stopType"] === "time") {
+              if (tileData["triggerdata"].hasOwnProperty("timeToDeActivate") && !this.utils.isNullOrEmpty(tileData["triggerdata"]["timeToDeActivate"])) {
+                tileData["triggerdata"]["timeToDeActivate"] = tileData["triggerdata"]["timeToDeActivate"];
+              } else {
+                delete tileData["triggerdata"]["timeToDeActivate"];
+                delete tileData["triggerdata"]['stopType'];
+              }
+            }
+          } else {
+            delete tileData["triggerdata"]["delayToDeActivate"];
+            delete tileData["triggerdata"]["timeToDeActivate"];
+          }
+        }
+
+        if (tileData.hasOwnProperty("activityDate") && !this.utils.isNullOrEmpty(tileData["activityDate"])) {
+          tileData["activityDate"] = !this.utils.toUTCDateTime(tileData["activityDate"]);
+        }
+
+        delete tileData['tileData'];
+        delete tileData['tileActivate'];
+        delete tileData['tileDeActivate'];
+        delete tileData['status'];
+      }
+
+      delete obj2['notification'];
+      delete obj2['smart'];
+      delete obj2['createdBy'];
+      delete obj2['dateCreated'];
+      delete obj2['dateUpdated'];
+      delete obj2['Apps'];
+      delete obj2['isRoleBased'];
+      delete obj2['defaultActivityIcon'];
+      delete obj2['art'];
+      delete obj2['background_landscape'];
+      delete obj2['background_portrait'];
+      delete obj2['background'];
+      delete obj2['top_banner'];
+      delete obj2['topBannerUrl'];
+      delete obj2['scrollIconsUnder'];
+      delete obj2['scrollIconsOver'];
+      delete obj2['descFontColor'];
+      delete obj2['timelineBackgroundColor'];
+      delete obj2['timelineFontColor'];
+      delete obj2['titleFontColor'];
+      delete obj2['timeLine'];
+      delete obj2['doubleWidthSquareDetails'];
+      delete obj2['webBackground'];
+
+      if (selectedLanguage !== "en") {
+        delete obj2["name"];
+      }
+
+      for (let i = 0; i < this.languageList.length; i++) {
+        var currLang = this.languageList[i];
+
+        if (currLang["code"] !== selectedLanguage) {
+          delete obj1[currLang["code"]];
+          delete obj2[currLang["code"]];
+        }
+      }
+
+      delete obj1['background_landscape'];
+      delete obj1['background_portrait'];
+      delete obj1['Apps'];
+      delete obj1['isRoleBased'];
+
+      var currObj = this.checkActivityObj(obj2, obj1);
+      obj1 = currObj.obj2;
+      obj2 = currObj.obj1;
+    }
+
+    return this.utils.compareObj(obj1, obj2);
+  };
+
+  checkActivityObj(obj1: Object, obj2: Object) {
+    var activityChk = false;
+    var hideDateChk = false;
+    var newTiles = {};
+
+    if (obj1 && !obj1.hasOwnProperty("calendar")) {
+      delete obj2["calendar"];
+    }
+
+    if (obj1 && !obj1.hasOwnProperty("defaultActivityIcon")) {
+      delete obj2["defaultActivityIcon"];
+    }
+
+    if (obj2 && !obj2.hasOwnProperty("calendar")) {
+      delete obj1["calendar"];
+    }
+
+    if (obj2 && !obj2.hasOwnProperty("defaultActivityIcon")) {
+      delete obj1["defaultActivityIcon"];
+    }
+
+    if (obj1.hasOwnProperty("tiles") && obj1["tiles"].length > 0) {
+      for (let i = 0; i < obj1["tiles"].length; i++) {
+        var objTileData = obj1["tiles"][i];
+        activityChk = objTileData.hasOwnProperty("activityTitle") || objTileData.hasOwnProperty("shortDescription") || objTileData.hasOwnProperty("activityDate") ? true : false;
+        hideDateChk = objTileData.hasOwnProperty("dontShowTime") ? true : false;
+
+        var currObj = {};
+        currObj["activityChk"] = activityChk;
+        currObj["hideDateChk"] = hideDateChk;
+
+        newTiles[objTileData._id] = currObj;
+      }
+    }
+
+    if (obj2.hasOwnProperty("tiles") && obj2["tiles"].length > 0) {
+      for (let i = 0; i < obj2["tiles"].length; i++) {
+        var objTileData = obj2["tiles"][i];
+        var tileKeys = Object.keys(newTiles);
+        var tileIndex = tileKeys.indexOf(objTileData._id);
+        var obj = tileIndex != -1 ? newTiles[objTileData._id] : {};
+
+        if (!this.utils.isEmptyObject(obj)) {
+
+          if (!obj["activityChk"]) {
+            delete objTileData["activityTitle"];
+            delete objTileData["shortDescription"];
+            delete objTileData["activityDate"];
+          }
+
+          if (!obj["hideDateChk"]) {
+            delete objTileData["dontShowTime"];
+          }
+        }
+      }
+    }
+
+    delete obj1["availableStart"];
+    delete obj2["availableStart"];
+
+    return { "obj1": obj1, "obj2": obj2 };
+  };
+
+  getCompareValues() {
+    var id = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id") ? this.event["obj"]["_id"] : "-1";
+    var selectedLanguage = this.selectedLanguage;
+    var tilist = {};
+
+    tilist["_id"] = id;
+    tilist["name"] = this.eventName;
+    tilist["category"] = this.selectedEventCategory;
+    tilist["type"] = "event";
+    //tilist.art = $('.tilist_art').val();
+    //tilist.availableStart = $.toUTCDateTime($('#txtAvailDateTime').val());
+    tilist["eventStart"] = this.eventStart;
+    tilist["availableEnd"] = this.availableEnd;
+    tilist["organizationId"] = this.oid;
+    tilist["tiles"] = this.getDraggedTiles();
+
+    if (id !== '-1' && selectedLanguage != "en") {
+      tilist[selectedLanguage] = this.event["obj"][selectedLanguage] ? this.event["obj"][selectedLanguage] : {};
+      tilist[selectedLanguage].name = this.eventName;
+      delete tilist["name"];
+    }
+
+    if (selectedLanguage == "en") {
+      if (tilist["name"].trim() == '' && $('.custom_combobox_input').val().trim() == '' && tilist["tiles"].length === 0) {
+        tilist = {};
+      }
+    }
+
+    return tilist;
+  };
+
+  getLanguages() {
+    if (this.languageList.length === 0) {
+      this.tileService.getLanguages()
+        .then(langs => {
+          this.languageList = langs;
+        });
+    }
+  };
+
+  getDraggedTiles() {
+    var currDraggedTiles = [];
+    var drgTiles = this.event.hasOwnProperty("draggedTiles") && this.event["draggedTiles"].length > 0 ? this.event["draggedTiles"] : [];
+    var position = 1;
+
+    for (let i = 0; i < drgTiles.length; i++) {
+      var tile = {};
+      tile["triggerdata"] = {};
+      var dragTileObj = drgTiles[i];
+      tile["_id"] = dragTileObj.hasOwnProperty("tile") && dragTileObj["tile"].hasOwnProperty("_id") ? dragTileObj["tile"]["_id"] : "-1";
+
+      if (tile["_id"] !== "-1" && dragTileObj["triggerdata"].hasOwnProperty("type") && dragTileObj["triggerdata"]["type"] !== "-1") {
+        tile["triggerdata"]["type"] = dragTileObj["triggerdata"]["type"];
+
+        if (tile["triggerdata"]["type"] == "always") {
+          tile["triggerdata"]["position"] = position;
+          position++;
+        }
+
+        if (tile["triggerdata"]["type"] == 'delay') {
+          tile["triggerdata"]["delayToActivate"] = dragTileObj["triggerdata"].hasOwnProperty("delayToActivate") ? dragTileObj["triggerdata"]["delayToActivate"] : "";
+        }
+
+        if (tile["triggerdata"]["type"] == 'time') {
+          tile["triggerdata"]["timeToActivate"] = dragTileObj["triggerdata"].hasOwnProperty("timeToActivate") ? this.utils.toUTCDateTime(dragTileObj["triggerdata"]["timeToActivate"]) : "";
+        }
+
+        if (dragTileObj["triggerdata"].hasOwnProperty("stopType") && dragTileObj["triggerdata"]["stopType"] !== "-1") {
+          tile["triggerdata"]["stopType"] = dragTileObj["triggerdata"]["stopType"];
+
+          if (tile["triggerdata"]["stopType"] === "aftertile" || tile["triggerdata"]["stopType"] == 'aftertrigger') {
+            if (dragTileObj["triggerdata"].hasOwnProperty("delayToDeActivate") && !this.utils.isNullOrEmpty(dragTileObj["triggerdata"]["delayToDeActivate"])) {
+              tile["triggerdata"]["delayToDeActivate"] = dragTileObj["triggerdata"]["delayToDeActivate"];
+            } else {
+              delete tile["triggerdata"]["stopType"];
+            }
+          } else if (tile["triggerdata"]["stopType"] === "time") {
+            if (dragTileObj["triggerdata"].hasOwnProperty("timeToDeActivate") && !this.utils.isNullOrEmpty(dragTileObj["triggerdata"]["timeToDeActivate"])) {
+              tile["triggerdata"]["timeToDeActivate"] = this.utils.toUTCDateTime(dragTileObj["triggerdata"]["timeToDeActivate"]);
+            } else {
+              delete tile["triggerdata"]["stopType"];
+            }
+          }
+        }
+
+        if (tile["triggerdata"]["type"] == 'always') {
+          if (dragTileObj["triggerdata"].hasOwnProperty("availableFrom") && !this.utils.isNullOrEmpty(dragTileObj["triggerdata"]["availableFrom"])) {
+            tile["triggerdata"]["availableFrom"] = this.utils.toUTCDateTime(dragTileObj["triggerdata"]["availableFrom"]);
+          } else {
+            tile["triggerdata"]["availableFrom"] = this.utils.toUTCDateTime(this.event["eventStart"]);
+          }
+        }
+
+        if (dragTileObj["triggerdata"].hasOwnProperty("setActiveTileId")) {
+          tile["triggerdata"]["setActiveTileId"] = dragTileObj["triggerdata"]["setActiveTileId"];
+        }
+
+        if (dragTileObj["triggerdata"].hasOwnProperty("deactivatedTime")) {
+          tile["triggerdata"]["deactivatedTime"] = this.utils.toUTCDateTime(dragTileObj["triggerdata"]["deactivatedTime"]);
+        }
+
+        if (dragTileObj["triggerdata"].hasOwnProperty("deactivated") && dragTileObj["triggerdata"]["deactivated"]) {
+          tile["triggerdata"]["deactivated"] = true;
+        }
+
+        tile["showName"] = !this.utils.isNullOrEmpty(dragTileObj["activityTitle"]) ? true : false;
+        tile["activityTitle"] = dragTileObj["activityTitle"];
+        tile["shortDescription"] = dragTileObj["shortDescription"];
+        tile["activityDate"] = !this.utils.isNullOrEmpty(dragTileObj["activityDate"]) ? this.utils.toUTCDateTime(dragTileObj["activityDate"]) : "";
+        tile["dontShowTime"] = dragTileObj["dontShowTime"];
+
+        currDraggedTiles.push(tile);
+
+      } else {
+        continue;
+      }
+    }
+
+    return tile;
   };
 
   ngOnInit() {
@@ -571,6 +1038,7 @@ export class EventsComponent implements OnInit {
       //this.getEvents();
       //this.getEventCategories();
       this.listEventCategories();
+      this.getLanguages();
       this.selectedOrganization = this.oid;
       //this.setEventType();
     });

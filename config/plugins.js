@@ -11,6 +11,7 @@ var plugins = {
   "event": "event",
   "page": "page",
   "eventcategory": "eventcategory",
+  "languages": "languages",
   "db": "database"
 };
 
@@ -26,7 +27,7 @@ module.exports = function (appPath, dirName, app) {
     if (global[aliasName].hasOwnProperty('init')) {
       global[aliasName].init(app);
     }
-    
+
     console.log('Plugin ' + name + ' is loaded available with name $' + name);
   });
 };

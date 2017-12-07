@@ -2,8 +2,9 @@
   <!--  <div class="events_container">  -->
   <div class="page_block events_head">
     <div class="events_inputs">
-      <input class="form-control input-sm event_name" type="text" placeholder="Event Name">
-      <select class="form-control input-sm language" placeholder="Select Language">
+      <input class="form-control input-sm event_name" [(ngModel)]="eventName" type="text" placeholder="Event Name">
+      <select [(ngModel)]="selectedLanguage" class="form-control input-sm language" placeholder="Select Language">
+          <option *ngFor="let lang of languageList; let i = index" [value]="lang?.code">{{lang?.name}}</option>
       </select>
       <div style="margin-top: 5px;" class="checkbox">
         <label>
@@ -17,7 +18,7 @@
         <!--   <select class="form-control input-sm event_type" placeholder="Select / Add Type">
           <option *ngFor="let evtCat of eventCategories; let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
         </select> -->
-        <select #evtCat class="form-control input-sm event_type" placeholder="Select / Add Type">
+        <select #evtCategory  class="form-control input-sm event_type" placeholder="Select / Add Type">
           <option *ngFor="let evtCat of (eventCategories | orderBy: true : 'name'); let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
         </select>
       </div>
@@ -99,7 +100,7 @@
           <br>Triggered Tiles will appear above Permanent Tiles in the app.</div>
       </div>
       <div *ngFor="let dragTile of event!.draggedTiles | reverse; let i = index; trackBy: trackByUniqueId" class="ili-panel event_content">
-        {{ setDragIndex(i, dragTile) }}
+        {{ setDragIndex(i, dragTile)}}
         <div *ngIf="!dragTile.hasOwnProperty('eventDragContainer')" class="event_main_panel">
           <div class="event_content_left">
             <div class="event_tile_single">
@@ -121,7 +122,7 @@
             <div class="hide-act-date">
               <div style="padding-left: 10px;" class="checkbox">
                 <label>
-                  <input value="true" [checked]="dragTile?.dontShowTime" [(ngModel)]="dragTile?.dontShowTime" style="margin-top: 1px;" type="checkbox">Hide Date</label>
+                  <input value="true" [checked]="dragTile!.dontShowTime" [(ngModel)]="dragTile!.dontShowTime" style="margin-top: 1px;" type="checkbox">Hide Date</label>
               </div>
             </div>
           </div>
@@ -145,7 +146,8 @@
             </div>
             <div class="trigger_types">
               <div class="main_trigger_type">
-                <select #tileTrigger [ngModel]="dragTile?.triggerdata?.type" (ngModelChange)="setDragTile($event, dragTile.triggerdata, 'activate')" class="form-control input-sm trigger_type_option">
+                <select #tileTrigger [ngModel]="dragTile?.triggerdata?.type" (ngModelChange)="setDragTile($event, dragTile.triggerdata, 'activate')"
+                  class="form-control input-sm trigger_type_option">
                   <option [value]="'-1'">Select trigger</option>
                   <option [value]="'always'">Permanent</option>
                   <option [value]="'manual'">Manually through the Control Panel</option>
@@ -158,14 +160,17 @@
                 <span class="label_small">No Trigger - Always available in the app</span>
               </div>
               <div *ngIf="dragTile?.triggerdata?.type === 'delay'" class="activate_delay">
-                <input style="width:172px;" type="text" [(ngModel)]="dragTile.triggerdata.delayToActivate" class="form-control input-sm" placeholder="Delay in minutes">
+                <input style="width:172px;" type="text" [(ngModel)]="dragTile.triggerdata.delayToActivate" class="form-control input-sm"
+                  placeholder="Delay in minutes">
               </div>
               <div *ngIf="dragTile?.triggerdata?.type === 'time'" class="activate_time">
                 <input ILIDateTimePicker style="width:172px;" type="text" [(ngModel)]="dragTile.triggerdata.timeToActivate" class="form-control input-sm"
                   placeholder="DateTime">
               </div>
-              <div *ngIf="(dragTile?.triggerdata?.type === 'manual' || dragTile?.triggerdata?.type === 'delay' || dragTile?.triggerdata?.type === 'time')" class="tile_manual">
-                <select #tileDeactivate [ngModel]="dragTile?.triggerdata?.stopType" (ngModelChange)="setDragTile($event, dragTile.triggerdata, 'deactivate')" class="form-control input-sm trigger_type_option">
+              <div *ngIf="(dragTile?.triggerdata?.type === 'manual' || dragTile?.triggerdata?.type === 'delay' || dragTile?.triggerdata?.type === 'time')"
+                class="tile_manual">
+                <select #tileDeactivate [ngModel]="dragTile?.triggerdata?.stopType" (ngModelChange)="setDragTile($event, dragTile.triggerdata, 'deactivate')"
+                  class="form-control input-sm trigger_type_option">
                   <option [value]="'-1'">Keep active or deactivate manually</option>
                   <option [value]="'aftertrigger'">No. of min. after being triggered</option>
                   <option [value]="'aftertile'">No. of minutes after the next tile</option>
@@ -174,12 +179,26 @@
                 <span style="float: right; margin-right: 7px; margin-top: 4px; font-size: 11px;" class="label_small">Deactivate: </span>
               </div>
               <div *ngIf="(dragTile?.triggerdata?.stopType === 'aftertile' || dragTile?.triggerdata?.stopType === 'aftertrigger')" class="deactivate_delay">
-                <input style="width:172px;" type="text" [(ngModel)]="dragTile.triggerdata.delayToDeActivate" class="form-control input-sm" placeholder="Delay in minutes">
+                <input style="width:172px;" type="text" [(ngModel)]="dragTile.triggerdata.delayToDeActivate" class="form-control input-sm"
+                  placeholder="Delay in minutes">
               </div>
               <div *ngIf="dragTile?.triggerdata?.stopType === 'time'" class="deactivate_time">
                 <input ILIDateTimePicker style="width:172px;" [(ngModel)]="dragTile.triggerdata.timeToDeActivate" type="text" class="form-control input-sm "
                   placeholder="DateTime">
               </div>
+            </div>
+            <div *ngIf="dragTile['triggerdata']['evtTileToActivate']" style="float: left;margin-left: 10px; font-size: 11px;">
+              <span class="label_small">This tile was deactivated&nbsp;&nbsp;</span>
+              <button class="btn btn-success btn-xs">&nbsp;Click here&nbsp;</button>
+              <span class="label_small">&nbsp;&nbsp;to reactivate.</span>
+            </div>
+            <div *ngIf="dragTile['triggerdata']['evtTileToDeactivate']" style="float: left; margin-left: 10px; font-size: 11px;">
+              <span class="label_small">This tile was activated&nbsp;&nbsp;</span>
+              <button class="btn btn-danger btn-xs">&nbsp;Click here&nbsp;</button>
+              <span class="label_small">&nbsp;&nbsp;to deactivate.</span>
+            </div>
+            <div *ngIf="dragTile['triggerdata']['evtTileNotActivated']" style="float: left; margin-left: 10px; font-size: 11px;">
+              <span class="label_small">This tile has not been activated yet.</span>
             </div>
           </div>
         </div>

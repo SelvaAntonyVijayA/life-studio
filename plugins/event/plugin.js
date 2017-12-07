@@ -124,15 +124,20 @@ var get = function (req, res, next) {
   options = {};
   query._id = req.params.eventId;
 
+  var context = { "req": req, "res": res, "next": next };
+
   $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.event, query, options, function (result) {
-    _eventTile(res, result);
+    _eventTile(context, result);
   });
 };
 
-var _eventTile = function (res, event) {
+var _eventTile = function (context, event) {
   var tileIds = [];
+  var res = context.res;
+  var req = context.req;
+  //var isTiles = !__util.isNullOrEmpty(req.params.isTiles) && req.params.isTiles ? true : false;
 
-  var isTiles = !__util.isNullOrEmpty(req.params.isTiles) ? true : false;
+  //console.dir(isTiles);
 
   if (event && event.length > 0) {
     event[0].tiles.forEach(function (tile) {
@@ -144,7 +149,7 @@ var _eventTile = function (res, event) {
     var tileFields = { "_id": 1, "title": 1, "art": 1 };
 
     $tile.getSpecificFields(tileFields, query, options, function (tiles) {
-      var eventTiles = [];
+      //var eventTiles = [];
       tiles = $general.convertToJsonObject(tiles)
 
       _.each(tileIds, function (id) {
@@ -179,17 +184,15 @@ var _eventTile = function (res, event) {
           tileResult.tileDeActivate = deactivate;
           tileResult.status = status;
 
-          eventTiles.push(tileResult);
+          //eventTiles.push(tileResult);
         }
       });
 
-      event.tileList = eventTiles;
-
-      if (isTiles) {
-        event["tilesObj"] = tiles;
-      }
+      //event.tileList = eventTiles;
 
       res.send(event);
+
+      //console.dir(event);
     });
   } else {
     res.send([]);

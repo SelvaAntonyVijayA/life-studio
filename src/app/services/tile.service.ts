@@ -24,10 +24,10 @@ export class TileService {
 
   getTileByIds(tileIds: string[]) {
     return this.http
-    .post("/tile/tilebyids/", JSON.stringify({ "tileIds": tileIds }), { headers: this.headers })
-    .toPromise()
-    .then(response => response.json())
-    .catch(this.handleError);
+      .post("/tile/tilebyids/", JSON.stringify({ "tileIds": tileIds }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
   }
 
   getTileBlocks(blockIds: string[]) {
@@ -45,7 +45,7 @@ export class TileService {
       .then(response => response.json())
       .catch(this.handleError);
   };
-  
+
   getTileCategory(orgId: string) {
     return this.http
       .get("/tilecategory/list/" + orgId)
@@ -57,8 +57,16 @@ export class TileService {
   getTilesCategories(orgId: string) {
     let categories = this.getTileCategory(orgId);
     let tiles = this.getTiles(orgId);
-    
+
     return Observable.forkJoin([categories, tiles]);
+  };
+
+  getLanguages() {
+    return this.http
+      .get("/language/list")
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
   };
 
   private handleError(error: any): Promise<any> {

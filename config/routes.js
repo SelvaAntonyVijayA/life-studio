@@ -17,5 +17,6 @@ module.exports = function (app) {
   router.post('/event/eventbytiles/', $event.eventByTiles);
   router.post('/eventcategory/save', $eventcategory.save);
   router.get('/eventcategory/list/:orgId', $eventcategory.list);
+  router.get('/language/list', $languages.list);
   app.use('/', router);
 };
