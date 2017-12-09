@@ -251,4 +251,12 @@ export class Utils {
     return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) ?
       p.every(function (i) { return self.compareObj(x[i], y[i]); }) : false;
   };
+
+  public static trim = function (str: any) {
+    if (!this.isNullOrEmpty(str)) {
+      str.replace(/^\s+|\s+$/gm, '');
+    }
+
+    return str;
+  };
 }

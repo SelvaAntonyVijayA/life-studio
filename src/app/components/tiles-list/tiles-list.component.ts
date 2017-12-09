@@ -176,17 +176,20 @@ export class TilesListComponent {
     }
   };
 
-  private releaseDrop(currTile) {
-    let index = this.tiles.map(function (t) { return t['_id']; }).indexOf(currTile._id);
+  private releaseDrop(currTile: any) {
+    
+    if (currTile && !this.utils.isEmptyObject(currTile) && currTile.hasOwnProperty("_id")) {
+      let index = this.tiles.map(function (t) { return t['_id']; }).indexOf(currTile._id);
 
-    if (index >= 0) {
-      var tileToPush = this.tiles[index];
-      this.deletePushDraggedTiles(false, tileToPush);
-      this.tiles.splice(index, 1);
-    } else if (this.draggedSeparatedTiles.hasOwnProperty(currTile._id)) {
-      var tileObj = this.draggedSeparatedTiles[currTile._id];
-      this.tiles.push(tileObj);
-      this.deletePushDraggedTiles(true, tileObj);
+      if (index >= 0) {
+        var tileToPush = this.tiles[index];
+        this.deletePushDraggedTiles(false, tileToPush);
+        this.tiles.splice(index, 1);
+      } else if (this.draggedSeparatedTiles.hasOwnProperty(currTile._id)) {
+        var tileObj = this.draggedSeparatedTiles[currTile._id];
+        this.tiles.push(tileObj);
+        this.deletePushDraggedTiles(true, tileObj);
+      }
     }
   };
 
@@ -228,6 +231,7 @@ export class TilesListComponent {
 
   separateDraggedTiles(tileIds) {
     this.mergeSeparatedTiles();
+    var self = this;
 
     if (tileIds && tileIds.length > 0) {
       var matchedTileIds = [];
@@ -237,7 +241,7 @@ export class TilesListComponent {
           matchedTileIds.push(currTile["_id"]);
         }
 
-        return currTile && tileIds.indexOf(currTile["_id"]) > -1;
+        return currTile && !self.draggedSeparatedTiles.hasOwnProperty(currTile["_id"]) && tileIds.indexOf(currTile["_id"]) > -1;
       });
 
       if (matchedTileIds.length > 0) {
@@ -295,10 +299,10 @@ export class TilesListComponent {
       this.separateDraggedTiles(cHObj["draggedTiles"]["currentValue"]);
     }
 
-    if (cHObj.hasOwnProperty("isMerge") &&!this.utils.isEmptyObject(cHObj["isMerge"]["currentValue"])) {
-      if(cHObj["isMerge"]["currentValue"]["status"] === "merge"){
+    if (cHObj.hasOwnProperty("isMerge") && !this.utils.isEmptyObject(cHObj["isMerge"]["currentValue"])) {
+      if (cHObj["isMerge"]["currentValue"]["status"] === "merge") {
         this.mergeSeparatedTiles();
-      } 
+      }
     }
   };
 }
