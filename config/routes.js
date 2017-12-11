@@ -9,9 +9,11 @@ module.exports = function (app) {
   router.post('/domain/get/', $domains.get);
   router.all('/tile/list/:organizationId*?', $tile.list);
   router.post('/tile/tilebyids/', $tile.tileByIds);
+  router.all('/tile/update/:tileId', $tile.update);
   router.all('/tileblock/tile/:tileId*?', $tileblock.getBlocks);
   router.get('/tileblock/getprofile/:orgId/:language*?', $tileblock.getProfile);
   router.get('/tilecategory/list/:orgId', $tilecategory.get);
+  router.post('/tilecategory/save', $tilecategory.save);
   router.get('/event/list/:orgId/:eventId*?', $event.list);
   router.get('/event/get/:eventId', $event.get);
   router.post('/event/eventbytiles/', $event.eventByTiles);

@@ -38,6 +38,17 @@ export class TileService {
       .catch(this.handleError);
   };
 
+  saveTileCategory(tileCatObj: any) {
+    return this.http
+      .post("/tilecategory/save", JSON.stringify({ "form_data": tileCatObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => {
+        var tileCatRes = response.json();
+        tileCatObj["_id"] = tileCatRes["_id"];
+        return tileCatObj;
+      }).catch(this.handleError);
+  };
+
   getProfileDatas(orgId: string) {
     return this.http
       .get("/tileblock/getprofile/" + orgId)

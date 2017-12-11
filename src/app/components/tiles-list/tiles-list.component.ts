@@ -95,9 +95,89 @@ export class TilesListComponent {
     this.tileContent.emit({ "tileCategories": categories });
   };
 
+  updateTileData(tileObjData: string[]) {
+
+    if (tileObjData && tileObjData.length > 0) {
+      for (let i = 0; i < tileObjData.length; i++) {
+        var currTileId = tileObjData[i]["_id"];
+        let index = this.tiles.map(function (t) { return t['_id']; }).indexOf(currTileId);
+        var updateResult = index !== -1 ? true : this.draggedSeparatedTiles.hasOwnProperty(currTileId) ? true : false;
+
+        if (!updateResult) {
+          var tileObj = index !== -1 ? this.tiles[index] : this.draggedSeparatedTiles[currTileId];
+          var orgs = typeof tileObj.organizationId !== "object" ? tileObj.organizationId.split(',') : tileObj.organizationId;
+          var id = tileObj._id;
+
+          
+
+        }
+      }
+    }
+  };
+
+  searchAssignCategories(categoryName: string) {
+    var catName = !this.utils.isNullOrEmpty(categoryName) ? this.utils.trim(categoryName) : "";
+    catName = !this.utils.isNullOrEmpty(catName) ? catName.toLowerCase() : "";
+    var tileCatIdExist = "";
+
+    for (let i = 0; i < this["tileCategories"].length; i++) {
+      var name = this["tileCategories"][i].hasOwnProperty("name") ? this.utils.trim(this["tileCategories"][i]["name"]) : "";
+      name = !this.utils.isNullOrEmpty(name) ? name.toLowerCase() : "";
+
+      if (name === catName) {
+        tileCatIdExist = this["tileCategories"][i]["_id"];
+      }
+    }
+
+    if (this.utils.isNullOrEmpty(tileCatIdExist) && !this.utils.isNullOrEmpty(categoryName)) {
+      var category = {};
+      category["name"] = this.utils.trim(categoryName);
+      category["organizationId"] = this.oid;
+      category["color"] = this.getDynamicDarkColor();
+      this.saveTileCategory(category);
+    }
+  };
+
+  getDynamicDarkColor() {
+    var chk = 0;
+    var color = 'rgb(' + (Math.floor((256 - 432) * Math.random()) + 230) + ',' + (Math.floor((256 - 449) * Math.random()) + 230) + ',' + (Math.floor((256 - 426) * Math.random()) + 230) + ')';
+
+    if (this["tileCategories"].length === 0) {
+      return color;
+    }
+
+    for (let i = 0; i < this["tileCategories"].length; i++) {
+      var currColor = this["tileCategories"][i].hasOwnProperty("color") && !this.utils.isNullOrEmpty(this["tileCategories"][i]["color"]) ? this["tileCategories"][i]["color"] : "";
+
+      if (currColor == color) {
+        chk = 1;
+        break;
+      }
+    }
+
+    if (chk == 1) {
+      this.getDynamicDarkColor();
+
+    } else {
+      return color;
+    }
+  };
+
+  saveTileCategory(tileCatObj: any) {
+    if (!this.utils.isEmptyObject(tileCatObj)) {
+      this.tileService.saveTileCategory(tileCatObj)
+        .then(resTileCat => {
+          if (!this.utils.isEmptyObject(resTileCat) && resTileCat.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(resTileCat["_id"])) {
+            tileCatObj["_id"] = resTileCat["_id"];
+
+            this.tileCategories.push(tileCatObj);
+          }
+        });
+    }
+  };
+
   changeTileView(view: string) {
     this.listType = view;
-
 
     if (view === "details") {
       var slimScrollGrid = this.e1.nativeElement.querySelectorAll('.tiles_list_show_tiles .slimscroll-wrapper .slimscroll-grid');
@@ -177,7 +257,7 @@ export class TilesListComponent {
   };
 
   private releaseDrop(currTile: any) {
-    
+
     if (currTile && !this.utils.isEmptyObject(currTile) && currTile.hasOwnProperty("_id")) {
       let index = this.tiles.map(function (t) { return t['_id']; }).indexOf(currTile._id);
 

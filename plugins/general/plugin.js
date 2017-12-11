@@ -85,11 +85,20 @@ var convertToJsonObject = function (obj) {
   return obj;
 };
 
+var stringToDate = function (date) {
+  if (!__util.isNullOrEmpty(date)) {
+    return (new Date(date));
+  }
+
+  return '';
+};
+
 module.exports = {
   "init": init,
   "encrypt": encrypt,
   "decrypt": decrypt,
   "getUrlResponseWithSecurity": getUrlResponseWithSecurity,
-  "convertToJsonObject": convertToJsonObject
+  "convertToJsonObject": convertToJsonObject,
+  "stringToDate": stringToDate
 };
 

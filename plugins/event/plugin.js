@@ -135,7 +135,8 @@ var _eventTile = function (context, event) {
   var tileIds = [];
   var res = context.res;
   var req = context.req;
-  //var isTiles = !__util.isNullOrEmpty(req.params.isTiles) && req.params.isTiles ? true : false;
+  var isTiles = !__util.isNullOrEmpty(req.params.isTiles) && req.params.isTiles ? true : false;
+  var categoryIds = [];
 
   //console.dir(isTiles);
 
@@ -146,7 +147,7 @@ var _eventTile = function (context, event) {
 
     query = { "_id": tileIds };
     options = {};
-    var tileFields = { "_id": 1, "title": 1, "art": 1 };
+    var tileFields = { "_id": 1, "title": 1, "category": 1, "art": 1 };
 
     $tile.getSpecificFields(tileFields, query, options, function (tiles) {
       //var eventTiles = [];
@@ -179,6 +180,14 @@ var _eventTile = function (context, event) {
             status = "deactivate";
           }
 
+          if (isTiles) {
+            var evtCatId = tileObj.hasOwnProperty("category") && !__util.isNullOrEmpty(tileObj["category"]) ? tileObj["category"] : "-1";
+
+            if (evtCatId !== "-1") {
+              categoryIds.push(evtCatId);
+            }
+          }
+
           tileResult.tileData = tileObj;
           tileResult.tileActivate = activate;
           tileResult.tileDeActivate = deactivate;
@@ -190,7 +199,27 @@ var _eventTile = function (context, event) {
 
       //event.tileList = eventTiles;
 
-      res.send(event);
+      if (isTiles && categoryIds.length > 0) {
+        query = { "_id": categoryIds };
+        options = {};
+        $tilecategory.getCategories(query, options, function (tileCatRes) {
+          var tileCategories = $general.convertToJsonObject(tileCatRes);
+
+          _.each(event[0].tiles, function (tileObj) {
+            if (tileObj && tileObj.hasOwnProperty(tileData) && tileObj["tileData"].hasOwnProperty("category") && !__util.isNullOrEmpty(tileObj["tileData"]["category"])) {
+              let index = tileCategories.map(function (t) { return t['_id']; }).indexOf(tileObj["tileData"]["category"]);
+
+              if (index !== -1) {
+                tileObj["tileData"]["categoryName"] = tileCategories[index]["name"];
+              }
+            }
+          });
+
+          res.send(event);
+        });
+      } else {
+        res.send(event);
+      }
 
       //console.dir(event);
     });

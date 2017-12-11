@@ -248,6 +248,7 @@ export class Utils {
     if (!(y instanceof Object)) { return false; }
 
     var p = Object.keys(x);
+     
     return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) ?
       p.every(function (i) { return self.compareObj(x[i], y[i]); }) : false;
   };

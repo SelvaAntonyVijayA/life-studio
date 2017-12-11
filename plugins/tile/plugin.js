@@ -151,10 +151,57 @@ var tileByIds = function (req, res, next) {
   });
 };
 
+var update = function (req, res, next) {
+  query = {};
+  options = {};
+  var tiles = {};
+  query._id = req.params.tileId;
+
+  if (!__util.isNullOrEmpty(req.body.form_data)) {
+    tiles = req.body.form_data;
+  }
+
+  if (!__util.isNullOrEmpty(req.body.form_data)) {
+    tiles = req.body.form_data;
+    tiles = _setTileObj(tiles);
+  }
+
+  $tile.tileUpdate(query, options, tiles, function (result) {
+    tiles = {};
+    tiles._id = result;
+
+    res.send(tiles);
+  });
+};
+
+var tileUpdate = function (uQuery, uOptions, dataObj, cb) {
+  if (!__util.isNullOrEmpty(dataObj)) {
+    dataObj = _setTileObj(dataObj);
+  }
+
+  $db.update(tileConf.dbname, tileConf.auth, tileConf.collections.tile, uQuery, uOptions, dataObj, function (result) {
+    cb(result);
+  });
+};
+
+var _setTileObj = function (tiles) {
+  if (!__util.isNullOrEmpty(tiles.dateCreated)) {
+    tiles.dateCreated = $general.stringToDate(tiles.dateCreated);
+  }
+
+  if (!__util.isNullOrEmpty(tiles.lastUpdatedOn)) {
+    tiles.lastUpdatedOn = $general.stringToDate(tiles.lastUpdatedOn);
+  }
+
+  return tiles;
+};
+
+
 module.exports = {
   "init": init,
   "list": list,
   "_getTiles": _getTiles,
   "tileByIds": tileByIds,
-  "getSpecificFields": getSpecificFields
+  "getSpecificFields": getSpecificFields,
+  "tileUpdate": tileUpdate,
 };

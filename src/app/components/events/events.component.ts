@@ -108,7 +108,8 @@ export class EventsComponent implements OnInit {
       var currTile = {
         "_id": tile.hasOwnProperty("_id") ? tile["_id"] : "-1",
         "title": tile.hasOwnProperty("title") && !this.utils.isNullOrEmpty(tile["title"]) ? tile["title"] : "",
-        "art": tile.hasOwnProperty("art") && !this.utils.isNullOrEmpty(tile["art"]) ? tile["art"] : ""
+        "art": tile.hasOwnProperty("art") && !this.utils.isNullOrEmpty(tile["art"]) ? tile["art"] : "",
+        "categoryName": tile.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(tile["categoryName"]) ? tile["categoryName"] : "";
       }
 
       dragged["tile"] = currTile;
@@ -436,12 +437,12 @@ export class EventsComponent implements OnInit {
   };
 
   /* Save Event */
-  saveEvent() {
+  saveEvent(showMessage?: boolean) {
     var id = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id") ? this.event["obj"]["_id"] : "-1";
     var selectedLanguage = this.selectedLanguage;
     var eventData = this.getEventObj(id);
 
-    if (this.utils.isNullOrEmpty(eventData[name])) {
+    if (this.utils.isNullOrEmpty(eventData["name"])) {
       alert('You must at least enter an Event name');
       return false;
     }
@@ -488,6 +489,57 @@ export class EventsComponent implements OnInit {
       alert('Activity date should be within Event dates above');
       return false;
     }
+
+    for (let i = 0; i < eventData["tiles"].length; i++) {
+      var currTileObj = eventData["tiles"][i];
+
+      if (currTileObj.hasOwnProperty("triggerdata")) {
+        if (currTileObj["triggerdata"].hasOwnProperty("type") && currTileObj["triggerdata"]["type"] == "-1") {
+          alert("Please select tigger type");
+          return false;
+        }
+
+        if (currTileObj["triggerdata"].hasOwnProperty("stopType") && currTileObj["triggerdata"]["stopType"] === "aftertile") {
+          if (currTileObj["triggerdata"].hasOwnProperty("type") && currTileObj["triggerdata"]["type"] == 'manual') {
+            if (currTileObj["triggerdata"].hasOwnProperty("availableFrom") && !this.utils.isNullOrEmpty(currTileObj["triggerdata"]["availableFrom"])) {
+              if (currTileObj["triggerdata"].hasOwnProperty("delayToDeActivate") && !this.utils.isNullOrEmpty(currTileObj["triggerdata"]["delayToDeActivate"])) {
+                var getDeactivatedTime = new Date();
+                getDeactivatedTime.setTime((new Date(currTileObj["triggerdata"]["availableFrom"])).getTime());
+                getDeactivatedTime.setMinutes(getDeactivatedTime.getMinutes() + parseInt(currTileObj["triggerdata"]["delayToDeActivate"]));
+
+                if (!(new Date(currTileObj["triggerdata"]["triggerdata"]["availableFrom"]) < getDeactivatedTime)) {
+                  alert('You must select other deactivate option for the tile or increase the delay minutes');
+                  return false;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (eventData["tiles"].length > 0) {
+      var last = eventData["tiles"][eventData["tiles"].length - 1];
+
+      if (last.hasOwnProperty("triggerdata") && last["triggerdata"].hasOwnProperty["stopType"] && last["triggerdata"]["stopType"] == 'aftertile') {
+        alert('You must select other deactivate option for last tile');
+        return false;
+      }
+    }
+
+    if (id !== '-1') {
+      if (selectedLanguage !== "en") {
+        eventData[selectedLanguage] = {};
+        eventData[selectedLanguage].name = this.eventName;
+        delete eventData["name"];
+      }
+    }
+
+    this.save(eventData, showMessage)
+  };
+
+  save(evtObj: Object, showMessage?: boolean) {
+
 
   };
 
