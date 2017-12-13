@@ -49,6 +49,14 @@ export class TileService {
       }).catch(this.handleError);
   };
 
+  tileUpdate(tileId: string, tileDataUpdate: any) {
+    return this.http
+      .post("/tile/update/" + tileId, JSON.stringify({ "form_data": tileDataUpdate }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
   getProfileDatas(orgId: string) {
     return this.http
       .get("/tileblock/getprofile/" + orgId)

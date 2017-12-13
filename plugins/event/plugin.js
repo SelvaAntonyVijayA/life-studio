@@ -10,6 +10,80 @@ var init = function (app) {
   settingsConf = app.get('settings');
 };
 
+var save = function (req, res, next) {
+  var events = {};
+
+  if (!__util.isEmptyObject(req.body.form_data)) {
+    events = req.body.form_data;
+    events = _setEventObj(events);
+  }
+
+  if (events.tiles) {
+    for (var i = 0; i < events.tiles.length; i++) {
+      var tile = events.tiles[i];
+
+      if (tile.triggerdata.type == 'time') {
+        events = $general.setAvailableFrom(events, tile._id, $general.stringToDate(tile.triggerdata.timeToActivate));
+      } else if (tile.triggerdata.type != 'always' && !__util.isNullOrEmpty(tile.triggerdata.availableFrom) && __util.isNullOrEmpty(tile.triggerdata.deactivatedTime)) {
+        events = $general.setAvailableFrom(events, tile._id, $general.stringToDate(tile.triggerdata.availableFrom));
+      } else if (tile.triggerdata.type == 'always') {
+        tile.triggerdata.availableFrom = events.eventStart;
+      }
+
+      if (tile.hasOwnProperty("activityDate") && !__util.isNullOrEmpty(tile.activityDate)) {
+        events.tiles[i].activityDate = $general.stringToDate(tile.activityDate);
+      }
+    }
+  }
+
+  if (__util.isNullOrEmpty(events._id)) {
+    var tokenObj = $authtoken.get(req.cookies.token);
+    events.createdBy = tokenObj.uid;
+
+    $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.event, events, function (result) {
+      obj = {};
+      obj._id = result;
+
+      _pageEventUpdate(result.toString(), events.eventStart, events.availableEnd, function (data) {
+        //$general.returnJSON(context, obj);
+        res.send(obj);
+      });
+    });
+  } else {
+    options = {};
+    query = {};
+    query._id = events._id;
+    delete events["_id"];
+
+    updateEvent(query, options, events, function (result) {
+      obj = {};
+      obj._id = query._id;
+
+      _pageEventUpdate(result.toString(), events.eventStart, events.availableEnd, function (data) {
+        //$general.returnJSON(context, obj);
+        res.send(obj);
+      });
+    });
+  }
+};
+
+var _pageEventUpdate = function (eventId, eventStart, availableEnd, cb) {
+  query = {
+    "menuTiles.linkId": eventId
+  };
+  options = {
+    multi: true
+  };
+  data = {
+    "menuTiles.$.availableOn": new Date(eventStart).toUTCString(),
+    "menuTiles.$.endOn": new Date(availableEnd).toUTCString()
+  };
+
+  $page._update(query, options, data, function (result) {
+    cb(result);
+  });
+};
+
 var list = function (req, res, next) {
   $async.waterfall([
     function (callback) {
@@ -228,9 +302,153 @@ var _eventTile = function (context, event) {
   }
 };
 
+var updateEvent = function (eQuery, eOptions, dataToUpdate, cb) {
+  $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.event, eQuery, eOptions, dataToUpdate, function (result) {
+    cb(result);
+  });
+};
+
+var _getEvent = function (eQuery, callback) {
+  options = {};
+
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.event, eQuery, options, function (result) {
+    callback(result);
+  });
+};
+
+var activate = function (req, res, next) {
+  options = {};
+  query = {};
+  query._id = req.params.eventId;
+
+  _getEvent(query, function (result) {
+    var tile;
+    var tileId = req.params.tileId;
+
+    if (result.length > 0) {
+      var event = result[0];
+      var indx = req.params.position;
+      tile = event.tiles[parseInt(indx)];
+      var currentDateTime = new Date();
+      // currentDateTime = currentDateTime.setSeconds(0);
+      currentDateTime = new Date(currentDateTime);
+
+      var dateTime = new Date();
+      dateTime.setTime(currentDateTime.getTime());
+      dateTime.setMinutes(dateTime.getMinutes() + 5);
+      dateTime = new Date(dateTime.toUTCString());
+
+      if (tile && tileId == tile._id) {
+        delete tile.triggerdata["deactivated"];
+        delete tile.triggerdata["deactivatedTime"];
+        // delete tile.triggerdata["stopType"];
+        // delete tile.triggerdata["delayToDeActivate"];
+        // delete tile.triggerdata["timeToDeActivate"];
+
+        tile.triggerdata.availableFrom = currentDateTime.toUTCString().toLowerCase();
+
+        if (tile.triggerdata.type == "delay") {
+          tile.triggerdata.type = 'manual';
+        }
+
+        if (tile.triggerdata.type == "time") {
+          var orginalTime = new Date(tile.triggerdata.timeToActivate);
+
+          if (!__util.isNullOrEmpty(tile.triggerdata.timeToActivate) && orginalTime < dateTime) {
+            tile.triggerdata.type = 'manual';
+            delete tile.triggerdata["time"];
+          } else {
+            tile.triggerdata.availableFrom = tile.triggerdata.timeToActivate;
+          }
+        }
+
+        tile = $general._getDeActivateTime(event, tile, currentDateTime, indx);
+
+        event.tiles[parseInt(indx)] = tile;
+
+        var jsonData = JSON.stringify(event);
+        var events = JSON.parse(jsonData);
+        events = _setEventObj(events);
+
+        $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.event, events, function (res) {
+          res.send({});
+        });
+      } else {
+        res.send({ "status": "Not Found" });
+      }
+    } else {
+      res.send({});
+    }
+  });
+};
+
+var deActivate = function (req, res, next) {
+  options = {};
+  query = {};
+  query._id = req.params.eventId;
+
+  _getEvent(query, function (result) {
+    var tile;
+    var tileId = req.params.tileId;
+
+    if (result.length > 0) {
+      var event = result[0];
+      var indx = req.params.position;
+      tile = event.tiles[parseInt(indx)];
+
+      if (tile && tileId == tile._id) {
+        var curDateTime = new Date();
+        // curDateTime = curDateTime.setSeconds(0);
+        tile.triggerdata.deactivatedTime = (new Date(curDateTime)).toUTCString().toLowerCase();
+        tile.triggerdata.deactivated = true;
+        event.tiles[parseInt(indx)] = tile;
+
+        var jsonData = JSON.stringify(event);
+        var events = JSON.parse(jsonData);
+        events = _setEventObj(events);
+
+        $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.event, events, function (res) {
+          res.send({});
+        });
+      } else {
+        res.send({ "status": "Not Found" });
+      }
+    } else {
+      res.send({});
+    }
+  });
+};
+
+var _setEventObj = function (events) {
+  /*if (!__util.isNullOrEmpty(events.availableStart)) {
+    //events.availableStart = $general.stringToDate(events.availableStart);
+  }*/
+
+  if (!__util.isNullOrEmpty(events.eventStart)) {
+    events.eventStart = $general.stringToDate(events.eventStart);
+  }
+
+  if (!__util.isNullOrEmpty(events.availableEnd)) {
+    events.availableEnd = $general.stringToDate(events.availableEnd);
+  }
+
+  if (!__util.isNullOrEmpty(events.dateCreated)) {
+    events.dateCreated = $general.stringToDate(events.dateCreated);
+  }
+
+  if (!__util.isNullOrEmpty(events.dateUpdated)) {
+    events.dateUpdated = $general.stringToDate(events.dateUpdated);
+  }
+
+  return events;
+};
+
 module.exports = {
   "init": init,
   "eventByTiles": eventByTiles,
   "list": list,
-  "get": get
+  "get": get,
+  "updateEvent": updateEvent,
+  "activate": activate,
+  "deActivate": deActivate
 };

@@ -31,7 +31,29 @@ var isRoleGroup = function (query, options, group, cb) {
   });
 };
 
+
+var _update = function (pQuery, pOptions, data, cb) {
+  data = _setPageObj(data);
+
+  $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.page, pQuery, pOptions, data, function (result) {
+    cb(result);
+  });
+};
+
+var _setPageObj = function (pages) {
+  if (!__util.isNullOrEmpty(pages.dateCreated)) {
+    pages.dateCreated = $general.stringToDate(pages.dateCreated);
+  }
+
+  if (!__util.isNullOrEmpty(pages.dateUpdated)) {
+    pages.dateUpdated = $general.stringToDate(pages.dateUpdated);
+  }
+
+  return pages;
+};
+
 module.exports = {
   "init": init,
-  "isRoleGroup": isRoleGroup
+  "isRoleGroup": isRoleGroup,
+  "_update": _update
 };

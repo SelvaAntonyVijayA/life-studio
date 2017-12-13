@@ -14,9 +14,12 @@ module.exports = function (app) {
   router.get('/tileblock/getprofile/:orgId/:language*?', $tileblock.getProfile);
   router.get('/tilecategory/list/:orgId', $tilecategory.get);
   router.post('/tilecategory/save', $tilecategory.save);
+  router.post('/event/save', $event.save);
   router.get('/event/list/:orgId/:eventId*?', $event.list);
   router.get('/event/get/:eventId', $event.get);
   router.post('/event/eventbytiles/', $event.eventByTiles);
+  router.get('/event/tile/deactivate/:eventId/:tileId/:position', $event.deActivate);
+  router.get('/event/tile/activate/:eventId/:tileId/:position', $event.activate);
   router.post('/eventcategory/save', $eventcategory.save);
   router.get('/eventcategory/list/:orgId', $eventcategory.list);
   router.get('/language/list', $languages.list);

@@ -57,6 +57,7 @@ export class EventsComponent implements OnInit {
   eventCalendar: boolean = false;
   languageList: any[] = [];
   selectedLanguage: string = "en";
+  tilesToUpdate: any[] = [];
   //selectedEventCategory: string = "-1";
   isMerge: Object = {};
   scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
@@ -109,7 +110,7 @@ export class EventsComponent implements OnInit {
         "_id": tile.hasOwnProperty("_id") ? tile["_id"] : "-1",
         "title": tile.hasOwnProperty("title") && !this.utils.isNullOrEmpty(tile["title"]) ? tile["title"] : "",
         "art": tile.hasOwnProperty("art") && !this.utils.isNullOrEmpty(tile["art"]) ? tile["art"] : "",
-        "categoryName": tile.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(tile["categoryName"]) ? tile["categoryName"] : "";
+        "categoryName": tile.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(tile["categoryName"]) ? tile["categoryName"] : ""
       }
 
       dragged["tile"] = currTile;
@@ -305,9 +306,9 @@ export class EventsComponent implements OnInit {
   };
 
   getTileContent(tileObj: any) {
-    /*if (tileObj.hasOwnProperty("draggedTiles")) {
+    /* if (tileObj.hasOwnProperty("draggedTiles")) {
       this.setDraggedTiles(tileObj["draggedTiles"]);
-    }*/
+    } */
   };
 
   trackByIndex(index: number, obj: any): any {
@@ -409,6 +410,8 @@ export class EventsComponent implements OnInit {
     $(this.evtCategory.nativeElement).combobox("setvalue", "-1");
     //this.selectedEventCategory = "-1";
     this.isMerge = {};
+    this.tilesToUpdate = [];
+    this.draggedTiles = [];
 
     if (mergeReset && mergeReset === "reset") {
       this.isMerge = { "status": "merge" };
@@ -437,7 +440,7 @@ export class EventsComponent implements OnInit {
   };
 
   /* Save Event */
-  saveEvent(showMessage?: boolean) {
+  saveEvent(showMessage?: boolean, eventId?: string, tileId?: string, idx?: number) {
     var id = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id") ? this.event["obj"]["_id"] : "-1";
     var selectedLanguage = this.selectedLanguage;
     var eventData = this.getEventObj(id);
@@ -535,12 +538,53 @@ export class EventsComponent implements OnInit {
       }
     }
 
+    this.clearInterval();
     this.save(eventData, showMessage)
   };
 
   save(evtObj: Object, showMessage?: boolean) {
+    this.updateOrganizationIdsTile();
+    var self = this;
 
+    this.eventService.eventSave(evtObj)
+      .then(evtResObj => {
+        var isNew = evtObj.hasOwnProperty("_id") && !self.utils.isNullOrEmpty(evtObj["_id"]) ? true : false;
 
+        if (showMessage) {
+          var alertMessage = isNew ? "Event Created" : "Event Updated";
+          alert(alertMessage);
+        }
+
+        evtObj = self.assignCategoryName(evtObj);
+
+        if (isNew) {
+          var evtIndex = this.events.map(function (evtCat) { return evtCat['_id']; }).indexOf(evtObj["_id"]);
+
+          if (evtIndex !== -1) {
+            this.events[evtIndex] = evtIndex
+          }
+        } else if (evtResObj.hasOwnProperty("_id") && !self.utils.isNullOrEmpty(evtResObj["_id"])) {
+          evtObj["_id"] = evtResObj["_id"];
+          this.events.push(evtObj);
+        }
+
+        self.setEventData(false, evtObj);
+      });
+  };
+
+  updateOrganizationIdsTile() {
+    this.tilesToUpdate = [];
+    var draggedTiles = this.event.hasOwnProperty("draggedTiles") && this.event["draggedTiles"].length > 0 ? this.event["draggedTiles"] : [];
+
+    for (let i = 0; i < draggedTiles.length; i++) {
+      var dragTileObj = draggedTiles[i];
+
+      if (!dragTileObj.hasOwnProperty["eventDragContainer"]) {
+        if (dragTileObj.hasOwnProperty("tile")) {
+          this.tilesToUpdate.push(dragTileObj["tile"]);
+        }
+      }
+    }
   };
 
   checkActivityTime() {
@@ -692,7 +736,6 @@ export class EventsComponent implements OnInit {
       }
     }
 
-
     return triggerChk;
   };
 
@@ -771,15 +814,21 @@ export class EventsComponent implements OnInit {
 
   mergeCategoryName() {
     for (let i = 0; i < this.events.length; i++) {
-      var evtCatId = this.events[i].hasOwnProperty("category") ? this.events[i]["category"] : "-1";
-      var index = -1;
-
-      if (evtCatId !== "-1" && this.eventCategories.length > 0) {
-        index = this.eventCategories.map(function (evtCat) { return evtCat['_id']; }).indexOf(evtCatId);
-      }
-
-      this.events[i]["categoryName"] = index !== -1 && this.eventCategories[index].hasOwnProperty("name") ? this.eventCategories[index]["name"] : "";
+      this.events[i] = this.assignCategoryName(this.events[i]);
     }
+  };
+
+  assignCategoryName(eventObj: any) {
+    var evtCatId = eventObj.hasOwnProperty("category") ? eventObj["category"] : "-1";
+    var index = -1;
+
+    if (evtCatId !== "-1" && this.eventCategories.length > 0) {
+      index = this.eventCategories.map(function (evtCat) { return evtCat['_id']; }).indexOf(evtCatId);
+    }
+
+    eventObj["categoryName"] = index !== -1 && this.eventCategories[index].hasOwnProperty("name") ? this.eventCategories[index]["name"] : "";
+
+    return eventObj;
   };
 
   /*selectFilter(e: any) {
@@ -860,14 +909,23 @@ export class EventsComponent implements OnInit {
     //this.renderer.setElementClass(elem.target, 'selected', true);
     //this.renderer.setElementClass(elem.srcElement, 'selected', true);
     ///var drgTiles = [];
-    this.clearInterval();
-    this.resetEvent();
-    //this.event["obj"] = obj;
-    this.draggedTiles = [];
+    this.setEventData(true, obj);
 
-    if (obj && obj.hasOwnProperty("tiles")) {
-      for (let i = 0; i < obj.tiles.length; i++) {
-        this.draggedTiles.push(obj.tiles[i]["_id"]);
+    //elem.stopPropagation();
+  };
+
+  setEventData(isSelect: boolean, obj: any) {
+    this.clearInterval();
+
+    //this.event["obj"] = obj;
+    if (isSelect) {
+      //this.draggedTiles = [];
+      this.resetEvent();
+
+      if (obj && obj.hasOwnProperty("tiles")) {
+        for (let i = 0; i < obj.tiles.length; i++) {
+          this.draggedTiles.push(obj.tiles[i]["_id"]);
+        }
       }
     }
 
@@ -878,8 +936,6 @@ export class EventsComponent implements OnInit {
           this.updateTileInterval();
         }
       });
-
-    //elem.stopPropagation();
   };
 
   updateTileInterval() {
@@ -1350,6 +1406,45 @@ export class EventsComponent implements OnInit {
     }
 
     return currDraggedTiles;
+  };
+
+  tileActivate(eventId: string, tileId: string, idx: number) {
+    this.clearInterval();
+    var isEventModified = this.newEventCompare();
+
+    if (isEventModified) {
+      if (confirm("The tiles in this event is modified, Save and activate the tile") === true) {
+        this.saveEvent(false, eventId, tileId, idx);
+      }
+    } else {
+      this.activateDeactivate(eventId, tileId, "activate", idx)
+    }
+  };
+
+  activateDeactivate(eventId: string, tileId: string, activateType: string, idx?: number) {
+    var self = this;
+    var currentPosition = -1;
+
+    if (activateType === "activate") {
+      var totalIdx = this.event["draggedTiles"].length - 1;
+      currentPosition = totalIdx === idx ? 0 : idx === 0 ? totalIdx : totalIdx - idx;
+    } else {
+      var currentTiles = self.event.hasOwnProperty("obj") && self.event["obj"].hasOwnProperty("tiles") && self.event["obj"]["tiles"].length > 0 ? self.event["obj"]["tiles"] : [];
+      currentPosition = currentTiles.map(function (tileObj) { return tileObj['_id']; }).indexOf(tileId);
+    }
+
+    if (currentPosition !== -1) {
+      this.eventService.tileActivateDeactivate(eventId, tileId, currentPosition, activateType).then(eventCategoriesList => {
+
+
+      });
+    }
+  };
+
+  tileDeactivate(eventId: string, tileId: string, idx: number) {
+    this.clearInterval();
+    var eventObj = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id") ? this.event["obj"] : {};
+    this.activateDeactivate(eventId, tileId, "activate", idx);
   };
 
   ngOnInit() {

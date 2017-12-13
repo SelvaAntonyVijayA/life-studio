@@ -3,7 +3,6 @@ var options = {};
 var query = {};
 
 var init = function (app) {
-  console.dir()
   settingsConf = app.get('settings');
 };
 

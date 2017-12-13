@@ -96,10 +96,10 @@ export class TilesListComponent {
   };
 
   updateTileData(tileObjData: string[]) {
-
     if (tileObjData && tileObjData.length > 0) {
       for (let i = 0; i < tileObjData.length; i++) {
-        var currTileId = tileObjData[i]["_id"];
+        var currTileObj = tileObjData[i];
+        var currTileId = currTileObj["_id"];
         let index = this.tiles.map(function (t) { return t['_id']; }).indexOf(currTileId);
         var updateResult = index !== -1 ? true : this.draggedSeparatedTiles.hasOwnProperty(currTileId) ? true : false;
 
@@ -107,9 +107,16 @@ export class TilesListComponent {
           var tileObj = index !== -1 ? this.tiles[index] : this.draggedSeparatedTiles[currTileId];
           var orgs = typeof tileObj.organizationId !== "object" ? tileObj.organizationId.split(',') : tileObj.organizationId;
           var id = tileObj._id;
+          var catName = !this.utils.isEmptyObject(currTileObj) && currTileObj.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(currTileObj["categoryName"]) ? currTileObj["categoryName"] : "";
 
-          
-
+          if (orgs.indexOf(this.oid) === -1) {
+            this.searchAssignCategories(catName);
+            var data = {};
+            orgs.push(this.oid);
+            data["organizationId"] = orgs;
+            tileObj["organizationId"] = orgs;
+            this.tileService.tileUpdate(currTileId, data);
+          }
         }
       }
     }
@@ -383,6 +390,10 @@ export class TilesListComponent {
       if (cHObj["isMerge"]["currentValue"]["status"] === "merge") {
         this.mergeSeparatedTiles();
       }
+    }
+
+    if (cHObj.hasOwnProperty("tilesToUpdate") && cHObj["tilesToUpdate"]["currentValue"].length > 0) {
+      this.updateTileData(cHObj["tilesToUpdate"]["currentValue"]);
     }
   };
 }

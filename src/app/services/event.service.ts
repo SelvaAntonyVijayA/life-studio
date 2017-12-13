@@ -19,6 +19,14 @@ export class EventService {
     this.utils = Utils;
   }
 
+  eventSave(eventObj: any){
+    return this.http
+    .post("/event/save", JSON.stringify({ "form_data": eventObj }), { headers: this.headers })
+    .toPromise()
+    .then(response => response.json())
+    .catch(this.handleError);
+  };
+
   eventList(orgId: string, eventId?: string) {
     var eventUrl = '/event/list/' + orgId;
     eventUrl = !this.utils.isNullOrEmpty(eventId) ? eventUrl + "/" + eventId : eventUrl;
@@ -59,6 +67,16 @@ export class EventService {
     let events = this.eventList(orgId);
     
     return Observable.forkJoin([categories, events]);
+  };
+
+  tileActivateDeactivate(eventId: string, tileId: string, position: any, activateType: string) {
+    var url = "/event/tile/" + activateType + "/" + eventId + "/" + tileId + "/" + position;
+
+    return this.http
+      .get(url)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
   };
 
   private handleError(error: any): Promise<any> {

@@ -203,5 +203,6 @@ module.exports = {
   "_getTiles": _getTiles,
   "tileByIds": tileByIds,
   "getSpecificFields": getSpecificFields,
+  "update": update,
   "tileUpdate": tileUpdate,
 };
