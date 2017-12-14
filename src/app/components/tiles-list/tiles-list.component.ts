@@ -23,6 +23,7 @@ export class TilesListComponent {
   @Input('droppedTile') droppedTile: Object;
   @Input('draggedTiles') draggedTiles: any[];
   @Input('isMerge') isMerge: Object;
+  @Input('tilesToUpdate') tilesToUpdate: any[];
   tileContent = new EventEmitter<any>();
   //private organizations: any[] = [];
   tileCategories: any[] = [];

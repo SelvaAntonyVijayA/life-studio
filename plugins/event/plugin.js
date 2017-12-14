@@ -443,12 +443,32 @@ var _setEventObj = function (events) {
   return events;
 };
 
+var remove = function (req, res, next) {
+  query = {};
+  options = {};
+  var obj = {};
+  obj.deleted = false;
+
+  if (!__util.isNullOrEmpty(req.params.eventId)) {
+    query._id = req.params.eventId;
+
+    $db.remove(tilistConf.dbname, tilistConf.auth, tilistConf.collections.event, query, options, function (result) {
+      obj.deleted = result;
+      res.send(obj);
+    });
+  } else {
+    res.send(obj);
+  }
+};
+
 module.exports = {
   "init": init,
+  "save": save,
   "eventByTiles": eventByTiles,
   "list": list,
   "get": get,
   "updateEvent": updateEvent,
   "activate": activate,
-  "deActivate": deActivate
+  "deActivate": deActivate,
+  "remove": remove
 };

@@ -177,15 +177,15 @@ export class EventsComponent implements OnInit {
         dragged["triggerdata"]["stopType"] = triggerData.hasOwnProperty("stopType") ? triggerData["stopType"] : "-1";
 
         if (triggerData["type"] === "delay") {
-          dragged["triggerdata"]["delayToActivate"] = triggerData.hasOwnProperty("delayToActivate") ? triggerData["delayToActivate"] : "";
+          dragged["triggerdata"]["delayToActivate"] = triggerData.hasOwnProperty("delayToActivate") && !this.utils.isNullOrEmpty(triggerData["delayToActivate"]) ? triggerData["delayToActivate"] : "";
         }
 
         if (triggerData["type"] === "time") {
           dragged["triggerdata"]["timeToActivate"] = triggerData.hasOwnProperty("timeToActivate") ? this.utils.toLocalDateTime(triggerData["timeToActivate"]) : "";
         }
 
-        if (triggerData["stopType"] !== "-1" && (triggerData["stopType"] === "aftertile" || triggerData["stopType"] === "aftertile")) {
-          dragged["triggerdata"]["delayToDeActivate"] = triggerData.hasOwnProperty("delayToDeActivate") && !this.utils.isNullOrEmpty(triggerData["delayToDeActivate"]) ? this.utils.toLocalDateTime(triggerData["delayToDeActivate"]) : "";
+        if (triggerData["stopType"] !== "-1" && (triggerData["stopType"] === "aftertile" || triggerData["stopType"] === "aftertrigger")) {
+          dragged["triggerdata"]["delayToDeActivate"] = triggerData.hasOwnProperty("delayToDeActivate") && !this.utils.isNullOrEmpty(triggerData["delayToDeActivate"]) ? triggerData["delayToDeActivate"] : "";
         }
 
         if (triggerData["stopType"] !== "-1" && triggerData["stopType"] === "time") {
@@ -407,15 +407,15 @@ export class EventsComponent implements OnInit {
     this.availableEnd = "";
     this.selectedLanguage = "en";
     this.eventCalendar = false;
-    $(this.evtCategory.nativeElement).combobox("setvalue", "-1");
+    $(this.evtCategory.nativeElement).combobox("setvalue", "");
     //this.selectedEventCategory = "-1";
     this.isMerge = {};
     this.tilesToUpdate = [];
     this.draggedTiles = [];
 
     if (mergeReset && mergeReset === "reset") {
-      this.isMerge = { "status": "merge" };
       this.clearInterval();
+      this.isMerge = { "status": "merge" };
     }
   };
 
@@ -440,7 +440,12 @@ export class EventsComponent implements OnInit {
   };
 
   /* Save Event */
-  saveEvent(showMessage?: boolean, eventId?: string, tileId?: string, idx?: number) {
+  saveEvent(e: any, showMessage?: boolean, eventId?: string, tileId?: string, idx?: number) {
+    if (!this.utils.isNullOrEmpty(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     var id = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id") ? this.event["obj"]["_id"] : "-1";
     var selectedLanguage = this.selectedLanguage;
     var eventData = this.getEventObj(id);
@@ -548,7 +553,7 @@ export class EventsComponent implements OnInit {
 
     this.eventService.eventSave(evtObj)
       .then(evtResObj => {
-        var isNew = evtObj.hasOwnProperty("_id") && !self.utils.isNullOrEmpty(evtObj["_id"]) ? true : false;
+        var isNew = evtObj.hasOwnProperty("_id") && !self.utils.isNullOrEmpty(evtObj["_id"]) ? false : true;
 
         if (showMessage) {
           var alertMessage = isNew ? "Event Created" : "Event Updated";
@@ -557,11 +562,11 @@ export class EventsComponent implements OnInit {
 
         evtObj = self.assignCategoryName(evtObj);
 
-        if (isNew) {
+        if (!isNew) {
           var evtIndex = this.events.map(function (evtCat) { return evtCat['_id']; }).indexOf(evtObj["_id"]);
 
           if (evtIndex !== -1) {
-            this.events[evtIndex] = evtIndex
+            this.events[evtIndex] = evtObj;
           }
         } else if (evtResObj.hasOwnProperty("_id") && !self.utils.isNullOrEmpty(evtResObj["_id"])) {
           evtObj["_id"] = evtResObj["_id"];
@@ -697,7 +702,7 @@ export class EventsComponent implements OnInit {
         if (activateType === 'time') {
           activeTime = dragTileObj["triggerdata"].hasOwnProperty("timeToActivate") && !this.utils.isNullOrEmpty(dragTileObj["triggerdata"]["timeToActivate"]) ? dragTileObj["triggerdata"]["timeToActivate"] : "";
 
-          if (!this.utils.isNullOrEmpty(activeTime)) {
+          if (this.utils.isNullOrEmpty(activeTime)) {
             alert('The activate date can not be empty');
             triggerChk = false;
 
@@ -742,10 +747,15 @@ export class EventsComponent implements OnInit {
   /* Fetching event data form user entered */
   getEventObj(evtId: string) {
     var currEvtData = {};
+
+    if (evtId !== "-1") {
+      currEvtData["_id"] = evtId;
+    }
+
     currEvtData["name"] = this.utils.trim(this.eventName);
     currEvtData["category"] = this.evtCategory.nativeElement.value;
     currEvtData["type"] = 'event';
-    currEvtData["art"] = "/img/tilist_art.jpg";
+    currEvtData["art"] = this.art;
 
     //tilist.availableStart = $.toUTCDateTime($('#txtAvailDateTime').val());
     currEvtData["eventStart"] = !this.utils.isNullOrEmpty(this.eventStart) ? this.utils.toUTCDateTime(this.eventStart) : "";
@@ -989,6 +999,8 @@ export class EventsComponent implements OnInit {
   };
 
   newEvent(e: any) {
+    this.clearInterval();
+    this.event = {};
     this.resetEvent("reset");
   };
 
@@ -1025,7 +1037,7 @@ export class EventsComponent implements OnInit {
 
       this.eventService.getEventByTiles(obj1["_id"])
         .then(evtObj => {
-          if (evtObj && evtObj[0]) {
+          if (evtObj && evtObj[0] && !this.utils.isEmptyObject(this.event) && this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
             var currEventobj = evtObj.length > 0 ? evtObj.map(x => Object.assign({}, x)) : [];
             obj2 = currEventobj[0];
             var obj2Sring = JSON.stringify(obj2);
@@ -1067,6 +1079,7 @@ export class EventsComponent implements OnInit {
       this.eventName = objEvent.hasOwnProperty("name") ? objEvent["name"] : "";
       this.eventStart = objEvent.hasOwnProperty("eventStart") ? this.utils.toLocalDateTime(objEvent["eventStart"]) : "";
       this.availableEnd = objEvent.hasOwnProperty("availableEnd") ? this.utils.toLocalDateTime(objEvent["availableEnd"]) : "";
+      this.art = objEvent.hasOwnProperty("art") && !this.utils.isNullOrEmpty(objEvent["art"]) ? objEvent["art"] : "";
       this.selectedLanguage = "en";
       $(this.evtCategory.nativeElement).combobox('setvalue', (objEvent.hasOwnProperty("category") && objEvent["category"]) ? objEvent["category"] : '-1');
       //this.e1.nativeElement.querySelector('#eventCategory')
@@ -1329,7 +1342,7 @@ export class EventsComponent implements OnInit {
     var drgTiles = this.event.hasOwnProperty("draggedTiles") && this.event["draggedTiles"].length > 0 ? this.event["draggedTiles"] : [];
     var position = 1;
 
-    for (let i = 0; i < drgTiles.length; i++) {
+    for (let i = drgTiles.length - 1; 0 <= i; i--) {
       var tile = {};
       tile["triggerdata"] = {};
       var dragTileObj = drgTiles[i];
@@ -1377,6 +1390,8 @@ export class EventsComponent implements OnInit {
             } else {
               tile["triggerdata"]["availableFrom"] = this.utils.toUTCDateTime(this.event["eventStart"]);
             }
+          } else if (dragTileObj["triggerdata"].hasOwnProperty("availableFrom")) {
+            tile["triggerdata"]["availableFrom"] = this.utils.toUTCDateTime(dragTileObj["triggerdata"]["availableFrom"]);
           }
 
           if (dragTileObj["triggerdata"].hasOwnProperty("setActiveTileId")) {
@@ -1414,7 +1429,7 @@ export class EventsComponent implements OnInit {
 
     if (isEventModified) {
       if (confirm("The tiles in this event is modified, Save and activate the tile") === true) {
-        this.saveEvent(false, eventId, tileId, idx);
+        this.saveEvent("", false, eventId, tileId, idx);
       }
     } else {
       this.activateDeactivate(eventId, tileId, "activate", idx)
@@ -1435,8 +1450,11 @@ export class EventsComponent implements OnInit {
 
     if (currentPosition !== -1) {
       this.eventService.tileActivateDeactivate(eventId, tileId, currentPosition, activateType).then(eventCategoriesList => {
+        if (activateType === "activate") {
 
+        } else {
 
+        }
       });
     }
   };
