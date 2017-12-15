@@ -17,7 +17,7 @@ module.exports = function (app) {
   router.post('/event/save', $event.save);
   router.get('/event/list/:orgId/:eventId*?', $event.list);
   router.get('/event/get/:eventId', $event.get);
-  router.all('/event/remove/:eventId', $event.remove);
+  router.get('/event/remove/:eventId', $event.remove);
   router.post('/event/eventbytiles/', $event.eventByTiles);
   router.get('/event/tile/deactivate/:eventId/:tileId/:position', $event.deActivate);
   router.get('/event/tile/activate/:eventId/:tileId/:position', $event.activate);

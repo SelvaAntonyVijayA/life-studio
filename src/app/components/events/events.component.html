@@ -30,10 +30,10 @@
       <button (click)="saveEvent($event, true)" class="ili-btn btn event_save">
         Save
       </button>
-      <button class="ili-btn event_duplicate">
+      <button (click)="duplicateEvent($event)" class="ili-btn event_duplicate">
         Duplicate
       </button>
-      <button class="ili-btn event_delete">
+      <button (click)="deleteEvent($event)" class="ili-btn event_delete">
         Delete
       </button>
       <button class="ili-btn page_setup">

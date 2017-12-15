@@ -19,12 +19,12 @@ export class EventService {
     this.utils = Utils;
   }
 
-  eventSave(eventObj: any){
+  eventSave(eventObj: any) {
     return this.http
-    .post("/event/save", JSON.stringify({ "form_data": eventObj }), { headers: this.headers })
-    .toPromise()
-    .then(response => response.json())
-    .catch(this.handleError);
+      .post("/event/save", JSON.stringify({ "form_data": eventObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
   };
 
   eventList(orgId: string, eventId?: string) {
@@ -54,18 +54,18 @@ export class EventService {
       .catch(this.handleError);
   };
 
-  getEventByTiles(eventId: string){
+  getEventByTiles(eventId: string) {
     return this.http
-    .get("/event/get/" + eventId)
-    .toPromise()
-    .then(response => response.json())
-    .catch(this.handleError);
+      .get("/event/get/" + eventId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
   };
 
   eventCategoriesList(orgId: string) {
     let categories = this.getEventCategories(orgId);
     let events = this.eventList(orgId);
-    
+
     return Observable.forkJoin([categories, events]);
   };
 
@@ -74,6 +74,14 @@ export class EventService {
 
     return this.http
       .get(url)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  removeEvent(eventId: string) {
+    return this.http
+      .get("/event/remove/" + eventId)
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);

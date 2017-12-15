@@ -440,7 +440,7 @@ export class EventsComponent implements OnInit {
   };
 
   /* Save Event */
-  saveEvent(e: any, showMessage?: boolean, eventId?: string, tileId?: string, idx?: number) {
+  saveEvent(e: any, showMessage?: boolean, isDuplicate?: boolean, isAnother?: string, evtCurrObj?: Object) {
     if (!this.utils.isNullOrEmpty(e)) {
       e.preventDefault();
       e.stopPropagation();
@@ -453,6 +453,9 @@ export class EventsComponent implements OnInit {
     if (this.utils.isNullOrEmpty(eventData["name"])) {
       alert('You must at least enter an Event name');
       return false;
+    } else if (isDuplicate) {
+      eventData["name"] = "Copy of " + eventData["name"];
+      delete eventData["_id"];
     }
 
     if ($.trim($('.custom_combobox_input').val()) == '') {
@@ -544,10 +547,10 @@ export class EventsComponent implements OnInit {
     }
 
     this.clearInterval();
-    this.save(eventData, showMessage)
+    this.save(eventData, showMessage, isDuplicate, isAnother, evtCurrObj);
   };
 
-  save(evtObj: Object, showMessage?: boolean) {
+  save(evtObj: Object, showMessage?: boolean, isDuplicate?: boolean, isAnother?: string, evtCurrObj?: Object) {
     this.updateOrganizationIdsTile();
     var self = this;
 
@@ -557,6 +560,7 @@ export class EventsComponent implements OnInit {
 
         if (showMessage) {
           var alertMessage = isNew ? "Event Created" : "Event Updated";
+          alertMessage = isDuplicate ? "Duplicate Event Created" : alertMessage;
           alert(alertMessage);
         }
 
@@ -573,7 +577,14 @@ export class EventsComponent implements OnInit {
           this.events.push(evtObj);
         }
 
-        self.setEventData(false, evtObj);
+        if (!this.utils.isNullOrEmpty(isAnother) && isAnother === "select") {
+          this.setEventData(true, evtCurrObj);
+        } else if (!this.utils.isNullOrEmpty(isAnother) && isAnother === "new") {
+          this.evtNew();
+        } else {
+          var isSelect = isDuplicate ? true : false;
+          self.setEventData(isSelect, evtObj);
+        }
       });
   };
 
@@ -915,11 +926,28 @@ export class EventsComponent implements OnInit {
   selectEvent(e: any, obj: any) {
     e.preventDefault();
     e.stopPropagation();
+    var self = this;
     //this.selectedEvent = obj;
     //this.renderer.setElementClass(elem.target, 'selected', true);
     //this.renderer.setElementClass(elem.srcElement, 'selected', true);
     ///var drgTiles = [];
-    this.setEventData(true, obj);
+    var evtExist = false;
+
+    if (!this.utils.isEmptyObject(this.event) && this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
+      if (this.event["obj"].hasOwnProperty("_id") && !this.utils.isNullOrEmpty(this.event["obj"]["_id"])) {
+        evtExist = this.event["obj"]["_id"] === obj["_id"] ? true : false;
+      }
+    }
+
+    if (!evtExist) {
+      this.checkNew('Would you like to save your previous work?', (r) => {
+        if (r) {
+          this.saveEvent("", false, false, "select", obj);
+        } else {
+          this.setEventData(true, obj);
+        }
+      });
+    }
 
     //elem.stopPropagation();
   };
@@ -998,7 +1026,17 @@ export class EventsComponent implements OnInit {
     }
   };
 
-  newEvent(e: any) {
+  newEvent(e: any, ) {
+    this.checkNew('Would you like to save your previous work?', (r) => {
+      if (r) {
+        this.saveEvent("", false, false, "new");
+      } else {
+        this.evtNew();
+      }
+    });
+  };
+
+  evtNew() {
     this.clearInterval();
     this.event = {};
     this.resetEvent("reset");
@@ -1037,7 +1075,7 @@ export class EventsComponent implements OnInit {
 
       this.eventService.getEventByTiles(obj1["_id"])
         .then(evtObj => {
-          if (evtObj && evtObj[0] && !this.utils.isEmptyObject(this.event) && this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
+          if (evtObj && evtObj[0] && this.intervalId !== -1 && !this.utils.isEmptyObject(this.event) && this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
             var currEventobj = evtObj.length > 0 ? evtObj.map(x => Object.assign({}, x)) : [];
             obj2 = currEventobj[0];
             var obj2Sring = JSON.stringify(obj2);
@@ -1060,8 +1098,13 @@ export class EventsComponent implements OnInit {
             var result = this.utils.compareObj(obj1, obj2);
 
             if (!result && !isEventModified) {
-              if (confirm("The event has been updated by another user, click proceed to apply the changes") === true) {
-                this.assignEventDatas(evtObj[0]);
+              this.clearInterval();
+              var r = confirm("The event has been updated by another user, click proceed to apply the changes");
+
+              if (r) {
+                this.assignEventDatas(evtObj[0], true);
+              } else {
+                this.updateTileInterval();
               }
             } else if (isEventModified) {
               this.assignEventDatas(evtObj[0]);
@@ -1071,7 +1114,7 @@ export class EventsComponent implements OnInit {
     }
   };
 
-  assignEventDatas(objEvent: Object) {
+  assignEventDatas(objEvent: Object, isInterval?: boolean) {
     this.event["obj"] = objEvent;
     this.draggedTiles = [];
 
@@ -1095,6 +1138,10 @@ export class EventsComponent implements OnInit {
           }
         }
       }
+    }
+
+    if (isInterval) {
+      this.updateTileInterval();
     }
   };
 
@@ -1429,7 +1476,8 @@ export class EventsComponent implements OnInit {
 
     if (isEventModified) {
       if (confirm("The tiles in this event is modified, Save and activate the tile") === true) {
-        this.saveEvent("", false, eventId, tileId, idx);
+        var eventSaveObj = { "eventId": eventId, "tileId": tileId, "idx": idx };
+        this.saveEvent("", false, false, "", eventSaveObj);
       }
     } else {
       this.activateDeactivate(eventId, tileId, "activate", idx)
@@ -1463,6 +1511,56 @@ export class EventsComponent implements OnInit {
     this.clearInterval();
     var eventObj = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id") ? this.event["obj"] : {};
     this.activateDeactivate(eventId, tileId, "activate", idx);
+  };
+
+  /* function to remove event based on eventId */
+  deleteEvent(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id")) {
+
+      var r = confirm("Are you sure want to delete this Event?");
+
+      if (r) {
+        var eventId = this.event["obj"]["_id"];
+
+        this.eventService.removeEvent(eventId).then(deleteRes => {
+          if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted") && deleteRes["deleted"]) {
+            var evtIndex = this.events.map(function (evtCat) { return evtCat['_id']; }).indexOf(eventId);
+            this.events.splice(evtIndex, 1);
+            this.clearInterval();
+            this.event = {};
+            this.resetEvent("reset");
+            alert("Event Removed");
+          }
+        });
+      }
+    } else {
+      alert("Event not selected");
+    }
+  };
+
+  duplicateEvent(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id")) {
+      this.saveEvent("", true, true);
+    } else {
+      alert("Event not selected");
+    }
+  };
+
+  checkNew(message: string, cb: any) {
+    var isModified = this.newEventCompare();
+
+    if (!isModified) {
+      var r = confirm(message);
+      cb(r);
+    } else {
+      cb(false);
+    }
   };
 
   ngOnInit() {

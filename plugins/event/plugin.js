@@ -452,7 +452,7 @@ var remove = function (req, res, next) {
   if (!__util.isNullOrEmpty(req.params.eventId)) {
     query._id = req.params.eventId;
 
-    $db.remove(tilistConf.dbname, tilistConf.auth, tilistConf.collections.event, query, options, function (result) {
+    $db.remove(settingsConf.dbname.tilist_core, settingsConf.collections.event, query, options, function (result) {
       obj.deleted = result;
       res.send(obj);
     });
