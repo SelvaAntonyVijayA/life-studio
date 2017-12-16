@@ -542,7 +542,7 @@ export class EventsComponent implements OnInit {
       if (selectedLanguage !== "en") {
         eventData[selectedLanguage] = {};
         eventData[selectedLanguage].name = this.eventName;
-        delete eventData["name"];
+        //delete eventData["name"];
       }
     }
 
@@ -763,7 +763,13 @@ export class EventsComponent implements OnInit {
       currEvtData["_id"] = evtId;
     }
 
-    currEvtData["name"] = this.utils.trim(this.eventName);
+    if (evtId !== "-1" && this.selectedLanguage !== "en") {
+      var evtName = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("name") && !this.utils.isNullOrEmpty(this.event["obj"]["name"]) ? this.event["obj"]["name"] : "";
+      currEvtData["name"] = evtName;
+    } else {
+      currEvtData["name"] = this.utils.trim(this.eventName);
+    }
+
     currEvtData["category"] = this.evtCategory.nativeElement.value;
     currEvtData["type"] = 'event';
     currEvtData["art"] = this.art;
@@ -994,7 +1000,25 @@ export class EventsComponent implements OnInit {
 
       this.intervalId = -1;
     }
-  }
+  };
+
+  languageChange(lang: string) {
+    if (!this.utils.isNullOrEmpty(lang)) {
+      if (!this.utils.isEmptyObject(this.event) && this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
+        var evtObj = this.event["obj"];
+
+        if (lang === "en") {
+          var evtName = evtObj.hasOwnProperty("name") && !this.utils.isNullOrEmpty(evtObj["name"]) ? evtObj["name"] : "";
+          this.eventName = evtName;
+        } else {
+          var evtName = evtObj.hasOwnProperty(lang) && evtObj[lang].hasOwnProperty("name") && !this.utils.isNullOrEmpty(evtObj[lang]["name"]) ? evtObj[lang]["name"] : "";
+          this.eventName = evtName;
+        }
+      } else {
+        alert('Please select or create an Event');
+      }
+    }
+  };
 
   /*objectMatching() {
 
@@ -1123,7 +1147,14 @@ export class EventsComponent implements OnInit {
       this.eventStart = objEvent.hasOwnProperty("eventStart") ? this.utils.toLocalDateTime(objEvent["eventStart"]) : "";
       this.availableEnd = objEvent.hasOwnProperty("availableEnd") ? this.utils.toLocalDateTime(objEvent["availableEnd"]) : "";
       this.art = objEvent.hasOwnProperty("art") && !this.utils.isNullOrEmpty(objEvent["art"]) ? objEvent["art"] : "";
-      this.selectedLanguage = "en";
+
+      if (this.selectedLanguage !== "en") {
+        var evtName = objEvent.hasOwnProperty(this.selectedLanguage) && objEvent[this.selectedLanguage].hasOwnProperty("name") && !this.utils.isNullOrEmpty(objEvent[this.selectedLanguage]["name"]) ? objEvent[this.selectedLanguage]["name"] : "";
+        this.eventName = evtName;
+      } else {
+        this.selectedLanguage = "en";
+      }
+
       $(this.evtCategory.nativeElement).combobox('setvalue', (objEvent.hasOwnProperty("category") && objEvent["category"]) ? objEvent["category"] : '-1');
       //this.e1.nativeElement.querySelector('#eventCategory')
       this.event["draggedTiles"] = [];

@@ -3,10 +3,10 @@
   <div class="page_block events_head">
     <div class="events_inputs">
       <input class="form-control input-sm event_name" [(ngModel)]="eventName" type="text" placeholder="Event Name">
-      <select [(ngModel)]="selectedLanguage" class="form-control input-sm language" placeholder="Select Language">
+      <select [(ngModel)]="selectedLanguage" (ngModelChange)="languageChange($event)" class="form-control input-sm language" placeholder="Select Language">
           <option *ngFor="let lang of languageList; let i = index" [value]="lang?.code">{{lang?.name}}</option>
       </select>
-      <div style="margin-top: 5px;" class="checkbox">
+      <div style="float:left; margin-top: 5px; padding-left: 5px;" class="checkbox">
         <label>
           <input value="true" [checked]="eventCalendar" [(ngModel)]="eventCalendar" style="margin-top: 2px;" type="checkbox" value="">Use as Timeline</label>
       </div>

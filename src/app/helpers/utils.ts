@@ -78,7 +78,9 @@ export class Utils {
       }
     }
 
-    return result;
+    var resultOutput = !this.isNullOrEmpty(result)? result.toLowerCase() : result;
+
+    return resultOutput;
   };
 
   // Converting Date Object or Date string to local format 
@@ -94,7 +96,9 @@ export class Utils {
       }
     }
 
-    return result;
+    var resultOutput = !this.isNullOrEmpty(result)? result.toLowerCase() : result;
+
+    return resultOutput;
   };
 
   // Converting the date to the given format
