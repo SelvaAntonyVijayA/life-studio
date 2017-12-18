@@ -1,0 +1,45 @@
+<div class="container folders_container">
+  <div class="page_block folders_head">
+    <div class="folder_inputs">
+      <input class="form-control input-sm folder_name" type="text" placeholder="Folder Name">
+      <div class="folder_dates">
+        <span class="lbl_avail_text">Available in the app from: </span>
+        <input ILIDateTimePicker class="form-control input-sm folder_avail_date_time" type="text" />
+        <span class="lbl_until_text">Until: </span>
+        <input ILIDateTimePicker class="form-control input-sm folder_until_date_time" type="text" />
+      </div>
+    </div>
+
+    <div class="folder_btns">
+      <button (click)="newEvent($event)" class="ili-btn folder_new">
+        New
+      </button>
+      <button (click)="saveEvent($event, true)" class="ili-btn btn folder_save">
+        Save
+      </button>
+      <button (click)="duplicateEvent($event)" class="ili-btn folder_duplicate">
+        Duplicate
+      </button>
+      <button (click)="deleteEvent($event)" class="ili-btn folder_delete">
+        Delete
+      </button>
+      <button class="ili-btn page_setup">
+        Page Setup
+      </button>
+      <button class="ili-btn default_page_setup">
+        Default Page Setup
+      </button>
+    </div>
+  </div>
+
+  <div class="folder_main_content">
+    <div class="page_block folders_block">
+    </div>
+
+    <div class="page_block main_folder_container">
+    </div>
+
+    <tiles-list class="dragItem" (tileContent)="getTileContent($event)" [tilesToUpdate]="tilesToUpdate" [isMerge]="isMerge" [draggedTiles]="draggedTiles"
+      [droppedTile]="droppedTile" [organizations]="organizations" [page]="'folders'"></tiles-list>
+  </div>
+</div>

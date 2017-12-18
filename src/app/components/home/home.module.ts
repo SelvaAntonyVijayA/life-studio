@@ -9,6 +9,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { TilesListComponent, TilesComponent } from '../../components/tiles-list/tiles-list.component';
 import { TileBlocksComponents, SafePipe } from '../../components/widgets/tileblocks.components';
 import { EventsComponent } from '../../components/events/events.component';
+import { FoldersComponent } from '../../components/folders/folders.component';
 
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
@@ -38,7 +39,7 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
-    TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, Ng2Summernote, EventsComponent],
+    TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, Ng2Summernote, EventsComponent, FoldersComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService]
 })
 

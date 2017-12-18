@@ -189,12 +189,12 @@
             </div>
             <div *ngIf="dragTile['triggerdata']['evtTileToActivate']" style="float: left;margin-left: 10px; font-size: 11px;">
               <span class="label_small">This tile was deactivated&nbsp;&nbsp;</span>
-              <button class="btn btn-success btn-xs">&nbsp;Click here&nbsp;</button>
+              <button (click)="tileActivateDeactivate(dragTile?.tile?._id, i, 'activate', false)" class="btn btn-success btn-xs">&nbsp;Click here&nbsp;</button>
               <span class="label_small">&nbsp;&nbsp;to reactivate.</span>
             </div>
             <div *ngIf="dragTile['triggerdata']['evtTileToDeactivate']" style="float: left; margin-left: 10px; font-size: 11px;">
               <span class="label_small">This tile was activated&nbsp;&nbsp;</span>
-              <button class="btn btn-danger btn-xs">&nbsp;Click here&nbsp;</button>
+              <button (click)="tileActivateDeactivate(dragTile?.tile?._id, i, 'deactivate', false)" class="btn btn-danger btn-xs">&nbsp;Click here&nbsp;</button>
               <span class="label_small">&nbsp;&nbsp;to deactivate.</span>
             </div>
             <div *ngIf="dragTile['triggerdata']['evtTileNotActivated']" style="float: left; margin-left: 10px; font-size: 11px;">

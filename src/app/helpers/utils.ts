@@ -86,7 +86,7 @@ export class Utils {
   // Converting Date Object or Date string to local format 
   public static toLocalDateTime = function (dt: any, format?: any) {
     var result = "";
-    var currentFormat = !this.isNullOrEmpty(format) ? format : "mm/dd/yy gg:ii a";
+    var currentFormat = !this.isNullOrEmpty(format) ? format : "mm/dd/yy gg:ii:ss a";
 
     if (!this.isNullOrEmpty(dt)) {
       var dateObj = dt instanceof Date ? dt : typeof dt === "string" ? new Date(dt) : dt;

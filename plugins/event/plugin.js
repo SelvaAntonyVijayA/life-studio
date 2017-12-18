@@ -329,6 +329,8 @@ var activate = function (req, res, next) {
       var event = result[0];
       var indx = req.params.position;
       tile = event.tiles[parseInt(indx)];
+
+      console.dir(tile);
       var currentDateTime = new Date();
       // currentDateTime = currentDateTime.setSeconds(0);
       currentDateTime = new Date(currentDateTime);
@@ -370,7 +372,7 @@ var activate = function (req, res, next) {
         var events = JSON.parse(jsonData);
         events = _setEventObj(events);
 
-        $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.event, events, function (res) {
+        $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.event, events, function (evtRes) {
           res.send({});
         });
       } else {
@@ -407,7 +409,7 @@ var deActivate = function (req, res, next) {
         var events = JSON.parse(jsonData);
         events = _setEventObj(events);
 
-        $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.event, events, function (res) {
+        $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.event, events, function (evtRes) {
           res.send({});
         });
       } else {

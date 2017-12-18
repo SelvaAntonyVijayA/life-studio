@@ -581,6 +581,8 @@ export class EventsComponent implements OnInit {
           this.setEventData(true, evtCurrObj);
         } else if (!this.utils.isNullOrEmpty(isAnother) && isAnother === "new") {
           this.evtNew();
+        } else if (!this.utils.isNullOrEmpty(isAnother) && (isAnother === "activate" || isAnother === "deactivate")) {
+          this.tileActivateDeactivate(evtCurrObj["tileId"], evtCurrObj["idx"], isAnother, true);
         } else {
           var isSelect = isDuplicate ? true : false;
           self.setEventData(isSelect, evtObj);
@@ -992,7 +994,7 @@ export class EventsComponent implements OnInit {
       this.clearInterval();
       this.updateTileInterval();
     }
-  }
+  };
 
   clearInterval() {
     if (this.intervalId !== -1) {
@@ -1130,6 +1132,7 @@ export class EventsComponent implements OnInit {
               } else {
                 this.updateTileInterval();
               }
+
             } else if (isEventModified) {
               this.assignEventDatas(evtObj[0]);
             }
@@ -1501,48 +1504,50 @@ export class EventsComponent implements OnInit {
     return currDraggedTiles;
   };
 
-  tileActivate(eventId: string, tileId: string, idx: number) {
+  tileActivateDeactivate(tileId: string, idx: number, type?: string, isSaved?: boolean) {
     this.clearInterval();
     var isEventModified = this.newEventCompare();
+    var eventId = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id") ? this.event["obj"]["_id"] : "-1";
 
-    if (isEventModified) {
-      if (confirm("The tiles in this event is modified, Save and activate the tile") === true) {
-        var eventSaveObj = { "eventId": eventId, "tileId": tileId, "idx": idx };
-        this.saveEvent("", false, false, "", eventSaveObj);
+    if (!isEventModified && !isSaved) {
+      var r = confirm("The tiles in this event is modified, Save and activate the tile");
+
+      if (r) {
+        var eventSaveObj = { "tileId": tileId, "idx": idx };
+        this.saveEvent("", false, false, type, eventSaveObj);
       }
-    } else {
-      this.activateDeactivate(eventId, tileId, "activate", idx)
+    } else if ((isEventModified && !isSaved) || isSaved) {
+      this.activateDeactivate(eventId, tileId, type, idx);
     }
   };
 
   activateDeactivate(eventId: string, tileId: string, activateType: string, idx?: number) {
     var self = this;
-    var currentPosition = -1;
+    var eventObj = self.event.hasOwnProperty("obj") && !self.utils.isEmptyObject(self.event["obj"]) ? self.event["obj"] : {};
 
-    if (activateType === "activate") {
-      var totalIdx = this.event["draggedTiles"].length - 1;
-      currentPosition = totalIdx === idx ? 0 : idx === 0 ? totalIdx : totalIdx - idx;
-    } else {
-      var currentTiles = self.event.hasOwnProperty("obj") && self.event["obj"].hasOwnProperty("tiles") && self.event["obj"]["tiles"].length > 0 ? self.event["obj"]["tiles"] : [];
-      currentPosition = currentTiles.map(function (tileObj) { return tileObj['_id']; }).indexOf(tileId);
-    }
-
-    if (currentPosition !== -1) {
-      this.eventService.tileActivateDeactivate(eventId, tileId, currentPosition, activateType).then(eventCategoriesList => {
-        if (activateType === "activate") {
-
-        } else {
-
-        }
+    if (!this.utils.isNullOrEmpty(idx)) {
+      this.eventService.tileActivateDeactivate(eventId, tileId, idx, activateType).then(eventCategoriesList => {
+        self.setEventData(false, eventObj);
       });
     }
   };
 
-  tileDeactivate(eventId: string, tileId: string, idx: number) {
+  /*tileDeactivate(tileId: string, idx: number, type? isSaved?: boolean) {
     this.clearInterval();
-    var eventObj = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id") ? this.event["obj"] : {};
-    this.activateDeactivate(eventId, tileId, "activate", idx);
-  };
+    var eventId = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id") ? this.event["obj"]["_id"] : "-1";
+    var isEventModified = this.newEventCompare();
+
+    if (!isEventModified && !isSaved) {
+      var r = confirm("The tiles in this event is modified, Save and activate the tile");
+
+      if (r) {
+        var eventSaveObj = {"tileId": tileId, "idx": idx };
+        this.saveEvent("", false, false, "deactivate", eventSaveObj);
+      }
+    } else if((isEventModified && !isSaved) || isSaved){
+      this.activateDeactivate(eventId, tileId, "deactivate", idx);
+    }
+  };*/
 
   /* function to remove event based on eventId */
   deleteEvent(e: any) {
@@ -1550,7 +1555,6 @@ export class EventsComponent implements OnInit {
     e.stopPropagation();
 
     if (this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id")) {
-
       var r = confirm("Are you sure want to delete this Event?");
 
       if (r) {

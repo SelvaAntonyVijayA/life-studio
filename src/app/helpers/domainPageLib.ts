@@ -2,7 +2,7 @@ export class DomainPageLib {
   Widgets: string = '/widgets';
   Themes: string = '/tilethemes';
   Events: string = '/events';
-  Folders: string = '/tilist';
+  Folders: string = '/folders';
   Categories: string = '/categories';
   Pages: string = '/pages';
   Studio_Users: string = '/studiousers';
