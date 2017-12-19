@@ -376,7 +376,7 @@ export class EventsComponent implements OnInit {
 
   /* Destroy Scroll */
   destroyScroll() {
-    this.cms.destroyScroll(["#event_main_container", "#dragged-event-tiles"]);
+    this.cms.destroyScroll(["#main-container-events", "#dragged-event-tiles"]);
   };
 
   moveUpDown(move: string, idx: number) {
@@ -389,13 +389,17 @@ export class EventsComponent implements OnInit {
 
   resetEventDatas() {
     //this.draggedTiles = [];
+    this.resetSort();
+    this.resetEvent();
+    this.events = [];
+    this.oid = "";
+  };
+
+  resetSort(){
     this.eventFilter["eventSearch"] = ""
     this.eventFilter["eventCategory"]["_id"] = "-1";
     this.eventFilter["sort"]["selected"] = "date_desc";
     this.eventFilter["sort"]["isAsc"] = false;
-    this.resetEvent();
-    this.events = [];
-    this.oid = "";
   };
 
   resetEvent(mergeReset?: string) {
@@ -415,6 +419,7 @@ export class EventsComponent implements OnInit {
 
     if (mergeReset && mergeReset === "reset") {
       this.clearInterval();
+      this.resetSort();
       this.isMerge = { "status": "merge" };
     }
   };
@@ -814,15 +819,17 @@ export class EventsComponent implements OnInit {
 
     if (evt && evt.hasOwnProperty("Apps") && evt.Apps.length > 0) {
       for (let i = 0; i < evt.Apps.length; i++) {
-        evt["pageApps"] = i === 0 ? evt.Apps[i]["appName"] : evt.Apps[i]["appName"];
+        evt["pageApps"] = i === 0 ? evt.Apps[i]["appName"] :  ", " + evt.Apps[i]["appName"];
       }
     }
 
     if (evt && evt.hasOwnProperty("smart") && evt.smart.hasOwnProperty("apps") && evt.smart.apps.length > 0) {
-      for (let i = 0; i < evt.Apps.length; i++) {
-        evt["tileSmart"] = i === 0 ? evt.Apps[i]["name"] : evt.Apps[i]["name"];
+      for (let i = 0; i < evt.smart.apps.length; i++) {
+        evt["tileSmart"] = i === 0 ? evt.smart.apps[i]["name"] : ", " + evt.smart.apps[i]["name"];
       }
     }
+
+    evt["isRole"] = evt.hasOwnProperty("isRoleBased") && !this.utils.isNullOrEmpty("isRoleBased") && evt["isRoleBased"]? true : false;
   };
 
   /* Fetching Event Categories */

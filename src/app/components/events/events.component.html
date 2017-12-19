@@ -46,7 +46,7 @@
   </div>
   <div class="event_main_content">
     <div class="page_block events_block">
-      <div class="events_text ">
+      <div class="events_text">
         <span> EVENTS </span>
       </div>
       <input [(ngModel)]="eventFilter['eventSearch']" class="form-control input-sm search_box_tilist" type="text" placeholder="Search Events">
@@ -84,7 +84,7 @@
             <span [title]="evt?.tileSmart" [style.display]="evt?.tileSmart ? 'block' : 'none'" class="step smart smarticon smarticon-groups">
               <i class="icon ion-lightbulb"></i>
             </span>
-            <span [title]="evt?.pageApps" [style.display]="evt?.pageApps?'block' : 'none'" class="step smart smarticon smarticon-groups">
+            <span [title]="evt?.pageApps" [style.display]="evt['isRole']?'block' : 'none'" class="step smart smarticon smarticon-groups">
               <i class="icon ion-android-person"></i>
             </span>
           </div>
@@ -92,7 +92,7 @@
       </div>
     </div>
     <div id="dragged-event-tiles" class="page_block main_event_container">
-      <div iliDropTarget (myDrop)="onDrop($event)" class="ili-panel main_event_content drop_target">
+      <div iliDropTarget (myDrop)="onDrop($event, false)" class="ili-panel main_event_content drop_target">
         <div class="draggable_label">To add Tiles to this Event, simply drag them in this space.
           <br>
           <br>Add Tiles in order you want them to appear in the app.

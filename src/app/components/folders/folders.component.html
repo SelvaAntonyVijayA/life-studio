@@ -14,7 +14,7 @@
       <button (click)="newEvent($event)" class="ili-btn folder_new">
         New
       </button>
-      <button (click)="saveEvent($event, true)" class="ili-btn btn folder_save">
+      <button (click)="saveEvent($event)" class="ili-btn btn folder_save">
         Save
       </button>
       <button (click)="duplicateEvent($event)" class="ili-btn folder_duplicate">
@@ -34,9 +34,91 @@
 
   <div class="folder_main_content">
     <div class="page_block folders_block">
+      <div class="folders_text">
+        <span> Folders </span>
+      </div>
+      <input [(ngModel)]="folderFilter['folderSearch']" class="form-control input-sm search_box_tilist" type="text" placeholder="Search Folders">
+      <select [ngModel]="folderFilter['sort']['selected']" (ngModelChange)="filterChange($event)" class="form-control input-sm sort_folder">
+        <option [value]="'date_desc'">Latest on top</option>
+        <option [value]="'date_asc'">Oldest on top</option>
+        <option [value]="'name_asc'">Name - A on top</option>
+        <option [value]="'name_desc'">Name - Z on top</option>
+      </select>
+      <div class="group-view-change">
+        <img class="img-folder-view-group" *ngIf="groupType === 'list'" (click)="changeGroupView()" src="/img/details.png" alt=""
+          title="Details" />
+        <img class="img-folder-view-group group-list-view" *ngIf="groupType === 'details'" (click)="changeGroupView()" src="/img/list.png"
+          alt="" title="List" />
+      </div>
+      <div id="main-container-folders" class="tilist_list_show">
+        <div [ngClass]="folder.hasOwnProperty('obj') && fold?._id === folder.obj?._id ? 'folder_list_single selected' : 'folder_list_single'"
+          *ngFor="let fold of (folders | filterByText:'name':folderFilter['folderSearch'] | orderBy:folderFilter['sort']['isAsc']: folderFilter['sort']['fieldNames'][splitKey(folderFilter['sort']['selected'])][0]: folderFilter['sort']['fieldNames'][splitKey(folderFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
+          {{folderNotificationIcon(fold)}}
+          <div [ngClass]="groupType === 'list'? 'folder-art' : 'folder-art details'">
+            <img [ngClass]="groupType === 'list'? 'tilist_list_art' : 'tilist_list_art tilist-detail-content'" [src]="fold?.art | safe">
+          </div>
+          <div [title]="fold?.name" class="folder_list_title">{{fold?.name}}</div>
+          <div class="folder-notify-icons">
+            <span [title]="fold?.tileNotifications" class='step smart noteicon smarticon-groups' [style.display]="fold?.tileNotifications ? 'block' : 'none'"
+              aria-hidden="true">
+              <i class='icon ion-android-notifications-none'></i>
+            </span>
+            <span [title]="fold?.tileSmart" [style.display]="fold?.tileSmart? 'block' : 'none'" class="step smart smarticon smarticon-groups">
+              <i class="icon ion-lightbulb"></i>
+            </span>
+            <span [title]="fold?.pageApps" [style.display]="fold['isRole']? 'block' : 'none'" class="step smart smarticon smarticon-groups">
+              <i class="icon ion-android-person"></i>
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="page_block main_folder_container">
+    <div id="dragged-folder-tiles" class="page_block main_folder_container">
+      <div iliDropTarget (myDrop)="onDrop($event)" class="ili-panel main_folder_content drop_target">
+        <div class="draggable_label">
+          <br>
+          <br>To add the Tiles to this Folder, simply drag them in this space.
+          <br>
+          <br>Add Tiles in order you want them to appear in the app.</div>
+      </div>
+      <div *ngFor="let dragTile of folder!.draggedTiles | reverse; let i = index; trackBy: trackByUniqueId" class="ili-panel folder_content">
+        {{ setDragIndex(i, dragTile)}}
+        <div *ngIf="!dragTile.hasOwnProperty('folderDragContainer')" class="folder_main_panel">
+          <div class="folder_content_left">
+            <div class="folder_tile_single">
+              <img class='tile_list_art tile-content-img' [src]="dragTile?.tile?.art | safe">
+              <div class="tile_list_title tile-content-title">{{dragTile?.tile?.title}}</div>
+            </div>
+          </div>
+          <div class="folder_content_right">
+            <div class="drag_buttons">
+              <button (click)="addDraggable(i)" class="drg_btn" title="Add Space">
+                <span class="glyphicon glyphicon-plus"></span>
+              </button>
+              <button (click)="replicateTile(dragTile)" class="drg_btn" title="Replicate">
+                <span class="glyphicon glyphicon-retweet"></span>
+              </button>
+              <button (click)="moveUpDown('up', i)" class="drg_btn" title="MoveUp">
+                <span class="glyphicon glyphicon-arrow-up"></span>
+              </button>
+              <button (click)="moveUpDown('down', i)" class="drg_btn" title="MoveDown">
+                <span class="glyphicon glyphicon-arrow-down"></span>
+              </button>
+              <button (click)="deleteDraggedTile(i)" class="drg_btn" title="Remove">
+                <span class="glyphicon glyphicon-remove"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div iliDropTarget (myDrop)="onDrop($event, true)" *ngIf="dragTile.hasOwnProperty('folderDragContainer')" class="draggable_label drop_target">
+          To add Tiles to this Event, simply drag them in this space.
+          <br>
+          <br>Add Tiles in order you want them to appear in the app.
+          <br>
+          <br>Triggered Tiles will appear above Permanent Tiles in the app.
+        </div>
+      </div>
     </div>
 
     <tiles-list class="dragItem" (tileContent)="getTileContent($event)" [tilesToUpdate]="tilesToUpdate" [isMerge]="isMerge" [draggedTiles]="draggedTiles"

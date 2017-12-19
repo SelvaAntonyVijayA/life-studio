@@ -12,6 +12,7 @@ var plugins = {
   "page": "page",
   "eventcategory": "eventcategory",
   "languages": "languages",
+  "tilist": "tilist",
   "db": "database"
 };
 

@@ -129,3 +129,240 @@
     margin-left: 1px;
     overflow: hidden;
 }
+
+.folders_text {
+    font-size: 16px;
+    position: relative;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    text-align: center;
+    float: left;
+    width: 170px;
+}
+
+.search_box_tilist {
+    width: 84%;
+    display: inline;
+}
+
+.sort_folder {
+    margin-top: 5px;
+    width: 84%;
+    display: inline;
+}
+
+.main_folder_content{
+    position: relative;
+    padding-bottom: 1px;
+    margin-top: 9px;
+    margin-left: 5px;
+    min-height: 220px;
+    width: 708px;
+    padding-top: 10px;
+    margin-bottom: 2px;
+    border-color: #ddd;
+}
+
+/* Folder Draggable */
+.draggable_label{
+    font-size: 11px;
+    margin-top: 45px;
+    color: #FFFFFF;
+    text-align: center;
+}
+
+/* Folder View */
+.group-view-change{
+    float: right;
+    width:100%;
+}
+
+.img-folder-view-group{
+    float: right; 
+    margin-top: 7px; 
+    margin-right: 13px;
+    cursor: pointer;
+}
+
+.img-folder-view-group.group-list-view{
+    margin-right: 14px;
+}
+
+/* Folders List */
+.tilist_list_show{
+    position: relative;
+    margin-top: 3px;
+    float: left;
+    width: 100%;
+    height: 738px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.folder-art{
+    width: 20%;
+    float: left;
+    text-align: left;
+    margin-left: 2px
+}
+
+.folder-art.details{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.tilist_list_art{
+    float: left;
+    max-width: 30px;
+    max-height: 25px;
+    margin-top: 3px;
+    text-align: center;
+}
+
+.tilist_list_art.tilist-detail-content{
+    max-width: 110px;
+    max-height: 110px;
+} 
+
+.folder_list_title{
+    float: left;
+    margin-top: 3px;
+    margin-left: 8px;
+    width: 98px;
+    font-size: 11px;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+.folder-notify-icons{
+    width: 100%;
+    float: right;
+}
+
+/*Event List */
+.folder_list_single{
+    display: inline-block;
+    position: relative;
+    background-color: #FFFFFF;
+    text-align: left;
+    margin-right: 5px;
+    width: 138px;
+    min-height: 42px;
+    color: #000000;
+    cursor: pointer;
+    border: 1px outset #F2F2F2;
+}
+
+.folder_list_single:hover{
+    background-color: #F2F2F2;
+}
+
+.folder_list_single.selected{
+    background-color: #3c3c3c;
+    color: #FFFFFF;
+}
+
+/* Draggable Folder Content */
+.folder_content{
+    position: relative;
+    padding-bottom: 1px;
+    margin-top: 9px;
+    margin-left: 5px;
+    min-height: 220px;
+    width: 708px;
+    padding-top: 10px;
+    margin-bottom: 2px;
+    border-color: #ddd;
+}
+
+.folder_main_panel{
+    position: relative;
+    float: left;
+    width: 100%;
+    min-height: 220px;
+}
+
+.draggable_label{
+    font-size: 11px;
+    margin-top: 45px;
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.folder_content_left{
+    width: 45%;
+    float: left;
+    height: 207px;
+    position: relative;
+}
+
+.folder_tile_single{
+    display: table;
+    position: relative;
+    text-align: left;
+    margin-left: 7px;
+    margin-bottom: 4px;
+    width: 257px;
+    margin-left: 8px;
+    min-height: 32px;
+    padding-bottom: 2px;
+    background-color: #FFFFFF;
+    color: #000000;
+    border: 1px solid #FF69B4;
+}
+
+/* Dragged Tile Art */
+
+.tile_list_art {
+    max-width: 240px;
+    margin-top: 8px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    margin-right: 4px;
+    float: left; 
+}
+
+.tile_list_art.tile-content-img{
+    max-width: 30px;
+    max-height: 25px; 
+    margin-top: 3px;
+}
+
+/* Dragged Tile title */
+
+.tile_list_title{
+    float:left;
+    width: 235px; 
+    margin-top: 2px; 
+    margin-left: 5px; 
+    font-size: 11px; 
+    text-align: justify; 
+    word-wrap: break-word;
+}
+
+.tile_list_title.tile-content-title{  
+    width: 200px;
+}
+
+.folder_content_right{
+    width: 55%;
+    float: right;
+    height: 207px;
+}
+
+/* Drag Buttons */
+.drag_buttons {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+    text-align: right;
+    float: right;
+    padding-right: 7px;
+}
+
+.drg_btn {
+    margin-right: 5px;
+    color: #000000;
+    border: 1px solid #A9A9A9;
+}
