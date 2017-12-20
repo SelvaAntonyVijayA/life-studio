@@ -419,7 +419,6 @@ export class EventsComponent implements OnInit {
 
     if (mergeReset && mergeReset === "reset") {
       this.clearInterval();
-      this.resetSort();
       this.isMerge = { "status": "merge" };
     }
   };

@@ -1,26 +1,26 @@
 <div class="container folders_container">
   <div class="page_block folders_head">
     <div class="folder_inputs">
-      <input class="form-control input-sm folder_name" type="text" placeholder="Folder Name">
+      <input [(ngModel)]="folderName" class="form-control input-sm folder_name" type="text" placeholder="Folder Name">
       <div class="folder_dates">
         <span class="lbl_avail_text">Available in the app from: </span>
-        <input ILIDateTimePicker class="form-control input-sm folder_avail_date_time" type="text" />
+        <input [(ngModel)]="availableStart" ILIDateTimePicker class="form-control input-sm folder_avail_date_time" type="text" />
         <span class="lbl_until_text">Until: </span>
-        <input ILIDateTimePicker class="form-control input-sm folder_until_date_time" type="text" />
+        <input [(ngModel)]="availableEnd" ILIDateTimePicker class="form-control input-sm folder_until_date_time" type="text" />
       </div>
     </div>
 
     <div class="folder_btns">
-      <button (click)="newEvent($event)" class="ili-btn folder_new">
+      <button (click)="newFolder($event)" class="ili-btn folder_new">
         New
       </button>
-      <button (click)="saveEvent($event)" class="ili-btn btn folder_save">
+      <button (click)="saveFolder($event)" class="ili-btn btn folder_save">
         Save
       </button>
-      <button (click)="duplicateEvent($event)" class="ili-btn folder_duplicate">
+      <button (click)="duplicateFolder($event)" class="ili-btn folder_duplicate">
         Duplicate
       </button>
-      <button (click)="deleteEvent($event)" class="ili-btn folder_delete">
+      <button (click)="deleteFolder($event)" class="ili-btn folder_delete">
         Delete
       </button>
       <button class="ili-btn page_setup">
@@ -51,7 +51,7 @@
           alt="" title="List" />
       </div>
       <div id="main-container-folders" class="tilist_list_show">
-        <div [ngClass]="folder.hasOwnProperty('obj') && fold?._id === folder.obj?._id ? 'folder_list_single selected' : 'folder_list_single'"
+        <div (click)="selectFolder($event, fold)" [ngClass]="folder.hasOwnProperty('obj') && fold?._id === folder.obj?._id ? 'folder_list_single selected' : 'folder_list_single'"
           *ngFor="let fold of (folders | filterByText:'name':folderFilter['folderSearch'] | orderBy:folderFilter['sort']['isAsc']: folderFilter['sort']['fieldNames'][splitKey(folderFilter['sort']['selected'])][0]: folderFilter['sort']['fieldNames'][splitKey(folderFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
           {{folderNotificationIcon(fold)}}
           <div [ngClass]="groupType === 'list'? 'folder-art' : 'folder-art details'">

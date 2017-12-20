@@ -215,6 +215,8 @@ var _eventTile = function (context, event) {
   //console.dir(isTiles);
 
   if (event && event.length > 0) {
+    event = $general.convertToJsonObject(event);
+
     event[0].tiles.forEach(function (tile) {
       tileIds.push(tile._id);
     });
@@ -225,7 +227,7 @@ var _eventTile = function (context, event) {
 
     $tile.getSpecificFields(tileFields, query, options, function (tiles) {
       //var eventTiles = [];
-      tiles = $general.convertToJsonObject(tiles)
+      tiles = $general.convertToJsonObject(tiles);
 
       _.each(tileIds, function (id) {
         var tileObj = _.findWhere(tiles, {

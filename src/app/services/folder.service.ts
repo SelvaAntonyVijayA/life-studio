@@ -30,6 +30,16 @@ export class FolderService {
       .catch(this.handleError);
   };
 
+  folderByTiles(folderId: string) {
+    var folderUrl = '/tilist/folderbytiles/' + folderId;
+
+    return this.http
+      .get(folderUrl)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);

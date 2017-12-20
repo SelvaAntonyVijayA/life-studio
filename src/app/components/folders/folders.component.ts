@@ -46,6 +46,10 @@ export class FoldersComponent implements OnInit {
   };
   utils: any;
   dragIndex: number = -1;
+  availableStart: any = "";
+  availableEnd: any = "";
+  folderName: string = "";
+  art: string = "";
 
   /* Setting for default dragged tile */
   setDefaultDraggedTile(tile: any) {
@@ -66,6 +70,24 @@ export class FoldersComponent implements OnInit {
 
     return dragged;
   };
+
+  /* Set selected dragged tile */
+  setSelectedDraggedTile(dragTile: any) {
+    var currTile = {};
+
+    if (!this.utils.isEmptyObject(dragTile) && dragTile.hasOwnProperty("tileData")) {
+      currTile = dragTile["tileData"];
+    }
+
+    var dragged = {
+      "uniqueId": this.getUniqueId(),
+      "tile": currTile,
+      "showName": !this.utils.isEmptyObject(dragTile) && dragTile.hasOwnProperty("showName") ? dragTile["showName"] : false
+    };
+
+    return dragged;
+  };
+
 
   getTileContent(tileObj: any) {
     /* if (tileObj.hasOwnProperty("draggedTiles")) {
@@ -191,7 +213,7 @@ export class FoldersComponent implements OnInit {
 
     return uniqueId;
   };
-  
+
   /* Add Draggable inbetween dargged tiles */
   addDraggable(idx: number) {
     var dragged = { "uniqueId": this.getUniqueId(), "folderDragContainer": true };
@@ -211,14 +233,14 @@ export class FoldersComponent implements OnInit {
       }
     }
   };
-  
+
   /* Duplicating the already available tile */
   replicateTile(obj: any) {
     var replicateTile = !this.utils.isEmptyObject(obj) && obj.hasOwnProperty("tile") ? obj["tile"] : {};
     var replicatedTile = this.setDefaultDraggedTile(replicateTile);
     this.folder["draggedTiles"].push(replicatedTile);
   };
-  
+
   /* Move the dragged tile up and down position */
   moveUpDown(move: string, idx: number) {
     var totalIdx = this.folder["draggedTiles"].length - 1;
@@ -227,30 +249,24 @@ export class FoldersComponent implements OnInit {
 
     this.utils.arrayMove(this.folder["draggedTiles"], fromIdx, toIdx);
   };
-  
+
   /* Deleting the dragged tile */
   deleteDraggedTile(idx: number) {
     this.droppedTile = {};
     var totalIdx = this.folder["draggedTiles"].length - 1;
     var currIdx = totalIdx - idx;
-
+    this.droppedTile = {};
     var tile = this.folder["draggedTiles"][currIdx]["tile"];
     this.droppedTile = !this.utils.isEmptyObject(tile) ? Object.assign({}, tile) : {};
     this.folder["draggedTiles"].splice(currIdx, 1);
   };
 
   resetFolderContents() {
-    this.dragIndex = -1;
     this.organizations = [];
     this.oid = "";
-    this.draggedTiles = [];
-    this.tileDropped = {};
-    this.tilesToUpdate = [];
-    this.isMerge = {};
-    this.droppedTile = {};
     this.folders = [];
     this.groupType = "list";
-    this.folder = {};
+    this.resetFolder();
 
     this.folderFilter = {
       "folderSearch": "",
@@ -262,6 +278,121 @@ export class FoldersComponent implements OnInit {
       }
     };
   };
+
+  resetFolder(mergeReset?: string) {
+    this.dragIndex = -1;
+    this.draggedTiles = [];
+    this.tileDropped = {};
+    this.tilesToUpdate = [];
+    this.isMerge = {};
+    this.droppedTile = {};
+    this.folder = {};
+
+    this.folderName = "";
+    this.availableStart = "";
+    this.availableEnd = "";
+    this.art = "";
+
+    if (mergeReset && mergeReset === "reset") {
+      this.isMerge = { "status": "merge" };
+    }
+  };
+
+  newFolder(e: any) {
+
+  };
+
+  saveFolder(e: any) {
+
+  };
+
+  duplicateFolder(e: any) {
+
+  };
+
+  deleteFolder(e: any) {
+
+  };
+
+  /* Select Folder */
+  selectFolder(e: any, obj: any) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var self = this;
+    //this.selectedEvent = obj;
+    //this.renderer.setElementClass(elem.target, 'selected', true);
+    //this.renderer.setElementClass(elem.srcElement, 'selected', true);
+    ///var drgTiles = [];
+    var foldExists = false;
+
+    if (!this.utils.isEmptyObject(this.folder) && this.folder.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.folder["obj"])) {
+      if (this.folder["obj"].hasOwnProperty("_id") && !this.utils.isNullOrEmpty(this.folder["obj"]["_id"])) {
+        foldExists = this.folder["obj"]["_id"] === obj["_id"] ? true : false;
+      }
+    }
+
+    if (!foldExists) {
+      this.setFolderData(true, obj);
+    }
+  };
+
+  setFolderData(isSelect: boolean, obj: any) {
+    if (isSelect) {
+      //this.draggedTiles = [];
+      this.resetFolder();
+
+      if (obj && obj.hasOwnProperty("tiles")) {
+        for (let i = 0; i < obj.tiles.length; i++) {
+          this.draggedTiles.push(obj.tiles[i]["_id"]);
+        }
+      }
+
+      this.folderService.folderByTiles(obj._id)
+        .then(foldObj => {
+          if (foldObj && foldObj[0]) {
+            this.assignFolderDatas(foldObj[0]);
+          }
+        });
+    }
+  };
+
+  /* Assign folder datas to the selected folder */
+  assignFolderDatas(objFolder: Object) {
+    this.folder["obj"] = objFolder;
+    this.draggedTiles = [];
+
+    if (!this.utils.isEmptyObject(objFolder)) {
+      this.folderName = objFolder.hasOwnProperty("name") ? objFolder["name"] : "";
+      this.availableStart = objFolder.hasOwnProperty("availableStart") ? this.utils.toLocalDateTime(objFolder["availableStart"]) : "";
+      this.availableEnd = objFolder.hasOwnProperty("availableEnd") ? this.utils.toLocalDateTime(objFolder["availableEnd"]) : "";
+      this.art = objFolder.hasOwnProperty("art") && !this.utils.isNullOrEmpty(objFolder["art"]) ? objFolder["art"] : "";
+
+      this.folder["draggedTiles"] = [];
+
+      if (objFolder.hasOwnProperty("tiles") && objFolder["tiles"].length > 0) {
+        var currTiles = objFolder["tiles"];
+
+        for (let i = currTiles.length - 1; 0 <= i; i--) {
+          if (currTiles[i].hasOwnProperty("_id")) {
+            this.draggedTiles.push(currTiles[i]["_id"]);
+            this.assignDragged(currTiles[i]);
+          }
+        }
+      }
+    }
+  };
+
+  assignDragged(currTile: any) {
+    var draggedTile = this.setSelectedDraggedTile(currTile);
+
+    if (this.folder.hasOwnProperty("draggedTiles")) {
+      this.folder["draggedTiles"].push(draggedTile);
+    } else {
+      this.folder["draggedTiles"] = [draggedTile];
+    }
+  };
+
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {

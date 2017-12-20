@@ -20,7 +20,7 @@ var list = function (req, res, next) {
         query._id = req.params.tilistId;
       }
 
-      $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.tilist, query, options, function (tilist) {
+      _getFolder(query, function (tilist) {
         callback(null, tilist);
       });
     },
@@ -60,7 +60,74 @@ var list = function (req, res, next) {
     });
 };
 
+var folderByTiles = function (req, res, next) {
+  var tilistId = req.params.tilistId;
+
+  $async.waterfall([
+    function (callback) {
+      query = { "_id": tilistId };
+      options = {};
+
+      _getFolder(query, function (tilist) {
+        callback(null, tilist);
+      });
+    },
+    function (tilist, callback) {
+      if (tilist && tilist[0] && tilist[0].hasOwnProperty("tiles") && tilist[0].tiles.length > 0) {
+        tilist = $general.convertToJsonObject(tilist);
+        var tileIds = [];
+
+        _.each(tilist[0].tiles, function (tile) {
+          if (tile && tile.hasOwnProperty("_id")) {
+            tileIds.push(tile._id)
+          }
+        });
+
+        if (tileIds.length > 0) {
+          query = { "_id": tileIds };
+          options = {};
+          var tileFields = { "_id": 1, "title": 1, "art": 1 };
+
+          $tile.getSpecificFields(tileFields, query, options, function (tiles) {
+            tiles = $general.convertToJsonObject(tiles);
+
+            _.each(tileIds, function (id) {
+              var tileObj = _.findWhere(tiles, {
+                _id: id
+              });
+
+              if (tileObj) {
+                var tileResult = _.findWhere(tilist[0].tiles, {
+                  "_id": tileObj._id
+                });
+
+                tileResult.tileData = tileObj;
+              }
+            });
+
+            callback(null, tilist);
+          });
+        } else {
+          callback(null, tilist);
+        }
+      } else {
+        callback(null, tilist);
+      }
+    }], function (err, result) {
+      res.send(result);
+    });
+};
+
+var _getFolder = function (tQuery, callback) {
+  options = {};
+
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.tilist, tQuery, options, function (result) {
+    callback(result);
+  });
+};
+
 module.exports = {
   "init": init,
-  "list": list
+  "list": list,
+  "folderByTiles": folderByTiles
 };
