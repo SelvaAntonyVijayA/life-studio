@@ -19,6 +19,14 @@ export class FolderService {
     this.utils = Utils;
   }
 
+  saveFolder(foldObj: Object) {
+    return this.http
+      .post("/tilist/save", JSON.stringify({ "form_data": foldObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
   folderList(orgId: string, folderId?: string) {
     var folderUrl = '/tilist/list/' + orgId;
     folderUrl = !this.utils.isNullOrEmpty(folderId) ? folderUrl + "/" + folderId : folderUrl;
@@ -35,6 +43,15 @@ export class FolderService {
 
     return this.http
       .get(folderUrl)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+
+  removeFolder(folderId: string) {
+    return this.http
+      .get("/tilist/remove/" + folderId)
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);

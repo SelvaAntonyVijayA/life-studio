@@ -299,19 +299,188 @@ export class FoldersComponent implements OnInit {
   };
 
   newFolder(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
 
+    this.resetFolder("reset");
   };
 
-  saveFolder(e: any) {
+  saveFolder(e: any, showMessage?: boolean, isDuplicate?: boolean) {
+    var self = this;
 
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    var folderObj = this.folder.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.folder["obj"]) ? this.folder["obj"] : {};
+    var foldId = folderObj.hasOwnProperty("_id") ? this.folder["obj"]["_id"] : "-1";
+    var tilist = {};
+
+    if (foldId !== "-1") {
+      tilist["_id"] = foldId;
+    }
+
+    tilist["dateCreated"] = foldId !== "-1" && folderObj.hasOwnProperty("dateCreated") ? folderObj["dateCreated"] : (new Date()).toUTCString();
+    tilist["dateUpdated"] = (new Date()).toUTCString();
+
+    if (folderObj.hasOwnProperty("notification")) {
+      tilist["notification"] = folderObj["notification"];
+    }
+
+    if (folderObj.hasOwnProperty("smart")) {
+      tilist["notification"] = folderObj["smart"];
+    }
+
+
+    tilist["name"] = this.folderName;
+    tilist["type"] = 'list';
+    tilist["art"] = this.art;
+    tilist["availableStart"] = this.utils.toUTCDateTime(this.availableStart);
+    tilist["availableEnd"] = this.utils.toUTCDateTime(this.availableEnd);
+    tilist["organizationId"] = this.oid;
+    /* tilist.background_landscape = $('.background_landscape').val();
+     tilist.background_portrait = $('.background_portrait').val();
+     tilist.background = $('.background').val();
+     tilist.timelineBackgroundColor = $('.timeline-bg-color').val();
+     tilist.timelineFontColor = $('.timeline-font-color').val();
+     tilist.titleFontColor = $('.title-font-color').val();
+     tilist.descFontColor = $('.desc-font-color').val(); */
+
+    var current = new Date();
+    current.setFullYear(current.getFullYear() + 10);
+
+    if (this.utils.isNullOrEmpty(tilist["name"])) {
+      alert("You must at least enter a Folder name");
+      return false;
+    }
+
+    if (this.utils.isNullOrEmpty(tilist["availableStart"])) {
+      alert("Folder available start is empty");
+    }
+
+    if (this.utils.isNullOrEmpty(tilist["availableEnd"])) {
+      alert("Folder available end is empty");
+    }
+
+    tilist["tiles"] = this.getDraggedTiles();
+
+    var isDatesCheck = this.foldercheckDates();
+
+    if(!isDatesCheck){
+      return false;
+    }
+    
+    this.folderService.saveFolder(tilist)
+      .then(folderResObj => {
+        var isNew = tilist.hasOwnProperty("_id") && !self.utils.isNullOrEmpty(tilist["_id"]) ? false : true;
+
+        if (showMessage) {
+          var alertMessage = isNew ? "Folder Created" : "Folder Updated";
+          alertMessage = isDuplicate ? "Duplicate Folder Created" : alertMessage;
+          alert(alertMessage);
+        }
+
+        if (!isNew) {
+          var foldIndex = this.folders.map(function (fold) { return fold['_id']; }).indexOf(folderResObj["_id"]);
+
+          if (foldIndex !== -1) {
+            this.folders[foldIndex] = tilist;
+          }
+        } else if (folderResObj.hasOwnProperty("_id") && !self.utils.isNullOrEmpty(folderResObj["_id"])) {
+          tilist["_id"] = folderResObj["_id"];
+          this.folders.push(tilist);
+        }
+      });
+  };
+
+  getDraggedTiles(isSave?: boolean) {
+    var drgTiles = this.folder.hasOwnProperty("draggedTiles") && this.folder["draggedTiles"].length > 0 ? this.folder["draggedTiles"] : [];
+    var tiles = [];
+
+    for (let i = drgTiles.length - 1; 0 <= i; i--) {
+      var tile = {};
+      var dragTileObj = drgTiles[i];
+
+      if (!dragTileObj.hasOwnProperty["folderDragContainer"] && ((isSave && dragTileObj.hasOwnProperty("tile") && dragTileObj["tile"].hasOwnProperty("_id")) || !isSave)) {
+        tile["_id"] = dragTileObj["tile"]["_id"];
+        tile["showName"] = dragTileObj["showName"];
+        tiles.push(tile);
+      }
+    }
+
+    return tiles;
+  };
+
+  foldercheckDates(){
+    var result = true;
+    var availableStart = !this.utils.isNullOrEmpty(this.availableStart) ? (new Date(this.availableEnd)) : "";
+    var untilDate = !this.utils.isNullOrEmpty(this.availableEnd) ? (new Date(this.availableEnd)) : "";
+
+    if(!this.utils.isNullOrEmpty(availableStart) && this.utils.isNullOrEmpty(untilDate)){
+      if(availableStart > untilDate){
+        alert('The Until date date must be greater than the start date');
+        result = false;
+      }else if( untilDate <  availableStart ){
+        alert('The Start date must be lesser than until date');
+        result = false;
+      } 
+    }
+
+    return result;
+  };
+
+
+  updateOrganizationIdsTile() {
+    this.tilesToUpdate = [];
+    var draggedTiles = this.folder.hasOwnProperty("draggedTiles") && this.folder["draggedTiles"].length > 0 ? this.folder["draggedTiles"] : [];
+
+    for (let i = 0; i < draggedTiles.length; i++) {
+      var dragTileObj = draggedTiles[i];
+
+      if (!dragTileObj.hasOwnProperty["eventDragContainer"]) {
+        if (dragTileObj.hasOwnProperty("tile")) {
+          this.tilesToUpdate.push(dragTileObj["tile"]);
+        }
+      }
+    }
   };
 
   duplicateFolder(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
 
+    if (this.folder.hasOwnProperty("obj") && this.folder["obj"].hasOwnProperty("_id")) {
+      this.saveFolder("", true, true);
+    } else {
+      alert("Folder not selected");
+    }
   };
 
   deleteFolder(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
 
+    if (this.folder.hasOwnProperty("obj") && this.folder["obj"].hasOwnProperty("_id")) {
+      var r = confirm("Are you sure want to delete this Folder?");
+
+      if (r) {
+        var folderId = this.folder["obj"]["_id"];
+
+        this.folderService.removeFolder(folderId).then(deleteRes => {
+          if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted") && deleteRes["deleted"]) {
+            var foldIndex = this.folders.map(function (evtCat) { return evtCat['_id']; }).indexOf(folderId);
+            this.folders.splice(foldIndex, 1);
+            
+            this.folder = {};
+            this.resetFolder("reset");
+            alert("Folder Removed");
+          }
+        });
+      }
+    } else {
+      alert("Folder not selected");
+    }
   };
 
   /* Select Folder */

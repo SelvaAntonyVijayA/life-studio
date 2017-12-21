@@ -6,6 +6,42 @@ var init = function (app) {
   settingsConf = app.get('settings');
 };
 
+var save = function(req, res, next){
+  var obj = {};
+
+  if (!__util.isEmptyObject(req.body.form_data)) {
+    obj = req.body.form_data;
+    obj = _setTilistObj(obj);
+  }
+
+  if (!obj.hasOwnProperty("_id")) {
+    var tokenObj = $authtoken.get(req.cookies.token);
+    obj.createdBy = tokenObj.uid;
+
+    $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.tilist, obj, function (result) {
+      obj = {};
+      obj._id = result;
+
+      res.send(obj);
+    });
+  } else if(obj.hasOwnProperty("_id")) {
+    options = {};
+    query = {};
+    query._id = obj._id;
+    delete obj["_id"];
+
+    console.dir(query);
+    console.dir(obj);
+
+    updateTilist(query, options, obj, function (result) {
+      obj = {};
+      obj._id = query._id;
+
+      res.send(obj);
+    });
+  }
+};
+
 var list = function (req, res, next) {
   $async.waterfall([
     function (callback) {
@@ -126,8 +162,60 @@ var _getFolder = function (tQuery, callback) {
   });
 };
 
+var updateTilist = function (tQuery, tOptions, dataToUpdate, cb) {
+  $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.tilist, tQuery, tOptions, dataToUpdate, function (result) {
+    cb(result);
+  });
+};
+
+var _setTilistObj = function (tilist) {
+  if (!__util.isNullOrEmpty(tilist.availableStart)) {
+    tilist.availableStart = $general.stringToDate(tilist.availableStart);
+  }
+
+  if (!__util.isNullOrEmpty(tilist.availableEnd)) {
+    tilist.availableEnd = $general.stringToDate(tilist.availableEnd);
+  }
+
+  if (!__util.isNullOrEmpty(tilist.dateCreated)) {
+    tilist.dateCreated = $general.stringToDate(tilist.dateCreated);
+  }
+
+  if (!__util.isNullOrEmpty(tilist.dateUpdated)) {
+    tilist.dateUpdated = $general.stringToDate(tilist.dateUpdated);
+  }
+
+  _.each(tilist.tiles, function (tile) {
+    tile.dateTileCreated = $general.stringToDate(tile.dateTileCreated);
+    tile.dateTileUpdated = $general.stringToDate(tile.dateTileUpdated);
+  });
+
+  return tilist;
+};
+
+var remove = function (req, res, next) {
+  query = {};
+  options = {};
+  var obj = {};
+  obj.deleted = false;
+
+  if (!__util.isNullOrEmpty(req.params.tilistId)) {
+    query._id = req.params.tilistId;
+
+    $db.remove(settingsConf.dbname.tilist_core, settingsConf.collections.tilist, query, options, function (result) {
+      obj.deleted = result;
+      res.send(obj);
+    });
+  } else {
+    res.send(obj);
+  }
+};
+
 module.exports = {
   "init": init,
+  "save": save,
   "list": list,
+  "remove": remove,
+  "updateTilist": updateTilist,
   "folderByTiles": folderByTiles
 };
