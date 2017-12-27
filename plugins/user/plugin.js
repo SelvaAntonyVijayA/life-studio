@@ -130,6 +130,7 @@ var login = function (req, res, next) {
           returnVal.userfound = true;
 
           userObj.name = userResult[0].name;
+          userObj.lastName = !__util.isNullOrEmpty(userResult[0].lastName) ? userResult[0].lastName : "";
           userObj.email = userResult[0].email;
           userObj.isAdmin = userResult[0].isAdmin;
           userObj.pin = userResult[0].pin;
@@ -204,6 +205,7 @@ var getsession = function (req, res, next) {
   res.send({
     name: obj.user.name,
     pin: obj.user.pin,
+    lastName: !__util.isNullOrEmpty(obj.user.lastName) ? obj.user.lastName : "",
     email: obj.user.email,
     roleId: obj.user.roleId,
     role: {
@@ -232,6 +234,33 @@ var _getOrgMembers = function (queryGet, cb) {
   });
 };
 
+var _update = function (req, res, next) {
+  query = {};
+  user = {};
+
+  if (!__util.isNullOrEmpty(req.params.userId)) {
+    query._id = req.params.userId;
+  } else {
+    var obj = $authtoken.get(req.cookies.token);
+    query = { "_id": obj.uid };
+  }
+
+  if (!__util.isNullOrEmpty(req.body.form_data)) {
+    user = req.body.form_data;
+
+    if (!__util.isNullOrEmpty(user.password)) {
+      user.password = $general.encrypt(user.password);
+    }
+  }
+
+  $db.update(settingsConf.dbname.tilist_users, settingsConf.collections.orgmembers, query, options, user, function (result) {
+    user = {};
+    user._id = result;
+
+    res.send(user);
+  });
+};
+
 module.exports = {
   "init": init,
   "login": login,
@@ -240,5 +269,6 @@ module.exports = {
   "get": get,
   "getsession": getsession,
   "getList": getList,
+  "update": _update,
   "_getOrgMembers": _getOrgMembers
 };

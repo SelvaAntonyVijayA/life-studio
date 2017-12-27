@@ -6,6 +6,7 @@ module.exports = function (app) {
   router.post('/user/login/', $user.login);
   router.get('/user/get/:userId*?', $user.get);
   router.get('/user/session', $user.getsession);
+  router.all('/user/update/:userId*?', $user.update);
   router.post('/domain/get/', $domains.get);
   router.all('/tile/list/:organizationId*?', $tile.list);
   router.post('/tile/tilebyids/', $tile.tileByIds);

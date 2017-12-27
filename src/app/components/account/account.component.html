@@ -1,0 +1,60 @@
+<div class="container events_container">
+  <div class="account_block">
+    <table class="account_form" border="0">
+      <tbody>
+        <tr>
+          <td class="space_control">
+            <label class="control-text" for="email">Email Address*:</label>
+          </td>
+          <td class="space_control">
+            <input [(ngModel)]="email" class="form-control input-sm input_control account_email" name="email" type="email" disabled/>
+          </td>
+        </tr>
+        <tr>
+          <td class="space_control">
+            <label class="control-text" for="name">First Name*: </label>
+          </td>
+          <td class="space_control">
+            <input [(ngModel)]="name" class="form-control input-sm input_control account_name" name="name" type="text" required />
+          </td>
+        </tr>
+        <tr>
+          <td class="space_control">
+            <label class="control-text" for="name">Last Name*: </label>
+          </td>
+          <td class="space_control">
+            <input (keyup.enter)="passwordChange($event)" (change)="passwordChange($event)" [(ngModel)]="lastName" class="form-control input-sm input_control account_name" name="lastName" type="text" required />
+          </td>
+        </tr> 
+        <tr>
+          <td class="space_control">
+            <label class="control-text" for="password">Password:</label>
+          </td>
+          <td class="space_control">
+            <input [(ngModel)]="password"  class="form-control input-sm input_control account_password" name="password" type="password" required />
+          </td>
+        </tr>
+        <tr>
+          <td class="space_control">
+            <label class="control-text" for="repassword">Re-enter Password:</label>
+          </td>
+          <td class="space_control">
+            <input [(ngModel)]="confirmPassword" (keyup.change)="passwordChange($event)" (change)="passwordChange($event)" class="form-control input-sm input_control account_repassword" name="repassword" type="password" required />
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" align="right" class="btn_control">
+            <table>
+              <tr>
+                <td colspan="2">
+                  <input (click)="updateUser($event)" class="account_update_btn update_btn" name="update" type="submit" value="Update" />
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -224,6 +224,11 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/login'], { relativeTo: this.route });
   };
 
+  accountPage() {
+    this.cms.destroyScroll();
+    this.router.navigate(['./account'], { relativeTo: this.route });
+  };
+
   bindMenu(pages: any, ulBind: any, self: any) {
     var menuDatas = [];
 

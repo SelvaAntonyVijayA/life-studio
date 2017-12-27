@@ -1,0 +1,73 @@
+.account_container {
+    height: 920px;
+    position: relative;
+}
+
+.account_block {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    padding-top: 20px;
+    padding-bottom: 50px;
+    border: 0px solid silver;
+}
+
+.account_form {
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 12px;
+}
+
+.control-text {
+    font-size: 12px;
+    font-weight: bold;
+    color: #FFFFFF;
+}
+
+.space_control {
+    padding-bottom: 20px;
+    width: 200px;
+}
+
+.account_update_btn {
+    border: 1px solid rgb(15, 107, 186);
+    color: rgb(255, 255, 255);
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+    background: rgb(20, 140, 211);
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(rgb(20, 140, 211)), to(rgb(13, 123, 203)));
+    background: -webkit-linear-gradient(rgb(20, 140, 211), rgb(13, 123, 203));
+    background: -moz-linear-gradient(rgb(20, 140, 211), rgb(13, 123, 203));
+    background: -ms-linear-gradient(rgb(20, 140, 211), rgb(13, 123, 203));
+    background: -o-linear-gradient(rgb(20, 140, 211), rgb(13, 123, 203));
+    background: linear-gradient(rgb(20, 140, 211), rgb(13, 123, 203));
+    -pie-background: linear-gradient(rgb(20, 140, 211), rgb(13, 123, 203));
+}
+
+.account_update_btn:hover {
+    border: 1px solid rgb(29, 144, 212);
+    color: rgb(255, 255, 255);
+    background: rgb(47, 174, 229);
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(rgb(47, 174, 229)), to(rgb(39, 146, 219)));
+    background: -webkit-linear-gradient(rgb(47, 174, 229), rgb(39, 146, 219));
+    background: -moz-linear-gradient(rgb(47, 174, 229), rgb(39, 146, 219));
+    background: -ms-linear-gradient(rgb(47, 174, 229), rgb(39, 146, 219));
+    background: -o-linear-gradient(rgb(47, 174, 229), rgb(39, 146, 219));
+    background: linear-gradient(rgb(47, 174, 229), rgb(39, 146, 219));
+    -pie-background: linear-gradient(rgb(47, 174, 229), rgb(39, 146, 219));
+}
+
+.update_btn {
+    padding: 5px 15px;
+}
+
+.btn_control {
+    padding-top: 2px;
+}
+
+.input_control {
+    width: 100%;
+    color: #000000
+}

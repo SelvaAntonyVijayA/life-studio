@@ -10,6 +10,7 @@ import { TilesListComponent, TilesComponent } from '../../components/tiles-list/
 import { TileBlocksComponents, SafePipe } from '../../components/widgets/tileblocks.components';
 import { EventsComponent } from '../../components/events/events.component';
 import { FoldersComponent } from '../../components/folders/folders.component';
+import { AccountComponent } from '../../components/account/account.component';
 
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
@@ -17,6 +18,7 @@ import { CommonService } from '../../services/common.service';
 import { DragService } from '../../services/drag.service'
 import { EventService } from '../../services/event.service';
 import { FolderService } from '../../services/folder.service';
+import { AccountService } from '../../services/account.service';
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 import { DyBindDirective } from '../../components/widgets/dynamic-bind.directive';
@@ -40,8 +42,8 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
-    TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, Ng2Summernote, EventsComponent, FoldersComponent],
-  providers: [HeaderService, TileService, CommonService, DragService, EventService, FolderService]
+    TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, Ng2Summernote, EventsComponent, FoldersComponent, AccountComponent],
+  providers: [HeaderService, TileService, CommonService, DragService, EventService, FolderService, AccountService]
 })
 
 export class HomeModule { }
