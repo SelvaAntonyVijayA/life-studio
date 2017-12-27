@@ -1,0 +1,62 @@
+<div class="container categories_container">
+  <div class="page_block categories_head">
+    <div class="category_inputs">
+      <input class="form-control input-sm category_name" type="text" placeholder="Category Name">
+      <div class="category_dates">
+        <span class="lbl_avail_text">Available in the app from: </span>
+        <input ILIDateTimePicker class="form-control input-sm category_avail_date_time" type="text" />
+        <span class="lbl_until_text">Until: </span>
+        <input ILIDateTimePicker class="form-control input-sm category_until_date_time" type="text" />
+      </div>
+    </div>
+
+    <div class="category_btns">
+      <button class="ili-btn category_new">
+        New
+      </button>
+      <button class="ili-btn btn category_save">
+        Save
+      </button>
+      <button class="ili-btn category_duplicate">
+        Duplicate
+      </button>
+      <button class="ili-btn category_delete">
+        Delete
+      </button>
+      <button class="ili-btn page_setup">
+        Page Setup
+      </button>
+      <button class="ili-btn default_page_setup">
+        Default Page Setup
+      </button>
+    </div>
+  </div>
+
+  <div class="category_main_content">
+    <div class="page_block category_block">
+      <div class="category_text">
+        <span> CATLIST </span>
+      </div>
+      <input class="form-control input-sm search_box_category" type="text" placeholder="Search Categories">
+      <select class="form-control input-sm sort_category">
+        <option [value]="'date_desc'">Latest on top</option>
+        <option [value]="'date_asc'">Oldest on top</option>
+        <option [value]="'name_asc'">Name - A on top</option>
+        <option [value]="'name_desc'">Name - Z on top</option>
+      </select>
+      <div class="group-view-change">
+        <img class="img-folder-view-group" *ngIf="groupType === 'list'" (click)="changeGroupView()" src="/img/details.png" alt=""
+          title="Details" />
+        <img class="img-folder-view-group group-list-view" *ngIf="groupType === 'details'" (click)="changeGroupView()" src="/img/list.png"
+          alt="" title="List" />
+      </div>
+      <div id="main-container-categories" class="tilist_list_show">
+
+      </div>
+    </div>
+
+    <div id="category-selected-tiles" class="page_block main_category_container">
+    </div>
+
+  </div>
+</div>

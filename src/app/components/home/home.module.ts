@@ -11,6 +11,7 @@ import { TileBlocksComponents, SafePipe } from '../../components/widgets/tileblo
 import { EventsComponent } from '../../components/events/events.component';
 import { FoldersComponent } from '../../components/folders/folders.component';
 import { AccountComponent } from '../../components/account/account.component';
+import { CategoriesComponent } from '../../components/categories/categories.component';
 
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
@@ -19,6 +20,7 @@ import { DragService } from '../../services/drag.service'
 import { EventService } from '../../services/event.service';
 import { FolderService } from '../../services/folder.service';
 import { AccountService } from '../../services/account.service';
+import { CategoryService } from '../../services/category.service';
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 import { DyBindDirective } from '../../components/widgets/dynamic-bind.directive';
@@ -42,8 +44,10 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
-    TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, Ng2Summernote, EventsComponent, FoldersComponent, AccountComponent],
-  providers: [HeaderService, TileService, CommonService, DragService, EventService, FolderService, AccountService]
+    TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, Ng2Summernote, EventsComponent,
+    FoldersComponent, AccountComponent, CategoriesComponent],
+  providers: [HeaderService, TileService, CommonService, DragService, EventService,
+    FolderService, AccountService, CategoryService]
 })
 
 export class HomeModule { }

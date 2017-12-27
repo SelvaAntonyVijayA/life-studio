@@ -23,7 +23,7 @@ export class Utils {
 
   // Check wheather the given value is empty or not
   public static isNullOrEmpty(str: any) {
-    return (typeof str === "undefined" || str === null || str === "") ? true : (typeof str === "string" && str.trim().length > 0) || (typeof str === "boolean" || typeof str === "object" || typeof str === "number" || typeof str === "function") ? false : true;
+    return (typeof str === "undefined" || str === null || str === "") ? true : (typeof str === "string" && str.trim().length > 0) || (typeof str === "boolean" || typeof str === "object" || typeof str === "number" || typeof str === "function" || this.isDate(str)) ? false : true;
   };
 
   // Coverting a given string to boolean

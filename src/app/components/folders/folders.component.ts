@@ -317,7 +317,7 @@ export class FoldersComponent implements OnInit {
     var foldId = folderObj.hasOwnProperty("_id") ? this.folder["obj"]["_id"] : "-1";
     var tilist = {};
 
-    if (foldId !== "-1") {
+    if (foldId !== "-1" && !isDuplicate) {
       tilist["_id"] = foldId;
     }
 
@@ -331,7 +331,6 @@ export class FoldersComponent implements OnInit {
     if (folderObj.hasOwnProperty("smart")) {
       tilist["notification"] = folderObj["smart"];
     }
-
 
     tilist["name"] = this.folderName;
     tilist["type"] = 'list';
@@ -355,6 +354,10 @@ export class FoldersComponent implements OnInit {
       return false;
     }
 
+    if (isDuplicate) {
+      tilist["name"] = "Copy of " + tilist["name"];
+    }
+
     if (this.utils.isNullOrEmpty(tilist["availableStart"])) {
       alert("Folder available start is empty");
     }
@@ -367,10 +370,10 @@ export class FoldersComponent implements OnInit {
 
     var isDatesCheck = this.foldercheckDates();
 
-    if(!isDatesCheck){
+    if (!isDatesCheck) {
       return false;
     }
-    
+
     this.folderService.saveFolder(tilist)
       .then(folderResObj => {
         var isNew = tilist.hasOwnProperty("_id") && !self.utils.isNullOrEmpty(tilist["_id"]) ? false : true;
@@ -391,6 +394,9 @@ export class FoldersComponent implements OnInit {
           tilist["_id"] = folderResObj["_id"];
           this.folders.push(tilist);
         }
+
+        var isSelect = isDuplicate ? true : false;
+        this.setFolderData(isSelect, tilist);
       });
   };
 
@@ -412,24 +418,23 @@ export class FoldersComponent implements OnInit {
     return tiles;
   };
 
-  foldercheckDates(){
+  foldercheckDates() {
     var result = true;
-    var availableStart = !this.utils.isNullOrEmpty(this.availableStart) ? (new Date(this.availableEnd)) : "";
+    var availableStart = !this.utils.isNullOrEmpty(this.availableStart) ? (new Date(this.availableStart)) : "";
     var untilDate = !this.utils.isNullOrEmpty(this.availableEnd) ? (new Date(this.availableEnd)) : "";
 
-    if(!this.utils.isNullOrEmpty(availableStart) && this.utils.isNullOrEmpty(untilDate)){
-      if(availableStart > untilDate){
+    if (!this.utils.isNullOrEmpty(availableStart) && !this.utils.isNullOrEmpty(untilDate)) {
+      if (availableStart > untilDate) {
         alert('The Until date date must be greater than the start date');
         result = false;
-      }else if( untilDate <  availableStart ){
+      } else if (untilDate < availableStart) {
         alert('The Start date must be lesser than until date');
         result = false;
-      } 
+      }
     }
 
     return result;
   };
-
 
   updateOrganizationIdsTile() {
     this.tilesToUpdate = [];
@@ -471,7 +476,7 @@ export class FoldersComponent implements OnInit {
           if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted") && deleteRes["deleted"]) {
             var foldIndex = this.folders.map(function (evtCat) { return evtCat['_id']; }).indexOf(folderId);
             this.folders.splice(foldIndex, 1);
-            
+
             this.folder = {};
             this.resetFolder("reset");
             alert("Folder Removed");
@@ -516,14 +521,14 @@ export class FoldersComponent implements OnInit {
           this.draggedTiles.push(obj.tiles[i]["_id"]);
         }
       }
-
-      this.folderService.folderByTiles(obj._id)
-        .then(foldObj => {
-          if (foldObj && foldObj[0]) {
-            this.assignFolderDatas(foldObj[0]);
-          }
-        });
     }
+
+    this.folderService.folderByTiles(obj._id)
+      .then(foldObj => {
+        if (foldObj && foldObj[0]) {
+          this.assignFolderDatas(foldObj[0]);
+        }
+      });
   };
 
   /* Assign folder datas to the selected folder */

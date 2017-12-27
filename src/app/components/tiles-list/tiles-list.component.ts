@@ -304,15 +304,13 @@ export class TilesListComponent {
   };*/
 
   deletePushDraggedTiles(isDelete: boolean, currTile: Object) {
-    if (!this.utils.isEmptyObject(this.draggedSeparatedTiles)) {
-      var tileId = !this.utils.isEmptyObject(currTile) && currTile.hasOwnProperty("_id") ? currTile["_id"] : "-1";
+    var tileId = !this.utils.isEmptyObject(currTile) && currTile.hasOwnProperty("_id") ? currTile["_id"] : "-1";
 
-      if (isDelete && tileId !== "-1") {
-        delete this.draggedSeparatedTiles[tileId]
-      } else if (tileId !== "-1") {
-        if (!this.draggedSeparatedTiles.hasOwnProperty(tileId)) {
-          this.draggedSeparatedTiles[tileId] = currTile;
-        }
+    if (isDelete && tileId !== "-1" && this.draggedSeparatedTiles.hasOwnProperty(tileId)) {
+      delete this.draggedSeparatedTiles[tileId]
+    } else if (tileId !== "-1") {
+      if (!this.draggedSeparatedTiles.hasOwnProperty(tileId)) {
+        this.draggedSeparatedTiles[tileId] = currTile;
       }
     }
   };

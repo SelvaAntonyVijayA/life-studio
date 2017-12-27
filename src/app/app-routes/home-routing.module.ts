@@ -6,6 +6,7 @@ import { WidgetsComponent } from '../components/widgets/widgets.component';
 import { EventsComponent } from '../components/events/events.component';
 import { AccountComponent } from '../components/account/account.component';
 import { FoldersComponent } from '../components/folders/folders.component';
+import { CategoriesComponent } from '../components/categories/categories.component';
 
 
 const homeRoutes: Routes = [
@@ -29,6 +30,10 @@ const homeRoutes: Routes = [
         path: 'account',
         component: AccountComponent
       },
+      {
+        path: 'categories',
+        component: CategoriesComponent
+      }
     ]
   }
 ];

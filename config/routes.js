@@ -26,7 +26,7 @@ module.exports = function (app) {
   router.get('/eventcategory/list/:orgId', $eventcategory.list);
   router.get('/language/list', $languages.list);
   router.post('/tilist/save', $tilist.save);
-  router.get('/tilist/remove/', $tilist.remove);
+  router.get('/tilist/remove/:tilistId', $tilist.remove);
   router.get('/tilist/list/:orgId/:tilistId*?', $tilist.list);
   router.get('/tilist/folderbytiles/:tilistId', $tilist.folderByTiles);
   app.use('/', router);

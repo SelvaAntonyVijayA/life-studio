@@ -1,0 +1,185 @@
+/* Category Inputs */
+
+.categories_container {
+    height: 920px;
+    position: relative;
+}
+
+.categories_head {
+    width: 99.97%;
+    height: 75px;
+    float: left;
+    margin-bottom: 1px;
+    margin-left: 1px;
+    position: relative;
+}
+
+.category_inputs {
+    float: left;
+    width: 50%;
+    height: 60px;
+    margin-top: 7px;
+    margin-left: 13px;
+    position: relative;
+}
+
+.category_name {
+    float: left;
+    width: 494px;
+}
+
+.category_dates {
+    float: left;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.lbl_avail_text, .lbl_until_text {
+    float: left;
+    font-size: 10px;
+    margin-right: 4px;
+    margin-top: 5px;
+}
+
+.category_avail_date_time {
+    float: left;
+    width: 172.5px;
+    margin-right: 6px;
+}
+
+.category_until_date_time {
+    float: left;
+    width: 172.5px;
+    margin-right: 6px;
+}
+
+/* Catgeory Operation Buttons */
+
+.category_btns {
+    float: right;
+    width: 30%;
+    height: 60px;
+    margin-top: 9px;
+}
+
+.category_new {
+    border-bottom-color: #228B22;
+    border-bottom-width: 3px;
+    float: left;
+    margin-right: 4px;
+    margin-left: 27px;
+}
+
+.category_save {
+    border-bottom-color: #1E90FF;
+    border-bottom-width: 3px;
+    float: left;
+    margin-right: 4px;
+}
+
+.category_duplicate {
+    border-bottom-color: #C71585;
+    border-bottom-width: 3px;
+    float: left;
+    margin-right: 4px;
+}
+
+.category_delete {
+    border-bottom-color: #FF0000;
+    border-bottom-width: 3px;
+}
+
+.page_setup {
+    border-bottom-color: #FFA500;
+    border-bottom-width: 3px;
+    float: left;
+    width: 139px;
+    margin-top: 7px;
+    margin-left: 28px;
+}
+
+.default_page_setup {
+    border-bottom-color: #FFA500;
+    border-bottom-width: 3px;
+    float: left;
+    width: 167px;
+    margin-top: 7px;
+    margin-left: 5px;
+}
+
+/* Catgeory Main Layout */
+
+.category_main_content {
+    position: relative;
+    width: 100%;
+    height: 833px;
+    float: left;
+    margin-left: 1px;
+}
+
+/* Category layout */
+.category_block{
+    width: 161px;
+    height: 880px;
+    text-align: center;
+    position: relative;
+    float: left;
+}
+
+.category_text {
+    font-size: 16px;
+    position: relative;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    text-align: center;
+    float: left;
+    width: 170px;
+}
+
+.search_box_category {
+    width: 84%;
+    display: inline;
+}
+
+.sort_category {
+    margin-top: 5px;
+    width: 84%;
+    display: inline;
+}
+
+/* Category View */
+.group-view-change{
+    float: right;
+    width:100%;
+}
+
+.img-folder-view-group{
+    float: right; 
+    margin-top: 7px; 
+    margin-right: 13px;
+    cursor: pointer;
+}
+
+.img-folder-view-group.group-list-view{
+    margin-right: 14px;
+}
+
+/* Categories List */
+.tilist_list_show{
+    position: relative;
+    margin-top: 3px;
+    float: left;
+    width: 100%;
+    height: 738px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.main_category_container{
+    position: relative;
+    width: 1007px;
+    height: 880px;
+    float: left;
+    margin-left: 1px;
+    overflow: hidden;
+}
