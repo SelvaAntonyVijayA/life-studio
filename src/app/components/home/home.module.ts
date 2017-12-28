@@ -12,6 +12,7 @@ import { EventsComponent } from '../../components/events/events.component';
 import { FoldersComponent } from '../../components/folders/folders.component';
 import { AccountComponent } from '../../components/account/account.component';
 import { CategoriesComponent } from '../../components/categories/categories.component';
+import { ThemeComponent } from '../../components/theme/theme.component';
 
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
@@ -45,7 +46,7 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
     TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, Ng2Summernote, EventsComponent,
-    FoldersComponent, AccountComponent, CategoriesComponent],
+    FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService]
 })
