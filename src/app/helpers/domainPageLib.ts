@@ -1,6 +1,6 @@
 export class DomainPageLib {
   Widgets: string = '/widgets';
-  Themes: string = '/tilethemes';
+  Themes: string = '/theme';
   Events: string = '/events';
   Folders: string = '/folders';
   Categories: string = '/categories';
