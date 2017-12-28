@@ -1,26 +1,27 @@
 <div class="container categories_container">
   <div class="page_block categories_head">
     <div class="category_inputs">
-      <input class="form-control input-sm category_name" type="text" placeholder="Category Name">
+      <input [(ngModel)]="categoryName" class="form-control input-sm category_name" type="text" placeholder="Category Name">
       <div class="category_dates">
         <span class="lbl_avail_text">Available in the app from: </span>
-        <input ILIDateTimePicker class="form-control input-sm category_avail_date_time" type="text" />
+        <input [(ngModel)]="availableStart" ILIDateTimePicker class="form-control input-sm category_avail_date_time" type="text"
+        />
         <span class="lbl_until_text">Until: </span>
-        <input ILIDateTimePicker class="form-control input-sm category_until_date_time" type="text" />
+        <input [(ngModel)]="availableEnd" ILIDateTimePicker class="form-control input-sm category_until_date_time" type="text" />
       </div>
     </div>
 
     <div class="category_btns">
-      <button class="ili-btn category_new">
+      <button (click)="newCategory($event)" class="ili-btn category_new">
         New
       </button>
-      <button class="ili-btn btn category_save">
+      <button (click)="saveCategory($event)" class="ili-btn btn category_save">
         Save
       </button>
-      <button class="ili-btn category_duplicate">
+      <button (click)="duplicateCategory($event)" class="ili-btn category_duplicate">
         Duplicate
       </button>
-      <button class="ili-btn category_delete">
+      <button (click)="deleteCategory($event)" class="ili-btn category_delete">
         Delete
       </button>
       <button class="ili-btn page_setup">
@@ -37,8 +38,8 @@
       <div class="category_text">
         <span> CATLIST </span>
       </div>
-      <input class="form-control input-sm search_box_category" type="text" placeholder="Search Categories">
-      <select class="form-control input-sm sort_category">
+      <input [(ngModel)]="categoryFilter['categorySearch']" class="form-control input-sm search_box_category" type="text" placeholder="Search Categories">
+      <select [ngModel]="categoryFilter['sort']['selected']" (ngModelChange)="filterChange($event)" class="form-control input-sm sort_category">
         <option [value]="'date_desc'">Latest on top</option>
         <option [value]="'date_asc'">Oldest on top</option>
         <option [value]="'name_asc'">Name - A on top</option>
@@ -51,12 +52,43 @@
           alt="" title="List" />
       </div>
       <div id="main-container-categories" class="tilist_list_show">
-
+        <div (click)="selectCategory($event, cat)" [ngClass]="category.hasOwnProperty('_id') && cat?._id === category?._id ? 'category_list_single selected' : 'category_list_single'"
+          *ngFor="let cat of (categories | filterByText:'name':categoryFilter['categorySearch'] | orderBy: categoryFilter['sort']['isAsc']: categoryFilter['sort']['fieldNames'][splitKey(categoryFilter['sort']['selected'])][0]: categoryFilter['sort']['fieldNames'][splitKey(categoryFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
+          {{categoryNotificationIcon(cat)}}
+          <div [ngClass]="groupType === 'list'? 'category-art' : 'category-art details'">
+            <img [ngClass]="groupType === 'list'? 'tilist_list_art' : 'tilist_list_art tilist-detail-content'" [src]="cat?.art | safe">
+          </div>
+          <div [title]="cat?.name" class="category_list_title">{{cat?.name}}</div>
+          <div class="category-notify-icons">
+            <span [title]="cat?.tileNotifications" class='step smart noteicon smarticon-groups' [style.display]="cat?.tileNotifications ? 'block' : 'none'"
+              aria-hidden="true">
+              <i class='icon ion-android-notifications-none'></i>
+            </span>
+            <span [title]="cat?.tileSmart" [style.display]="cat?.tileSmart? 'block' : 'none'" class="step smart smarticon smarticon-groups">
+              <i class="icon ion-lightbulb"></i>
+            </span>
+            <span [title]="cat?.pageApps" [style.display]="cat['isRole']? 'block' : 'none'" class="step smart smarticon smarticon-groups">
+              <i class="icon ion-android-person"></i>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div id="category-selected-tiles" class="page_block main_category_container">
-    </div>
+    <div class="page_block main_category_container">
+      <div class="tile-category-main">
+        <select [ngModel]="selectedCategory" (ngModelChange)="categoryChange($event)" class="form-control input-sm tile_category">
+          <option [value]="-1" disabled>Select Tile Category</option>
+          <option *ngFor="let tileCat of tileCategories; let i = index" [value]="tileCat?._id">{{tileCat?.name}}</option>
+        </select>
+        <div class="tiles_count">
+          {{tileCount + ' Tiles'}}
+        </div>
+      </div>
 
+      <div id="category-selected-tiles" class="cat-tiles">
+        <tiles (tileData)="getTileData($event)" [listType]="'list'" [page]="'category'" [tile]="tile" *ngFor="let tile of (tiles | filterByText:'category': selectedCategory : 'category'); let i = index; trackBy: trackByIndex"></tiles>
+      </div>
+    </div>
   </div>
 </div>

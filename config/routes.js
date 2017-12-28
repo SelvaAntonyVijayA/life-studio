@@ -29,5 +29,6 @@ module.exports = function (app) {
   router.get('/tilist/remove/:tilistId', $tilist.remove);
   router.get('/tilist/list/:orgId/:tilistId*?', $tilist.list);
   router.get('/tilist/folderbytiles/:tilistId', $tilist.folderByTiles);
+  router.get('/catilist/list/:orgId/:categoryId*?', $catilist.list);
   app.use('/', router);
 };

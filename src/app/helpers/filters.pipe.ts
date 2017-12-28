@@ -12,8 +12,8 @@ export class FilterByTextPipe implements PipeTransform {
 
   utils: any;
 
-  transform(reqArray: any[], propName?: string, searchTxt?: string): any {
-    if (this.utils.isArray(reqArray) && reqArray.length > 0 && !this.utils.isNullOrEmpty(propName) && !this.utils.isNullOrEmpty(searchTxt) && searchTxt !== "-1") {
+  transform(reqArray: any[], propName?: string, searchTxt?: string, page?: string): any {
+    if ((this.utils.isArray(reqArray) && reqArray.length > 0 && !this.utils.isNullOrEmpty(propName) && !this.utils.isNullOrEmpty(searchTxt) && searchTxt !== "-1") || (!this.utils.isNullOrEmpty(page) && page === "category")) {
 
       return reqArray.filter(function (prop) {
         return prop.hasOwnProperty(propName) && prop[propName].toLowerCase().indexOf(searchTxt.toLowerCase()) > -1;

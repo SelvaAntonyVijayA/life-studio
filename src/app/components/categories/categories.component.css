@@ -118,7 +118,8 @@
 }
 
 /* Category layout */
-.category_block{
+
+.category_block {
     width: 161px;
     height: 880px;
     text-align: center;
@@ -148,24 +149,26 @@
 }
 
 /* Category View */
-.group-view-change{
+
+.group-view-change {
     float: right;
-    width:100%;
+    width: 100%;
 }
 
-.img-folder-view-group{
-    float: right; 
-    margin-top: 7px; 
+.img-folder-view-group {
+    float: right;
+    margin-top: 7px;
     margin-right: 13px;
     cursor: pointer;
 }
 
-.img-folder-view-group.group-list-view{
+.img-folder-view-group.group-list-view {
     margin-right: 14px;
 }
 
 /* Categories List */
-.tilist_list_show{
+
+.tilist_list_show {
     position: relative;
     margin-top: 3px;
     float: left;
@@ -175,11 +178,111 @@
     text-align: center;
 }
 
-.main_category_container{
+.main_category_container {
     position: relative;
     width: 1007px;
     height: 880px;
     float: left;
     margin-left: 1px;
     overflow: hidden;
+}
+
+/*  Tile Category */
+
+.tile-category-main {
+    float: left;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+    height: 56px;
+    margin-top: 6px;
+}
+
+.tile_category {
+    width: 200px;
+    height: 35px;
+    display: inline;
+}
+
+.cat-tiles {
+    float: left;
+    width: 279px;
+    height: 879px;
+    margin-left: 37%;
+}
+
+/* Tiles Count */
+
+.tiles_count {
+    float: left;
+    width: 83%;
+    margin-left: 168px;
+    margin-top: 5px;
+}
+
+/* Category Art */
+
+.category-art{
+    width: 20%;
+    float: left;
+    text-align: left;
+    margin-left: 2px
+}
+
+.category-art.details{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.tilist_list_art{
+    float: left;
+    max-width: 30px;
+    max-height: 25px;
+    margin-top: 3px;
+    text-align: center;
+}
+
+.tilist_list_art.tilist-detail-content{
+    max-width: 110px;
+    max-height: 110px;
+}
+
+/* Category Notification Icons */
+.category-notify-icons{
+    width: 100%;
+    float: right;
+}
+
+/*Category List */
+.category_list_single{
+    display: inline-block;
+    position: relative;
+    background-color: #FFFFFF;
+    text-align: left;
+    margin-right: 5px;
+    width: 138px;
+    min-height: 42px;
+    color: #000000;
+    cursor: pointer;
+    border: 1px outset #F2F2F2;
+}
+
+.category_list_single:hover{
+    background-color: #F2F2F2;
+}
+
+.category_list_single.selected{
+    background-color: #3c3c3c;
+    color: #FFFFFF;
+}
+
+.category_list_title{
+    float: left;
+    margin-top: 3px;
+    margin-left: 8px;
+    width: 98px;
+    font-size: 11px;
+    text-align: left;
+    word-wrap: break-word;
 }
