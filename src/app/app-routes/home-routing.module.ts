@@ -8,6 +8,7 @@ import { AccountComponent } from '../components/account/account.component';
 import { FoldersComponent } from '../components/folders/folders.component';
 import { CategoriesComponent } from '../components/categories/categories.component';
 import { ThemeComponent } from '../components/theme/theme.component';
+import { ProceduresComponent } from '../components/procedures/procedures.component';
 
 const homeRoutes: Routes = [
   {
@@ -37,6 +38,10 @@ const homeRoutes: Routes = [
       {
         path: 'theme',
         component: ThemeComponent
+      },
+      {
+        path: 'procedures',
+        component: ProceduresComponent
       }
     ]
   }

@@ -19,12 +19,28 @@ export class CategoryService {
     this.utils = Utils;
   }
 
+  saveCategory(catObj: Object) {
+    return this.http
+      .post("/catilist/save", JSON.stringify({ "form_data": catObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
   categoryList(orgId: string, catId: string) {
     var catUrl = "/catilist/list/" + orgId;
     catUrl = !this.utils.isNullOrEmpty(catId) ? catUrl + "/" + catId : catUrl;
 
     return this.http
       .get(catUrl)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  removeCategory(catId: string) {
+    return this.http
+      .get("/catilist/delete/" + catId)
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);

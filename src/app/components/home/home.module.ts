@@ -13,6 +13,7 @@ import { FoldersComponent } from '../../components/folders/folders.component';
 import { AccountComponent } from '../../components/account/account.component';
 import { CategoriesComponent } from '../../components/categories/categories.component';
 import { ThemeComponent } from '../../components/theme/theme.component';
+import { ProceduresComponent } from '../../components/procedures/procedures.component';
 
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
@@ -22,6 +23,7 @@ import { EventService } from '../../services/event.service';
 import { FolderService } from '../../services/folder.service';
 import { AccountService } from '../../services/account.service';
 import { CategoryService } from '../../services/category.service';
+import { ProcedureService } from '../../services/procedure.service';
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 import { DyBindDirective } from '../../components/widgets/dynamic-bind.directive';
@@ -46,9 +48,9 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
     TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, Ng2Summernote, EventsComponent,
-    FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent],
+    FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
-    FolderService, AccountService, CategoryService]
+    FolderService, AccountService, CategoryService, ProcedureService]
 })
 
 export class HomeModule { }

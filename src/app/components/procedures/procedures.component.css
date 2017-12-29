@@ -1,0 +1,165 @@
+.procedures_container {
+    height: 920px;
+    position: relative;
+}
+
+.procedures_head {
+    width: 99.97%;
+    height: 75px;
+    float: left;
+    margin-bottom: 1px;
+    margin-left: 1px;
+    position: relative;
+}
+
+/* Procedure Buttons */
+
+.procedure_btns {
+    float: right;
+    width: 30%;
+    height: 60px;
+    margin-top: 9px;
+}
+
+.procedure_new {
+    border-bottom-color: #228B22;
+    border-bottom-width: 3px;
+    float: left;
+    margin-right: 4px;
+    margin-left: 27px;
+}
+
+.procedure_save {
+    border-bottom-color: #1E90FF;
+    border-bottom-width: 3px;
+    float: left;
+    margin-right: 4px;
+}
+
+.procedure_duplicate {
+    border-bottom-color: #C71585;
+    border-bottom-width: 3px;
+    float: left;
+    margin-right: 4px;
+}
+
+.procedure_delete {
+    border-bottom-color: #FF0000;
+    border-bottom-width: 3px;
+}
+
+.page_setup {
+    border-bottom-color: #FFA500;
+    border-bottom-width: 3px;
+    float: left;
+    width: 139px;
+    margin-top: 7px;
+    margin-left: 28px;
+}
+
+.default_page_setup {
+    border-bottom-color: #FFA500;
+    border-bottom-width: 3px;
+    float: left;
+    width: 167px;
+    margin-top: 7px;
+    margin-left: 5px;
+}
+
+.procedure_inputs {
+    float: left;
+    width: 67%;
+    height: 60px;
+    margin-top: 7px;
+    margin-left: 13px;
+    position: relative;
+}
+
+/* Category Inputs */
+
+.procedure_name {
+    float: left;
+    margin-right: 8px;
+    width: 240px;
+}
+
+.procedure_type {
+    float: left;
+    width: 154px;
+    margin-right: 8px;
+}
+
+.language {
+    float: left;
+    width: 144px;
+    margin-right: 5px;
+}
+
+/* Main Event Content  Area Layout*/
+.procedure_main_content{
+    position: relative;
+    width: 100%;
+    height: 833px;
+    float: left;
+    margin-left: 1px;
+}
+
+/* Procedure Content */
+
+.procedures_block{
+    width: 161px;
+    height: 880px;
+    text-align: center;
+    position: relative;
+    float: left;
+}
+
+.search_box_procedure {
+    width: 84%;
+    display: inline;
+}
+
+.procedure_text {
+    font-size: 16px;
+    position: relative;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    text-align: center;
+    float: left;
+    width: 170px;
+}
+
+.filter_procedure {
+    margin-top: 5px;
+    width: 84%;
+    display: inline;
+}
+
+/* Procedure Draggable area */
+.main_procedure_container{
+    position: relative;
+    width: 726px;
+    height: 880px;
+    float: left;
+    margin-left: 1px;
+    overflow: hidden;
+}
+
+.main_procedure_content{
+    position: relative;
+    padding-bottom: 1px;
+    margin-top: 9px;
+    margin-left: 5px;
+    min-height: 220px;
+    width: 708px;
+    padding-top: 10px;
+    margin-bottom: 2px;
+    border-color: #ddd;
+}
+
+.draggable_label{
+    font-size: 11px;
+    margin-top: 45px;
+    color: #FFFFFF;
+    text-align: center;
+}

@@ -104,6 +104,7 @@ export class CategoriesComponent implements OnInit {
     this.tileCategories = [];
     this.tiles = [];
     this.tilesByCategory = [];
+    this.categories = [];
 
     this.categoryFilter = {
       "categorySearch": "",
@@ -135,10 +136,22 @@ export class CategoriesComponent implements OnInit {
     return index;
   };
 
-  categoriesList(catId?: string) {
+  categoriesList(catId?: string, isNew?: boolean) {
     this.categoryService.categoryList(this.oid, catId).then(categoriesList => {
       if (this.utils.isNullOrEmpty(catId)) {
         this.categories = categoriesList;
+      } else if (!this.utils.isNullOrEmpty(catId) && this.utils.isArray(categoriesList) && categoriesList.length > 0) {
+        if (!isNew) {
+          var catIndex = this.categories.map(function (cat) { return cat['_id']; }).indexOf(categoriesList[0]["_id"]);
+
+          if (catIndex !== -1) {
+            this.categories[catIndex] = categoriesList[0];
+          }
+        } else {
+          this.categories.push(categoriesList[0]);
+        }
+
+        this.setCategory(categoriesList[0]);
       }
     });
   };
@@ -162,6 +175,7 @@ export class CategoriesComponent implements OnInit {
     this.setCategory(catObj);
   };
 
+  /* Setting selected category data to the DOM */
   setCategory(catObj: any) {
     if (!this.utils.isEmptyObject(catObj)) {
       this.category = catObj;
@@ -219,18 +233,19 @@ export class CategoriesComponent implements OnInit {
       }
     }
 
-
     return currTiles;
   };
 
   saveCategory(e: any, isDuplicate?: boolean) {
-    e.preventDefault();
-    e.stopPropagation();
+    if (!this.utils.isNullOrEmpty(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
     var categoryObj = {};
     var id = !this.utils.isEmptyObject(this.category) && this.category.hasOwnProperty("_id") ? this.category["_id"] : "-1";
 
-    if (id !== "-1") {
+    if (id !== "-1" && !isDuplicate) {
       categoryObj["_id"] = id;
     }
 
@@ -269,26 +284,88 @@ export class CategoriesComponent implements OnInit {
       categoryObj["availableEnd"] = current.toUTCString();
     }
 
-    if (categoryObj["category"] == '-1') {
+    if (categoryObj["category"] === '-1') {
       alert('Please select a Category');
       return false;
     }
 
     categoryObj["tiles"] = this.getTiles();
+
+    var isDatesCheck = this.categoryCheckDates();
+
+    if (!isDatesCheck) {
+      return false;
+    }
+
+    this.save(categoryObj, isDuplicate);
+  };
+
+  categoryCheckDates() {
+    var result = true;
+    var availableStart = !this.utils.isNullOrEmpty(this.availableStart) ? (new Date(this.availableStart)) : "";
+    var untilDate = !this.utils.isNullOrEmpty(this.availableEnd) ? (new Date(this.availableEnd)) : "";
+
+    if (!this.utils.isNullOrEmpty(availableStart) && !this.utils.isNullOrEmpty(untilDate)) {
+      if (availableStart > untilDate) {
+        alert('The Until date date must be greater than the start date');
+        result = false;
+      } else if (untilDate < availableStart) {
+        alert('The Start date must be lesser than until date');
+        result = false;
+      }
+    }
+
+    return result;
   };
 
   duplicateCategory(e: any) {
     e.preventDefault();
     e.stopPropagation();
+
+    this.saveCategory("", true);
   };
 
   deleteCategory(e: any) {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!this.utils.isEmptyObject(this.category) && this.category.hasOwnProperty("_id")) {
+      var r = confirm("Are you sure want to delete this Category?");
+
+      if (r) {
+        var categoryId = this.category["_id"];
+
+        this.categoryService.removeCategory(categoryId).then(deleteRes => {
+          if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted") && deleteRes["deleted"]) {
+            var catIdx = this.categories.map(function (cat) { return cat['_id']; }).indexOf(categoryId);
+            this.categories.splice(catIdx, 1);
+
+            this.resetCategory();
+            alert("Category Removed");
+          }
+        });
+      }
+    } else {
+      alert("Category not selected");
+    }
   };
 
-  save() {
+  save(categoryObj: Object, isDuplicate: boolean) {
+    this.categoryService.saveCategory(categoryObj)
+      .then(catResObj => {
+        var isNew = categoryObj.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(categoryObj["_id"]) ? false : true;
 
+        var alertMessage = isNew ? "Category Created" : "Category Updated";
+        alertMessage = isDuplicate ? "Duplicate Category Created" : alertMessage;
+
+        var alertMessage = isNew ? "Category Created" : "Category Updated";
+        alertMessage = isDuplicate ? "Duplicate Category Created" : alertMessage;
+        alert(alertMessage);
+
+        if (!this.utils.isEmptyObject(catResObj) && catResObj.hasOwnProperty("_id")) {
+          this.categoriesList(catResObj["_id"], isNew);
+        }
+      });
   };
 
 

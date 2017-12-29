@@ -1,0 +1,68 @@
+<div class="container procedures_container">
+  <div class="page_block procedures_head">
+    <div class="procedure_inputs">
+      <input class="form-control input-sm procedure_name" type="text" placeholder="Folder Name">
+
+      <select class="form-control input-sm procedure_type"></select>
+      <select class="form-control input-sm language"></select>
+
+      <div style="float:left; margin-top: 5px; padding-left: 5px;" class="checkbox">
+        <label style="font-size: 11px;">
+          <input value="true" [checked]="" style="margin-top: 2px;" type="checkbox" value="">Show as separate icons in app</label>
+      </div>
+    </div>
+    <div class="procedure_btns">
+      <button (click)="newFolder($event)" class="ili-btn procedure_new">
+        New
+      </button>
+      <button (click)="saveProcedure($event, true)" class="ili-btn btn procedure_save">
+        Save
+      </button>
+      <button (click)="duplicateProcedure($event, true)" class="ili-btn procedure_duplicate">
+        Duplicate
+      </button>
+      <button (click)="deleteProcedure($event)" class="ili-btn procedure_delete">
+        Delete
+      </button>
+      <button class="ili-btn page_setup">
+        Page Setup
+      </button>
+      <button class="ili-btn default_page_setup">
+        Default Page Setup
+      </button>
+    </div>
+  </div>
+  <div class="procedure_main_content">
+    <div class="page_block procedures_block">
+      <div class="procedure_text">
+        <span> PROCEDURES </span>
+      </div>
+      <input class="form-control input-sm search_box_procedure" type="text" placeholder="Search Procedures">
+
+      <select class="form-control input-sm filter_procedure">
+        <option [value]="-1">Show All Types</option>
+      </select>
+      <select class="form-control input-sm filter_procedure">
+        <option [value]="'date_desc'">Latest on top</option>
+        <option [value]="'date_asc'">Oldest on top</option>
+        <option [value]="'name_asc'">Name - A on top</option>
+        <option [value]="'name_desc'">Name - Z on top</option>
+        <option [value]="'type_asc'">Type - A on top</option>
+        <option [value]="'type_desc'">Type - Z on top</option>
+      </select>
+    </div>
+
+    <div id="dragged-procedure-tiles" class="page_block main_procedure_container">
+      <div iliDropTarget (myDrop)="onDrop($event, false)" class="ili-panel main_procedure_content drop_target">
+        <div class="draggable_label">To add Tiles to this Event, simply drag them in this space.
+          <br>
+          <br>To add the Tiles to this Event, simply drag them in this space.
+          <br>
+          <br>Add Tiles in order you want them to appear in the app.</div>
+      </div>
+    </div>
+
+    <tiles-list class="dragItem" (tileContent)="getTileContent($event)" [tilesToUpdate]="tilesToUpdate" [isMerge]="isMerge" [draggedTiles]="draggedTiles"
+      [droppedTile]="droppedTile" [organizations]="organizations" [page]="'procedures'"></tiles-list>
+  </div>
+</div>
