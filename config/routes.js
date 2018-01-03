@@ -32,5 +32,10 @@ module.exports = function (app) {
   router.post('/catilist/save', $catilist.save);
   router.get('/catilist/list/:orgId/:categoryId*?', $catilist.list);
   router.get('/catilist/delete/:categoryId', $catilist.deleteCatilist);
+  router.post('/tiletheme/save/', $theme.save);
+  router.get('/tiletheme/list/:id*?', $theme.list);
+  router.get('/app/tiletheme/:id', $theme.get);
+  router.get('/tiletheme/remove/:id*?', $theme.remove);
+  router.post('/tiletheme/tilePreviewUpdate', $theme.tilePreviewUpdate);
   app.use('/', router);
 };

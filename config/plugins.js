@@ -14,6 +14,7 @@ var plugins = {
   "languages": "languages",
   "tilist": "tilist",
   "catilist": "catilist",
+  "theme": "theme",
   "db": "database"
 };
 

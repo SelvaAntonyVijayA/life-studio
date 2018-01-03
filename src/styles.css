@@ -13,6 +13,10 @@ body{
    position: relative;
 }
 
+input{
+    color: #000000;  
+}
+
 .container {
     width: 1200px;
 }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 import { HomeComponent } from '../../components/home/home.component';
 import { WidgetsComponent } from '../../components/widgets/widgets.component';
@@ -13,8 +14,8 @@ import { FoldersComponent } from '../../components/folders/folders.component';
 import { AccountComponent } from '../../components/account/account.component';
 import { CategoriesComponent } from '../../components/categories/categories.component';
 import { ThemeComponent } from '../../components/theme/theme.component';
-import { ProceduresComponent } from '../../components/procedures/procedures.component';
 
+import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
 import { CommonService } from '../../services/common.service';
@@ -24,6 +25,7 @@ import { FolderService } from '../../services/folder.service';
 import { AccountService } from '../../services/account.service';
 import { CategoryService } from '../../services/category.service';
 import { ProcedureService } from '../../services/procedure.service';
+import { ThemeService } from '../../services/theme.service';
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 import { DyBindDirective } from '../../components/widgets/dynamic-bind.directive';
@@ -42,7 +44,7 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
 
 @NgModule({
   imports: [
-    CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule
+    CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule, ColorPickerModule
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
@@ -50,7 +52,7 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
     TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, Ng2Summernote, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
-    FolderService, AccountService, CategoryService, ProcedureService]
+    FolderService, AccountService, CategoryService, ProcedureService, ThemeService]
 })
 
 export class HomeModule { }

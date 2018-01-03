@@ -1,0 +1,116 @@
+legend {
+    color: #FFFFFF;
+}
+
+.tile_themes_content {
+    height: 1180px;
+    position: relative;
+    margin-top:5px;
+    padding-left: 5px;
+}
+
+.themes_name {
+    float: right;
+    margin-top: 3px;
+    font-size: 12px;
+}
+
+.themes_input {
+    width: 30%;
+}
+
+.themes-names {
+    width: 100%;
+    margin-bottom: 9px;
+}
+
+.themes-main {
+    float: left;
+    width: 100%;
+    height: 40px;
+}
+
+.btn_theme_save {
+    width: 7%;
+    float: left;
+    margin-right: .5%;
+}
+
+.btn_theme_new {
+    width: 7%;
+    float: left;
+    margin-left: 1%;
+    margin-right: .5%;
+}
+
+#themesList {
+    width: 20%;
+    height: 22px;
+    margin-right: .2%;
+    float: left;
+}
+
+.ui-button-icon-only .ui-button-text, .ui-button-icons-only .ui-button-text {
+    height: 19px;
+}
+
+.lbl-theme {
+    width: 190px;
+    float: left;
+}
+
+.theme_title {
+    width: 20%;
+    float: left;
+    height: 22px;
+    margin-left: .5%;
+}
+
+.color_code {
+    width: 12%;
+    float: left;
+    height: 22px;
+    margin-left: .5%;
+}
+
+.sp-replacer {
+    height: 24px;
+}
+
+.themes-main>.sp-replacer>.sp-preview {
+    height: 15px;
+}
+
+.theme_preview {
+    background-image: -webkit-linear-gradient(#5CA6A6, #478282 60%, #008B8B);
+    background-image: linear-gradient(#5CA6A6, #478282 60%, #008B8B);
+    background-repeat: no-repeat;
+    color: #ffffff;
+    filter: none;
+    background-color: #008B8B;
+    border-color: #66B9B9;
+    width: 7%;
+    float: left;
+    margin-right: .5%;
+    height: 23px;
+}
+
+#theme_preview_tab {
+    position: relative;
+    width: 618px;
+    height: 460px;
+    margin: -15px 20px 50px 70px;
+}
+
+#theme_preview_phone {
+    position: relative;
+    width: 253px;
+    height: 411px;
+    margin: auto;
+}
+
+.btn_theme_save_as, .btn_theme_delete {
+    width: 7%;
+    float: left;
+    margin-right: .5%;
+}

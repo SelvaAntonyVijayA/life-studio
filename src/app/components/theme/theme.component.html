@@ -1,3 +1,334 @@
-<p>
-  theme works!
-</p>
+<input [(ngModel)]="id" class='id' type='hidden' />
+<input [(ngModel)]="createdOrg" class='created_org' type='hidden' />
+<input [(ngModel)]="organizationId" class='organization_id' type='hidden' />
+<input [(ngModel)]="dateCreated" class='dateCreated' type='hidden' />
+<input [(ngModel)]="createdBy" class='createdBy' type='hidden' />
+<input [(ngModel)]="name" class='hd_title' type='hidden' />
+<input [(ngModel)]="role" class='theme_role' type='hidden' />
+<input [(ngModel)]="theme" class='current_theme' type='hidden' />
+
+<div class='container'>
+  <div class="page_block tile_themes_content">
+    <div class='themes-main'>
+      <select [(ngModel)]="themeList" class="form-control input-sm" id="themesList" placeholder="Select / Add Themes">
+        <option value="-1"> Select</option>
+      </select>
+      <input [(ngModel)]="theme" class='form-control theme_title input-sm' type='text' placeholder='Name' value='' />
+      <button (click)="newTheme($event)" class='ili-btn btn_theme_new'>
+        New
+      </button>
+      <button (click)="saveTheme($event)" class='ili-btn btn_theme_save'>
+        Save
+      </button>
+      <button (click)="saveAsTheme($event)" class='ili-btn btn_theme_save_as'>
+        Save As
+      </button>
+      <button (click)="deleteTheme($event)" class='ili-btn btn_theme_delete'>
+        Delete
+      </button>
+      <button (click)="previewTheme($event)" class='ili-btn theme_preview'>
+        Preview
+      </button>
+    </div>
+    <div style="float:left; width:50%;margin-top:-2px;">
+      <fieldset>
+        <legend style="width:80%;">
+          Page :
+        </legend>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Background Color : </label>
+          </div>
+          <input [(ngModel)]="pageColor" [(colorPicker)]="pageColor" [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true"
+           [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonText]="'Cancel'" [cpFallbackColor]="" (colorPickerChange)="pageColor=$event" [value]="pageColor"
+            class='form-control input-sm themes_input bg_body_color' type='text' placeholder='' value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Font Size : </label>
+          </div>
+          <input [(ngModel)]="pageFontSize" class='form-control input-sm themes_input bg_font_size' type='text' placeholder='' value=''
+          />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Font Color : </label>
+          </div>
+          <input [(ngModel)]="pageFontColor" class='form-control input-sm themes_input bg_font_color' [(colorPicker)]="pageFontColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageFontColor"
+            type='text' placeholder='' value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Font Family : </label>
+          </div>
+          <input [(ngModel)]="pageFontFamily" class='form-control input-sm themes_input bg_font_family' type='text' placeholder=''
+            value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Line Height : </label>
+          </div>
+          <input [(ngModel)]="pageLineHeight" class='form-control input-sm themes_input bg_line_height' type='text' placeholder=''
+            value='' />
+        </div>
+      </fieldset>
+    </div>
+    <div style="float:left; width:50%;">
+      <fieldset>
+        <legend style="width:80%;">
+          Buttons:
+        </legend>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Background Color : </label>
+          </div>
+          <input [(ngModel)]="buttonBackgroundColor" class='form-control input-sm themes_input btn_bg_color' [(colorPicker)]="buttonBackgroundColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonBackgroundColor"
+            type='text' placeholder='' value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Selected Color : </label>
+          </div>
+          <input [(ngModel)]="buttonSelectedColor" class='form-control input-sm themes_input btn_selected_color' [(colorPicker)]="buttonSelectedColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonSelectedColor"
+            type='text' placeholder='' value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Font-Color : </label>
+          </div>
+          <input [(ngModel)]="buttonTextColor" class='form-control input-sm themes_input btn-txt-color' [(colorPicker)]="buttonTextColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonTextColor"
+            type='text' placeholder='' value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Hover-Color : </label>
+          </div>
+          <input [(ngModel)]="buttonHoverColor" class='form-control input-sm themes_input btn-hover-color' [(colorPicker)]="buttonHoverColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonHoverColor"
+            type='text' placeholder='' value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Font-Family : </label>
+          </div>
+          <input [(ngModel)]="buttonFontFamily" class='form-control input-sm themes_input btn-font-family' [(colorPicker)]="buttonFontFamily"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonFontFamily"
+            type='text' placeholder='' value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Border-Radius : </label>
+          </div>
+          <input [(ngModel)]="buttonBorderRadius" class='form-control input-sm themes_input btn-border-radius' type='text' placeholder=''
+            value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Float : </label>
+          </div>
+          <input [(ngModel)]="buttonFloat" class='form-control input-sm themes_input btn-float' type='text' placeholder='' value=''
+          />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Width : </label>
+          </div>
+          <input [(ngModel)]="buttonWidth" class='form-control input-sm themes_input btn-width' type='text' placeholder='' value=''
+          />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Text-Align : </label>
+          </div>
+          <input [(ngModel)]="buttonTextAlign" class='form-control input-sm themes_input btn-text-align' type='text' placeholder=''
+            value='' />
+        </div>
+      </fieldset>
+    </div>
+
+    <div style="float: right; width: 50%; margin-top: 9px;">
+      <fieldset>
+        <legend style="width:80%;">
+          Input :
+        </legend>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Background Color : </label>
+          </div>
+          <input [(ngModel)]="pageInput" class='form-control input-sm themes_input input_color' [(colorPicker)]="pageInput" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageInput" type='text' placeholder='' value=''
+          />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Place Holder Color : </label>
+          </div>
+          <input [(ngModel)]="pagePlaceHolderColor" class='form-control input-sm themes_input bg_place_holder_color' [(colorPicker)]="pagePlaceHolderColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pagePlaceHolderColor"
+            type='text' placeholder='' value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Box Color : </label>
+          </div>
+          <input [(ngModel)]="boxColor" class='form-control input-sm themes_input bg_box_color' [(colorPicker)]="boxColor" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="boxColor" type='text' placeholder='' value=''
+          />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Border Color : </label>
+          </div>
+          <input [(ngModel)]="borderColor" class='form-control input-sm themes_input bg_border_color' [(colorPicker)]="borderColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="borderColor"
+            type='text' placeholder='' value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Fill-In Bar Color : </label>
+          </div>
+          <input [(ngModel)]="pageFillColor" class='form-control input-sm themes_input bg_fill_color' [(colorPicker)]="pageFillColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageFillColor"
+            type='text' placeholder='' value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Textbox Focus Color : </label>
+          </div>
+          <input [(ngModel)]="txtFocusColor" class='form-control input-sm themes_input txt_focus_color' [(colorPicker)]="txtFocusColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="txtFocusColor"
+            type='text' placeholder='' value='' />
+        </div>
+      </fieldset>
+    </div>
+    <div style="float: left; width: 50%; margin-top: 8px;">
+      <fieldset>
+        <legend style="width:80%;">
+          Panel :
+        </legend>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Background Color : </label>
+          </div>
+          <input [(ngModel)]="pagePanelColor" class='form-control input-sm themes_input bg_panel_color' [(colorPicker)]="pagePanelColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pagePanelColor"
+            type='text' placeholder='' value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Text Color : </label>
+          </div>
+          <input [(ngModel)]="pagePanelTextColor" class='form-control input-sm themes_input bg_panel_text_color' [(colorPicker)]="pagePanelTextColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pagePanelTextColor"
+            type='text' placeholder='' value='' />
+        </div>
+      </fieldset>
+    </div>
+    <div style="float: left; width: 50%; margin-top: 157px;">
+      <fieldset>
+        <legend style="width:80%;">
+          POP-UP :
+        </legend>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Background Color : </label>
+          </div>
+          <input [(ngModel)]="popupColor" class='form-control input-sm themes_input bg_pop_up_color' [(colorPicker)]="popupColor" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="popupColor" type='text' placeholder='' value=''
+          />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Text Color : </label>
+          </div>
+          <input [(ngModel)]="popupTextColor" class='form-control input-sm themes_input bg_pop_up_text_color' [(colorPicker)]="popupTextColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="popupTextColor"
+            type='text' placeholder='' value='' />
+        </div>
+      </fieldset>
+    </div>
+    <div style="float: left; width: 50%; margin-top: 22px; height: 120px;">
+      <fieldset>
+        <legend style="width:80%;">
+          Social Media:
+        </legend>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Background Color : </label>
+          </div>
+          <input [(ngModel)]="socialColor" class='form-control input-sm themes_input social_media_bg_color' [(colorPicker)]="socialColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="socialColor"
+            type='text' placeholder='' value='' />
+        </div>
+      </fieldset>
+    </div>
+    <div style="float: left; width: 50%; margin-top: 37px;">
+      <fieldset>
+        <legend style="width:80%;">
+          Radio :
+        </legend>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Width : </label>
+          </div>
+          <input [(ngModel)]="radioWidth" class='form-control input-sm themes_input radio_btn_width' type='text' placeholder='' value=''
+          />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Height : </label>
+          </div>
+          <input [(ngModel)]="radioHeight" class='form-control input-sm themes_input radio_btn_height' type='text' placeholder='' value=''
+          />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Border : </label>
+          </div>
+          <input [(ngModel)]="radioBorder" class='form-control input-sm themes_input radio_btn_border' type='text' placeholder='' value=''
+          />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Border Radius : </label>
+          </div>
+          <input [(ngModel)]="radioBorderRadious" class='form-control input-sm themes_input radio_btn_border_radius' type='text' placeholder=''
+            value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Outline : </label>
+          </div>
+          <input [(ngModel)]="radioOutline" class='form-control input-sm themes_input radio_btn_outline' type='text' placeholder=''
+            value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Box Shadow : </label>
+          </div>
+          <input [(ngModel)]="radioBoxShadow" class='form-control input-sm themes_input radio_btn_box_shadow' type='text' placeholder=''
+            value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Box shadow Hover : </label>
+          </div>
+          <input [(ngModel)]="radioBoxShadowHover" class='form-control input-sm themes_input radio_btn_box_shadow_hover' type='text'
+            placeholder='' value='' />
+        </div>
+        <div class='themes-names'>
+          <div class='lbl-theme'>
+            <label class='label themes_name'>Checked Before BG Color : </label>
+          </div>
+          <input [(ngModel)]="radioCheckedBeforeBg" class='form-control input-sm themes_input radio_btn_checked_before_bg' [(colorPicker)]="pageColor"
+            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageColor"
+            type='text' placeholder='' value='' />
+        </div>
+      </fieldset>
+    </div>
+  </div>
+</div>
