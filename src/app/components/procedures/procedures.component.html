@@ -4,7 +4,9 @@
       <input class="form-control input-sm procedure_name" type="text" placeholder="Folder Name">
 
       <select class="form-control input-sm procedure_type"></select>
-      <select class="form-control input-sm language"></select>
+      <select [(ngModel)]="selectedLanguage" (ngModelChange)="languageChange($event)" class="form-control input-sm language">
+        <option *ngFor="let lang of languageList; let i = index" [value]="lang?.code">{{lang?.name}}</option>
+      </select>
 
       <div style="float:left; margin-top: 5px; padding-left: 5px;" class="checkbox">
         <label style="font-size: 11px;">
@@ -37,12 +39,14 @@
       <div class="procedure_text">
         <span> PROCEDURES </span>
       </div>
-      <input class="form-control input-sm search_box_procedure" type="text" placeholder="Search Procedures">
+      <input [(ngModel)]="procedureFilter['procedureSearch']" class="form-control input-sm search_box_procedure" type="text" placeholder="Search Procedures">
 
-      <select class="form-control input-sm filter_procedure">
+      <select [ngModel]="procedureFilter['procedureCategory']['_id']" (ngModelChange)="filterChange($event, 'procedureCategory')"
+        class="form-control input-sm filter_procedure">
         <option [value]="-1">Show All Types</option>
+        <option *ngFor="let procCat of (procedureCategories | orderBy: true : 'name'); let i = index" [value]="procCat?._id">{{procCat?.name}}</option>
       </select>
-      <select class="form-control input-sm filter_procedure">
+      <select [ngModel]="procedureFilter['sort']['selected']" (ngModelChange)="filterChange($event, 'sort')" class="form-control input-sm filter_procedure">
         <option [value]="'date_desc'">Latest on top</option>
         <option [value]="'date_asc'">Oldest on top</option>
         <option [value]="'name_asc'">Name - A on top</option>
@@ -50,6 +54,26 @@
         <option [value]="'type_asc'">Type - A on top</option>
         <option [value]="'type_desc'">Type - Z on top</option>
       </select>
+
+      <div id="main-container-procedures" class="procedure_list_show">
+        <div [ngClass]="procedure.hasOwnProperty('obj') && proc?._id === procedure.obj?._id ? 'procedure_list_single selected' : 'procedure_list_single'"
+          (click)="selectProcedure($event, proc)" *ngFor="let proc of (procedures | filterByText:'name':procedureFilter['procedureSearch'] | filterByText:procedureFilter['procedureCategory']['fieldName']:procedureFilter['procedureCategory']['_id'] | orderBy:procedureFilter['sort']['isAsc']: procedureFilter['sort']['fieldNames'][splitKey(procedureFilter['sort']['selected'])][0]: procedureFilter['sort']['fieldNames'][splitKey(procedureFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
+          {{procedureNotificationIcon(proc)}}
+          <div [title]="proc?.name" class="procedure_list_title">{{proc?.name}}</div>
+          <div class="procedure-notify-icons">
+            <span [title]="proc?.tileNotifications" class='step smart noteicon smarticon-groups' [style.display]="proc?.tileNotifications ? 'block' : 'none'"
+              aria-hidden="true">
+              <i class='icon ion-android-notifications-none'></i>
+            </span>
+            <span [title]="proc?.tileSmart" [style.display]="proc?.tileSmart ? 'block' : 'none'" class="step smart smarticon smarticon-groups">
+              <i class="icon ion-lightbulb"></i>
+            </span>
+            <span [title]="proc?.pageApps" [style.display]="proc['isRole']?'block' : 'none'" class="step smart smarticon smarticon-groups">
+              <i class="icon ion-android-person"></i>
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div id="dragged-procedure-tiles" class="page_block main_procedure_container">
@@ -59,6 +83,41 @@
           <br>To add the Tiles to this Event, simply drag them in this space.
           <br>
           <br>Add Tiles in order you want them to appear in the app.</div>
+      </div>
+
+      <div *ngFor="let dragTile of procedure!.draggedTiles | reverse; let i = index; trackBy: trackByUniqueId" class="ili-panel procedure_content">
+        {{ setDragIndex(i, dragTile)}}
+        <div *ngIf="!dragTile.hasOwnProperty('procedureDragContainer')" class="procedure_main_panel">
+         <div class="tile-title-drag-btns">
+           <div class="top-tile-title">
+              <label class="procedure_tile_title"> {{dragTile?.tile?.title}} </label>
+           </div>
+          <div class="drag_buttons">
+            <button (click)="addDraggable(i)" class="trigger_btn" title="Add Space">
+              <span class="glyphicon glyphicon-plus"></span>
+            </button>
+            <button (click)="replicateTile(dragTile)" class="trigger_btn" title="Replicate">
+              <span class="glyphicon glyphicon-retweet"></span>
+            </button>
+            <button (click)="moveUpDown('up', i)" class="trigger_btn" title="MoveUp">
+              <span class="glyphicon glyphicon-arrow-up"></span>
+            </button>
+            <button (click)="moveUpDown('down', i)" class="trigger_btn" title="MoveDown">
+              <span class="glyphicon glyphicon-arrow-down"></span>
+            </button>
+            <button (click)="deleteDraggedTile(i)" class="trigger_btn" title="Remove">
+              <span class="glyphicon glyphicon-remove"></span>
+            </button>
+          </div>
+         </div>
+        </div>
+        <div iliDropTarget (myDrop)="onDrop($event, true)" *ngIf="dragTile.hasOwnProperty('procedureDragContainer')" class="draggable_label drop_target">
+          To add Tiles to this Event, simply drag them in this space.
+          <br>
+          <br>To add the Tiles to this Event, simply drag them in this space.
+          <br>
+          <br>Add Tiles in order you want them to appear in the app.
+        </div>
       </div>
     </div>
 

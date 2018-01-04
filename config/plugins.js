@@ -15,6 +15,7 @@ var plugins = {
   "tilist": "tilist",
   "catilist": "catilist",
   "theme": "theme",
+  "procedure": "procedure",
   "db": "database"
 };
 

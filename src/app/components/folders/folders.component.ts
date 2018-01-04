@@ -124,7 +124,7 @@ export class FoldersComponent implements OnInit {
     return obj["uniqueId"];
   };
 
-  /*Event Notification Icon Check Conditions */
+  /*Folder Notification Icon Check Conditions */
   folderNotificationIcon(fold: any) {
     if (fold && fold.hasOwnProperty("notification") && fold.notification.hasOwnProperty("apps") && fold.notification.apps.length > 0) {
       for (let i = 0; i < fold.notification.apps.length; i++) {

@@ -75,7 +75,6 @@ export class EventsComponent implements OnInit {
   };
 
   eventCategoryId: string = "-1";
-
   selectedEvent: Object = {};
 
   /* Organizations Intialization */

@@ -37,5 +37,8 @@ module.exports = function (app) {
   router.get('/app/tiletheme/:id', $theme.get);
   router.get('/tiletheme/remove/:id*?', $theme.remove);
   router.post('/tiletheme/tilePreviewUpdate', $theme.tilePreviewUpdate);
+  router.post('/procedurecategory/save', $eventcategory.saveProcedureCategory);
+  router.get('/procedurecategory/list/:orgId', $eventcategory.listProcedureCategory);
+  router.get('/procedure/list/:orgId/:procedureId*?', $procedure.list);
   app.use('/', router);
 };

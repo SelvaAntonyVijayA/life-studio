@@ -34,9 +34,39 @@ var list = function (req, res, next) {
   });
 };
 
+var saveProcedureCategory = function (req, res, next) {
+  var category = req.body.form_data;
+
+  $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.procedureCategory, category, function (result) {
+    var resultObj = { "_id": result };
+    res.send(resultObj);
+  });
+};
+
+var listProcedureCategory = function (req, res, next) {
+  query = {};
+  options = {};
+  options.sort = [['name', 'asc']];
+  query.organizationId = req.params.orgId;
+
+  if (!__util.isNullOrEmpty(req.query.dtype)) {
+    if (req.query.dtype == "procedure") {
+      query.$or = [{ type: "procedure" }, { type: { $exists: false } }];
+    } else {
+      query.type = req.query.dtype;
+    }
+  }
+
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.procedureCategory, query, options, function (result) {
+    res.send(result);
+  });
+};
+
 module.exports = {
   "init": init,
   "save": save,
-  "list": list
+  "list": list,
+  "saveProcedureCategory": saveProcedureCategory,
+  "listProcedureCategory": listProcedureCategory
 };
 
