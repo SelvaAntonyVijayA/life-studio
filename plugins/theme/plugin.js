@@ -1,15 +1,15 @@
 'use strict';
 
-var conf;
+var config;
 var query = {};
 var options = {};
 
 var init = function (app) {
-  conf = app.get('settings');
+  config = app.get('settings');
 };
 
 var save = function (req, res, next) {
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   query = {};
   options = {};
   var tokenObj = $authtoken.get(req.cookies.token);
@@ -81,15 +81,15 @@ var get = function (req, res, next) {
 };
 
 var list = function (req, res, next) {
-  query = {};
+  var query = {};
   var obj = {};
 
-  if (!__util.isNullOrEmpty(req.params.id)) {
+  if (!__util.isNullOrEmpty(req.params.userId)) {
     query._id = req.params.id;
   }
 
   if (!__util.isNullOrEmpty(req.body.form_data)) {
-    query = JSON.parse(req.body.form_data);
+    query = req.body.form_data;
   }
 
   if (__util.isNullOrEmpty(query._id)) {
@@ -151,7 +151,7 @@ var getTheme = function (query, cb) {
 };
 
 var tilePreviewUpdate = function (req, res, next) {
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   var curDateTime = new Date();
   var currentDate = new Date(curDateTime).toUTCString();
   var dateTime = new Date(currentDate);

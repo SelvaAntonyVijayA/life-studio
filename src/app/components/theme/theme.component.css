@@ -5,7 +5,7 @@ legend {
 .tile_themes_content {
     height: 1180px;
     position: relative;
-    margin-top:5px;
+    margin-top: 5px;
     padding-left: 5px;
 }
 
@@ -28,6 +28,7 @@ legend {
     float: left;
     width: 100%;
     height: 40px;
+    padding-top: 5px;
 }
 
 .btn_theme_save {
@@ -45,8 +46,7 @@ legend {
 
 #themesList {
     width: 20%;
-    height: 22px;
-    margin-right: .2%;
+    height: 24px;
     float: left;
 }
 
@@ -60,9 +60,9 @@ legend {
 }
 
 .theme_title {
-    width: 20%;
+    width: 220px;
     float: left;
-    height: 22px;
+    height: 24px;
     margin-left: .5%;
 }
 
@@ -79,20 +79,6 @@ legend {
 
 .themes-main>.sp-replacer>.sp-preview {
     height: 15px;
-}
-
-.theme_preview {
-    background-image: -webkit-linear-gradient(#5CA6A6, #478282 60%, #008B8B);
-    background-image: linear-gradient(#5CA6A6, #478282 60%, #008B8B);
-    background-repeat: no-repeat;
-    color: #ffffff;
-    filter: none;
-    background-color: #008B8B;
-    border-color: #66B9B9;
-    width: 7%;
-    float: left;
-    margin-right: .5%;
-    height: 23px;
 }
 
 #theme_preview_tab {
@@ -113,4 +99,38 @@ legend {
     width: 7%;
     float: left;
     margin-right: .5%;
+}
+
+.btn_theme_new {
+    border-bottom-color: #228B22;
+    border-bottom-width: 3px;
+    float: left;
+    margin-right: 4px;
+    margin-left: 27px;
+}
+
+.btn_theme_save {
+    border-bottom-color: #1E90FF;
+    border-bottom-width: 3px;
+    float: left;
+    margin-right: 4px;
+}
+
+.btn_theme_save_as {
+    border-bottom-color: #C71585;
+    border-bottom-width: 3px;
+    float: left;
+    margin-right: 4px;
+}
+
+.btn_theme_delete {
+    border-bottom-color: #FF0000;
+    border-bottom-width: 3px;
+}
+
+.theme_preview {
+    border-bottom-color: #FFA500;
+    border-bottom-width: 3px;
+    float: left;
+    width: 167px;
 }

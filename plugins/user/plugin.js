@@ -83,7 +83,7 @@ var getLogin = function (req, res, next) {
 };*/
 
 var login = function (req, res, next) {
-  var user = req.body.form_data;;
+  var user = req.body.form_data;
 
   query = {
     $or: [{ email: user.email }, { email: user.email.toLowerCase() }],

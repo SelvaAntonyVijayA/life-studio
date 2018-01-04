@@ -3,17 +3,18 @@
 <input [(ngModel)]="organizationId" class='organization_id' type='hidden' />
 <input [(ngModel)]="dateCreated" class='dateCreated' type='hidden' />
 <input [(ngModel)]="createdBy" class='createdBy' type='hidden' />
-<input [(ngModel)]="name" class='hd_title' type='hidden' />
+<input [(ngModel)]="oldName" class='hd_title' type='hidden' />
 <input [(ngModel)]="role" class='theme_role' type='hidden' />
 <input [(ngModel)]="theme" class='current_theme' type='hidden' />
 
 <div class='container'>
   <div class="page_block tile_themes_content">
     <div class='themes-main'>
-      <select [(ngModel)]="themeList" class="form-control input-sm" id="themesList" placeholder="Select / Add Themes">
-        <option value="-1"> Select</option>
+      <select [(ngModel)]="themeList" (ngModelChange)="themeChange($event)" class="form-control input-sm" id="themesList" placeholder="Select / Add Themes">
+        <option *ngFor="let theObj of themes; let i = index" [value]="theObj?._id">{{theObj?.name}}</option>
       </select>
-      <input [(ngModel)]="theme" class='form-control theme_title input-sm' type='text' placeholder='Name' value='' />
+      <input [(ngModel)]="name" (change)="colorChange($event)" class='form-control theme_title input-sm' type='text' placeholder='Name'
+        value='' />
       <button (click)="newTheme($event)" class='ili-btn btn_theme_new'>
         New
       </button>
@@ -39,9 +40,10 @@
           <div class='lbl-theme'>
             <label class='label themes_name'>Background Color : </label>
           </div>
-          <input [(ngModel)]="pageColor" [(colorPicker)]="pageColor" [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true"
-           [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonText]="'Cancel'" [cpFallbackColor]="" (colorPickerChange)="pageColor=$event" [value]="pageColor"
-            class='form-control input-sm themes_input bg_body_color' type='text' placeholder='' value='' />
+          <input [(ngModel)]="pageColor" (change)="colorChange($event, 'pageColor')" [(colorPicker)]="pageColor" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonText]="'Cancel'"
+            [cpFallbackColor]="" (colorPickerChange)="pageColor=$event" [value]="pageColor" class='form-control input-sm themes_input bg_body_color'
+            type='text' placeholder='' value='' />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
@@ -54,9 +56,10 @@
           <div class='lbl-theme'>
             <label class='label themes_name'>Font Color : </label>
           </div>
-          <input [(ngModel)]="pageFontColor" class='form-control input-sm themes_input bg_font_color' [(colorPicker)]="pageFontColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageFontColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="pageFontColor" (change)="colorChange($event,'pageFontColor')" class='form-control input-sm themes_input bg_font_color'
+            [(colorPicker)]="pageFontColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageFontColor" type='text' placeholder='' value=''
+          />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
@@ -83,41 +86,44 @@
           <div class='lbl-theme'>
             <label class='label themes_name'>Background Color : </label>
           </div>
-          <input [(ngModel)]="buttonBackgroundColor" class='form-control input-sm themes_input btn_bg_color' [(colorPicker)]="buttonBackgroundColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonBackgroundColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="buttonBackgroundColor" (change)="colorChange($event, 'buttonBackgroundColor')" class='form-control input-sm themes_input btn_bg_color'
+            [(colorPicker)]="buttonBackgroundColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonBackgroundColor" type='text' placeholder=''
+            value='' />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
             <label class='label themes_name'>Selected Color : </label>
           </div>
-          <input [(ngModel)]="buttonSelectedColor" class='form-control input-sm themes_input btn_selected_color' [(colorPicker)]="buttonSelectedColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonSelectedColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="buttonSelectedColor" (change)="colorChange($event, 'buttonSelectedColor')" class='form-control input-sm themes_input btn_selected_color'
+            [(colorPicker)]="buttonSelectedColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonSelectedColor" type='text' placeholder=''
+            value='' />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
             <label class='label themes_name'>Font-Color : </label>
           </div>
-          <input [(ngModel)]="buttonTextColor" class='form-control input-sm themes_input btn-txt-color' [(colorPicker)]="buttonTextColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonTextColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="buttonTextColor" (change)="colorChange($event, 'buttonTextColor')" class='form-control input-sm themes_input btn-txt-color'
+            [(colorPicker)]="buttonTextColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonTextColor" type='text' placeholder='' value=''
+          />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
             <label class='label themes_name'>Hover-Color : </label>
           </div>
-          <input [(ngModel)]="buttonHoverColor" class='form-control input-sm themes_input btn-hover-color' [(colorPicker)]="buttonHoverColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonHoverColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="buttonHoverColor" (change)="colorChange($event, 'buttonHoverColor')" class='form-control input-sm themes_input btn-hover-color'
+            [(colorPicker)]="buttonHoverColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonHoverColor" type='text' placeholder='' value=''
+          />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
             <label class='label themes_name'>Font-Family : </label>
           </div>
-          <input [(ngModel)]="buttonFontFamily" class='form-control input-sm themes_input btn-font-family' [(colorPicker)]="buttonFontFamily"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="buttonFontFamily"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="buttonFontFamily" class='form-control input-sm themes_input btn-font-family' type='text' placeholder=''
+            value='' />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
@@ -159,49 +165,55 @@
           <div class='lbl-theme'>
             <label class='label themes_name'>Background Color : </label>
           </div>
-          <input [(ngModel)]="pageInput" class='form-control input-sm themes_input input_color' [(colorPicker)]="pageInput" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
-            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageInput" type='text' placeholder='' value=''
-          />
+          <input [(ngModel)]="pageInput" (change)="colorChange($event, 'pageInput')" class='form-control input-sm themes_input input_color'
+            [(colorPicker)]="pageInput" [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpOKButtonClass]="'btn btn-success btn-xs'"
+            [cpOKButton]="true" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageInput" type='text' placeholder=''
+            value='' />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
             <label class='label themes_name'>Place Holder Color : </label>
           </div>
-          <input [(ngModel)]="pagePlaceHolderColor" class='form-control input-sm themes_input bg_place_holder_color' [(colorPicker)]="pagePlaceHolderColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pagePlaceHolderColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="pagePlaceHolderColor" (change)="colorChange($event, 'pagePlaceHolderColor')" class='form-control input-sm themes_input bg_place_holder_color'
+            [(colorPicker)]="pagePlaceHolderColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pagePlaceHolderColor" type='text' placeholder=''
+            value='' />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
             <label class='label themes_name'>Box Color : </label>
           </div>
-          <input [(ngModel)]="boxColor" class='form-control input-sm themes_input bg_box_color' [(colorPicker)]="boxColor" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
-            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="boxColor" type='text' placeholder='' value=''
-          />
+          <input [(ngModel)]="boxColor" (change)="colorChange($event, 'boxColor')" class='form-control input-sm themes_input bg_box_color'
+            [(colorPicker)]="boxColor" [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpOKButtonClass]="'btn btn-success btn-xs'"
+            [cpOKButton]="true" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="boxColor" type='text' placeholder=''
+            value='' />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
             <label class='label themes_name'>Border Color : </label>
           </div>
-          <input [(ngModel)]="borderColor" class='form-control input-sm themes_input bg_border_color' [(colorPicker)]="borderColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="borderColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="borderColor" (change)="colorChange($event, 'borderColor')" class='form-control input-sm themes_input bg_border_color'
+            [(colorPicker)]="borderColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="borderColor" type='text' placeholder='' value=''
+          />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
             <label class='label themes_name'>Fill-In Bar Color : </label>
           </div>
-          <input [(ngModel)]="pageFillColor" class='form-control input-sm themes_input bg_fill_color' [(colorPicker)]="pageFillColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageFillColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="pageFillColor" (change)="colorChange($event, 'pageFillColor')" class='form-control input-sm themes_input bg_fill_color'
+            [(colorPicker)]="pageFillColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageFillColor" type='text' placeholder='' value=''
+          />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
             <label class='label themes_name'>Textbox Focus Color : </label>
           </div>
-          <input [(ngModel)]="txtFocusColor" class='form-control input-sm themes_input txt_focus_color' [(colorPicker)]="txtFocusColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="txtFocusColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="txtFocusColor" (change)="colorChange($event, 'txtFocusColor')" class='form-control input-sm themes_input txt_focus_color'
+            [(colorPicker)]="txtFocusColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="txtFocusColor" type='text' placeholder='' value=''
+          />
         </div>
       </fieldset>
     </div>
@@ -214,17 +226,19 @@
           <div class='lbl-theme'>
             <label class='label themes_name'>Background Color : </label>
           </div>
-          <input [(ngModel)]="pagePanelColor" class='form-control input-sm themes_input bg_panel_color' [(colorPicker)]="pagePanelColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pagePanelColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="pagePanelColor" (change)="colorChange($event, 'pagePanelColor')" class='form-control input-sm themes_input bg_panel_color'
+            [(colorPicker)]="pagePanelColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pagePanelColor" type='text' placeholder='' value=''
+          />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
             <label class='label themes_name'>Text Color : </label>
           </div>
-          <input [(ngModel)]="pagePanelTextColor" class='form-control input-sm themes_input bg_panel_text_color' [(colorPicker)]="pagePanelTextColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pagePanelTextColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="pagePanelTextColor" (change)="colorChange($event, 'pagePanelTextColor')" class='form-control input-sm themes_input bg_panel_text_color'
+            [(colorPicker)]="pagePanelTextColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pagePanelTextColor" type='text' placeholder=''
+            value='' />
         </div>
       </fieldset>
     </div>
@@ -237,17 +251,19 @@
           <div class='lbl-theme'>
             <label class='label themes_name'>Background Color : </label>
           </div>
-          <input [(ngModel)]="popupColor" class='form-control input-sm themes_input bg_pop_up_color' [(colorPicker)]="popupColor" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
-            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="popupColor" type='text' placeholder='' value=''
-          />
+          <input [(ngModel)]="popupColor" (change)="colorChange($event, 'popupColor')" class='form-control input-sm themes_input bg_pop_up_color'
+            [(colorPicker)]="popupColor" [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpOKButtonClass]="'btn btn-success btn-xs'"
+            [cpOKButton]="true" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="popupColor" type='text' placeholder=''
+            value='' />
         </div>
         <div class='themes-names'>
           <div class='lbl-theme'>
             <label class='label themes_name'>Text Color : </label>
           </div>
-          <input [(ngModel)]="popupTextColor" class='form-control input-sm themes_input bg_pop_up_text_color' [(colorPicker)]="popupTextColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="popupTextColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="popupTextColor" (change)="colorChange($event, 'popupTextColor')" class='form-control input-sm themes_input bg_pop_up_text_color'
+            [(colorPicker)]="popupTextColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="popupTextColor" type='text' placeholder='' value=''
+          />
         </div>
       </fieldset>
     </div>
@@ -260,9 +276,10 @@
           <div class='lbl-theme'>
             <label class='label themes_name'>Background Color : </label>
           </div>
-          <input [(ngModel)]="socialColor" class='form-control input-sm themes_input social_media_bg_color' [(colorPicker)]="socialColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="socialColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="socialColor" (change)="colorChange($event, 'socialColor')" class='form-control input-sm themes_input social_media_bg_color'
+            [(colorPicker)]="socialColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="socialColor" type='text' placeholder='' value=''
+          />
         </div>
       </fieldset>
     </div>
@@ -324,9 +341,10 @@
           <div class='lbl-theme'>
             <label class='label themes_name'>Checked Before BG Color : </label>
           </div>
-          <input [(ngModel)]="radioCheckedBeforeBg" class='form-control input-sm themes_input radio_btn_checked_before_bg' [(colorPicker)]="pageColor"
-            [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageColor"
-            type='text' placeholder='' value='' />
+          <input [(ngModel)]="radioCheckedBeforeBg" (change)="colorChange($event, 'radioCheckedBeforeBg')" class='form-control input-sm themes_input radio_btn_checked_before_bg'
+            [(colorPicker)]="pageColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageColor" type='text' placeholder='' value=''
+          />
         </div>
       </fieldset>
     </div>

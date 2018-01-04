@@ -33,9 +33,9 @@ module.exports = function (app) {
   router.get('/catilist/list/:orgId/:categoryId*?', $catilist.list);
   router.get('/catilist/delete/:categoryId', $catilist.deleteCatilist);
   router.post('/tiletheme/save/', $theme.save);
-  router.get('/tiletheme/list/:id*?', $theme.list);
-  router.get('/app/tiletheme/:id', $theme.get);
-  router.get('/tiletheme/remove/:id*?', $theme.remove);
+  router.all('/tiletheme/list/:id*?', $theme.list);
+  router.all('/app/tiletheme/:id', $theme.get);
+  router.all('/tiletheme/remove/:id*?', $theme.remove);
   router.post('/tiletheme/tilePreviewUpdate', $theme.tilePreviewUpdate);
   router.post('/procedurecategory/save', $eventcategory.saveProcedureCategory);
   router.get('/procedurecategory/list/:orgId', $eventcategory.listProcedureCategory);

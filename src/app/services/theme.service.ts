@@ -53,7 +53,7 @@ export class ThemeService {
       .catch(this.handleError);
   };
 
-  getThemes(orgId: string, id?: string) {
+  getThemes(orgId?: string, id?: string) {
     var url = '/tiletheme/list/';
     var query = {};
 
@@ -74,7 +74,7 @@ export class ThemeService {
     var url = '/tiletheme/themetileupdate/55eea121a456cc0b7ed47cef';
 
     var obj = {
-      "template" : id
+      "template": id
     };
 
     return this.http

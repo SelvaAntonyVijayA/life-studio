@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, ElementRef, Renderer, ViewChild, EventEmitter, ContentChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, ElementRef, Renderer2, ViewChild, EventEmitter, ContentChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { CommonService } from '../../services/common.service';
@@ -16,7 +16,7 @@ export class ThemeComponent implements OnInit {
     private cms: CommonService,
     private themeService: ThemeService,
     private e1: ElementRef,
-    private renderer: Renderer) {
+    private renderer: Renderer2) {
     this.utils = Utils;
   }
 
@@ -66,23 +66,103 @@ export class ThemeComponent implements OnInit {
   createdBy: string = "";
   dateCreated: string = "";
   name: string = "";
+  oldName: string = "";
   role: string = "";
+  themeList: string = "-1"
   raccess: object = {};
+  selectedThemeObj: object = {};
+  save: string = "block";
+  saveAs: string = "block";
+  delete: string = "block";
 
   newTheme() {
+    this.loadNew();
   };
 
   saveTheme() {
+    if (this.name == "") {
+      alert('Theme name is empty');
+      return false;
+    }
+
+    this._save(false, false);
   };
 
   saveAsTheme() {
+    if (this.name == "") {
+      alert('Theme name is empty');
+      return false;
+    }
+
+    if (this.name == this.oldName) {
+      alert('Theme name already exists');
+      return false;
+    }
+
+    this._save(true, false);
   };
 
   deleteTheme() {
+    if (this.id.trim() != '' && this.id.trim() != '0') {
+      var isConfirm = confirm("Are you sure want to delete this Tile?");
+
+      if (isConfirm) {
+        this.themeService.getThemes(this.id)
+          .then(res => {
+
+            if (res && res.msg == 'exists') {
+              alert('Theme can not be deleted. Theme has been assigned to tiles');
+
+            } else {
+              alert('Theme deleted successfully');
+              this.loadThemes();
+              this.loadNew();
+            }
+          });
+      }
+    } else {
+      alert('Please select a Theme to delete');
+    }
   };
 
   previewTheme() {
 
+  };
+
+  themeChange(theme: string) {
+    this.loadThemes(theme);
+  };
+
+  colorChange(e: any, field) {
+    var currentTheme = this.getCurrentTheme();
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (this[field] != "") {
+      var validCode = this.checkColorCode(this[field]);
+
+      if (!validCode) {
+        var colorCode = currentTheme != "" ? currentTheme["features"][field] : "";
+        this[field] = colorCode;
+        this.notValidColor();
+      }
+    }
+  }
+
+  getCurrentTheme() {
+    var currentTheme = this.theme;
+
+    return currentTheme;
+  };
+
+  checkColorCode(code?: string) {
+    var isValid = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(code);
+
+    return isValid;
+  };
+
+  notValidColor() {
+    alert('Not a valid color code');
   };
 
   getUserSession() {
@@ -150,7 +230,7 @@ export class ThemeComponent implements OnInit {
     return themeObj;
   };
 
-  resetValues(theme: any) {
+  resetValues(theme?: any) {
     this.pageColor = theme && theme.features ? theme.features.pageColor : "";
     this.pageFontSize = theme && theme.features ? theme.features.pageFontSize : '';
     this.pageFontColor = theme && theme.features ? theme.features.pageFontColor : '';
@@ -188,20 +268,59 @@ export class ThemeComponent implements OnInit {
     this.createdOrg = theme && theme.createdOrg ? theme.createdOrg : '';
     this.organizationId = theme && theme.organizationId ? theme.organizationId : '';
     this.name = theme && theme.name ? theme.name : '';
+    this.oldName = theme && theme.name ? theme.name : '';
     this.dateCreated = theme && theme.dateCreated ? theme.dateCreated : '';
     this.createdBy = theme && theme.createdBy ? theme.createdBy : '';
     this.role = theme && theme.role ? theme.role : '';
     this.theme = theme && theme.features && !this.utils.isEmptyObject(theme) ? JSON.stringify(theme) : {};
   };
 
+  loadNew() {
+    this.resetValues();
+    this.name = "";
+    this.oldName = "";
+    this.themeList = "-1";
+    this.save = "block";
+    this.saveAs = "block";
+    this.selectedThemeObj = this.getThemeObject(false);
+  };
+
   loadThemes(id?: string) {
+    this.oldName = "";
+
     this.themeService.getThemes(this.oid, id)
       .then(themes => {
-        this.themes = themes;
+
+        if (themes && themes.length > 0) {
+          if (!this.utils.isNullOrEmpty(id)) {
+            var themeObj = themes[0];
+            var role = this.raccess["name"];
+            this.selectedThemeObj = themeObj;
+            this.resetValues(themeObj);
+            this.themeList = id;
+
+            if (this.role.toLowerCase() == themeObj.role.toLowerCase()) {
+              this.delete = "block"
+              this.saveAs = "block"
+              this.save = "block"
+            } else {
+              this.delete = "none"
+              this.saveAs = "block"
+              this.save = "none"
+            }
+          } else {
+            var obj = {};
+            obj["_id"] = "-1";
+            obj["name"] = "Select";
+
+            themes.push(obj)
+            this.themes = themes;
+          }
+        }
       });
   };
 
-  _save(isSaveAs, auto) {
+  _save(isSaveAs?: boolean, auto?: boolean) {
     var themeObj = this.getThemeObject(isSaveAs);
 
     $.ajax({
@@ -216,7 +335,7 @@ export class ThemeComponent implements OnInit {
         this.loadThemes(res._id);
 
         if (auto) {
-          this.themeService.updatePreviewTile($("#themesList").val(), true);
+          this.themeService.updatePreviewTile(this.themeList, true);
 
         } else {
           alert('Theme Saved');
@@ -224,16 +343,17 @@ export class ThemeComponent implements OnInit {
       }
     });
   };
+
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       this.oid = Cookie.get('oid');
       this.selectedOrganization = this.oid;
       this.getUserSession();
+      this.loadThemes();
     });
   }
 
   ngOnDestroy() {
     this.orgChangeDetect.unsubscribe();
   };
-
 }
