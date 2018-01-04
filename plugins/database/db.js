@@ -1,32 +1,30 @@
-var mongo = require("mongodb");
+const mongo = require("mongodb");
 global.db = [];
 
 /* Create Connection for all the databases */
 var createConnection = function (app) {
-  var appconf = app.get('settings');
-  var mongoClient = require('mongodb').MongoClient;
-
-  var serverOptions = {
-    server: {
-      poolSize: 50
-    }
-  };
+  const appconf = app.get('settings');
+  const mongoClient = require('mongodb').MongoClient;
+  const f = require('util').format;
 
   _.each(appconf.dbnames, function (dbname) {
-    mongoClient.connect("mongodb://" + appconf.dbhost + ":" + appconf.dbport + "/" + dbname, serverOptions, function (err, database) {
+    var user = encodeURIComponent(appconf.dbauth[dbname].user),
+      password = encodeURIComponent(appconf.dbauth[dbname].password),
+      authMechanism = 'DEFAULT',
+      authSource = dbname;
+
+    // connection url
+    var url = f('mongodb://%s:%s@%s:%s/?authMechanism=%s&authSource=%s',
+      user, password, appconf.dbhost, appconf.dbport, authMechanism, authSource);
+
+    mongoClient.connect(url, function (err, database) {
       if (err) {
         console.error("DB connection error :" + err);
       }
 
       if (database) {
-        database.authenticate(appconf.dbauth[dbname].user, appconf.dbauth[dbname].password, function (error, isAuth) {
-          if (isAuth) {
-            db[dbname] = database;
-            console.log('Database ' + dbname + ' connection established!');
-          } else {
-            console.error(error);
-          }
-        });
+        db[dbname] = database.db(dbname);
+        console.log('Database ' + dbname + ' connection established!');
       }
     });
   });
