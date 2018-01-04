@@ -18,7 +18,7 @@
         <!--   <select class="form-control input-sm event_type" placeholder="Select / Add Type">
           <option *ngFor="let evtCat of eventCategories; let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
         </select> -->
-        <select #evtCategory  class="form-control input-sm event_type" placeholder="Select / Add Type">
+        <select [(ngModel)]="eventCategoryId" (ngModelChange)="evtCategoryChange($event)"  class="form-control input-sm event_type" placeholder="Select / Add Type">
           <option *ngFor="let evtCat of (eventCategories | orderBy: true : 'name'); let i = index" [value]="evtCat?._id">{{evtCat?.name}}</option>
         </select>
       </div>

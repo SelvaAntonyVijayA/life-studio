@@ -191,7 +191,7 @@ export class ThemeComponent implements OnInit {
     this.dateCreated = theme && theme.dateCreated ? theme.dateCreated : '';
     this.createdBy = theme && theme.createdBy ? theme.createdBy : '';
     this.role = theme && theme.role ? theme.role : '';
-    this.theme = theme && theme.features && !jQuery.isEmptyObject(theme) ? JSON.stringify(theme) : {};
+    this.theme = theme && theme.features && !this.utils.isEmptyObject(theme) ? JSON.stringify(theme) : {};
   };
 
   loadThemes(id?: string) {

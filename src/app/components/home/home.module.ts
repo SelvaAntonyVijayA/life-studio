@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { CKEditorModule } from 'ng2-ckeditor';
 
 import { HomeComponent } from '../../components/home/home.component';
 import { WidgetsComponent } from '../../components/widgets/widgets.component';
@@ -29,9 +30,9 @@ import { ThemeService } from '../../services/theme.service';
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 import { DyBindDirective } from '../../components/widgets/dynamic-bind.directive';
+
 //import { DragDropDirectiveModule} from "angular4-drag-drop";
 
-import { Ng2Summernote } from 'ng2-summernote/ng2-summernote';
 //import { SlimScrollModule } from 'ng2-slimscroll';
 //import { VirtualScrollModule } from 'angular2-virtual-scroll';
 
@@ -44,12 +45,12 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
 
 @NgModule({
   imports: [
-    CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule, ColorPickerModule
+    CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule, ColorPickerModule, CKEditorModule
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
-    TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, Ng2Summernote, EventsComponent,
+    TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService]

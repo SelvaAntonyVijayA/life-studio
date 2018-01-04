@@ -74,6 +74,8 @@ export class EventsComponent implements OnInit {
     },
   };
 
+  eventCategoryId: string = "-1";
+
   selectedEvent: Object = {};
 
   /* Organizations Intialization */
@@ -117,6 +119,10 @@ export class EventsComponent implements OnInit {
     }
 
     return dragged;
+  };
+
+  evtCategoryChange(catId: string){
+    this.eventCategoryId = catId;
   };
 
   setSelectedDraggedTile(dragTile: any) {
@@ -395,7 +401,7 @@ export class EventsComponent implements OnInit {
     this.oid = "";
   };
 
-  resetSort(){
+  resetSort() {
     this.eventFilter["eventSearch"] = ""
     this.eventFilter["eventCategory"]["_id"] = "-1";
     this.eventFilter["sort"]["selected"] = "date_desc";
@@ -411,7 +417,9 @@ export class EventsComponent implements OnInit {
     this.availableEnd = "";
     this.selectedLanguage = "en";
     this.eventCalendar = false;
-    $(this.evtCategory.nativeElement).combobox("setvalue", "");
+    //$(this.evtCategory.nativeElement).combobox("setvalue", "");
+
+    this.eventCategoryId = "-1";
     //this.selectedEventCategory = "-1";
     this.isMerge = {};
     this.tilesToUpdate = [];
@@ -462,7 +470,12 @@ export class EventsComponent implements OnInit {
       delete eventData["_id"];
     }
 
-    if ($.trim($('.custom_combobox_input').val()) == '') {
+    /*if ($.trim($('.custom_combobox_input').val()) == '') {
+      alert('Please select a type for the Event');
+      return false;
+    }*/
+
+    if(this.eventCategoryId === "-1"){
       alert('Please select a type for the Event');
       return false;
     }
@@ -776,7 +789,9 @@ export class EventsComponent implements OnInit {
       currEvtData["name"] = this.utils.trim(this.eventName);
     }
 
-    currEvtData["category"] = this.evtCategory.nativeElement.value;
+    //currEvtData["category"] = this.evtCategory.nativeElement.value;
+
+    currEvtData["category"] = this.eventCategoryId;
     currEvtData["type"] = 'event';
     currEvtData["art"] = this.art;
 
@@ -818,7 +833,7 @@ export class EventsComponent implements OnInit {
 
     if (evt && evt.hasOwnProperty("Apps") && evt.Apps.length > 0) {
       for (let i = 0; i < evt.Apps.length; i++) {
-        evt["pageApps"] = i === 0 ? evt.Apps[i]["appName"] :  ", " + evt.Apps[i]["appName"];
+        evt["pageApps"] = i === 0 ? evt.Apps[i]["appName"] : ", " + evt.Apps[i]["appName"];
       }
     }
 
@@ -828,7 +843,7 @@ export class EventsComponent implements OnInit {
       }
     }
 
-    evt["isRole"] = evt.hasOwnProperty("isRoleBased") && !this.utils.isNullOrEmpty("isRoleBased") && evt["isRoleBased"]? true : false;
+    evt["isRole"] = evt.hasOwnProperty("isRoleBased") && !this.utils.isNullOrEmpty("isRoleBased") && evt["isRoleBased"] ? true : false;
   };
 
   /* Fetching Event Categories */
@@ -1164,8 +1179,10 @@ export class EventsComponent implements OnInit {
         this.selectedLanguage = "en";
       }
 
-      $(this.evtCategory.nativeElement).combobox('setvalue', (objEvent.hasOwnProperty("category") && objEvent["category"]) ? objEvent["category"] : '-1');
+      //$(this.evtCategory.nativeElement).combobox('setvalue', (objEvent.hasOwnProperty("category") && objEvent["category"]) ? objEvent["category"] : '-1');
       //this.e1.nativeElement.querySelector('#eventCategory')
+
+      this.eventCategoryId = objEvent.hasOwnProperty("category") && objEvent["category"]? objEvent["category"] : '-1';
       this.event["draggedTiles"] = [];
 
       if (objEvent.hasOwnProperty("tiles") && objEvent["tiles"].length > 0) {
@@ -1391,7 +1408,8 @@ export class EventsComponent implements OnInit {
 
     tilist["_id"] = id;
     tilist["name"] = this.utils.trim(this.eventName);
-    tilist["category"] = this.evtCategory.nativeElement.value;
+    //tilist["category"] = this.evtCategory.nativeElement.value;
+    tilist["category"] = this.eventCategoryId;
     tilist["type"] = "event";
     //tilist.art = $('.tilist_art').val();
     //tilist.availableStart = $.toUTCDateTime($('#txtAvailDateTime').val());
@@ -1407,7 +1425,11 @@ export class EventsComponent implements OnInit {
     }
 
     if (selectedLanguage == "en") {
-      if (tilist["name"].trim() == '' && $('.custom_combobox_input').val().trim() == '' && tilist["tiles"].length === 0) {
+      /*if (tilist["name"].trim() == '' && $('.custom_combobox_input').val().trim() == '' && tilist["tiles"].length === 0) {
+        tilist = {};
+      }*/
+
+      if (tilist["name"].trim() == '' && this.eventCategoryId === '-1' && tilist["tiles"].length === 0) {
         tilist = {};
       }
     }
@@ -1606,7 +1628,7 @@ export class EventsComponent implements OnInit {
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
-      this.setComboBox();
+      //this.setComboBox();
       this.setScrollList();
       this.resetEventDatas();
       this.setOrganizations();

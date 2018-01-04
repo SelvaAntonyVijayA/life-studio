@@ -44,7 +44,7 @@ export class BlockControls {
              <block-controls (blockView)="getText($event)" [(block)]= "block"> </block-controls></div>
              <div class='ili-panel text_panel'>
              <div class="row text_main_content">
-             <ng2-summernote [(ngModel)]="block.data.text"></ng2-summernote>
+             <ckeditor [(ngModel)]="block.data.text"></ckeditor>
              </div>
              </div></div>`,
   styleUrls: ['./tileblocks.component.css']
@@ -101,7 +101,7 @@ export class VideoBlockComponent implements BlockComponent {
              <block-controls (blockView)="getPicture($event)" [(block)]= "block"> </block-controls></div>
              <div class='ili-panel picture_panel'>
              <div class="row picture_main_content">
-             <ng2-summernote [(ngModel)]="block.data.text"></ng2-summernote>
+             <ckeditor [(ngModel)]="block.data.text"></ckeditor>
              </div>
              </div></div>`,
   styleUrls: ['./tileblocks.component.css']
@@ -181,7 +181,7 @@ export class SocialFeedBlockComponent implements BlockComponent {
              <block-controls (blockView)="getCalendar($event)" [(block)]= "block"> </block-controls></div>
              <div class='ili-panel calendar_panel'>
              <div class="row calendar_main_content">
-             <ng2-summernote [(ngModel)]="block.data.text"></ng2-summernote>
+             <ckeditor [(ngModel)]="block.data.text"></ckeditor>
              </div>
              </div></div>`,
   styleUrls: ['./tileblocks.component.css']
@@ -332,14 +332,14 @@ export class InquiryBlockComponent implements BlockComponent {
              <div  *ngFor="let pp of block.data.popup; let i = index; trackBy:trackByIndex" style="margin-top: 8px;" class="row">
              <div style="width:98%; margin-top: 7px;" class="col-md-11">
              <div style="float:left; width:2.2%;">{{i + 1}}.</div>
-             <div style="float: left; width: 97.5%;"><ng2-summernote [(ngModel)]="block.data.popup[i]"></ng2-summernote></div>
+             <div style="float: left; width: 97.5%;"><ckeditor [(ngModel)]="block.data.popup[i]"></ckeditor></div>
              </div>
              </div>
              <span *ngIf="block.data.confirmation.length > 0" class="txt-email-notes txt-popup">Confirmation for Selected Option</span>
              <div *ngFor="let cc of block.data.confirmation; let i = index; trackBy:trackByIndex" style="margin-top: 8px;" class="row">
              <div style="width:98%; margin-top: 7px;" class="col-md-11">
              <div style="float:left; width:2.2%;">{{i + 1}}.</div>
-             <div style="float: left; width: 97.5%;"><ng2-summernote [(ngModel)]="block.data.confirmation[i]"></ng2-summernote></div>
+             <div style="float: left; width: 97.5%;"><ckeditor [(ngModel)]="block.data.confirmation[i]"></ckeditor></div>
              </div>
              </div>
              </div>`,
@@ -829,7 +829,7 @@ export class AttendanceBlockComponent implements BlockComponent {
              </div>
              <span class="confirmation_text"><p>Confirmation Format:</p></span>
              <div class="row main_confirm_content">
-             <ng2-summernote [(ngModel)]="block.data.text"></ng2-summernote>
+             <ckeditor [(ngModel)]="block.data.text"></ckeditor>
              </div>
              </div>
              </div>
@@ -913,7 +913,7 @@ export class NextBlockComponent implements BlockComponent {
              <div class="content_buttons">            
              <block-controls (blockView)="getFormPhoto($event)" [(block)]= "block"> </block-controls></div>
              <div class="row form_media_main_content">
-             <ng2-summernote [(ngModel)]="block.data.text"></ng2-summernote>
+             <ckeditor [(ngModel)]="block.data.text"></ckeditor>
              </div>
              </div>`,
   styleUrls: ['./tileblocks.component.css']
@@ -1046,7 +1046,7 @@ export class EndWrapperBlockComponent implements BlockComponent {
              <div class="ili-panel fill_in_panel">
              <p style="font-size: 12px;">To create a fill-in form, add 3 underlines where you want users to fill-in the blanks within your text. THE FILL-IN WILL AUTO EXPAND on the mobile device. User may email the form to themselves or any other email address.</p>
              <div class="row fill_in_main_content">
-             <ng2-summernote [(ngModel)]="block.data.text"></ng2-summernote>
+             <ckeditor [(ngModel)]="block.data.text"></ckeditor>
              </div>
              </div>
              </div>`,
@@ -1120,7 +1120,7 @@ export class NotesBlockComponent implements BlockComponent {
              <label class="lbl-btn-txt">Or</label>
              <button (click)="addConfirmation(btnData)" [disabled]="checkDisabled(btnData, 'confirm')" class="btn btn-info btn-xs btn-add-confirmation">+ Confirmation</button></div>
              <div *ngIf="block.data[i]!.confirmation" class="row btn_confirm_main_content">
-             <ng2-summernote [(ngModel)]="block.data[i].confirmation"></ng2-summernote>
+             <ckeditor [(ngModel)]="block.data[i].confirmation"></ckeditor>
              </div> 
              </div>
              <div class="row button_add_alert">
@@ -1315,7 +1315,7 @@ export class CartBlockComponent implements BlockComponent {
              </div>
              <p style="font-size: 11px;">To create a fill-in form, add 3 underlines where you want users to fill-in the blanks within your text. THE FILL-IN WILL AUTO EXPAND on the mobile device.</p>
              <div class="row blank-form-content">
-             <ng2-summernote [(ngModel)]="block.data.text"></ng2-summernote>
+             <ckeditor [(ngModel)]="block.data.text"></ckeditor>
              </div>
              </div></div>`,
   styleUrls: ['./tileblocks.component.css']
@@ -1490,7 +1490,7 @@ export class ThreedCartBlockComponent implements BlockComponent {
              <span class="input-group-addon"><input (change)="openWordPress($event)" value="true" [checked]="block.data.wordPressTitle" [(ngModel)]="block.data.wordPressTitle" type="checkbox"></span>
              <input type="text" [(ngModel)]="block.data.wordPressUrl" placeholder="Word Press Feed Url" value="" class="form-control"></div>
              <div class="row blogs_main_content">
-             <ng2-summernote [(ngModel)]="block.data.wordPressContent"></ng2-summernote>
+             <ckeditor [(ngModel)]="block.data.wordPressContent"></ckeditor>
              </div>
              </div></div>`,
   styleUrls: ['./tileblocks.component.css']

@@ -26,7 +26,6 @@
       "styles": [
         "../node_modules/bootstrap/dist/css/bootstrap.min.css",
         "../node_modules/jquery-ui-dist/jquery-ui.min.css",
-        "../node_modules/summernote/dist/summernote.css",
         "../src/css/ili_theme.css",
         "../node_modules/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css",
         "styles.css",
@@ -36,8 +35,6 @@
         "../node_modules/jquery/dist/jquery.min.js",
         "../node_modules/bootstrap/dist/js/bootstrap.min.js",
         "../node_modules/jquery-ui-dist/jquery-ui.min.js",
-        "../src/js/jquery.custom.combo.js",
-        "../node_modules/summernote/dist/summernote.min.js",
         "../node_modules/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.js",
         "../src/js/moment-with-locales.min.js",
         "../src/js/bootstrap-datetimepicker.min.js"

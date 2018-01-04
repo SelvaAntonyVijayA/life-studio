@@ -425,7 +425,7 @@ export class TilesComponent implements OnInit {
   @Input('listType') listType: string;
   tileData = new EventEmitter<any>();
   dropped = new EventEmitter<any>();
-  @ViewChild(this, { read: ViewContainerRef }) tileListSingle;
+  //@ViewChild(this, { read: ViewContainerRef }) tileListSingle;
 
   emptyString: string = "";
   symbols = {};

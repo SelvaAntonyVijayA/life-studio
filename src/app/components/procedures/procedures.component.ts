@@ -29,7 +29,7 @@ export class ProceduresComponent implements OnInit {
   organizations: any[] = [];
   private orgChangeDetect: any;
   oid: string = "";
-  utils: any; 
+  utils: any;
   draggedTiles: any[] = [];
   tileDropped: Object = {};
   tilesToUpdate: any[] = [];
@@ -48,11 +48,11 @@ export class ProceduresComponent implements OnInit {
     },
   };
 
-  procedures :any [] = [];
+  procedures: any[] = [];
   dragIndex: number = -1;
 
   getTileContent(tileObj: any) {
-    
+
   };
 
   /* Intialize scroll bar for the component elements */
@@ -60,7 +60,7 @@ export class ProceduresComponent implements OnInit {
     //this.destroyScroll();
 
     this.mScrollbarService.initScrollbar('#dragged-procedure-tiles', this.scrollbarOptions);
-    
+
     if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
       this.cms["appDatas"]["scrollList"].push("#dragged-procedure-tiles");
     } else {
@@ -80,21 +80,21 @@ export class ProceduresComponent implements OnInit {
     }
   };
 
-  resetProcedureDatas(){
+  resetProcedureDatas() {
     this.resetSort();
     this.resetProcedure();
     this.procedures = [];
     this.oid = "";
   };
 
-  resetSort(){
+  resetSort() {
     this.procedureFilter["procedureSearch"] = ""
     this.procedureFilter["procedureCategory"]["_id"] = "-1";
     this.procedureFilter["sort"]["selected"] = "date_desc";
     this.procedureFilter["sort"]["isAsc"] = false;
   };
 
-  resetProcedure(mergeReset?: string){
+  resetProcedure(mergeReset?: string) {
     this.dragIndex = -1;
     this.droppedTile = {};
     this.isMerge = {};
