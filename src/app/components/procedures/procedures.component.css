@@ -274,12 +274,148 @@
   float: left;
   position: relative;
   width: 60%;
+  margin-top: 5px;
   text-overflow: ellipsis;
 }
 
-.procedure_tile_title{
+.procedure_tile_title {
   float: left;
-  font-weight: 400; 
+  font-weight: 400;
   color: #FFFFFF;
   margin-left: 12px
+}
+
+.dragged-tile-inputs {
+  float: left;
+  width: 100%;
+  height: 47px;
+}
+
+.tile-trigger-expiry-content {
+  float: left;
+  width: 100%;
+  height: 131px;
+}
+
+/* Procedure menu art */
+
+.proc_menu_art {
+  float: left;
+  width: 100px;
+  height: 105px;
+  margin-left: 13px;
+  margin-top: 15px;
+}
+
+.proc_icon-img {
+  height: 98px;
+  width: 98px;
+  text-align: center;
+  border: 1px solid #D0CBCB;
+  margin-top: 2px;
+}
+
+.proc_menu_item_art {
+  max-width: 86px;
+  max-height: 86px;
+}
+
+.proc_img_v_align {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.proc-tile-trigger-content {
+  float: left;
+  margin-top: 15px;
+  height: 100px;
+  width: 47%;
+}
+
+.trigger-action-days {
+  margin-left: 7px;
+  width: 50px;
+  display: inline;
+}
+
+.trigger-expiry-days {
+  margin-left: 5px;
+  width: 50px;
+  display: inline;
+}
+
+.trigger-days {
+  width: 80px;
+  display: inline;
+  margin-left: 7px;
+}
+
+/* Tiles */
+
+.proc_main_tile_block {
+  background-color: #FFFFFF;
+  border-radius: 0px;
+  margin-top: 12px;
+}
+
+.proc_tiles_list_single {
+  float: left;
+  display: table;
+  position: relative;
+  text-align: left;
+  margin-left: 7px;
+  margin-bottom: 4px;
+  width: 251px;
+  min-height: 32px;
+  padding-bottom: 2px;
+  color: #000000;
+  border: 2px outset rgba(255, 255, 255, .5);
+}
+
+.proc_tile_list_art {
+  max-width: 240px;
+  margin-top: 8px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  margin-right: 4px;
+  float: left;
+}
+
+.proc_tile_list_art.proc-tile-content-img {
+  max-width: 30px;
+  max-height: 25px;
+  margin-top: 3px;
+}
+
+.proc_tile_list_title {
+  float: left;
+  width: 235px;
+  margin-top: 2px;
+  margin-left: 5px;
+  font-size: 11px;
+  text-align: justify;
+  word-wrap: break-word;
+}
+
+.proc_tile_list_title.proc-tile-content-title {
+  width: 200px;
+}
+
+/* Tile Icons */
+
+.proc_tile_icons {
+  position: relative;
+  right: 0;
+  bottom: 2px;
+  width: 100%;
+  float: right;
+}
+
+.main-tile-dragged {
+  float: left;
+  width: 36.9%;
+  height: 131px;
 }

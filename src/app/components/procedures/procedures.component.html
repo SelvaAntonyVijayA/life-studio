@@ -1,7 +1,10 @@
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+<link rel="stylesheet" href="/css/ti_icons.css">
 <div class="container procedures_container">
   <div class="page_block procedures_head">
     <div class="procedure_inputs">
-      <input class="form-control input-sm procedure_name" type="text" placeholder="Folder Name">
+      <input [(ngModel)]="procedureName" class="form-control input-sm procedure_name" type="text" placeholder="Procedure Name">
 
       <select class="form-control input-sm procedure_type"></select>
       <select [(ngModel)]="selectedLanguage" (ngModelChange)="languageChange($event)" class="form-control input-sm language">
@@ -14,13 +17,13 @@
       </div>
     </div>
     <div class="procedure_btns">
-      <button (click)="newFolder($event)" class="ili-btn procedure_new">
+      <button (click)="newProcedure($event)" class="ili-btn procedure_new">
         New
       </button>
       <button (click)="saveProcedure($event, true)" class="ili-btn btn procedure_save">
         Save
       </button>
-      <button (click)="duplicateProcedure($event, true)" class="ili-btn procedure_duplicate">
+      <button (click)="duplicateProcedure($event)" class="ili-btn procedure_duplicate">
         Duplicate
       </button>
       <button (click)="deleteProcedure($event)" class="ili-btn procedure_delete">
@@ -88,28 +91,122 @@
       <div *ngFor="let dragTile of procedure!.draggedTiles | reverse; let i = index; trackBy: trackByUniqueId" class="ili-panel procedure_content">
         {{ setDragIndex(i, dragTile)}}
         <div *ngIf="!dragTile.hasOwnProperty('procedureDragContainer')" class="procedure_main_panel">
-         <div class="tile-title-drag-btns">
-           <div class="top-tile-title">
+          <div class="tile-title-drag-btns">
+            <div class="top-tile-title">
               <label class="procedure_tile_title"> {{dragTile?.tile?.title}} </label>
-           </div>
-          <div class="drag_buttons">
-            <button (click)="addDraggable(i)" class="trigger_btn" title="Add Space">
-              <span class="glyphicon glyphicon-plus"></span>
-            </button>
-            <button (click)="replicateTile(dragTile)" class="trigger_btn" title="Replicate">
-              <span class="glyphicon glyphicon-retweet"></span>
-            </button>
-            <button (click)="moveUpDown('up', i)" class="trigger_btn" title="MoveUp">
-              <span class="glyphicon glyphicon-arrow-up"></span>
-            </button>
-            <button (click)="moveUpDown('down', i)" class="trigger_btn" title="MoveDown">
-              <span class="glyphicon glyphicon-arrow-down"></span>
-            </button>
-            <button (click)="deleteDraggedTile(i)" class="trigger_btn" title="Remove">
-              <span class="glyphicon glyphicon-remove"></span>
-            </button>
+            </div>
+            <div class="drag_buttons">
+              <button class="trigger_btn" title="Add Icon and recommended size 200x200">
+                <span class="glyphicon glyphicon-upload"></span>
+              </button>
+              <button (click)="addDraggable(i)" class="trigger_btn" title="Add Space">
+                <span class="glyphicon glyphicon-plus"></span>
+              </button>
+              <button (click)="replicateTile(dragTile)" class="trigger_btn" title="Replicate">
+                <span class="glyphicon glyphicon-retweet"></span>
+              </button>
+              <button (click)="moveUpDown('up', i)" class="trigger_btn" title="MoveUp">
+                <span class="glyphicon glyphicon-arrow-up"></span>
+              </button>
+              <button (click)="moveUpDown('down', i)" class="trigger_btn" title="MoveDown">
+                <span class="glyphicon glyphicon-arrow-down"></span>
+              </button>
+              <button (click)="deleteDraggedTile(i)" class="trigger_btn" title="Remove">
+                <span class="glyphicon glyphicon-remove"></span>
+              </button>
+            </div>
           </div>
-         </div>
+          <div class="dragged-tile-inputs">
+            <div style="float:left; margin-top: 5px; padding-left: 12px;" class="checkbox">
+              <label>
+                <input value="true" [checked]="dragTile['permanent']" [(ngModel)]="dragTile['permanent']" style="margin-top: 2px;" type="checkbox"
+                  value="">Permanent</label>
+            </div>
+            <div style="float:left; margin-top: 5px;" class="checkbox">
+              <label>
+                <input value="true" [checked]="dragTile['showName']" [(ngModel)]="dragTile['showName']" style="margin-top: 2px;" type="checkbox"
+                  value="">Show name</label>
+            </div>
+            <div style="float:left; margin-top: 5px;" class="checkbox">
+              <label>
+                <input value="true" [checked]="dragTile['reminder']" [(ngModel)]="dragTile['reminder']" style="margin-top: 2px;" type="checkbox"
+                  value="">Include calendar reminder</label>
+            </div>
+            <div style="float:left; margin-top: 5px;" class="checkbox">
+              <label>
+                <input value="true" [checked]="dragTile['isHospital']" [(ngModel)]="dragTile['isHospital']" style="margin-top: 2px;" type="checkbox"
+                  value="">HC provider only</label>
+            </div>
+            <div style="float:left; margin-top: 5px;" class="checkbox">
+              <label>
+                <input value="true" [checked]="dragTile['notForPatient']" [(ngModel)]="dragTile['notForPatient']" style="margin-top: 2px;"
+                  type="checkbox" value="">Not for patient</label>
+            </div>
+            <div style="float:left; padding-left: 12px;" class="checkbox">
+              <label>
+                <input value="true" [checked]="dragTile['topSquare']" [(ngModel)]="dragTile['topSquare']" style="margin-top: 2px;" type="checkbox"
+                  value="">Double Width</label>
+            </div>
+            <div style="float:left; padding-left: 6px;" class="checkbox">
+              <label>
+                <input value="true" [checked]="dragTile['orderFirst']" [(ngModel)]="dragTile['orderFirst']" style="margin-top: 2px;" type="checkbox"
+                  value="">Top of page</label>
+            </div>
+          </div>
+          <div class="tile-trigger-expiry-content">
+            <div class="proc_menu_art">
+              <div class="proc_icon-img">
+                <img class="proc_menu_item_art proc_img_v_align" src="dragTile['imageUrl'] | safe">
+              </div>
+            </div>
+            <div class="proc-tile-trigger-content">
+              <div *ngIf="!dragTile['permanent']" style="float:left; width:100%;">
+                <span style="display:inline; margin-left: 5px; margin-right: 10px;">Trigger </span>
+                <input OnlyNumbers="true" [(ngModel)]="dragTile['triggerDays']" type="text" class="form-control input-sm trigger-action-days"
+                />
+                <span style="margin-left:7px; display:inline;">day(s)</span>
+                <select [ngModel]="dragTile['trigger-action-on']" class="form-control input-sm trigger-days">
+                  <option [value]="'before'">Before</option>
+                  <option [value]="'after'">After</option>
+                </select>
+                <span style="margin-left:7px; display:inline;">the procedure </span>
+                <div *ngIf="dragTile['triggerDays'] === 0 || utils.isNullOrEmpty(dragTile['triggerDays'])" style="float: left; width: 97%; margin-top: 7px; margin-left: 6px;">
+                  <span>Trigger on the day of procedure</span>
+                </div>
+                <div style="float: left; width: 97%; margin-top: 12px; margin-left: 2px;">
+                  <span style="display:inline; margin-left: 5px;">Expire in </span>
+                  <input OnlyNumbers="true" [(ngModel)]="dragTile['expireInDays']" type="text" class="form-control input-sm trigger-expiry-days"
+                  />
+                  <span style="margin-left:7px; display:inline;">day(s)</span>
+                </div>
+              </div>
+            </div>
+            <div class="main-tile-dragged">
+              <div class="proc_main_tile_block proc_tiles_list_single">
+                <img class="proc_tile_list_art proc-tile-content-img" [src]="dragTile['tile']?.art | safe">
+                <div class="proc_tile_list_title proc-tile-content-title">{{dragTile['tile']?.title}}</div>
+                <div class="proc_tile_icons">
+                  <span [title]="dragTile['tile']!.tileApps" [style.display]="dragTile['tile']!.isWeight" class="step weight"></span>
+                  <span [title]="dragTile['tile']!.tileHealthStatusRules" [style.display]="dragTile['tile']!.isRules" class="step smart smarticon report-rule-tile">
+                    <i class="icon ion-heart"></i>
+                  </span>
+                  <span [title]="dragTile['tile']!.tileProcedure" [style.display]="dragTile['tile']!.isProcedure" class="step smart smarticon smarticon-tile">
+                    <i class="icon ion-medkit"></i>
+                  </span>
+                  <span [title]="dragTile['tile']!.tileSmart" [style.display]="dragTile['tile']!.isSmart" class="step smart smarticon smarticon-tile">
+                    <i class="icon ion-lightbulb"></i>
+                  </span>
+                  <span [title]="dragTile['tile']!.tileNotifications" [style.display]="dragTile['tile']!.isNotification" class="step smart noteicon smarticon-tile"
+                    aria-hidden="true">
+                    <i class="icon ion-android-notifications-none"></i>
+                  </span>
+                  <span [title]="dragTile['tile']!.tileApps" [style.display]="dragTile['tile']!.isRole" class="step smart smarticon smarticon-tile">
+                    <i class="icon ion-android-person"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div iliDropTarget (myDrop)="onDrop($event, true)" *ngIf="dragTile.hasOwnProperty('procedureDragContainer')" class="draggable_label drop_target">
           To add Tiles to this Event, simply drag them in this space.

@@ -40,6 +40,7 @@ import { FilterByTextPipe, OrderByPipe, ReversePipe } from '../../helpers/filter
 import { MalihuScrollbarModule } from 'ngx-malihu-scrollbar';
 import { DraggableDirective } from '../../helpers/draggable.directive';
 import { DropTargetDirective } from '../../helpers/drop-target.directive';
+import { OnlyNumbersDirective } from '../../helpers/only-numbers.directive';
 
 import { DateTimePickerDirective } from '../../helpers/date-time-picker.directive';
 
@@ -51,7 +52,7 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
     TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
-    FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent],
+    FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService]
 })

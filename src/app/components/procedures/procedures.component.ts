@@ -14,7 +14,8 @@ declare var combobox: any;
 @Component({
   selector: 'procedures',
   templateUrl: './procedures.component.html',
-  styleUrls: ['./procedures.component.css']
+  styleUrls: ['./procedures.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class ProceduresComponent implements OnInit {
 
@@ -56,23 +57,50 @@ export class ProceduresComponent implements OnInit {
   languageList: any[] = [];
   selectedLanguage: string = "en";
   procedureCategories: any[] = [];
+  procedureName: string = "";
 
   /* Setting for default dragged tile */
-  setDefaultDraggedTile(tile: any) {
+  setDefaultDraggedTile(tile: any, procObj?: Object) {
     var dragged = {
       "uniqueId": this.getUniqueId(), "tile": {},
     };
 
     if (tile && !this.utils.isEmptyObject(tile)) {
+      tile = this.tileNotifyIcons(tile);
+
       var currTile = {
         "_id": tile.hasOwnProperty("_id") ? tile["_id"] : "-1",
         "title": tile.hasOwnProperty("title") && !this.utils.isNullOrEmpty(tile["title"]) ? tile["title"] : "",
         "art": tile.hasOwnProperty("art") && !this.utils.isNullOrEmpty(tile["art"]) ? tile["art"] : "",
-        "categoryName": tile.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(tile["categoryName"]) ? tile["categoryName"] : ""
+        "categoryName": tile.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(tile["categoryName"]) ? tile["categoryName"] : "",
+        "tileApps": tile["tileApps"],
+        "isWeight": tile["isWeight"],
+        "tileHealthStatusRules": tile["tileHealthStatusRules"],
+        "isRules": tile["isRules"],
+        "tileProcedure": tile["tileProcedure"],
+        "isProcedure": tile["isProcedure"],
+        "tileSmart": tile["tileSmart"],
+        "isSmart": tile["isSmart"],
+        "tileNotifications": tile["tileNotifications"],
+        "isNotification": tile["isNotification"],
+        "isRole": tile["isRole"]
       }
 
       dragged["tile"] = currTile;
     }
+
+    dragged["triggerDays"] = 0;
+    dragged["trigger-action-on"] = "before";
+    dragged["expireInDays"] = 0;
+    dragged["imageUrl"] = "";
+    dragged["permanent"] = false;
+    dragged["topSquare"] = false;
+    dragged["orderFirst"] = false;
+    dragged["showName"] = true;
+    dragged["reminder"] = false;
+    dragged["isHospital"] = false;
+    dragged["notForPatient"] = false;
+    dragged["createDate"] = (new Date()).toUTCString();
 
     return dragged;
   };
@@ -231,6 +259,75 @@ export class ProceduresComponent implements OnInit {
     return uniqueId;
   };
 
+  tileNotifyIcons(currTile: Object) {
+    var tileNotifications = "";
+    var tileSmart = "";
+    var pageApps = "";
+    var tileProcedure = "";
+    var tileRules = "";
+
+    if (currTile.hasOwnProperty("notification") && currTile["notification"].hasOwnProperty("apps") && currTile["notification"]["apps"].length > 0) {
+      for (let i = 0; i < currTile["notification"]["apps"].length; i++) {
+        var app = currTile["notification"]["apps"][i];
+        tileNotifications += i === 0 ? app.name : ", " + app.name;
+      }
+
+      currTile["isNotification"] = "block";
+    } else {
+      currTile["isNotification"] = "none";
+    }
+
+    if (currTile.hasOwnProperty("smart") && currTile["smart"].hasOwnProperty("apps") && currTile["smart"]["apps"].length > 0) {
+      for (let i = 0; i < currTile["smart"]["apps"].length; i++) {
+        var smartApp = currTile["smart"]["apps"][i];
+        tileSmart += i == 0 ? smartApp.name : ", " + smartApp.name;
+      }
+
+      currTile["isSmart"] = "block";
+    } else {
+      currTile["isSmart"] = "none";
+    }
+
+    if (currTile.hasOwnProperty("Apps") && currTile["Apps"].length > 0) {
+      for (let i = 0; i < currTile["Apps"].length; i++) {
+        var app = currTile["Apps"][i];
+        pageApps += i === 0 ? app.appName : ", " + app.appName;
+      }
+    }
+
+    if (currTile.hasOwnProperty("Procedure") && currTile["Procedure"].length > 0) {
+      for (let i = 0; i < currTile["Procedure"].length; i++) {
+        var procedure = currTile["Procedure"][i];
+        tileProcedure += i === 0 ? procedure.name : ", " + procedure.name;
+      }
+
+      currTile["isProcedure"] = "block";
+    } else {
+      currTile["isProcedure"] = "none";
+    }
+
+    if (currTile.hasOwnProperty("hsrRuleEngine") && currTile["hsrRuleEngine"].length > 0) {
+      for (let i = 0; i < currTile["hsrRuleEngine"].length; i++) {
+        var hsr = currTile["hsrRuleEngine"][i];
+        tileRules += i === 0 ? hsr.ruleName : ", " + hsr.ruleName;
+      }
+
+      currTile["isRules"] = "block";
+    } else {
+      currTile["isRules"] = "none";
+    }
+
+    currTile["isWeight"] = currTile.hasOwnProperty("isWeight") && currTile["isWeight"] ? "block" : "none";
+    currTile["isRole"] = currTile.hasOwnProperty("isRoleBased") && currTile["isRoleBased"] ? "block" : "none";
+    currTile["tileNotifications"] = tileNotifications;
+    currTile["tileSmart"] = tileSmart;
+    currTile["tileApps"] = pageApps;
+    currTile["tileProcedure"] = tileProcedure;
+    currTile["tileHealthStatusRules"] = tileRules;
+
+    return currTile;
+  };
+
   /* Filter Changing */
   filterChange(val: any, fieldName: string) {
     if (fieldName === "procedureCategory") {
@@ -301,14 +398,14 @@ export class ProceduresComponent implements OnInit {
       }
     }
   };
-  
+
   /* Adding a duplicated dragged tile */
   replicateTile(obj: any) {
     var replicateTile = !this.utils.isEmptyObject(obj) && obj.hasOwnProperty("tile") ? obj["tile"] : {};
     var replicatedTile = this.setDefaultDraggedTile(replicateTile);
     this.procedure["draggedTiles"].push(replicatedTile);
   };
-  
+
   /* Moving dragged tiles up and down */
   moveUpDown(move: string, idx: number) {
     var totalIdx = this.procedure["draggedTiles"].length - 1;
@@ -328,6 +425,32 @@ export class ProceduresComponent implements OnInit {
     var tile = this.procedure["draggedTiles"][currIdx]["tile"];
     this.droppedTile = !this.utils.isEmptyObject(tile) ? Object.assign({}, tile) : {};
     this.procedure["draggedTiles"].splice(currIdx, 1);
+  };
+
+  /* New Folder */
+  newProcedure(e: any) {
+    e.preventDefault();
+    this.resetProcedure("reset");
+  };
+
+  /* Save Procedure */
+  saveProcedure(e: any, showMessage?: boolean) {
+    if (!this.utils.isNullOrEmpty(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+
+  };
+
+  /* Duplicate Procedure */
+  duplicateProcedure(e: any) {
+    e.preventDefault();
+  };
+
+  /* Delete Procedure */
+  deleteProcedure(e: any) {
+    e.preventDefault();
   };
 
   ngOnInit() {
