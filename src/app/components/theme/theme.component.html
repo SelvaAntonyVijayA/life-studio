@@ -13,18 +13,18 @@
       <select [(ngModel)]="themeList" (ngModelChange)="themeChange($event)" class="form-control input-sm" id="themesList" placeholder="Select / Add Themes">
         <option *ngFor="let theObj of themes; let i = index" [value]="theObj?._id">{{theObj?.name}}</option>
       </select>
-      <input [(ngModel)]="name" (change)="colorChange($event)" class='form-control theme_title input-sm' type='text' placeholder='Name'
+      <input [(ngModel)]="name" class='form-control theme_title input-sm' type='text' placeholder='Name'
         value='' />
       <button (click)="newTheme($event)" class='ili-btn btn_theme_new'>
         New
       </button>
-      <button (click)="saveTheme($event)" class='ili-btn btn_theme_save'>
+      <button (click)="saveTheme($event)" [style.display]="save" class='ili-btn btn_theme_save'>
         Save
       </button>
-      <button (click)="saveAsTheme($event)" class='ili-btn btn_theme_save_as'>
+      <button (click)="saveAsTheme($event)" [style.display]="saveAs" class='ili-btn btn_theme_save_as'>
         Save As
       </button>
-      <button (click)="deleteTheme($event)" class='ili-btn btn_theme_delete'>
+      <button (click)="deleteTheme($event)" [style.display]="delete" class='ili-btn btn_theme_delete'>
         Delete
       </button>
       <button (click)="previewTheme($event)" class='ili-btn theme_preview'>
@@ -342,9 +342,9 @@
             <label class='label themes_name'>Checked Before BG Color : </label>
           </div>
           <input [(ngModel)]="radioCheckedBeforeBg" (change)="colorChange($event, 'radioCheckedBeforeBg')" class='form-control input-sm themes_input radio_btn_checked_before_bg'
-            [(colorPicker)]="pageColor" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
-            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageColor" type='text' placeholder='' value=''
-          />
+            [(colorPicker)]="radioCheckedBeforeBg" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+            [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="radioCheckedBeforeBg" type='text' placeholder=''
+            value='' />
         </div>
       </fieldset>
     </div>

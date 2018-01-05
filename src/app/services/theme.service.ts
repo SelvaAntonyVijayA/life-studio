@@ -37,7 +37,7 @@ export class ThemeService {
     var obj = {};
 
     return this.http
-      .post(id, JSON.stringify({ "form_data": obj }), { headers: this.headers })
+      .post(url, JSON.stringify({ "form_data": obj }), { headers: this.headers })
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);

@@ -107,7 +107,7 @@ export class ThemeComponent implements OnInit {
       var isConfirm = confirm("Are you sure want to delete this Tile?");
 
       if (isConfirm) {
-        this.themeService.getThemes(this.id)
+        this.themeService.deleteTheme(this.id)
           .then(res => {
 
             if (res && res.msg == 'exists') {
@@ -174,12 +174,12 @@ export class ThemeComponent implements OnInit {
 
   getThemeObject(isSaveAs) {
     var themeObj = {};
-    var role = this.raccess["name"];
+    var role = this.raccess["role"]["name"];
 
-    themeObj["name"] = $('.theme_title').val();
+    themeObj["name"] = this.name;
     themeObj["dateCreated"] = (new Date()).toUTCString();
     themeObj["createdOrg"] = this.oid;
-    themeObj["role"] = this.raccess["name"];
+    themeObj["role"] = role;
     themeObj["lastUpdatedOn"] = (new Date()).toUTCString();
 
     if (role.toLowerCase() !== 'iliadmin') {
@@ -231,39 +231,39 @@ export class ThemeComponent implements OnInit {
   };
 
   resetValues(theme?: any) {
-    this.pageColor = theme && theme.features ? theme.features.pageColor : "";
-    this.pageFontSize = theme && theme.features ? theme.features.pageFontSize : '';
-    this.pageFontColor = theme && theme.features ? theme.features.pageFontColor : '';
-    this.pageFontFamily = theme && theme.features ? theme.features.pageFontFamily : '';
-    this.pageFontFamily = theme && theme.features ? theme.features.pageLineHeight : '';
-    this.pagePlaceHolderColor = theme && theme.features ? theme.features.pagePlaceHolderColor : '';
-    this.pageFillColor = theme && theme.features ? theme.features.pageFillColor : '';
-    this.txtFocusColor = theme && theme.features ? theme.features.txtFocusColor : '';
-    this.pagePanelColor = theme && theme.features ? theme.features.pagePanelColor : '';
-    this.pagePanelTextColor = theme && theme.features ? theme.features.pagePanelTextColor : '';
-    this.buttonBackgroundColor = theme && theme.features ? theme.features.buttonBackgroundColor : '';
-    this.buttonSelectedColor = theme && theme.features ? theme.features.buttonSelectedColor : '';
-    this.buttonTextColor = theme && theme.features ? theme.features.buttonTextColor : '';
-    this.buttonHoverColor = theme && theme.features ? theme.features.buttonHoverColor : '';
-    this.buttonFontFamily = theme && theme.features ? theme.features.buttonFontFamily : '';
-    this.buttonBorderRadius = theme && theme.features ? theme.features.buttonBorderRadius : '';
-    this.buttonFloat = theme && theme.features ? theme.features.buttonFloat : '';
-    this.buttonWidth = theme && theme.features ? theme.features.buttonWidth : '';
-    this.buttonTextAlign = theme && theme.features ? theme.features.buttonTextAlign : '';
-    this.boxColor = theme && theme.features ? theme.features.boxColor : '';
-    this.borderColor = theme && theme.features ? theme.features.borderColor : '';
-    this.popupColor = theme && theme.features ? theme.features.popupColor : '';
-    this.popupTextColor = theme && theme.features ? theme.features.popupTextColor : '';
-    this.socialColor = theme && theme.features ? theme.features.socialColor : '';
-    this.pageInput = theme && theme.features ? theme.features.pageInput : '';
-    this.radioWidth = theme && theme.features ? theme.features.radioWidth : '';
-    this.radioHeight = theme && theme.features ? theme.features.radioHeight : '';
-    this.radioBorder = theme && theme.features ? theme.features.radioBorder : '';
-    this.radioBoxShadow = theme && theme.features ? theme.features.radioBoxShadow : '';
-    this.radioBoxShadowHover = theme && theme.features ? theme.features.radioBoxShadowHover : '';
-    this.radioCheckedBeforeBg = theme && theme.features ? theme.features.radioCheckedBeforeBg : '';
-    this.radioBorderRadious = theme && theme.radioBorderRadious ? theme.radioBorderRadious : '';
-    this.radioOutline = theme && theme.radioOutline ? theme.radioOutline : '';
+    this.pageColor = theme && theme.features && theme.features.hasOwnProperty("pageColor") ? theme.features.pageColor : "";
+    this.pageFontSize = theme && theme.features && theme.features.hasOwnProperty("pageFontSize") ? theme.features.pageFontSize : '';
+    this.pageFontColor = theme && theme.features && theme.features.hasOwnProperty("pageFontColor") ? theme.features.pageFontColor : '';
+    this.pageFontFamily = theme && theme.features && theme.features.hasOwnProperty("pageFontFamily") ? theme.features.pageFontFamily : '';
+    this.pageLineHeight = theme && theme.features && theme.features.hasOwnProperty("pageLineHeight") ? theme.features.pageLineHeight : '';
+    this.pagePlaceHolderColor = theme && theme.features && theme.features.hasOwnProperty("pagePlaceHolderColor") ? theme.features.pagePlaceHolderColor : '';
+    this.pageFillColor = theme && theme.features && theme.features.hasOwnProperty("pageFillColor") ? theme.features.pageFillColor : '';
+    this.txtFocusColor = theme && theme.features && theme.features.hasOwnProperty("txtFocusColor") ? theme.features.txtFocusColor : '';
+    this.pagePanelColor = theme && theme.features && theme.features.hasOwnProperty("pagePanelColor") ? theme.features.pagePanelColor : '';
+    this.pagePanelTextColor = theme && theme.features && theme.features.hasOwnProperty("pagePanelTextColor") ? theme.features.pagePanelTextColor : '';
+    this.buttonBackgroundColor = theme && theme.features && theme.features.hasOwnProperty("buttonBackgroundColor") ? theme.features.buttonBackgroundColor : '';
+    this.buttonSelectedColor = theme && theme.features && theme.features.hasOwnProperty("buttonSelectedColor") ? theme.features.buttonSelectedColor : '';
+    this.buttonTextColor = theme && theme.features && theme.features.hasOwnProperty("buttonTextColor") ? theme.features.buttonTextColor : '';
+    this.buttonHoverColor = theme && theme.features && theme.features.hasOwnProperty("buttonHoverColor") ? theme.features.buttonHoverColor : '';
+    this.buttonFontFamily = theme && theme.features && theme.features.hasOwnProperty("buttonFontFamily") ? theme.features.buttonFontFamily : '';
+    this.buttonBorderRadius = theme && theme.features && theme.features.hasOwnProperty("buttonBorderRadius") ? theme.features.buttonBorderRadius : '';
+    this.buttonFloat = theme && theme.features && theme.features.hasOwnProperty("buttonFloat") ? theme.features.buttonFloat : '';
+    this.buttonWidth = theme && theme.features && theme.features.hasOwnProperty("buttonWidth") ? theme.features.buttonWidth : '';
+    this.buttonTextAlign = theme && theme.features && theme.features.hasOwnProperty("buttonTextAlign") ? theme.features.buttonTextAlign : '';
+    this.boxColor = theme && theme.features && theme.features.hasOwnProperty("boxColor") ? theme.features.boxColor : '';
+    this.borderColor = theme && theme.features && theme.features.hasOwnProperty("borderColor") ? theme.features.borderColor : '';
+    this.popupColor = theme && theme.features && theme.features.hasOwnProperty("popupColor") ? theme.features.popupColor : '';
+    this.popupTextColor = theme && theme.features && theme.features.hasOwnProperty("popupTextColor") ? theme.features.popupTextColor : '';
+    this.socialColor = theme && theme.features && theme.features.hasOwnProperty("socialColor") ? theme.features.socialColor : '';
+    this.pageInput = theme && theme.features && theme.features.hasOwnProperty("pageInput") ? theme.features.pageInput : '';
+    this.radioWidth = theme && theme.features && theme.features.hasOwnProperty("radioWidth") ? theme.features.radioWidth : '';
+    this.radioHeight = theme && theme.features && theme.features.hasOwnProperty("radioHeight") ? theme.features.radioHeight : '';
+    this.radioBorder = theme && theme.features && theme.features.hasOwnProperty("radioBorder") ? theme.features.radioBorder : '';
+    this.radioBoxShadow = theme && theme.features && theme.features.hasOwnProperty("radioBoxShadow") ? theme.features.radioBoxShadow : '';
+    this.radioBoxShadowHover = theme && theme.features && theme.features.hasOwnProperty("radioBoxShadowHover") ? theme.features.radioBoxShadowHover : '';
+    this.radioCheckedBeforeBg = theme && theme.features && theme.features.hasOwnProperty("radioCheckedBeforeBg") ? theme.features.radioCheckedBeforeBg : '';
+    this.radioBorderRadious = theme && theme.features && theme.features.hasOwnProperty("radioBorderRadious") ? theme.features.radioBorderRadious : '';
+    this.radioOutline = theme && theme.features && theme.features.hasOwnProperty("radioOutline") ? theme.features.radioOutline : '';
     this.id = theme ? theme._id : '';
     this.createdOrg = theme && theme.createdOrg ? theme.createdOrg : '';
     this.organizationId = theme && theme.organizationId ? theme.organizationId : '';
@@ -309,11 +309,12 @@ export class ThemeComponent implements OnInit {
               this.save = "none"
             }
           } else {
+            this.themes = [];
             var obj = {};
             obj["_id"] = "-1";
             obj["name"] = "Select";
 
-            themes.push(obj)
+            themes.unshift(obj)
             this.themes = themes;
           }
         }
@@ -323,25 +324,90 @@ export class ThemeComponent implements OnInit {
   _save(isSaveAs?: boolean, auto?: boolean) {
     var themeObj = this.getThemeObject(isSaveAs);
 
-    $.ajax({
-      type: "POST",
-      cache: false,
-      async: false,
-      data: {
-        "form_data": JSON.stringify(themeObj)
-      },
-      url: '/tiletheme/save',
-      success: function (res) {
-        this.loadThemes(res._id);
+    this.themeService.saveTheme(themeObj)
+      .then(res => {
+        this.loadThemes();
+        this.themeList = res._id;
 
         if (auto) {
-          this.themeService.updatePreviewTile(this.themeList, true);
-
+          this.updatePreviewTile(this.themeList, true);
         } else {
           alert('Theme Saved');
         }
+      });
+  };
+
+  updatePreviewTile(id?: string, isOpen?: boolean) {
+    if ($('#theme-preview').length > 0) {
+      $("#theme-preview").contents().find("body").html('');
+    }
+
+    var tileObj = {
+      "template": id
+    };
+
+    this.themeService.updatePreviewTile(id).then(previewResponse => {
+      if (previewResponse) {
+        if (isOpen) {
+          //this. _themePreview(previewResponse._id);
+        }
+      } else {
+        if (isOpen) {
+          alert('Unable to preview');
+        }
       }
     });
+  };
+
+  _themePreview(id) {
+    $.cookie('preview', 'preview', {
+      path: '/'
+    });
+
+    $('#theme_preview_phone').html('');
+    $('#theme_preview_tab').html('');
+    var tileUrl = '/app/tile/' + id;
+    var url = "/app/tile/" + id;
+    this._themePreviewData(url);
+  };
+
+  _themePreviewData(url) {
+    var html = "<iframe id='theme-preview' width='100%' height='100%' src='" + url + "'";
+    html += " frameborder='0' allowfullscreen></iframe>";
+
+    var tab1 = $('<div>').attr('id', 'tabs-1');
+    var tab2 = $('<div>').attr('id', 'tabs-2');
+    var phonePreview = $('<div>').attr('id', 'theme_preview_phone');
+    var tabletPreview = $('<div>').attr('id', 'theme_preview_tab');
+    phonePreview.append(html);
+    tabletPreview.append(html);
+    tab1.append(phonePreview);
+    tab2.append(tabletPreview);
+
+    $.magnificPopup.open({
+      items: [{
+        src: tab2,
+        type: 'inline'
+      }, {
+        src: tab1,
+        type: 'inline'
+      }],
+      gallery: {
+        enabled: true
+      },
+      type: 'image',
+      callbacks: {
+        open: function () {
+        },
+        beforeClose: function () {
+        },
+        close: function () {
+        },
+        afterClose: function () {
+          //updatePreviewTile("", false);
+        }
+      }
+    }, 1);
   };
 
   ngOnInit() {

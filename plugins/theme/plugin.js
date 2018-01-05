@@ -22,7 +22,7 @@ var save = function (req, res, next) {
       obj = {};
       obj._id = result;
 
-      $general.returnJSON(req, res, next, obj);
+      res.send(obj);
     });
   } else {
     options = {};
@@ -111,6 +111,8 @@ var list = function (req, res, next) {
 };
 
 var remove = function (req, res, next) {
+  var obj = {};
+  
   $async.waterfall([
     function (callback) {
       var tileQuery = {};
