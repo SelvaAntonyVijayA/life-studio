@@ -58,9 +58,11 @@ export class ProceduresComponent implements OnInit {
   selectedLanguage: string = "en";
   procedureCategories: any[] = [];
   procedureName: string = "";
+  procedureCategory: string = "-1";
+  isSquare: boolean = false;
 
   /* Setting for default dragged tile */
-  setDefaultDraggedTile(tile: any, procObj?: Object) {
+  setDraggedTile(tile: any, procObj?: Object) {
     var dragged = {
       "uniqueId": this.getUniqueId(), "tile": {},
     };
@@ -89,17 +91,17 @@ export class ProceduresComponent implements OnInit {
       dragged["tile"] = currTile;
     }
 
-    dragged["triggerDays"] = 0;
-    dragged["trigger-action-on"] = "before";
-    dragged["expireInDays"] = 0;
-    dragged["imageUrl"] = "";
-    dragged["permanent"] = false;
-    dragged["topSquare"] = false;
-    dragged["orderFirst"] = false;
-    dragged["showName"] = true;
-    dragged["reminder"] = false;
-    dragged["isHospital"] = false;
-    dragged["notForPatient"] = false;
+    dragged["triggerDays"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("triggerDays") ? procObj["triggerDays"] : 0;
+    dragged["triggerActionOn"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("triggerActionOn") ? procObj["triggerActionOn"] : "before";
+    dragged["expireInDays"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("expireInDays") ? procObj["expireInDays"] : 0;
+    dragged["imageUrl"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("imageUrl") ? procObj["imageUrl"] : 0;
+    dragged["permanent"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("permanent") ? procObj["permanent"] : false;
+    dragged["topSquare"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("topSquare") ? procObj["topSquare"] : false;
+    dragged["orderFirst"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("orderFirst") ? procObj["orderFirst"] : false;
+    dragged["showName"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("showName") ? procObj["showName"] : true;
+    dragged["reminder"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("reminder") ? procObj["reminder"] : false;
+    dragged["isHospital"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("isHospital") ? procObj["isHospital"] : false;
+    dragged["notForPatient"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("notForPatient") ? procObj["notForPatient"] : false;
     dragged["createDate"] = (new Date()).toUTCString();
 
     return dragged;
@@ -115,7 +117,7 @@ export class ProceduresComponent implements OnInit {
 
   /* Dragged tile on drop */
   private onDrop(currTile, isDynamic) {
-    var draggedTile = this.setDefaultDraggedTile(currTile);
+    var draggedTile = this.setDraggedTile(currTile);
 
     if (this.procedure.hasOwnProperty("draggedTiles")) {
       if (this.dragIndex === -1) {
@@ -198,6 +200,7 @@ export class ProceduresComponent implements OnInit {
     this.draggedTiles = [];
     this.selectedLanguage = "en";
     this.procedure = {};
+    this.procedureCategory = "-1";
 
     if (mergeReset && mergeReset === "reset") {
       this.isMerge = { "status": "merge" };
@@ -370,7 +373,240 @@ export class ProceduresComponent implements OnInit {
     e.stopPropagation();
     var self = this;
 
+    var procExist = false;
+
+    if (!this.utils.isEmptyObject(this.procedure) && this.procedure.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.procedure["obj"])) {
+      if (this.procedure["obj"].hasOwnProperty("_id") && !this.utils.isNullOrEmpty(this.procedure["obj"]["_id"])) {
+        procExist = this.procedure["obj"]["_id"] === obj["_id"] ? true : false;
+      }
+    }
+
+    this.checkNew('Would you like to save your previous work?', (r) => {
+      if (r) {
+
+      } else {
+        this.setProcedureData(true, obj);
+      }
+    });
+
     this.procedure["obj"] = obj;
+  };
+
+  setProcedureData(isSelect: boolean, obj: any) {
+    if (isSelect) {
+      this.resetProcedure();
+
+      if (obj && obj.hasOwnProperty("tiles")) {
+        for (let i = 0; i < obj.tiles.length; i++) {
+          this.draggedTiles.push(obj.tiles[i]["_id"]);
+        }
+      }
+    }
+
+    this.procedureService.getEventByTiles(obj._id)
+      .then(proObj => {
+        if (proObj && proObj[0]) {
+          this.assignProcedureDatas(proObj[0]);
+        }
+      });
+  };
+
+  assignProcedureDatas(objProcedure: Object) {
+    this.procedure["obj"] = objProcedure;
+    this.draggedTiles = [];
+
+    if (!this.utils.isEmptyObject(objProcedure)) {
+      this.procedureName = objProcedure.hasOwnProperty("name") ? objProcedure["name"] : "";
+      this.procedureCategory = objProcedure.hasOwnProperty("category") ? objProcedure["category"] : "";
+      this.isSquare = objProcedure.hasOwnProperty("isSquare") ? objProcedure["isSquare"] : false;
+    }
+
+    this.selectedLanguage = "en";
+
+    if (objProcedure.hasOwnProperty("tiles") && objProcedure["tiles"].length > 0) {
+      var currTiles = objProcedure["tiles"];
+
+      for (let i = currTiles.length - 1; 0 <= i; i--) {
+        if (currTiles[i].hasOwnProperty("_id")) {
+          this.draggedTiles.push(currTiles[i]["_id"]);
+          this.assignDragged(currTiles[i]);
+        }
+      }
+    }
+
+  };
+
+  assignDragged(currTile: any) {
+    var tileObj = !this.utils.isEmptyObject(currTile) && currTile.hasOwnProperty("tileData") ? currTile["tileData"] : {};
+    var draggedTile = this.setDraggedTile(tileObj, currTile);
+
+    if (this.procedure.hasOwnProperty("draggedTiles")) {
+      this.procedure["draggedTiles"].push(draggedTile);
+    } else {
+      this.procedure["draggedTiles"] = [draggedTile];
+    }
+  };
+
+  getCompareValues() {
+    var procedure = {};
+
+    procedure["_id"] = !this.utils.isEmptyObject(this.procedure) && this.procedure.hasOwnProperty("obj") && this.procedure["obj"].hasOwnProperty("_id") ? this.procedure["obj"]["_id"] : "-1";
+    procedure["name"] = this.procedureName;
+    procedure["category"] = this.procedureCategory;
+    procedure["type"] = 'procedure';
+    procedure["organizationId"] = this.oid;
+    procedure["isSquare"] = this.isSquare;
+    procedure["tiles"] = [];
+
+    if (this.selectedLanguage !== "en") {
+      var procedureObj = this.selectedLanguage["obj"];
+
+      procedure[this.selectedLanguage] = procedureObj[this.selectedLanguage] ? procedureObj[this.selectedLanguage] : {};
+      procedure[this.selectedLanguage]["tiles"] = this.getDraggedTiles();
+
+      procedure["tiles"] = procedureObj.tiles;
+    }
+
+    if ((procedure["_id"] === "-1" && this.selectedLanguage !== "en") || this.selectedLanguage == "en") {
+      procedure["tiles"] = this.getDraggedTiles();
+    }
+
+    if (this.utils.isNullOrEmpty(procedure["name"].trim()) && this.procedureCategory === "-1" && procedure["tiles"].length === 0) {
+      return {};
+    }
+
+    return procedure;
+  };
+
+  getDraggedTiles() {
+    var currDraggedTiles = [];
+    var drgTiles = this.procedure.hasOwnProperty("draggedTiles") && this.procedure["draggedTiles"].length > 0 ? this.procedure["draggedTiles"] : [];
+
+    for (let i = drgTiles.length - 1; 0 <= i; i--) {
+      var tile = {};
+      var dragTileObj = drgTiles[i];
+
+      tile["_id"] = !this.utils.isEmptyObject(dragTileObj["tile"]) && dragTileObj["tile"].hasOwnProperty("_id") ? dragTileObj["tile"]["_id"] : "-1";
+      tile["title"] = !this.utils.isEmptyObject(dragTileObj["tile"]) && dragTileObj["tile"].hasOwnProperty("title") ? dragTileObj["tile"]["title"] : "";
+      tile["permanent"] = dragTileObj["permanent"];
+
+      if (!tile["permanent"]) {
+        tile["triggerDays"] = dragTileObj["triggerDays"];
+        tile["triggerDays"] = !this.utils.isNullOrEmpty(tile["triggerDays"]) ? tile["triggerDays"] : 0;
+        tile["triggerActionOn"] = dragTileObj["triggerActionOn"];
+        tile["expireInDays"] = dragTileObj["expireInDays"];
+        tile["expireInDays"] = !this.utils.isNullOrEmpty(tile["expireInDays"]) ? tile["expireInDays"] : 0;
+      }
+
+      tile["name"] = dragTileObj["name"];
+      tile["imageUrl"] = dragTileObj["imageUrl"];
+      tile["topSquare"] = dragTileObj["topSquare"];
+      tile["wideSquare"] = tile["topSquare"];
+      tile["orderFirst"] = dragTileObj["orderFirst"];
+      tile["showName"] = dragTileObj["showName"];
+      tile["reminder"] = dragTileObj["reminder"];
+      tile["isHospital"] = dragTileObj["isHospital"];
+      tile["notForPatient"] = dragTileObj["notForPatient"];
+      tile["createDate"] = dragTileObj["createDate"];
+
+      currDraggedTiles.push(tile);
+    }
+
+    return currDraggedTiles;
+  };
+
+  newProcedureCompare() {
+    var id = this.procedure.hasOwnProperty("obj") && this.procedure["obj"].hasOwnProperty("_id") ? this.procedure["obj"]["_id"] : "-1";
+    var obj1 = this.getCompareValues();
+
+    var obj1Sring = JSON.stringify(obj1);
+    obj1 = JSON.parse(this.utils.htmlDecode(obj1Sring));
+
+    var obj2 = {};
+
+    if (!this.utils.isEmptyObject(this.procedure) && this.procedure.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.procedure["obj"])) {
+      var procObj = this.procedure["obj"];
+      obj2 = Object.assign({}, procObj);
+      var obj2Sring = JSON.stringify(obj2);
+      obj2 = JSON.parse(this.utils.htmlDecode(obj2Sring));
+      delete obj2['notification'];
+      delete obj2['smart'];
+      delete obj2['background_landscape'];
+      delete obj2['background_portrait'];
+      delete obj2['background'];
+      delete obj2['createdBy'];
+      delete obj2['dateCreated'];
+      delete obj2['dateUpdated'];
+      delete obj2['Apps'];
+      delete obj2['isRoleBased'];
+      obj2["tiles"] = this.removeCreatedDate(obj2["tiles"]);
+    }
+    delete obj2['descFontColor'];
+    delete obj2['timelineBackgroundColor'];
+    delete obj2['timelineFontColor'];
+    delete obj2['titleFontColor'];
+
+    delete obj2['art'];
+    delete obj2['background_landscape'];
+    delete obj2['background_portrait'];
+    delete obj2['background'];
+    delete obj2['top_banner'];
+    delete obj2['topBannerUrl'];
+    delete obj2['scrollIconsUnder'];
+    delete obj2['descFontColor'];
+    delete obj2['timelineBackgroundColor'];
+    delete obj2['timelineFontColor'];
+    delete obj2['titleFontColor'];
+    delete obj2['timeLine'];
+    delete obj2['doubleWidthSquareDetails'];
+    delete obj2['webBackground'];
+
+    delete obj2['createdBy'];
+    delete obj2['dateCreated'];
+    delete obj2['dateUpdated'];
+    delete obj1['Apps'];
+    delete obj1['isRoleBased'];
+    obj1["tiles"] = this.removeCreatedDate(obj1["tiles"]);
+
+    for (let i = 0; i < this.languageList.length; i++) {
+      var langCode = this.languageList[i]["code"];
+
+      if (langCode !== this.selectedLanguage) {
+        delete obj1[langCode];
+        delete obj2[langCode];
+      } else {
+        if (obj1[langCode] && obj1[langCode]["tiles"]) {
+          obj1[langCode]["tiles"] = this.removeCreatedDate(obj1[langCode]["tiles"]);
+        }
+
+        if (obj2[langCode] && obj2[langCode]["tiles"]) {
+          obj2[langCode]["tiles"] = this.removeCreatedDate(obj2[langCode]["tiles"]);
+        }
+      }
+    }
+
+    return this.utils.compareObj(obj1, obj2);
+  };
+
+  checkNew(message: string, cb: any) {
+    var isModified = this.newProcedureCompare();
+
+    if (!isModified) {
+      var r = confirm(message);
+      cb(r);
+    } else {
+      cb(false);
+    }
+  };
+
+  removeCreatedDate = function (currTiles: any[]) {
+    if (currTiles.length > 0) {
+      for (let i = 0; i < currTiles.length; i++) {
+        delete currTiles[i]["createDate"];
+        delete currTiles[i]["isPushed"];
+        delete currTiles[i]["pusheddatetime"];
+      }
+    }
   };
 
   splitKey(val: string) {
@@ -402,7 +638,7 @@ export class ProceduresComponent implements OnInit {
   /* Adding a duplicated dragged tile */
   replicateTile(obj: any) {
     var replicateTile = !this.utils.isEmptyObject(obj) && obj.hasOwnProperty("tile") ? obj["tile"] : {};
-    var replicatedTile = this.setDefaultDraggedTile(replicateTile);
+    var replicatedTile = this.setDraggedTile(replicateTile);
     this.procedure["draggedTiles"].push(replicatedTile);
   };
 
@@ -439,7 +675,6 @@ export class ProceduresComponent implements OnInit {
       e.preventDefault();
       e.stopPropagation();
     }
-
 
   };
 

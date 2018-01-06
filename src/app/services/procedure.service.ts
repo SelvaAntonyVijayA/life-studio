@@ -49,6 +49,14 @@ export class ProcedureService {
     return Observable.forkJoin([procedures, procedureCategories]);
   };
 
+  getEventByTiles(procedureId: string) {
+    return this.http
+      .get("/procedure/getbytiles/" + procedureId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);

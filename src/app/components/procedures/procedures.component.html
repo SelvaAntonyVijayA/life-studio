@@ -6,7 +6,10 @@
     <div class="procedure_inputs">
       <input [(ngModel)]="procedureName" class="form-control input-sm procedure_name" type="text" placeholder="Procedure Name">
 
-      <select class="form-control input-sm procedure_type"></select>
+      <select [(ngModel)]="procedureCategory" class="form-control input-sm procedure_type">
+        <option [value]="-1">Show All Types</option>
+        <option *ngFor="let procCat of (procedureCategories | orderBy: true : 'name'); let i = index" [value]="procCat?._id">{{procCat?.name}}</option>
+      </select>
       <select [(ngModel)]="selectedLanguage" (ngModelChange)="languageChange($event)" class="form-control input-sm language">
         <option *ngFor="let lang of languageList; let i = index" [value]="lang?.code">{{lang?.name}}</option>
       </select>
@@ -119,38 +122,32 @@
           <div class="dragged-tile-inputs">
             <div style="float:left; margin-top: 5px; padding-left: 12px;" class="checkbox">
               <label>
-                <input value="true" [checked]="dragTile['permanent']" [(ngModel)]="dragTile['permanent']" style="margin-top: 2px;" type="checkbox"
-                  value="">Permanent</label>
+                <input value="true" [checked]="dragTile['permanent']" [(ngModel)]="dragTile['permanent']" style="margin-top: 2px;" type="checkbox">Permanent</label>
             </div>
             <div style="float:left; margin-top: 5px;" class="checkbox">
               <label>
-                <input value="true" [checked]="dragTile['showName']" [(ngModel)]="dragTile['showName']" style="margin-top: 2px;" type="checkbox"
-                  value="">Show name</label>
+                <input value="true" [checked]="dragTile['showName']" [(ngModel)]="dragTile['showName']" style="margin-top: 2px;" type="checkbox">Show name</label>
             </div>
             <div style="float:left; margin-top: 5px;" class="checkbox">
               <label>
-                <input value="true" [checked]="dragTile['reminder']" [(ngModel)]="dragTile['reminder']" style="margin-top: 2px;" type="checkbox"
-                  value="">Include calendar reminder</label>
+                <input value="true" [checked]="dragTile['reminder']" [(ngModel)]="dragTile['reminder']" style="margin-top: 2px;" type="checkbox">Include calendar reminder</label>
             </div>
             <div style="float:left; margin-top: 5px;" class="checkbox">
               <label>
-                <input value="true" [checked]="dragTile['isHospital']" [(ngModel)]="dragTile['isHospital']" style="margin-top: 2px;" type="checkbox"
-                  value="">HC provider only</label>
+                <input value="true" [checked]="dragTile['isHospital']" [(ngModel)]="dragTile['isHospital']" style="margin-top: 2px;" type="checkbox">HC provider only</label>
             </div>
             <div style="float:left; margin-top: 5px;" class="checkbox">
               <label>
                 <input value="true" [checked]="dragTile['notForPatient']" [(ngModel)]="dragTile['notForPatient']" style="margin-top: 2px;"
-                  type="checkbox" value="">Not for patient</label>
+                  type="checkbox">Not for patient</label>
             </div>
             <div style="float:left; padding-left: 12px;" class="checkbox">
               <label>
-                <input value="true" [checked]="dragTile['topSquare']" [(ngModel)]="dragTile['topSquare']" style="margin-top: 2px;" type="checkbox"
-                  value="">Double Width</label>
+                <input value="true" [checked]="dragTile['topSquare']" [(ngModel)]="dragTile['topSquare']" style="margin-top: 2px;" type="checkbox">Double Width</label>
             </div>
             <div style="float:left; padding-left: 6px;" class="checkbox">
               <label>
-                <input value="true" [checked]="dragTile['orderFirst']" [(ngModel)]="dragTile['orderFirst']" style="margin-top: 2px;" type="checkbox"
-                  value="">Top of page</label>
+                <input value="true" [checked]="dragTile['orderFirst']" [(ngModel)]="dragTile['orderFirst']" style="margin-top: 2px;" type="checkbox">Top of page</label>
             </div>
           </div>
           <div class="tile-trigger-expiry-content">
@@ -165,7 +162,7 @@
                 <input OnlyNumbers="true" [(ngModel)]="dragTile['triggerDays']" type="text" class="form-control input-sm trigger-action-days"
                 />
                 <span style="margin-left:7px; display:inline;">day(s)</span>
-                <select [ngModel]="dragTile['trigger-action-on']" class="form-control input-sm trigger-days">
+                <select [ngModel]="dragTile['triggerActionOn']" class="form-control input-sm trigger-days">
                   <option [value]="'before'">Before</option>
                   <option [value]="'after'">After</option>
                 </select>
