@@ -19,6 +19,14 @@ export class ProcedureService {
     this.utils = Utils;
   };
 
+  saveProcedure(procObj: Object) {
+    return this.http
+      .post("/procedure/save", JSON.stringify({ "form_data": procObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
   procedureList(orgId: string, procedureId?: string) {
     var procedureUrl = '/procedure/list/' + orgId;
     procedureUrl = !this.utils.isNullOrEmpty(procedureId) ? procedureUrl + "/" + procedureId : procedureUrl;
@@ -52,6 +60,14 @@ export class ProcedureService {
   getEventByTiles(procedureId: string) {
     return this.http
       .get("/procedure/getbytiles/" + procedureId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  removeProcedure(procedureId: string) {
+    return this.http
+      .get("/procedure/remove/" + procedureId)
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);

@@ -969,7 +969,7 @@ export class EventsComponent implements OnInit {
 
     if (!evtExist) {
       this.checkNew('Would you like to save your previous work?', (r) => {
-        if (r) {
+        if (r) { 
           this.saveEvent("", false, false, "select", obj);
         } else {
           this.setEventData(true, obj);

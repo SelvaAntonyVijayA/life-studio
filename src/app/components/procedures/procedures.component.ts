@@ -91,6 +91,8 @@ export class ProceduresComponent implements OnInit {
       dragged["tile"] = currTile;
     }
 
+    var isTrigger = this.utils.isEmptyObject(procObj);
+
     dragged["triggerDays"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("triggerDays") ? procObj["triggerDays"] : 0;
     dragged["triggerActionOn"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("triggerActionOn") ? procObj["triggerActionOn"] : "before";
     dragged["expireInDays"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("expireInDays") ? procObj["expireInDays"] : 0;
@@ -102,8 +104,7 @@ export class ProceduresComponent implements OnInit {
     dragged["reminder"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("reminder") ? procObj["reminder"] : false;
     dragged["isHospital"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("isHospital") ? procObj["isHospital"] : false;
     dragged["notForPatient"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("notForPatient") ? procObj["notForPatient"] : false;
-    dragged["createDate"] = (new Date()).toUTCString();
-
+    dragged["createDate"] = !this.utils.isEmptyObject(procObj) && procObj.hasOwnProperty("createDate") ? procObj["createDate"] : (new Date()).toUTCString();
     return dragged;
   };
 
@@ -367,7 +368,7 @@ export class ProceduresComponent implements OnInit {
     proc["isRole"] = proc.hasOwnProperty("isRoleBased") && !this.utils.isNullOrEmpty("isRoleBased") && proc["isRoleBased"] ? true : false;
   };
 
-  /* Select Procedure */
+  /* Selecting the current procedure in the DOM*/
   selectProcedure(e: any, obj: any) {
     e.preventDefault();
     e.stopPropagation();
@@ -383,15 +384,14 @@ export class ProceduresComponent implements OnInit {
 
     this.checkNew('Would you like to save your previous work?', (r) => {
       if (r) {
-
+        this.saveProcedure("", false, false, "select", obj);
       } else {
         this.setProcedureData(true, obj);
       }
     });
-
-    this.procedure["obj"] = obj;
   };
 
+  /* Setting the procedure data for the DOM */
   setProcedureData(isSelect: boolean, obj: any) {
     if (isSelect) {
       this.resetProcedure();
@@ -433,7 +433,6 @@ export class ProceduresComponent implements OnInit {
         }
       }
     }
-
   };
 
   assignDragged(currTile: any) {
@@ -539,8 +538,12 @@ export class ProceduresComponent implements OnInit {
       delete obj2['dateUpdated'];
       delete obj2['Apps'];
       delete obj2['isRoleBased'];
-      obj2["tiles"] = this.removeCreatedDate(obj2["tiles"]);
+
+      if (!this.utils.isEmptyObject(obj2) && obj2.hasOwnProperty("tiles")) {
+        obj2["tiles"] = this.removeCreatedDate(obj2["tiles"]);
+      }
     }
+
     delete obj2['descFontColor'];
     delete obj2['timelineBackgroundColor'];
     delete obj2['timelineFontColor'];
@@ -566,7 +569,18 @@ export class ProceduresComponent implements OnInit {
     delete obj2['dateUpdated'];
     delete obj1['Apps'];
     delete obj1['isRoleBased'];
-    obj1["tiles"] = this.removeCreatedDate(obj1["tiles"]);
+
+    if (!this.utils.isEmptyObject(obj1) && obj1.hasOwnProperty("tiles")) {
+      obj1["tiles"] = this.removeCreatedDate(obj1["tiles"]);
+    }
+
+    if (!this.utils.isEmptyObject(obj2) && obj2.hasOwnProperty("tiles")) {
+      for (let i = 0; i < obj2["tiles"].length; i++) {
+        var currTile = obj2["tiles"][i];
+
+        delete currTile["tileData"];
+      }
+    }
 
     for (let i = 0; i < this.languageList.length; i++) {
       var langCode = this.languageList[i]["code"];
@@ -575,11 +589,11 @@ export class ProceduresComponent implements OnInit {
         delete obj1[langCode];
         delete obj2[langCode];
       } else {
-        if (obj1[langCode] && obj1[langCode]["tiles"]) {
+        if (obj1.hasOwnProperty(langCode) && obj1[langCode].hasOwnProperty("tiles")) {
           obj1[langCode]["tiles"] = this.removeCreatedDate(obj1[langCode]["tiles"]);
         }
 
-        if (obj2[langCode] && obj2[langCode]["tiles"]) {
+        if (obj2.hasOwnProperty(langCode) && obj2[langCode].hasOwnProperty("tiles")) {
           obj2[langCode]["tiles"] = this.removeCreatedDate(obj2[langCode]["tiles"]);
         }
       }
@@ -599,7 +613,7 @@ export class ProceduresComponent implements OnInit {
     }
   };
 
-  removeCreatedDate = function (currTiles: any[]) {
+  removeCreatedDate(currTiles: any[]) {
     if (currTiles.length > 0) {
       for (let i = 0; i < currTiles.length; i++) {
         delete currTiles[i]["createDate"];
@@ -607,6 +621,8 @@ export class ProceduresComponent implements OnInit {
         delete currTiles[i]["pusheddatetime"];
       }
     }
+
+    return currTiles;
   };
 
   splitKey(val: string) {
@@ -651,7 +667,6 @@ export class ProceduresComponent implements OnInit {
     this.utils.arrayMove(this.procedure["draggedTiles"], fromIdx, toIdx);
   };
 
-
   /* Deleting current dragged tile */
   deleteDraggedTile(idx: number) {
     this.droppedTile = {};
@@ -663,29 +678,208 @@ export class ProceduresComponent implements OnInit {
     this.procedure["draggedTiles"].splice(currIdx, 1);
   };
 
-  /* New Folder */
+  /* New Procedure */
   newProcedure(e: any) {
     e.preventDefault();
-    this.resetProcedure("reset");
+
+    this.checkNew('Would you like to save your previous work?', (r) => {
+      if (r) {
+        this.saveProcedure("", false, false, "new");
+      } else {
+        this.resetProcedure("reset");
+      }
+    });
   };
 
   /* Save Procedure */
-  saveProcedure(e: any, showMessage?: boolean) {
+  saveProcedure(e: any, showMessage?: boolean, isDuplicate?: boolean, isAnother?: string, procCurrObj?: Object) {
     if (!this.utils.isNullOrEmpty(e)) {
       e.preventDefault();
       e.stopPropagation();
     }
 
+    var procedureObj = {};
+    var id = this.procedure.hasOwnProperty("obj") && this.procedure["obj"].hasOwnProperty("_id") ? this.procedure["obj"]["_id"] : "-1";
+    procedureObj = this.getProcedureObj(id);
+
+
+    if (this.utils.isNullOrEmpty(procedureObj["name"])) {
+      alert('You must at least enter an Procedure name');
+      return false;
+    }
+
+    if (this.procedureCategory === "1") {
+      alert('Please select a type for the Procedure');
+      return false;
+    }
+
+    if (this.selectedLanguage !== "en") {
+      var procObj = this.procedure.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.procedure["obj"]) ? this.procedure["obj"] : {};
+
+      procedureObj[this.selectedLanguage] = procObj.hasOwnProperty(this.selectedLanguage) ? procedureObj[this.selectedLanguage] : {};
+      procedureObj[this.selectedLanguage].tiles = this.getDraggedTiles();
+    }
+
+    if ((id === "-1" && this.selectedLanguage !== "en") || this.selectedLanguage == "en") {
+      procedureObj["tiles"] = this.getDraggedTiles();
+    }
+
+    if (procedureObj.hasOwnProperty("tiles") && procedureObj["tiles"].length > 0) {
+      var procTileResult = this.manageProcedure(procedureObj["tiles"]);
+
+      if (!procTileResult) {
+        return procTileResult;
+      }
+    }
+
+    //this.save(procedureObj, showMessage);
+  };
+
+  save(procObj: Object, showMessage?: boolean, isDuplicate?: boolean, isAnother?: string, procCurrObj?: Object) {
+    var self = this;
+
+    this.procedureService.saveProcedure(procObj)
+      .then(procResObj => {
+        var isNew = procObj.hasOwnProperty("_id") && !self.utils.isNullOrEmpty(procObj["_id"]) ? false : true;
+
+        if (showMessage) {
+          var alertMessage = isNew ? "Procedure Created" : "Procedure Updated";
+          alertMessage = isDuplicate ? "Duplicate Procedure Created" : alertMessage;
+          alert(alertMessage);
+        }
+
+        procObj = self.assignCategoryName(procObj);
+
+        if (!isNew) {
+          var procIndex = this.procedures.map(function (procCat) { return procCat['_id']; }).indexOf(procObj["_id"]);
+
+          if (procIndex !== -1) {
+            this.procedures[procIndex] = procObj;
+          }
+        } else if (procResObj.hasOwnProperty("_id") && !self.utils.isNullOrEmpty(procResObj["_id"])) {
+          procObj["_id"] = procResObj["_id"];
+          this.procedures.push(procObj);
+        }
+
+        if (!this.utils.isNullOrEmpty(isAnother) && isAnother === "select") {
+          this.setProcedureData(true, procCurrObj);
+        } else if (!this.utils.isNullOrEmpty(isAnother) && isAnother === "new") {
+          this.resetProcedure("reset");
+        } else {
+          var isSelect = isDuplicate ? true : false;
+          this.setProcedureData(isSelect, procObj);
+        }
+      });
+  };
+
+  manageProcedure(currTiles) {
+    var assignedTiles = {};
+    var result = true;
+
+    for (let i = 0; i < currTiles.length; i++) {
+      var curTile = currTiles[i];
+
+      if (assignedTiles[curTile["_id"]]) {
+        if ((assignedTiles[curTile["_id"]]["type"] === "permanent") || (curTile.hasOwnProperty("permanent") && curTile["permanent"])) {
+          alert('Same tile cannot be assigned after it is assigned to permanent');
+          result = false;
+          return result;
+        } else if (assignedTiles[curTile["_id"]]["type"] === curTile["triggerActionOn"] && assignedTiles[curTile["_id"]]["days"] === curTile["triggerDays"]) {
+          alert('Same Tile cannot be assigned with same days and with same trigger');
+          result = false;
+          return result;
+        } else {
+          assignedTiles = this.procAssignTile(assignedTiles, curTile);
+        }
+      } else {
+        assignedTiles = this.procAssignTile(assignedTiles, curTile);
+      }
+    }
+
+    return result;
+  };
+
+  procAssignTile(assignedTiles: Object, tileObj: Object) {
+    assignedTiles[tileObj["_id"]] = {}
+    assignedTiles[tileObj["_id"]]["type"] = tileObj["permanent"] ? "permanent" : tileObj["triggerActionOn"];
+
+    if (assignedTiles[tileObj["_id"]]["type"] === "permanent") {
+      assignedTiles[tileObj["_id"]]["days"] = 0;
+    } else {
+      assignedTiles[tileObj["_id"]]["days"] = tileObj["triggerDays"];
+    }
+
+    return assignedTiles;
+  };
+
+  getProcedureObj(procId: string) {
+    var proc = {};
+    var exitsProcObj = this.procedure.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.procedure["obj"]) ? this.procedure["obj"] : {};
+
+    if (procId !== "-1") {
+      proc["_id"] = procId;
+
+      if (exitsProcObj.hasOwnProperty("notification")) {
+        proc["notification"] = exitsProcObj["notification"];
+      }
+
+      if (exitsProcObj.hasOwnProperty("smart")) {
+        proc["smart"] = exitsProcObj["smart"];
+      }
+    }
+
+    proc["name"] = this.procedureName;
+    proc["category"] = this.procedureCategory;
+    proc["type"] = 'procedure';
+    proc["organizationId"] = this.oid;
+    proc["dateCreated"] = procId !== "-1" && exitsProcObj.hasOwnProperty("dateCreated") ? exitsProcObj["dateCreated"] : (new Date()).toUTCString();
+    proc["dateUpdated"] = (new Date()).toUTCString();
+    proc["background_landscape"] = procId !== "-1" && exitsProcObj.hasOwnProperty("background_landscape") ? exitsProcObj["background_landscape"] : "";
+    proc["background_portrait"] = procId !== "-1" && exitsProcObj.hasOwnProperty("background_portrait") ? exitsProcObj["background_portrait"] : "";
+    proc["background"] = procId !== "-1" && exitsProcObj.hasOwnProperty("background") ? exitsProcObj["background"] : "";
+    proc["timelineBackgroundColor"] = procId !== "-1" && exitsProcObj.hasOwnProperty("timelineBackgroundColor") ? exitsProcObj["timelineBackgroundColor"] : "";
+    proc["timelineFontColor"] = procId !== "-1" && exitsProcObj.hasOwnProperty("timelineFontColor") ? exitsProcObj["timelineFontColor"] : "";
+    proc["titleFontColor"] = procId !== "-1" && exitsProcObj.hasOwnProperty("titleFontColor") ? exitsProcObj["titleFontColor"] : "";
+    proc["descFontColor"] = procId !== "-1" && exitsProcObj.hasOwnProperty("descFontColor") ? exitsProcObj["descFontColor"] : "";
+    proc["isSquare"] = this.isSquare;
+
+    return proc;
   };
 
   /* Duplicate Procedure */
   duplicateProcedure(e: any) {
     e.preventDefault();
+
+    if (this.procedure.hasOwnProperty("obj") && this.procedure["obj"].hasOwnProperty("_id")) {
+      this.saveProcedure("", true, true);
+    } else {
+      alert("Procedure not selected");
+    }
   };
 
   /* Delete Procedure */
   deleteProcedure(e: any) {
     e.preventDefault();
+
+    if (this.procedure.hasOwnProperty("obj") && this.procedure["obj"].hasOwnProperty("_id")) {
+      var r = confirm("Are you sure want to delete this Procedure?");
+
+      if (r) {
+        var procId = this.procedure["obj"]["_id"];
+
+        this.procedureService.removeProcedure(procId).then(deleteRes => {
+          if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted") && deleteRes["deleted"]) {
+            var procIndex = this.procedures.map(function (procCat) { return procCat['_id']; }).indexOf(procId);
+            this.procedures.splice(procIndex, 1);
+            
+            this.resetProcedure("reset");
+            alert("Procedure Removed");
+          }
+        });
+      }
+    } else {
+      alert("Procedure not selected");
+    }
   };
 
   ngOnInit() {

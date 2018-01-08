@@ -41,5 +41,7 @@ module.exports = function (app) {
   router.get('/procedurecategory/list/:orgId', $eventcategory.listProcedureCategory);
   router.get('/procedure/list/:orgId/:procedureId*?', $procedure.list);
   router.get('/procedure/getbytiles/:procedureId', $procedure.getByTiles);
+  router.post('/procedure/save', $procedure.save);
+  router.get("/procedure/remove/", $procedure.remove);
   app.use('/', router);
 };

@@ -31,7 +31,6 @@ var isRoleGroup = function (query, options, group, cb) {
   });
 };
 
-
 var _update = function (pQuery, pOptions, data, cb) {
   data = _setPageObj(data);
 

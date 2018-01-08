@@ -33,7 +33,7 @@ export class Utils {
 
   // Check wheather the given object is empty or not
   public static isEmptyObject(obj: any) {
-    return (typeof obj === "undefined" || obj === null || obj === "") ? false : (obj && (Object.keys(obj).length === 0));
+    return (typeof obj === "undefined" || obj === null || obj === "") ? true : (obj && (Object.keys(obj).length === 0));
   }
 
   // Getting parameters from the given url

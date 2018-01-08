@@ -16,6 +16,10 @@ var plugins = {
   "catilist": "catilist",
   "theme": "theme",
   "procedure": "procedure",
+  "tilestatus": "tilestatus",
+  "healthstatusrules": "healthstatusrules",
+  "member": "member",
+  "memberblockdata": "memberblockdata",
   "db": "database"
 };
 
