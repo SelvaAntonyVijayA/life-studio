@@ -38,7 +38,7 @@ export class HeaderComponent implements OnInit {
   userObj: any[] = [];
   allPages: any = {};
   orgs: Organization[] = [];
-  defaultOrg = -1;
+  selectedOrgId: string = "-1";
   selectedOrg: Organization;
   selectedPage: Object = {};
 
@@ -47,11 +47,27 @@ export class HeaderComponent implements OnInit {
     "right": []
   };
 
-  orgChange(sOrg: any) {
-    this.selectedOrg = sOrg;
-    Cookie.set('oid', sOrg._id);
+  orgChangeSet(orgId?: string) {
+    if (!this.utils.isNullOrEmpty(orgId)) {
+      this.selectedOrgId = orgId;
+      Cookie.set('oid', orgId);
+    } else {
+      var currOid = Cookie.get('oid');
+      this.selectedOrgId = !this.utils.isNullOrEmpty(currOid)? currOid : "-1";
+    }
+
+    if (this.selectedOrgId !== "-1") {
+      var orgSelected = this.orgs.filter(org => {
+        return org["_id"] === this.selectedOrgId;
+      });
+
+      if (orgSelected.length > 0) {
+        this.selectedOrg = orgSelected[0];
+      }
+    }
+
     this.getAssignedPages();
-  }
+  };
 
   pageList() {
     if (this.dmDatas.length > 0) {
@@ -203,12 +219,22 @@ export class HeaderComponent implements OnInit {
     });
   };
 
-  loadPage(page: any) {
+  loadPage(page: any, isMenu?: boolean) {
     let token = Cookie.get('token');
     let oid = Cookie.get('oid');
+    var currPageName = "";
+
+    if (isMenu) {
+      currPageName = typeof page === "string" ? page : typeof page === "object" && page.hasOwnProperty("url") ? page["url"] : "";
+    } else {
+      var pageName = Cookie.get('pageName');
+      currPageName = !this.utils.isNullOrEmpty(pageName) ? pageName : typeof page === "string" ? page : typeof page === "object" && page.hasOwnProperty("url") ? page["url"] : "";
+    }
+
+    Cookie.set('pageName', currPageName);
 
     if (!this.utils.isNullOrEmpty(token) && !this.utils.isNullOrEmpty(oid)) {
-      var pageAddress = typeof page === "string" ? page : typeof page === "object" && page.hasOwnProperty("url") ? page["url"] : "";
+      var pageAddress = currPageName;
       this.selectedPage = pageAddress;
       var currPage = "." + pageAddress;
       let link = [currPage];
@@ -428,6 +454,7 @@ export class HeaderComponent implements OnInit {
           this.orgs = this.userObj[0]['organizations'];
           //this.cms.organizations = this.userObj[0]['organizations'];
           //this.selectedOrg = this.orgs[0];
+          this.orgChangeSet();
         }
       }
 

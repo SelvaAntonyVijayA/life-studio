@@ -202,6 +202,8 @@ export class ProceduresComponent implements OnInit {
     this.selectedLanguage = "en";
     this.procedure = {};
     this.procedureCategory = "-1";
+    this.isSquare = false;
+    this.procedureName = "";
 
     if (mergeReset && mergeReset === "reset") {
       this.isMerge = { "status": "merge" };
@@ -413,7 +415,6 @@ export class ProceduresComponent implements OnInit {
 
   assignProcedureDatas(objProcedure: Object) {
     this.procedure["obj"] = objProcedure;
-    this.draggedTiles = [];
 
     if (!this.utils.isEmptyObject(objProcedure)) {
       this.procedureName = objProcedure.hasOwnProperty("name") ? objProcedure["name"] : "";
@@ -422,6 +423,7 @@ export class ProceduresComponent implements OnInit {
     }
 
     this.selectedLanguage = "en";
+    this.procedure["draggedTiles"] = [];
 
     if (objProcedure.hasOwnProperty("tiles") && objProcedure["tiles"].length > 0) {
       var currTiles = objProcedure["tiles"];
@@ -705,9 +707,12 @@ export class ProceduresComponent implements OnInit {
     if (this.utils.isNullOrEmpty(procedureObj["name"])) {
       alert('You must at least enter an Procedure name');
       return false;
+    } else if (isDuplicate) {
+      procedureObj["name"] = "Copy of " + procedureObj["name"];
+      delete procedureObj["_id"];
     }
 
-    if (this.procedureCategory === "1") {
+    if (this.procedureCategory === "-1") {
       alert('Please select a type for the Procedure');
       return false;
     }
