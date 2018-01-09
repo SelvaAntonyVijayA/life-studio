@@ -1,3 +1,4 @@
+var status = require("./status.js");
 var settingsConf;
 var options = {};
 var query = {};

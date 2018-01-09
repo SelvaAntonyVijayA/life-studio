@@ -497,7 +497,6 @@ export class ProceduresComponent implements OnInit {
         tile["expireInDays"] = !this.utils.isNullOrEmpty(tile["expireInDays"]) ? tile["expireInDays"] : 0;
       }
 
-      tile["name"] = dragTileObj["name"];
       tile["imageUrl"] = dragTileObj["imageUrl"];
       tile["topSquare"] = dragTileObj["topSquare"];
       tile["wideSquare"] = tile["topSquare"];
@@ -732,7 +731,7 @@ export class ProceduresComponent implements OnInit {
       }
     }
 
-    //this.save(procedureObj, showMessage);
+    this.save(procedureObj, showMessage, isDuplicate, isAnother, procCurrObj);
   };
 
   save(procObj: Object, showMessage?: boolean, isDuplicate?: boolean, isAnother?: string, procCurrObj?: Object) {
@@ -871,7 +870,7 @@ export class ProceduresComponent implements OnInit {
           if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted") && deleteRes["deleted"]) {
             var procIndex = this.procedures.map(function (procCat) { return procCat['_id']; }).indexOf(procId);
             this.procedures.splice(procIndex, 1);
-            
+
             this.resetProcedure("reset");
             alert("Procedure Removed");
           }

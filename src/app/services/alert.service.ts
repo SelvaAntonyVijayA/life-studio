@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
-import { AlertEmit } from '../helpers/alert-emit';
-import { AlertSettings } from '../helpers/alert-settings';
-import { AlertType } from '../helpers/alert-type';
-
+import { AlertEmit, AlertSettings, AlertType } from '../helpers/alerts';
 
 @Injectable()
 export class AlertService {

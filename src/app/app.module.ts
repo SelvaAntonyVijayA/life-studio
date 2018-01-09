@@ -13,10 +13,8 @@ import { LoginComponent } from './components/login/login.component';
 import { LoginService } from './services/login.service';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 
-import { AlertComponent } from './components/alert/alert.component';
-import { AlertsComponent } from './components/alerts/alerts.component';
+import { AlertComponent , AlertsComponent} from './components/alert/alert.component';
 import { AlertService } from './services/alert.service';
-
 
 @NgModule({
   declarations: [

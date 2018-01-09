@@ -179,7 +179,7 @@ var tileUpdate = function (uQuery, uOptions, dataObj, cb) {
     dataObj = _setTileObj(dataObj);
   }
 
-  $db.update(tileConf.dbname, tileConf.auth, tileConf.collections.tile, uQuery, uOptions, dataObj, function (result) {
+  $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.tile, uQuery, uOptions, dataObj, function (result) {
     cb(result);
   });
 };

@@ -5,9 +5,7 @@ import { CommonService } from '../../services/common.service';
 import { Utils } from '../../helpers/utils';
 import { ThemeService } from '../../services/theme.service';
 import { AlertService } from '../../services/alert.service';
-import { AlertType } from '../../helpers/alert-type';
-import { AlertSettings } from '../../helpers/alert-settings';
-
+import { AlertType, AlertSettings } from '../../helpers/alerts';
 declare var $: any;
 
 @Component({
