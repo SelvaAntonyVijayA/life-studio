@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { AlertType, AlertSettings } from '../../helpers/alerts';
+import { AlertType, AlertSettings, ResolveEmit } from '../../helpers/alerts';
 import { AlertService } from '../../services/alert.service';
 
 
@@ -61,7 +61,7 @@ export class AlertComponent implements OnInit {
     private _ngZone: NgZone
   ) { }
 
-  @Output() close = new EventEmitter();
+  //@Output() close = new EventEmitter();
   @HostBinding('class') type: AlertType;
 
   animationState = 'enter';
@@ -73,25 +73,51 @@ export class AlertComponent implements OnInit {
     overlay: true,
     overlayClickToClose: true,
     showCloseButton: true,
-    duration: 0
+    duration: 0,
+    confirmText: 'Yes',
+    confirmTextIsTemplate: false,
+    declineText: 'No',
+    declineTextIsTemplate: false,
   };
 
   ngOnInit() {
-    if (this.incomingData.duration) {
+    /*
+    if (this.incomingData.duration && this.incomingData.duration != 0) {
       this._ngZone.runOutsideAngular(() =>
         setTimeout(() =>
           this._ngZone.run(() =>
-            this.closeSelf()
+            this.close('overlayClick')
           ),
           this.incomingData.duration
         )
       );
-    }
+    } */
   }
 
   closeSelf() {
+    this.close('overlayClick')
+  }
+
+  close(type: string) {
     this.animationState = 'leave';
-    this.close.emit({ close: true, ...this.incomingData });
+    this._ngZone.runOutsideAngular(() => {
+      setTimeout(() => {
+        this._ngZone.run(() => {
+          this.resolve({ resolved: false });
+        });
+      }, 450);
+    });
+  }
+
+  resolve(how: ResolveEmit) {
+    this.animationState = 'leave';
+    this._ngZone.runOutsideAngular(() => {
+      setTimeout(() => {
+        this._ngZone.run(() => {
+          this.incomingData.resolve.next(how);
+        });
+      }, 450);
+    });
   }
 
   overlayClick() {
@@ -99,10 +125,9 @@ export class AlertComponent implements OnInit {
       return;
     }
 
-    this.closeSelf();
+    this.close('overlayClick')
   }
 }
-
 
 @Component({
   selector: 'il-alerts',
@@ -128,7 +153,9 @@ export class AlertsComponent implements OnInit, OnDestroy {
     overlay: true,
     overlayClickToClose: true,
     showCloseButton: true,
-    duration: 3000
+    duration: 3000,
+    confirmText: 'Yes',
+    declineText: 'No'
   };
 
   private _current: any;
@@ -136,7 +163,12 @@ export class AlertsComponent implements OnInit, OnDestroy {
   private _listener: any;
 
   ngOnInit() {
-    this._listener = this._service.alert$.subscribe(alert => {
+    this._listener = this._service.alert.subscribe(alert => {
+
+      if (this._current) {
+        this._handleResolve();
+      }
+
       if (this._current) {
         if (alert.close) {
           setTimeout(() => this._destroy(), 450);
@@ -165,21 +197,30 @@ export class AlertsComponent implements OnInit, OnDestroy {
       component.instance.incomingData = {
         ...this._buildItemTemplate('message', alert.message),
         ...this._buildItemTemplate('title', alert.title),
-        ...settingsFinal
+        ...this._buildItemTemplate('confirmText', alert.override.confirmText),
+        ...this._buildItemTemplate('declineText', alert.override.declineText),
+        ...settingsFinal,
+        resolve: alert.resolve
       };
+
 
       this.compViewContainerRef.insert(component.hostView);
 
       this._current = component;
 
-      this._latestSub = component.instance.close.subscribe((res: any) => {
-        this._service.alert$.next(res);
-      });
+      this._latestSub = alert.resolve.subscribe((res: any) => this._handleResolve(res));
     });
   }
 
   ngOnDestroy() {
-    this._listener.unsubscribe();
+    if (this._listener) {
+      this._listener.unsubscribe();
+    }
+  }
+
+  private _handleResolve(res?: ResolveEmit) {
+    this._current.destroy();
+    this._latestSub.unsubscribe();
   }
 
   private _destroy() {
@@ -197,6 +238,11 @@ export class AlertsComponent implements OnInit, OnDestroy {
   }
 
   private _buildItemTemplate(key: string, value: any) {
+
+    if (!value) {
+      return {};
+    }
+
     if (value instanceof TemplateRef) {
       return { [key]: value, [`${key}IsTemplate`]: true };
     } else {

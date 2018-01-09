@@ -71,6 +71,10 @@ il-alert .il__alert_wrapper_symbol .info {
     color: #8FBFE0;
 }
 
+il-alert .il__alert_wrapper_symbol .confirm {
+    color: #f0ad4e;
+}
+
 il-alert .il__alert_wrapper_message {
     padding: 1rem;
     color: #757474;
@@ -100,34 +104,63 @@ il-alert .il__alert_wrapper_short:first-letter {
     text-transform: uppercase;
 }
 
-il-alert.success .il__alert_wrapper_short {
-    background: #6ac259;
+il-alert .il__confirmation_dialog-actions {
+    min-height: 52px;
+    padding: 8px 8px 8px 24px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    position: relative;
 }
 
-il-alert.success .il__alert_wrapper_short:hover {
-    background: #5faf50;
+il-alert .il__confirmation_dialog-actions button {
+    min-width: 48px;
+    color: white;
+    min-height: 30px;
+    margin: 3px 4px;
+    padding: 0 4px;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    outline: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    background: none;
+    border: 0;
+    border-radius: 0px;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    font-family: inherit;
+    font-size: 12px;
+    font-style: inherit;
+    font-variant: inherit;
+    font-weight: 500;
+    letter-spacing: inherit;
+    line-height: 2px;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+    vertical-align: top;
+    white-space: nowrap;
 }
 
-il-alert.error_short {
-    background: #f05228;
+il-alert .il__confirmation_dialog-actions .default {
+    background: #989898;
 }
 
-il-alert.error_short:hover {
-    background: #d84a24;
+il-alert .il__confirmation_dialog-actions .default:hover {
+    background: #7f7f7f;
 }
 
-il-alert.warning_short {
-    background: #e2574c;
+il-alert .il__confirmation_dialog-actions .primary {
+    background: #ec4a1d;
 }
 
-il-alert.warning_short:hover {
-    background: #cb4e44;
-}
-
-il-alert.info_short {
-    background: #25b7d3;
-}
-
-il-alert.info_short:hover {
-    background: #21a5be;
+il-alert .il__confirmation_dialog-actions .primary:hover {
+    background: #e57454;
 }

@@ -5,7 +5,7 @@ import { CommonService } from '../../services/common.service';
 import { Utils } from '../../helpers/utils';
 import { ThemeService } from '../../services/theme.service';
 import { AlertService } from '../../services/alert.service';
-import { AlertType, AlertSettings } from '../../helpers/alerts';
+import { AlertType, AlertSettings, ResolveEmit } from '../../helpers/alerts';
 declare var $: any;
 
 @Component({
@@ -79,7 +79,7 @@ export class ThemeComponent implements OnInit {
   delete: string = "block";
   alertSetting: AlertSettings = {};
 
-  iAlert(type: AlertType, title: string, msg: string) {
+  iAlert(type: AlertType, title?: string, msg?: string) {
     //create(type: 'success' | 'error' | 'wearning', 'info', message: (string | HTML | TemplateRef) = '', title: (string | HTML | TemplateRef) = '',  title: {(string)}, settings: AlertSettings = {})
     this.alertSetting.duration = 5000;
     this.alertSetting.overlay = true;
@@ -87,6 +87,19 @@ export class ThemeComponent implements OnInit {
     this.alertSetting.showCloseButton = true;
 
     this._alert.create(type, msg, title, this.alertSetting);
+  }
+
+  iAlertConfirm(type: AlertType, title?: string, msg?: string, yes?: string, no?: string, cb?: any) {
+    //create(type: 'success' | 'error' | 'wearning', 'info', message: (string | HTML | TemplateRef) = '', title: (string | HTML | TemplateRef) = '',  title: {(string)}, settings: AlertSettings = {})
+    this.alertSetting.duration = 0;
+    this.alertSetting.overlay = true;
+    this.alertSetting.overlayClickToClose = false;
+    this.alertSetting.showCloseButton = true;
+    this.alertSetting.confirmText = yes;
+    this.alertSetting.declineText = no;
+
+    this._alert.create(type, msg, title, this.alertSetting)
+      .subscribe((ans: ResolveEmit) => cb(ans));
   }
 
   newTheme() {
@@ -118,21 +131,22 @@ export class ThemeComponent implements OnInit {
 
   deleteTheme() {
     if (this.id.trim() != '' && this.id.trim() != '0') {
-      var isConfirm = confirm("Are you sure want to delete this Tile?");
+      this.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this theme?", "Yes", "No", (res) => {
+        if (res.hasOwnProperty("resolved") && res["resolved"] == true) {
 
-      if (isConfirm) {
-        this.themeService.deleteTheme(this.id)
-          .then(res => {
+          this.themeService.deleteTheme(this.id)
+            .then(res => {
 
-            if (res && res.msg == 'exists') {
-              this.iAlert('error', 'Error', 'Theme can not be deleted. Theme has been assigned to tiles');
-            } else {
-              this.iAlert('success', '', 'Theme deleted successfully');
-              this.loadThemes();
-              this.loadNew();
-            }
-          });
-      }
+              if (res && res.msg == 'exists') {
+                this.iAlert('error', 'Error', 'Theme can not be deleted. Theme has been assigned to tiles');
+              } else {
+                this.iAlert('success', '', 'Theme deleted successfully');
+                this.loadThemes();
+                this.loadNew();
+              }
+            });
+        }
+      })
     } else {
       this.iAlert('error', 'Error', 'Please select a Theme to delete');
     }

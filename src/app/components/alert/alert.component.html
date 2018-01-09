@@ -20,6 +20,10 @@
       <span [@symbolAn]="animationState" class="glyphicon glyphicon-info-sign info"></span>
     </ng-template>
 
+    <ng-template ngSwitchCase="confirm">
+      <span [@symbolAn]="animationState" class="glyphicon glyphicon-question-sign confirm"></span>
+    </ng-template>
+
     <div class="il__alert_wrapper_short">
       <p [@shortAn]="animationState" *ngIf="!incomingData.title else customTitle">
         {{type}}!
@@ -42,5 +46,14 @@
     <ng-template #regularMessage>
       <div [innerHTML]="incomingData.message"></div>
     </ng-template>
+  </div>
+
+  <div class="il__confirmation_dialog-actions" *ngIf="type==='confirm'">
+    <button class="primary" (click)="resolve({resolved: true})">
+      {{incomingData?.confirmText}}
+    </button>
+    <button class="default" (click)="resolve({resolved: false})">
+      {{incomingData?.declineText}}
+    </button>
   </div>
 </div>

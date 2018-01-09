@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
-import { AlertEmit, AlertSettings, AlertType } from '../helpers/alerts';
+import { AlertEmit, AlertSettings, AlertType, ResolveEmit } from '../helpers/alerts';
 
 @Injectable()
 export class AlertService {
-  alert$: Subject<AlertEmit> = new Subject();
+  alert: Subject<AlertEmit> = new Subject();
 
   create(
     type: AlertType = 'success',
@@ -13,7 +13,11 @@ export class AlertService {
     title: any = '',
     override: AlertSettings = {}
   ) {
-    this.alert$.next({ type, title, message, override });
+    const resolve = new Subject<ResolveEmit>();
+
+    this.alert.next({ type, title, message, resolve, override });
+
+    return resolve;
   }
 
   constructor() {
