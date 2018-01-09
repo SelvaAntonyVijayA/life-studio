@@ -81,7 +81,7 @@ export class ThemeComponent implements OnInit {
 
   iAlert(type: AlertType, title: string, msg: string) {
     //create(type: 'success' | 'error' | 'wearning', 'info', message: (string | HTML | TemplateRef) = '', title: (string | HTML | TemplateRef) = '',  title: {(string)}, settings: AlertSettings = {})
-    this.alertSetting.duration = 100000;
+    this.alertSetting.duration = 5000;
     this.alertSetting.overlay = true;
     this.alertSetting.overlayClickToClose = false;
     this.alertSetting.showCloseButton = true;
@@ -345,7 +345,7 @@ export class ThemeComponent implements OnInit {
         if (auto) {
           this.updatePreviewTile(this.themeList, true);
         } else {
-          alert('Theme Saved');
+          this.iAlert('success', '', 'Theme saved successfully');
         }
       });
   };
@@ -366,7 +366,7 @@ export class ThemeComponent implements OnInit {
         }
       } else {
         if (isOpen) {
-          alert('Unable to preview');
+          this.iAlert('error', 'Error', 'Unable to preview');
         }
       }
     });
