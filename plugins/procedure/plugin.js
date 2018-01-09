@@ -415,9 +415,9 @@ var _getMemberProcedureMapped = function (pQuery, cb) {
   });
 };
 
-exports.remove = function (req, res, next) {
+var remove = function (req, res, next) {
   var obj = {};
-  
+
   $async.waterfall([
     function (callback) {
       query = {};
