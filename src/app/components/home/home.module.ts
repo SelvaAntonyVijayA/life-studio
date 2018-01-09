@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { CKEditorModule } from 'ng2-ckeditor';
@@ -46,7 +47,8 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
 
 @NgModule({
   imports: [
-    CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule, ColorPickerModule, CKEditorModule
+    CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule,
+    ColorPickerModule, CKEditorModule
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,

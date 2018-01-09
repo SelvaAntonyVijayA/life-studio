@@ -1,0 +1,46 @@
+<div *ngIf="incomingData.overlay" class="il__alert_overlay" [@overlayAn]="animationState" (click)="overlayClick()"></div>
+<div class="il__alert_wrapper" [@wrapperAn]="animationState">
+  <div class="il__alert_wrapper_close" *ngIf="incomingData.showCloseButton" (click)="closeSelf()">
+    <span class="close_alert">×</span>
+  </div>
+  <div class="il__alert_wrapper_symbol" [ngSwitch]="type">
+    <ng-template ngSwitchCase="success">
+      <span [@symbolAn]="animationState" class="glyphicon glyphicon-ok-sign success"></span>
+    </ng-template>
+
+    <ng-template ngSwitchCase="error">
+      <span [@symbolAn]="animationState" class="glyphicon glyphicon-exclamation-sign error"></span>
+    </ng-template>
+
+    <ng-template ngSwitchCase="warning">
+      <span [@symbolAn]="animationState" class="glyphicon glyphicon-warning-sign warning"></span>
+    </ng-template>
+
+    <ng-template ngSwitchCase="info">
+      <span [@symbolAn]="animationState" class="glyphicon glyphicon-info-sign info"></span>
+    </ng-template>
+
+    <div class="il__alert_wrapper_short">
+      <p [@shortAn]="animationState" *ngIf="!incomingData.title else customTitle">
+        {{type}}!
+      </p>
+
+      <ng-template #customTitle>
+        <div [@shortAn]="animationState" *ngIf="incomingData.titleIsTemplate else regularTitle">
+          <ng-container *ngTemplateOutlet="incomingData.title"></ng-container>
+        </div>
+        <ng-template #regularTitle>
+          <div [innerHTML]="incomingData.title"></div>
+        </ng-template>
+      </ng-template>
+    </div>
+  </div>
+  <div class="il__alert_wrapper_message" [@messageAn]="animationState">
+    <div *ngIf="incomingData.messageIsTemplate else regularMessage">
+      <ng-container *ngTemplateOutlet="incomingData.message"></ng-container>
+    </div>
+    <ng-template #regularMessage>
+      <div [innerHTML]="incomingData.message"></div>
+    </ng-template>
+  </div>
+</div>

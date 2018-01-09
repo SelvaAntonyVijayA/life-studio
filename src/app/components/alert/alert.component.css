@@ -1,0 +1,133 @@
+il-alert {
+    display: block;
+}
+
+il-alert .il__alert_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+il-alert .il__alert_wrapper {
+    width: 400px;
+    border-radius: 0.2rem;
+    position: fixed;
+    top: 20%;
+    text-align: center;
+    left: calc(50% - 200px);
+    box-shadow: 0 5px 40px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    transform-origin: bottom center;
+    background: white;
+}
+
+il-alert .il__alert_wrapper_close {
+    position: absolute;
+    top: -5px;
+    right: 1px;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+}
+
+il-alert .close_alert {
+    font-size: 25px;
+    opacity: .6;
+    color: #757474;
+}
+
+il-alert .il__alert_wrapper_close:hover {
+    opacity: 1;
+}
+
+il-alert .il__alert_wrapper_symbol {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+il-alert .il__alert_wrapper_symbol span {
+    font-size: 20px;
+    width: 30px;
+    height: 30px;
+    padding: 1rem 0rem;
+}
+
+il-alert .il__alert_wrapper_symbol .success {
+    color: #17A398;
+}
+
+il-alert .il__alert_wrapper_symbol .error {
+    color: #D64550;
+}
+
+il-alert .il__alert_wrapper_symbol .warning {
+    color: #FFC857;
+}
+
+il-alert .il__alert_wrapper_symbol .info {
+    color: #8FBFE0;
+}
+
+il-alert .il__alert_wrapper_message {
+    padding: 1rem;
+    color: #757474;
+    font-size: 13px;
+    font-weight: 400;
+    opacity: 0.6;
+    transition: all 450ms ease-in-out 100ms;
+    cursor: default;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+il-alert .il__alert_wrapper_short {
+    font-size: 15px;
+    font-weight: 400;
+    padding: 0.1rem;
+    color: #757474;
+    letter-spacing: 1px;
+    border-bottom-left-radius: 0.35rem;
+    border-bottom-right-radius: 0.35rem;
+    cursor: pointer;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+il-alert .il__alert_wrapper_short:first-letter {
+    text-transform: uppercase;
+}
+
+il-alert.success .il__alert_wrapper_short {
+    background: #6ac259;
+}
+
+il-alert.success .il__alert_wrapper_short:hover {
+    background: #5faf50;
+}
+
+il-alert.error_short {
+    background: #f05228;
+}
+
+il-alert.error_short:hover {
+    background: #d84a24;
+}
+
+il-alert.warning_short {
+    background: #e2574c;
+}
+
+il-alert.warning_short:hover {
+    background: #cb4e44;
+}
+
+il-alert.info_short {
+    background: #25b7d3;
+}
+
+il-alert.info_short:hover {
+    background: #21a5be;
+}
