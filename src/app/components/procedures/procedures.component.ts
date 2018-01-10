@@ -113,7 +113,33 @@ export class ProceduresComponent implements OnInit {
   };
 
   languageChange(langId: string) {
-    this.selectedLanguage = langId;
+    this.checkNew('Would you like to save your previous work?', (isChanged) => {
+      if (isChanged) {
+        this.saveProcedure("", false, false, "language", { "langId": langId });
+      } else {
+        this.selectedLanguage = langId;
+        this.setLanguageData();
+      }
+    });
+  };
+
+  setLanguageData() {
+    var procObj = this.procedure.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.procedure["obj"]) ? this.procedure["obj"] : {};
+
+    if (!this.utils.isNullOrEmpty(procObj) && procObj.hasOwnProperty(this.selectedLanguage)) {
+      if (procObj[this.selectedLanguage].hasOwnProperty("tiles") && procObj[this.selectedLanguage]["tiles"].length > 0) {
+        var langTiles = procObj[this.selectedLanguage]["tiles"];
+        this.draggedTiles = [];
+        this.procedure["draggedTiles"] = [];
+
+        for (let i = langTiles.length - 1; 0 <= i; i--) {
+          if (langTiles[i].hasOwnProperty("_id")) {
+            this.draggedTiles.push(langTiles[i]["_id"]);
+            this.assignDragged(langTiles[i]);
+          }
+        }
+      }
+    };
   };
 
   /* Dragged tile on drop */
@@ -394,7 +420,7 @@ export class ProceduresComponent implements OnInit {
   };
 
   /* Setting the procedure data for the DOM */
-  setProcedureData(isSelect: boolean, obj: any) {
+  setProcedureData(isSelect: boolean, obj: any, langId?: string) {
     if (isSelect) {
       this.resetProcedure();
 
@@ -408,12 +434,12 @@ export class ProceduresComponent implements OnInit {
     this.procedureService.getEventByTiles(obj._id)
       .then(proObj => {
         if (proObj && proObj[0]) {
-          this.assignProcedureDatas(proObj[0]);
+          this.assignProcedureDatas(proObj[0], langId);
         }
       });
   };
 
-  assignProcedureDatas(objProcedure: Object) {
+  assignProcedureDatas(objProcedure: Object, langId?: string) {
     this.procedure["obj"] = objProcedure;
 
     if (!this.utils.isEmptyObject(objProcedure)) {
@@ -422,17 +448,31 @@ export class ProceduresComponent implements OnInit {
       this.isSquare = objProcedure.hasOwnProperty("isSquare") ? objProcedure["isSquare"] : false;
     }
 
-    this.selectedLanguage = "en";
+    if (!this.utils.isNullOrEmpty(langId)) {
+      this.selectedLanguage = langId;
+    } else if (this.utils.isNullOrEmpty(this.selectedLanguage)) {
+      this.selectedLanguage = "en";
+    }
+
     this.procedure["draggedTiles"] = [];
+    var currTiles = []
 
-    if (objProcedure.hasOwnProperty("tiles") && objProcedure["tiles"].length > 0) {
-      var currTiles = objProcedure["tiles"];
-
-      for (let i = currTiles.length - 1; 0 <= i; i--) {
-        if (currTiles[i].hasOwnProperty("_id")) {
-          this.draggedTiles.push(currTiles[i]["_id"]);
-          this.assignDragged(currTiles[i]);
+    if (objProcedure.hasOwnProperty("tiles") && objProcedure["tiles"].length > 0 && this.selectedLanguage === "en") {
+      currTiles = objProcedure["tiles"];
+    } else if (!this.utils.isNullOrEmpty(this.selectedLanguage)) {
+      if (!this.utils.isEmptyObject(objProcedure) && objProcedure.hasOwnProperty(this.selectedLanguage)) {
+        if (objProcedure[this.selectedLanguage].hasOwnProperty("tiles") && objProcedure[this.selectedLanguage]["tiles"].length > 0) {
+          currTiles = objProcedure[this.selectedLanguage]["tiles"];
         }
+      } else {
+        currTiles = objProcedure["tiles"];
+      }
+    }
+
+    for (let i = currTiles.length - 1; 0 <= i; i--) {
+      if (currTiles[i].hasOwnProperty("_id")) {
+        this.draggedTiles.push(currTiles[i]["_id"]);
+        this.assignDragged(currTiles[i]);
       }
     }
   };
@@ -449,34 +489,33 @@ export class ProceduresComponent implements OnInit {
   };
 
   getCompareValues() {
-    var procedure = {};
-
-    procedure["_id"] = !this.utils.isEmptyObject(this.procedure) && this.procedure.hasOwnProperty("obj") && this.procedure["obj"].hasOwnProperty("_id") ? this.procedure["obj"]["_id"] : "-1";
-    procedure["name"] = this.procedureName;
-    procedure["category"] = this.procedureCategory;
-    procedure["type"] = 'procedure';
-    procedure["organizationId"] = this.oid;
-    procedure["isSquare"] = this.isSquare;
-    procedure["tiles"] = [];
+    var proc = {};
+    proc["_id"] = !this.utils.isEmptyObject(this.procedure) && this.procedure.hasOwnProperty("obj") && this.procedure["obj"].hasOwnProperty("_id") ? this.procedure["obj"]["_id"] : "-1";
+    proc["name"] = this.procedureName;
+    proc["category"] = this.procedureCategory;
+    proc["type"] = 'procedure';
+    proc["organizationId"] = this.oid;
+    proc["isSquare"] = this.isSquare;
+    proc["tiles"] = [];     ;
 
     if (this.selectedLanguage !== "en") {
-      var procedureObj = this.selectedLanguage["obj"];
+      var procedureObj = this.procedure.hasOwnProperty("obj") ? Object.assign({}, this.procedure["obj"]) : {};
 
-      procedure[this.selectedLanguage] = procedureObj[this.selectedLanguage] ? procedureObj[this.selectedLanguage] : {};
-      procedure[this.selectedLanguage]["tiles"] = this.getDraggedTiles();
+      proc[this.selectedLanguage] = {};
+      proc[this.selectedLanguage]["tiles"] = this.getDraggedTiles();
 
-      procedure["tiles"] = procedureObj.tiles;
+      proc["tiles"] = procedureObj.tiles;
     }
 
-    if ((procedure["_id"] === "-1" && this.selectedLanguage !== "en") || this.selectedLanguage == "en") {
-      procedure["tiles"] = this.getDraggedTiles();
+    if ((proc["_id"] === "-1" && this.selectedLanguage !== "en") || this.selectedLanguage == "en") {
+      proc["tiles"] = this.getDraggedTiles();
     }
 
-    if (this.utils.isNullOrEmpty(procedure["name"].trim()) && this.procedureCategory === "-1" && procedure["tiles"].length === 0) {
+    if (this.utils.isNullOrEmpty(proc["name"].trim()) && this.procedureCategory === "-1" && proc["tiles"].length === 0) {
       return {};
     }
 
-    return procedure;
+    return proc;
   };
 
   getDraggedTiles() {
@@ -517,10 +556,11 @@ export class ProceduresComponent implements OnInit {
 
   newProcedureCompare() {
     var id = this.procedure.hasOwnProperty("obj") && this.procedure["obj"].hasOwnProperty("_id") ? this.procedure["obj"]["_id"] : "-1";
-    var obj1 = this.getCompareValues();
+    var currProcObj = this.getCompareValues();
 
-    var obj1Sring = JSON.stringify(obj1);
-    obj1 = JSON.parse(this.utils.htmlDecode(obj1Sring));
+    var obj1Sring = JSON.stringify(currProcObj);
+    currProcObj = JSON.parse(this.utils.htmlDecode(obj1Sring));
+    var obj1 = Object.assign({}, currProcObj);
 
     var obj2 = {};
 
@@ -583,6 +623,14 @@ export class ProceduresComponent implements OnInit {
       }
     }
 
+    if (!this.utils.isEmptyObject(obj1) && obj1.hasOwnProperty("tiles")) {
+      for (let i = 0; i < obj1["tiles"].length; i++) {
+        var currTile = obj1["tiles"][i];
+
+        delete currTile["tileData"];
+      }
+    }
+
     for (let i = 0; i < this.languageList.length; i++) {
       var langCode = this.languageList[i]["code"];
 
@@ -592,10 +640,26 @@ export class ProceduresComponent implements OnInit {
       } else {
         if (obj1.hasOwnProperty(langCode) && obj1[langCode].hasOwnProperty("tiles")) {
           obj1[langCode]["tiles"] = this.removeCreatedDate(obj1[langCode]["tiles"]);
+           
+          for (let k = 0; k < obj1[langCode]["tiles"].length; k++) {
+            var langTile = obj1[langCode]["tiles"][k];
+
+            if (langTile.hasOwnProperty("tileData")) {
+              delete langTile["tileData"];
+            }
+          }
         }
 
         if (obj2.hasOwnProperty(langCode) && obj2[langCode].hasOwnProperty("tiles")) {
           obj2[langCode]["tiles"] = this.removeCreatedDate(obj2[langCode]["tiles"]);
+
+          for (let j = 0; j < obj2[langCode]["tiles"].length; j++) {
+            var langTile = obj2[langCode]["tiles"][j];
+
+            if (langTile.hasOwnProperty("tileData")) {
+              delete langTile["tileData"];
+            }
+          }
         }
       }
     }
@@ -720,8 +784,8 @@ export class ProceduresComponent implements OnInit {
     if (this.selectedLanguage !== "en") {
       var procObj = this.procedure.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.procedure["obj"]) ? this.procedure["obj"] : {};
 
-      procedureObj[this.selectedLanguage] = procObj.hasOwnProperty(this.selectedLanguage) ? procedureObj[this.selectedLanguage] : {};
-      procedureObj[this.selectedLanguage].tiles = this.getDraggedTiles();
+      procedureObj[this.selectedLanguage] =  {};
+      procedureObj[this.selectedLanguage]["tiles"] = this.getDraggedTiles();
     }
 
     if ((id === "-1" && this.selectedLanguage !== "en") || this.selectedLanguage == "en") {
@@ -769,6 +833,8 @@ export class ProceduresComponent implements OnInit {
           this.setProcedureData(true, procCurrObj);
         } else if (!this.utils.isNullOrEmpty(isAnother) && isAnother === "new") {
           this.resetProcedure("reset");
+        } else if (!this.utils.isNullOrEmpty(isAnother) && isAnother === "language") {
+          this.setProcedureData(true, procObj, procCurrObj["langId"]);
         } else {
           var isSelect = isDuplicate ? true : false;
           this.setProcedureData(isSelect, procObj);

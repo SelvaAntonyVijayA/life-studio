@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, OnInit, Inject, HostListener } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { HeaderService } from '../../services/header.service';
 import { CommonService } from '../../services/common.service';
@@ -8,6 +8,7 @@ import { Organization } from '../../models/organization';
 import { Utils } from '../../helpers/utils';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
+import { DOCUMENT } from '@angular/platform-browser';
 declare var $: any;
 
 @Component({
@@ -24,7 +25,9 @@ export class HeaderComponent implements OnInit {
     private el: ElementRef,
     private route: ActivatedRoute,
     private router: Router,
-    private mScrollbarService: MalihuScrollbarService) {
+    private mScrollbarService: MalihuScrollbarService,
+    @Inject(DOCUMENT) private document: any
+  ) {
     //this.cms = cms;
     this.utils = Utils;
   }

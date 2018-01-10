@@ -40,6 +40,7 @@ export class DomainPageLib {
   Standalone_Chat: string = "/standalonechat";
   Clinics_and_Physicians: string = "/clinicphysicians";
   QA_Weights: string = "/qaweights";
+  Processes: string = "/processes";
 };
 
 export class DomainTools {

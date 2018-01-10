@@ -128,20 +128,34 @@ var getByTiles = function (req, res, next) {
 
   $async.waterfall([
     function (callback) {
-      query = { "_id": procedureId };
-      options = {};
+      $async.parallel({
+        procedure: function (cb) {
+          query = { "_id": procedureId };
+          options = {};
 
-      _getProcedure(query, options, function (procedure) {
-        callback(null, procedure);
+          _getProcedure(query, options, function (procedure) {
+            cb(null, procedure);
+          });
+        },
+        languages: function (cb) {
+          langOpts = { sort: [['name', 'asc']] };
+
+          $languages.getLanguages({}, langOpts, function (langs) {
+            cb(null, langs);
+          });
+        }
+      }, function (err, results) {
+        callback(null, results);
       });
     },
-    function (procedure, callback) {
-      if (procedure && procedure[0] && procedure[0].hasOwnProperty("tiles") && procedure[0].tiles.length > 0) {
-        var tileIds = [];
+    function (procLanguages, callback) {
+      var procedure = procLanguages.procedure;
+      var languages = procLanguages.languages;
 
-        _.each(procedure[0].tiles, function (tile) {
-          tileIds.push(tile._id)
-        });
+      if (procedure && procedure[0] && procedure[0].hasOwnProperty("tiles") && procedure[0]["tiles"].length > 0) {
+        var tileIds = _.uniq(_.pluck(procedure[0]["tiles"], "_id"));
+        var langObj = getTileIdsbyLanguages(tileIds, languages, procedure[0]);
+        tileIds = langObj["tileIds"];
 
         if (tileIds.length > 0) {
           query = { "_id": tileIds };
@@ -160,19 +174,20 @@ var getByTiles = function (req, res, next) {
           $tile.getSpecificFields(tileFields, query, options, function (tiles) {
             tiles = $general.convertToJsonObject(tiles);
 
-            _.each(tileIds, function (id) {
-              var tileObj = _.findWhere(tiles, {
-                _id: id
-              });
-
-              if (tileObj) {
-                var tileResult = _.findWhere(procedure[0].tiles, {
-                  "_id": tileObj._id
-                });
-
-                tileResult["tileData"] = tileObj;
-              }
+            _.each(procedure[0]["tiles"], function (currTile) {
+              currTile = mergeTileObject(tiles, currTile);
             });
+
+            if (langObj["langsExists"].length > 0) {
+              _.each(langObj["langsExists"], function (langCode) {
+                var langTiles = procedure[0][langCode]["tiles"];
+
+                _.each(langTiles, function (currTile) {
+                  currTile = mergeTileObject(tiles, currTile);
+                });
+              });
+            }
+
             callback(null, procedure);
           });
         } else {
@@ -239,6 +254,7 @@ var _getTileUpdate = function (procedure, updatedProcedure, done) {
     var pullExists = _.findWhere(pullTile, {
       "tileId": _tileId
     });
+
     delete tile["_id"];
 
     var proc = {};
@@ -453,6 +469,40 @@ var remove = function (req, res, next) {
         res.send(obj);
       });
     });
+};
+
+
+var getTileIdsbyLanguages = function (tileIds, languages, procedure) {
+  var langsExists = [];
+
+  if (languages.length > 0) {
+    _.each(languages, function (lang) {
+
+      if (lang.hasOwnProperty("code") && procedure.hasOwnProperty(lang["code"])) {
+        if (procedure[lang["code"]].hasOwnProperty("tiles") && procedure[lang["code"]]["tiles"].length > 0) {
+          tileIds = _.union(tileIds, _.uniq(_.pluck(procedure[lang["code"]]["tiles"], "_id")));
+          langsExists.push(lang["code"]);
+        }
+      }
+    });
+  };
+
+  return {
+    "tileIds": tileIds,
+    "langsExists": langsExists
+  };
+};
+
+var mergeTileObject = function (tiles, currTile) {
+  var tileObj = _.findWhere(tiles, {
+    _id: currTile["_id"]
+  });
+
+  if (tileObj) {
+    currTile["tileData"] = tileObj;
+  }
+
+  return currTile;
 };
 
 module.exports = {

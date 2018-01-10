@@ -22,6 +22,8 @@ export class LoginComponent {
         var dateTime = new Date().toISOString();
         Cookie.set('page', 'ili'); 
         Cookie.set('pageUpdated', dateTime);
+        Cookie.set('pageName', "");
+        
         this.router.navigate(['/home'], {queryParams: { "_dt": '1467038311', 'index': 'ili'} });
       } else {
         this.error = 'Username or password is incorrect';
