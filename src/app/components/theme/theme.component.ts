@@ -148,7 +148,7 @@ export class ThemeComponent implements OnInit {
         }
       })
     } else {
-      this.iAlert('error', 'Error', 'Please select a Theme to delete');
+      this.iAlert('error', 'Error', 'Please select a theme to delete');
     }
   };
 
