@@ -1,0 +1,422 @@
+.processes_container {
+  height: 920px;
+  position: relative;
+}
+
+.processes_head {
+  width: 99.97%;
+  height: 75px;
+  float: left;
+  margin-bottom: 1px;
+  margin-left: 1px;
+  position: relative;
+}
+
+.process_inputs {
+  float: left;
+  width: 67%;
+  height: 60px;
+  margin-top: 7px;
+  margin-left: 13px;
+  position: relative;
+}
+
+/* Category Inputs */
+
+.process_name {
+  float: left;
+  margin-right: 8px;
+  width: 240px;
+}
+
+.process_type {
+  float: left;
+  width: 154px;
+  margin-right: 8px;
+}
+
+.language {
+  float: left;
+  width: 144px;
+  margin-right: 5px;
+}
+
+/* Process Buttons */
+
+.process_btns {
+  float: right;
+  width: 30%;
+  height: 60px;
+  margin-top: 9px;
+}
+
+.process_new {
+  border-bottom-color: #228B22;
+  border-bottom-width: 3px;
+  float: left;
+  margin-right: 4px;
+  margin-left: 27px;
+}
+
+.process_save {
+  border-bottom-color: #1E90FF;
+  border-bottom-width: 3px;
+  float: left;
+  margin-right: 4px;
+}
+
+.process_duplicate {
+  border-bottom-color: #C71585;
+  border-bottom-width: 3px;
+  float: left;
+  margin-right: 4px;
+}
+
+.process_delete {
+  border-bottom-color: #FF0000;
+  border-bottom-width: 3px;
+}
+
+.page_setup {
+  border-bottom-color: #FFA500;
+  border-bottom-width: 3px;
+  float: left;
+  width: 139px;
+  margin-top: 7px;
+  margin-left: 28px;
+}
+
+.default_page_setup {
+  border-bottom-color: #FFA500;
+  border-bottom-width: 3px;
+  float: left;
+  width: 167px;
+  margin-top: 7px;
+  margin-left: 5px;
+}
+
+/* Main Process Content  Area Layout*/
+
+.process_main_content {
+  position: relative;
+  width: 100%;
+  height: 833px;
+  float: left;
+  margin-left: 1px;
+}
+
+/* Process Content */
+
+.processes_block {
+  width: 161px;
+  height: 880px;
+  text-align: center;
+  position: relative;
+  float: left;
+}
+
+.process_text {
+  font-size: 16px;
+  position: relative;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  text-align: center;
+  float: left;
+  width: 170px;
+}
+
+.search_box_process {
+  display: inline;
+  width: 85.9%;
+  float: left;
+  margin-left: 9px;
+}
+
+.filter_process {
+  margin-top: 5px;
+  width: 85.9%;
+  display: inline;
+  margin-left: 9px;
+  float: left;
+}
+
+/* Process Draggable area */
+
+.main_process_container {
+  position: relative;
+  width: 726px;
+  height: 880px;
+  float: left;
+  margin-left: 1px;
+  overflow: hidden;
+}
+
+.main_process_content {
+  position: relative;
+  padding-bottom: 1px;
+  margin-top: 9px;
+  margin-left: 5px;
+  min-height: 220px;
+  width: 708px;
+  padding-top: 10px;
+  margin-bottom: 2px;
+  border-color: #ddd;
+}
+
+.draggable_label {
+  font-size: 11px;
+  margin-top: 45px;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+/* Process List */
+
+.process_list_show {
+  position: relative;
+  margin-top: 13px;
+  float: left;
+  width: 100%;
+  height: 745px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.process_list_single {
+  display: inline-block;
+  position: relative;
+  background-color: #FFFFFF;
+  text-align: left;
+  margin-right: 5px;
+  width: 138px;
+  min-height: 42px;
+  color: #000000;
+  cursor: pointer;
+  border: 1px outset #F2F2F2;
+}
+
+.process_list_single:hover {
+  background-color: #F2F2F2;
+}
+
+.process_list_single.selected {
+  background-color: #3c3c3c;
+  color: #FFFFFF;
+}
+
+/* Process Title */
+
+.process_list_title {
+  float: left;
+  margin-top: 3px;
+  margin-left: 8px;
+  width: 98px;
+  font-size: 11px;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+/* Process notify icons */
+
+.process-notify-icons {
+  width: 100%;
+  float: right;
+}
+
+/* Main Drag Layout */
+
+.process_content {
+  position: relative;
+  padding-bottom: 1px;
+  margin-top: 9px;
+  margin-left: 5px;
+  min-height: 220px;
+  width: 708px;
+  padding-top: 10px;
+  margin-bottom: 2px;
+  border-color: #ddd;
+}
+
+.process_main_panel {
+  position: relative;
+  float: left;
+  width: 100%;
+  min-height: 220px;
+}
+
+/* Main Tile draggable panel */
+
+.tile-title-drag-btns {
+  float: left;
+  width: 100%;
+  height: 30px;
+}
+
+/*Dragged tile top left */
+
+.top-tile-title {
+  float: left;
+  position: relative;
+  width: 60%;
+  margin-top: 5px;
+  text-overflow: ellipsis;
+}
+
+.process_tile_title {
+  float: left;
+  font-weight: 400;
+  color: #FFFFFF;
+  margin-left: 12px
+}
+
+/* Drag buttons */
+.drag_buttons {
+  position: relative;
+  width: 40%;
+  text-align: right;
+  float: right;
+  padding-right: 7px;
+}
+
+/* Tile drag buttons */
+.trigger_btn {
+  margin-right: 5px;
+  color: #000000;
+  border: 1px solid #A9A9A9;
+}
+
+.dragged-tile-inputs {
+  float: left;
+  width: 100%;
+  height: 47px;
+}
+
+.tile-trigger-expiry-content {
+  float: left;
+  width: 100%;
+  height: 131px;
+}
+
+/* Process menu art */
+
+.proc_menu_art {
+  float: left;
+  width: 100px;
+  height: 105px;
+  margin-left: 13px;
+  margin-top: 15px;
+}
+
+.proc_icon-img {
+  height: 98px;
+  width: 98px;
+  text-align: center;
+  border: 1px solid #D0CBCB;
+  margin-top: 2px;
+}
+
+.proc_menu_item_art {
+  max-width: 86px;
+  max-height: 86px;
+}
+
+.proc_img_v_align {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.proc-tile-trigger-content {
+  float: left;
+  margin-top: 15px;
+  height: 100px;
+  width: 47%;
+}
+
+.trigger-action-days {
+  margin-left: 7px;
+  width: 50px;
+  display: inline;
+}
+
+.trigger-expiry-days {
+  margin-left: 5px;
+  width: 50px;
+  display: inline;
+}
+
+.trigger-days {
+  width: 80px;
+  display: inline;
+  margin-left: 7px;
+}
+
+
+/* Tiles */
+
+.proc_main_tile_block {
+  background-color: #FFFFFF;
+  border-radius: 0px;
+  margin-top: 12px;
+}
+
+.proc_tiles_list_single {
+  float: left;
+  display: table;
+  position: relative;
+  text-align: left;
+  margin-left: 7px;
+  margin-bottom: 4px;
+  width: 251px;
+  min-height: 32px;
+  padding-bottom: 2px;
+  color: #000000;
+  border: 2px outset rgba(255, 255, 255, .5);
+}
+
+.proc_tile_list_art {
+  max-width: 240px;
+  margin-top: 8px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  margin-right: 4px;
+  float: left;
+}
+
+.proc_tile_list_art.proc-tile-content-img {
+  max-width: 30px;
+  max-height: 25px;
+  margin-top: 3px;
+}
+
+.proc_tile_list_title {
+  float: left;
+  width: 235px;
+  margin-top: 2px;
+  margin-left: 5px;
+  font-size: 11px;
+  text-align: justify;
+  word-wrap: break-word;
+}
+
+.proc_tile_list_title.proc-tile-content-title {
+  width: 200px;
+}
+
+/* Tile Icons */
+
+.proc_tile_icons {
+  position: relative;
+  right: 0;
+  bottom: 2px;
+  width: 100%;
+  float: right;
+}
+
+.main-tile-dragged {
+  float: left;
+  width: 36.9%;
+  height: 131px;
+}

@@ -27,10 +27,10 @@ export class ProcedureService {
       .catch(this.handleError);
   };
 
-  procedureList(orgId: string, procedureId?: string) {
+  procedureList(orgId: string, procedureId?: string, type?: string) {
     var procedureUrl = '/procedure/list/' + orgId;
     procedureUrl = !this.utils.isNullOrEmpty(procedureId) ? procedureUrl + "/" + procedureId : procedureUrl;
-    procedureUrl = procedureUrl + "?dtype=procedure";
+    procedureUrl = procedureUrl + "?dtype=" + type;
 
     return this.http
       .get(procedureUrl)
@@ -39,8 +39,8 @@ export class ProcedureService {
       .catch(this.handleError);
   };
 
-  procedureCategoryList(orgId: string) {
-    var procCategoryUrl = "/procedurecategory/list/" + orgId + "?dtype=procedure";
+  procedureCategoryList(orgId: string, type?: string) {
+    var procCategoryUrl = "/procedurecategory/list/" + orgId + "?dtype=" + type;
 
     return this.http
       .get(procCategoryUrl)
@@ -49,17 +49,17 @@ export class ProcedureService {
       .catch(this.handleError);
   };
 
-  procedureCategoriesList(orgId: string) {
-    let procedures = this.procedureList(orgId);
-    let procedureCategories = this.procedureCategoryList(orgId);
+  procedureCategoriesList(orgId: string, type?: string) {
+    let procedures = this.procedureList(orgId, "", type);
+    let procedureCategories = this.procedureCategoryList(orgId, type);
 
 
     return Observable.forkJoin([procedures, procedureCategories]);
   };
 
-  getEventByTiles(procedureId: string) {
+  getProcedureByTiles(procId: string) {
     return this.http
-      .get("/procedure/getbytiles/" + procedureId)
+      .get("/procedure/getbytiles/" + procId)
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);

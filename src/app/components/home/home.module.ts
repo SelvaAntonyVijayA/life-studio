@@ -29,7 +29,6 @@ import { AccountService } from '../../services/account.service';
 import { CategoryService } from '../../services/category.service';
 import { ProcedureService } from '../../services/procedure.service';
 import { ThemeService } from '../../services/theme.service';
-import { ProcessService } from '../../services/process.service';
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 import { DyBindDirective } from '../../components/widgets/dynamic-bind.directive';
@@ -59,7 +58,7 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
-    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ProcessService]
+    FolderService, AccountService, CategoryService, ProcedureService, ThemeService]
 })
 
 export class HomeModule { }

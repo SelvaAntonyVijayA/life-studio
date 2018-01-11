@@ -129,17 +129,22 @@ export class ProceduresComponent implements OnInit {
     if (!this.utils.isNullOrEmpty(procObj) && procObj.hasOwnProperty(this.selectedLanguage)) {
       if (procObj[this.selectedLanguage].hasOwnProperty("tiles") && procObj[this.selectedLanguage]["tiles"].length > 0) {
         var langTiles = procObj[this.selectedLanguage]["tiles"];
-        this.draggedTiles = [];
-        this.procedure["draggedTiles"] = [];
-
-        for (let i = langTiles.length - 1; 0 <= i; i--) {
-          if (langTiles[i].hasOwnProperty("_id")) {
-            this.draggedTiles.push(langTiles[i]["_id"]);
-            this.assignDragged(langTiles[i]);
-          }
-        }
       }
-    };
+    } else if ((this.selectedLanguage === "en" || !procObj.hasOwnProperty(this.selectedLanguage)) && (procObj.hasOwnProperty("tiles") && procObj["tiles"].length > 0)) {
+      langTiles = procObj["tiles"];
+    }
+
+    if (langTiles.length > 0 || this.selectedLanguage === "en" || procObj.hasOwnProperty(this.selectedLanguage)) {
+      this.draggedTiles = [];
+      this.procedure["draggedTiles"] = [];
+    }
+
+    for (let i = langTiles.length - 1; 0 <= i; i--) {
+      if (langTiles[i].hasOwnProperty("_id")) {
+        this.draggedTiles.push(langTiles[i]["_id"]);
+        this.assignDragged(langTiles[i]);
+      }
+    }
   };
 
   /* Dragged tile on drop */
@@ -169,7 +174,7 @@ export class ProceduresComponent implements OnInit {
 
   /* Setting Drag Index for every tile index change */
   setDragIndex(idx: number, obj: any) {
-    if (this.dragIndex !== -1 && !this.utils.isEmptyObject(obj) && obj.hasOwnProperty("eventDragContainer")) {
+    if (this.dragIndex !== -1 && !this.utils.isEmptyObject(obj) && obj.hasOwnProperty("procedureDragContainer")) {
       var totalIdx = this.procedure["draggedTiles"].length - 1;
 
       this.dragIndex = !idx ? -1 : totalIdx - idx;
@@ -247,7 +252,7 @@ export class ProceduresComponent implements OnInit {
 
   /* Fetching both procedures and procedure categories */
   listProcedureCategories() {
-    this.procedureService.procedureCategoriesList(this.oid).subscribe(listProcCat => {
+    this.procedureService.procedureCategoriesList(this.oid, "procedure").subscribe(listProcCat => {
       this.procedures = listProcCat[0];
       this.procedureCategories = listProcCat[1];
       this.mergeCategoryName();
@@ -431,7 +436,7 @@ export class ProceduresComponent implements OnInit {
       }
     }
 
-    this.procedureService.getEventByTiles(obj._id)
+    this.procedureService.getProcedureByTiles(obj._id)
       .then(proObj => {
         if (proObj && proObj[0]) {
           this.assignProcedureDatas(proObj[0], langId);
@@ -496,7 +501,7 @@ export class ProceduresComponent implements OnInit {
     proc["type"] = 'procedure';
     proc["organizationId"] = this.oid;
     proc["isSquare"] = this.isSquare;
-    proc["tiles"] = [];     ;
+    proc["tiles"] = [];
 
     if (this.selectedLanguage !== "en") {
       var procedureObj = this.procedure.hasOwnProperty("obj") ? Object.assign({}, this.procedure["obj"]) : {};
@@ -640,7 +645,7 @@ export class ProceduresComponent implements OnInit {
       } else {
         if (obj1.hasOwnProperty(langCode) && obj1[langCode].hasOwnProperty("tiles")) {
           obj1[langCode]["tiles"] = this.removeCreatedDate(obj1[langCode]["tiles"]);
-           
+
           for (let k = 0; k < obj1[langCode]["tiles"].length; k++) {
             var langTile = obj1[langCode]["tiles"][k];
 
@@ -784,7 +789,7 @@ export class ProceduresComponent implements OnInit {
     if (this.selectedLanguage !== "en") {
       var procObj = this.procedure.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.procedure["obj"]) ? this.procedure["obj"] : {};
 
-      procedureObj[this.selectedLanguage] =  {};
+      procedureObj[this.selectedLanguage] = {};
       procedureObj[this.selectedLanguage]["tiles"] = this.getDraggedTiles();
     }
 
@@ -961,5 +966,10 @@ export class ProceduresComponent implements OnInit {
       this.listProcedureCategories();
       this.getLanguages();
     });
+  };
+
+  ngOnDestroy() {
+    this.orgChangeDetect.unsubscribe();
+    this.destroyScroll();
   };
 }
