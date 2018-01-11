@@ -9,6 +9,7 @@ import { FoldersComponent } from '../components/folders/folders.component';
 import { CategoriesComponent } from '../components/categories/categories.component';
 import { ThemeComponent } from '../components/theme/theme.component';
 import { ProceduresComponent } from '../components/procedures/procedures.component';
+import { ProcessesComponent } from '../components/processes/processes.component';
 
 const homeRoutes: Routes = [
   {
@@ -42,6 +43,10 @@ const homeRoutes: Routes = [
       {
         path: 'procedures',
         component: ProceduresComponent
+      },
+      {
+        path: 'processes',
+        component: ProcessesComponent
       }
     ]
   }
