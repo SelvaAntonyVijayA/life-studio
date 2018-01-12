@@ -122,7 +122,15 @@ var folderByTiles = function (req, res, next) {
         if (tileIds.length > 0) {
           query = { "_id": tileIds };
           options = {};
-          var tileFields = { "_id": 1, "title": 1, "art": 1 };
+          var tileFields = {
+            "_id": 1, "title": 1, "art": 1, "notification": 1,
+            "smart": 1,
+            "Apps": 1,
+            "Procedure": 1,
+            "hsrRuleEngine": 1,
+            "isWeight": 1,
+            "isRoleBased": 1
+          };
 
           $tile.getSpecificFields(tileFields, query, options, function (tiles) {
             tiles = $general.convertToJsonObject(tiles);

@@ -1,368 +1,440 @@
-.folders_container  {
-    height: 920px;
-    position: relative;
+.folders_container {
+  height: 920px;
+  position: relative;
 }
 
 .folders_head {
-    width: 99.97%;
-    height: 75px;
-    float: left;
-    margin-bottom: 1px;
-    margin-left: 1px;
-    position: relative;
+  width: 99.97%;
+  height: 75px;
+  float: left;
+  margin-bottom: 1px;
+  margin-left: 1px;
+  position: relative;
 }
 
-.folder_inputs{
-    float: left;
-    width: 50%;
-    height: 60px;
-    margin-top: 7px;
-    margin-left: 13px;
-    position: relative;
+.folder_inputs {
+  float: left;
+  width: 50%;
+  height: 60px;
+  margin-top: 7px;
+  margin-left: 13px;
+  position: relative;
 }
 
-.folder_name{
-    float: left;
-    width: 494px;
+.folder_name {
+  float: left;
+  width: 494px;
 }
 
-.folder_dates{
-    float: left;
-    width: 100%;
-    margin-top: 6px;
+.folder_dates {
+  float: left;
+  width: 100%;
+  margin-top: 6px;
 }
 
-.lbl_avail_text, .lbl_until_text{
-    float: left;
-    font-size: 10px;
-    margin-right: 4px;
-    margin-top: 5px;
+.lbl_avail_text, .lbl_until_text {
+  float: left;
+  font-size: 10px;
+  margin-right: 4px;
+  margin-top: 5px;
 }
 
-.folder_avail_date_time{
-    float: left;
-    width: 172.5px;
-    margin-right: 6px;
+.folder_avail_date_time {
+  float: left;
+  width: 172.5px;
+  margin-right: 6px;
 }
 
-.folder_until_date_time{
-    float: left;
-    width: 172.5px;
-    margin-right: 6px;
+.folder_until_date_time {
+  float: left;
+  width: 172.5px;
+  margin-right: 6px;
 }
 
 /* Folder Buttons */
 
-.folder_btns{
-    float: right;
-    width: 30%;
-    height: 60px;
-    margin-top: 9px;
+.folder_btns {
+  float: right;
+  width: 30%;
+  height: 60px;
+  margin-top: 9px;
 }
 
-.folder_new{
-    border-bottom-color: #228B22;
-    border-bottom-width: 3px;
-    float: left;
-    margin-right: 4px;
-    margin-left: 27px;
+.folder_new {
+  border-bottom-color: #228B22;
+  border-bottom-width: 3px;
+  float: left;
+  margin-right: 4px;
+  margin-left: 27px;
 }
 
-.folder_save{
-    border-bottom-color: #1E90FF;
-    border-bottom-width: 3px;
-    float: left;
-    margin-right: 4px;
+.folder_save {
+  border-bottom-color: #1E90FF;
+  border-bottom-width: 3px;
+  float: left;
+  margin-right: 4px;
 }
 
-.folder_duplicate{
-    border-bottom-color: #C71585;
-    border-bottom-width: 3px;
-    float: left;
-    margin-right: 4px;
+.folder_duplicate {
+  border-bottom-color: #C71585;
+  border-bottom-width: 3px;
+  float: left;
+  margin-right: 4px;
 }
 
-.folder_delete{
-    border-bottom-color: #FF0000;
-    border-bottom-width: 3px;
+.folder_delete {
+  border-bottom-color: #FF0000;
+  border-bottom-width: 3px;
 }
 
-.page_setup{
-    border-bottom-color: #FFA500;
-    border-bottom-width: 3px;
-    float: left;
-    width: 139px;
-    margin-top: 7px;
-    margin-left: 28px;
+.page_setup {
+  border-bottom-color: #FFA500;
+  border-bottom-width: 3px;
+  float: left;
+  width: 139px;
+  margin-top: 7px;
+  margin-left: 28px;
 }
 
-.default_page_setup{
-    border-bottom-color: #FFA500;
-    border-bottom-width: 3px;
-    float: left;
-    width: 167px;
-    margin-top: 7px;
-    margin-left: 5px;
+.default_page_setup {
+  border-bottom-color: #FFA500;
+  border-bottom-width: 3px;
+  float: left;
+  width: 167px;
+  margin-top: 7px;
+  margin-left: 5px;
 }
 
-.folder_main_content{
-    position: relative;
-    width: 100%;
-    height: 833px;
-    float: left;
-    margin-left: 1px;
+.folder_main_content {
+  position: relative;
+  width: 100%;
+  height: 833px;
+  float: left;
+  margin-left: 1px;
 }
 
-.folders_block{
-    width: 161px;
-    height: 880px;
-    text-align: center;
-    position: relative;
-    float: left;
+.folders_block {
+  width: 161px;
+  height: 880px;
+  text-align: center;
+  position: relative;
+  float: left;
 }
 
-.main_folder_container{
-    position: relative;
-    width: 726px;
-    height: 880px;
-    float: left;
-    margin-left: 1px;
-    overflow: hidden;
+.main_folder_container {
+  position: relative;
+  width: 726px;
+  height: 880px;
+  float: left;
+  margin-left: 1px;
+  overflow: hidden;
 }
 
 .folders_text {
-    font-size: 16px;
-    position: relative;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    text-align: center;
-    float: left;
-    width: 170px;
+  font-size: 16px;
+  position: relative;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  text-align: center;
+  float: left;
+  width: 170px;
 }
 
 .search_box_tilist {
-    width: 84%;
-    display: inline;
+  width: 84%;
+  display: inline;
 }
 
 .sort_folder {
-    margin-top: 5px;
-    width: 84%;
-    display: inline;
+  margin-top: 5px;
+  width: 84%;
+  display: inline;
 }
 
-.main_folder_content{
-    position: relative;
-    padding-bottom: 1px;
-    margin-top: 9px;
-    margin-left: 5px;
-    min-height: 220px;
-    width: 708px;
-    padding-top: 10px;
-    margin-bottom: 2px;
-    border-color: #ddd;
+.main_folder_content {
+  position: relative;
+  padding-bottom: 1px;
+  margin-top: 9px;
+  margin-left: 5px;
+  min-height: 220px;
+  width: 708px;
+  padding-top: 10px;
+  margin-bottom: 2px;
+  border-color: #ddd;
 }
 
 /* Folder Draggable */
-.draggable_label{
-    font-size: 11px;
-    margin-top: 45px;
-    color: #FFFFFF;
-    text-align: center;
+
+.draggable_label {
+  font-size: 11px;
+  margin-top: 45px;
+  color: #FFFFFF;
+  text-align: center;
 }
 
 /* Folder View */
-.group-view-change{
-    float: right;
-    width:100%;
+
+.group-view-change {
+  float: right;
+  width: 100%;
 }
 
-.img-folder-view-group{
-    float: right; 
-    margin-top: 7px; 
-    margin-right: 13px;
-    cursor: pointer;
+.img-folder-view-group {
+  float: right;
+  margin-top: 7px;
+  margin-right: 13px;
+  cursor: pointer;
 }
 
-.img-folder-view-group.group-list-view{
-    margin-right: 14px;
+.img-folder-view-group.group-list-view {
+  margin-right: 14px;
 }
 
 /* Folders List */
-.tilist_list_show{
-    position: relative;
-    margin-top: 3px;
-    float: left;
-    width: 100%;
-    height: 738px;
-    overflow: hidden;
-    text-align: center;
+
+.tilist_list_show {
+  position: relative;
+  margin-top: 3px;
+  float: left;
+  width: 100%;
+  height: 738px;
+  overflow: hidden;
+  text-align: center;
 }
 
-.folder-art{
-    width: 20%;
-    float: left;
-    text-align: left;
-    margin-left: 2px
+.folder-art {
+  width: 20%;
+  float: left;
+  text-align: left;
+  margin-left: 2px
 }
 
-.folder-art.details{
-    width: 100%;
-    display: flex;
-    justify-content: center;
+.folder-art.details {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-.tilist_list_art{
-    float: left;
-    max-width: 30px;
-    max-height: 25px;
-    margin-top: 3px;
-    text-align: center;
+.tilist_list_art {
+  float: left;
+  max-width: 30px;
+  max-height: 25px;
+  margin-top: 3px;
+  text-align: center;
 }
 
-.tilist_list_art.tilist-detail-content{
-    max-width: 110px;
-    max-height: 110px;
-} 
-
-.folder_list_title{
-    float: left;
-    margin-top: 3px;
-    margin-left: 8px;
-    width: 98px;
-    font-size: 11px;
-    text-align: left;
-    word-wrap: break-word;
+.tilist_list_art.tilist-detail-content {
+  max-width: 110px;
+  max-height: 110px;
 }
 
-.folder-notify-icons{
-    width: 100%;
-    float: right;
+.folder_list_title {
+  float: left;
+  margin-top: 3px;
+  margin-left: 8px;
+  width: 98px;
+  font-size: 11px;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+.folder-notify-icons {
+  width: 100%;
+  float: right;
 }
 
 /*Folder List */
-.folder_list_single{
-    display: inline-block;
-    position: relative;
-    background-color: #FFFFFF;
-    text-align: left;
-    margin-right: 5px;
-    width: 138px;
-    min-height: 42px;
-    color: #000000;
-    cursor: pointer;
-    border: 1px outset #F2F2F2;
+
+.folder_list_single {
+  display: inline-block;
+  position: relative;
+  background-color: #FFFFFF;
+  text-align: left;
+  margin-right: 5px;
+  width: 138px;
+  min-height: 42px;
+  color: #000000;
+  cursor: pointer;
+  border: 1px outset #F2F2F2;
 }
 
-.folder_list_single:hover{
-    background-color: #F2F2F2;
+.folder_list_single:hover {
+  background-color: #F2F2F2;
 }
 
-.folder_list_single.selected{
-    background-color: #3c3c3c;
-    color: #FFFFFF;
+.folder_list_single.selected {
+  background-color: #3c3c3c;
+  color: #FFFFFF;
 }
 
 /* Draggable Folder Content */
-.folder_content{
-    position: relative;
-    padding-bottom: 1px;
-    margin-top: 9px;
-    margin-left: 5px;
-    min-height: 220px;
-    width: 708px;
-    padding-top: 10px;
-    margin-bottom: 2px;
-    border-color: #ddd;
+
+.folder_content {
+  position: relative;
+  padding-bottom: 1px;
+  margin-top: 9px;
+  margin-left: 5px;
+  min-height: 220px;
+  width: 708px;
+  padding-top: 10px;
+  margin-bottom: 2px;
+  border-color: #ddd;
 }
 
-.folder_main_panel{
-    position: relative;
-    float: left;
-    width: 100%;
-    min-height: 220px;
+.folder_main_panel {
+  position: relative;
+  float: left;
+  width: 100%;
+  min-height: 220px;
 }
 
-.draggable_label{
-    font-size: 11px;
-    margin-top: 45px;
-    color: #FFFFFF;
-    text-align: center;
+.draggable_label {
+  font-size: 11px;
+  margin-top: 45px;
+  color: #FFFFFF;
+  text-align: center;
 }
 
-.folder_content_left{
-    width: 45%;
-    float: left;
-    height: 207px;
-    position: relative;
+.folder_content_left {
+  width: 45%;
+  float: left;
+  height: 207px;
+  position: relative;
 }
 
-.folder_tile_single{
-    display: table;
-    position: relative;
-    text-align: left;
-    margin-left: 7px;
-    margin-bottom: 4px;
-    width: 257px;
-    margin-left: 8px;
-    min-height: 32px;
-    padding-bottom: 2px;
-    background-color: #FFFFFF;
-    color: #000000;
-    border: 1px solid #FF69B4;
+.folder_tile_single {
+  display: table;
+  position: relative;
+  text-align: left;
+  margin-left: 7px;
+  margin-bottom: 4px;
+  width: 257px;
+  margin-left: 8px;
+  min-height: 32px;
+  padding-bottom: 2px;
+  background-color: #FFFFFF;
+  color: #000000;
+  border: 1px solid #FF69B4;
 }
 
 /* Dragged Tile Art */
 
 .tile_list_art {
-    max-width: 240px;
-    margin-top: 8px;
-    margin-left: 5px;
-    margin-bottom: 5px;
-    margin-right: 4px;
-    float: left; 
+  max-width: 240px;
+  margin-top: 8px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  margin-right: 4px;
+  float: left;
 }
 
-.tile_list_art.tile-content-img{
-    max-width: 30px;
-    max-height: 25px; 
-    margin-top: 3px;
+.tile_list_art.tile-content-img {
+  max-width: 30px;
+  max-height: 25px;
+  margin-top: 3px;
 }
 
 /* Dragged Tile title */
 
-.tile_list_title{
-    float:left;
-    width: 235px; 
-    margin-top: 2px; 
-    margin-left: 5px; 
-    font-size: 11px; 
-    text-align: justify; 
-    word-wrap: break-word;
+.tile_list_title {
+  float: left;
+  width: 235px;
+  margin-top: 2px;
+  margin-left: 5px;
+  font-size: 11px;
+  text-align: justify;
+  word-wrap: break-word;
 }
 
-.tile_list_title.tile-content-title{  
-    width: 200px;
+.tile_list_title.tile-content-title {
+  width: 200px;
 }
 
-.folder_content_right{
-    width: 55%;
-    float: right;
-    height: 207px;
+.folder_content_right {
+  width: 55%;
+  float: right;
+  height: 207px;
 }
 
 /* Drag Buttons */
+
 .drag_buttons {
-    position: relative;
-    width: 100%;
-    margin-bottom: 15px;
-    text-align: right;
-    float: right;
-    padding-right: 7px;
+  position: relative;
+  width: 100%;
+  margin-bottom: 15px;
+  text-align: right;
+  float: right;
+  padding-right: 7px;
 }
 
 .drg_btn {
-    margin-right: 5px;
-    color: #000000;
-    border: 1px solid #A9A9A9;
+  margin-right: 5px;
+  color: #000000;
+  border: 1px solid #A9A9A9;
+}
+
+/* Tiles */
+
+.folder_main_tile_block {
+  background-color: #FFFFFF;
+  border-radius: 0px;
+  margin-top: 12px;
+}
+
+.folder_main_tile_block {
+  background-color: #FFFFFF;
+  border-radius: 0px;
+  margin-top: 12px;
+}
+
+.folder_tiles_list_single {
+  float: left;
+  position: relative;
+  text-align: left;
+  margin-left: 9px;
+  margin-bottom: 4px;
+  width: 256px;
+  height: 56px;
+  padding-bottom: 2px;
+  color: #000000;
+  border: 2px outset rgba(255, 255, 255, .5);
+}
+
+.folder_tile_list_art {
+  max-width: 240px;
+  margin-top: 8px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  margin-right: 4px;
+  float: left;
+}
+
+.folder_tile_list_art.folder-tile-content-img {
+  max-width: 30px;
+  max-height: 25px;
+  margin-top: 3px;
+}
+
+.folder_tile_list_title {
+  float: left;
+  width: 235px;
+  margin-top: 2px;
+  margin-left: 5px;
+  font-size: 11px;
+  text-align: justify;
+  word-wrap: break-word;
+}
+
+.folder_tile_list_title.folder-tile-content-title {
+  width: 200px;
+}
+
+/* Tile Icons */
+
+.folder_tile_icons {
+  position: relative;
+  right: 0;
+  bottom: 2px;
+  width: 100%;
+  float: right;
 }

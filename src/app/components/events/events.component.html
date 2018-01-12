@@ -103,9 +103,33 @@
         {{ setDragIndex(i, dragTile)}}
         <div *ngIf="!dragTile.hasOwnProperty('eventDragContainer')" class="event_main_panel">
           <div class="event_content_left">
-            <div class="event_tile_single">
+           <!-- <div class="event_tile_single">
               <img class='tile_list_art tile-content-img' [src]="dragTile?.tile?.art | safe">
               <div class="tile_list_title tile-content-title">{{dragTile?.tile?.title}}</div>
+            </div> -->
+
+            <div class="event_main_tile_block event_tiles_list_single">
+              <img class="event_tile_list_art event-tile-content-img" [src]="dragTile['tile']?.art | safe">
+              <div class="event_tile_list_title event-tile-content-title">{{dragTile['tile']?.title}}</div>
+              <div class="event_tile_icons">
+                <span [title]="dragTile['tile']!.tileApps" [style.display]="dragTile['tile']!.isWeight" class="step weight"></span>
+                <span [title]="dragTile['tile']!.tileHealthStatusRules" [style.display]="dragTile['tile']!.isRules" class="step smart smarticon report-rule-tile">
+                  <i class="icon ion-heart"></i>
+                </span>
+                <span [title]="dragTile['tile']!.tileProcedure" [style.display]="dragTile['tile']!.isProcedure" class="step smart smarticon smarticon-tile">
+                  <i class="icon ion-medkit"></i>
+                </span>
+                <span [title]="dragTile['tile']!.tileSmart" [style.display]="dragTile['tile']!.isSmart" class="step smart smarticon smarticon-tile">
+                  <i class="icon ion-lightbulb"></i>
+                </span>
+                <span [title]="dragTile['tile']!.tileNotifications" [style.display]="dragTile['tile']!.isNotification" class="step smart noteicon smarticon-tile"
+                  aria-hidden="true">
+                  <i class="icon ion-android-notifications-none"></i>
+                </span>
+                <span [title]="dragTile['tile']!.tileApps" [style.display]="dragTile['tile']!.isRole" class="step smart smarticon smarticon-tile">
+                  <i class="icon ion-android-person"></i>
+                </span>
+              </div>
             </div>
             <div class="activity-title">
               <input class="form-control input-sm tile-activity-title" [(ngModel)]="dragTile!.activityTitle" placeholder="Activity Title"

@@ -107,20 +107,38 @@ export class EventsComponent implements OnInit {
     };
 
     if (tile && !this.utils.isEmptyObject(tile)) {
-      var currTile = {
-        "_id": tile.hasOwnProperty("_id") ? tile["_id"] : "-1",
-        "title": tile.hasOwnProperty("title") && !this.utils.isNullOrEmpty(tile["title"]) ? tile["title"] : "",
-        "art": tile.hasOwnProperty("art") && !this.utils.isNullOrEmpty(tile["art"]) ? tile["art"] : "",
-        "categoryName": tile.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(tile["categoryName"]) ? tile["categoryName"] : ""
-      }
-
-      dragged["tile"] = currTile;
+      dragged["tile"] = this.getCurrentTileObj(tile);
     }
 
     return dragged;
   };
 
-  evtCategoryChange(catId: string){
+
+  getCurrentTileObj(tile: Object) {
+    tile = this.tileNotifyIcons(tile);
+
+    var currTile = {
+      "_id": tile.hasOwnProperty("_id") ? tile["_id"] : "-1",
+      "title": tile.hasOwnProperty("title") && !this.utils.isNullOrEmpty(tile["title"]) ? tile["title"] : "",
+      "art": tile.hasOwnProperty("art") && !this.utils.isNullOrEmpty(tile["art"]) ? tile["art"] : "",
+      "categoryName": tile.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(tile["categoryName"]) ? tile["categoryName"] : "",
+      "tileApps": tile["tileApps"],
+      "isWeight": tile["isWeight"],
+      "tileHealthStatusRules": tile["tileHealthStatusRules"],
+      "isRules": tile["isRules"],
+      "tileProcedure": tile["tileProcedure"],
+      "isProcedure": tile["isProcedure"],
+      "tileSmart": tile["tileSmart"],
+      "isSmart": tile["isSmart"],
+      "tileNotifications": tile["tileNotifications"],
+      "isNotification": tile["isNotification"],
+      "isRole": tile["isRole"]
+    }
+
+    return currTile;
+  };
+
+  evtCategoryChange(catId: string) {
     this.eventCategoryId = catId;
   };
 
@@ -129,7 +147,7 @@ export class EventsComponent implements OnInit {
     var currTile = {};
 
     if (!this.utils.isEmptyObject(dragTile) && dragTile.hasOwnProperty("tileData")) {
-      currTile = dragTile["tileData"];
+      currTile = this.getCurrentTileObj(dragTile["tileData"]);
     }
 
     var dragged = {
@@ -204,6 +222,76 @@ export class EventsComponent implements OnInit {
     dragged = this.setActivateDeactivate(dragged);
 
     return dragged;
+  };
+
+  /*Tile Notify Icons */
+  tileNotifyIcons(currTile: Object) {
+    var tileNotifications = "";
+    var tileSmart = "";
+    var pageApps = "";
+    var tileProcedure = "";
+    var tileRules = "";
+
+    if (currTile.hasOwnProperty("notification") && currTile["notification"].hasOwnProperty("apps") && currTile["notification"]["apps"].length > 0) {
+      for (let i = 0; i < currTile["notification"]["apps"].length; i++) {
+        var app = currTile["notification"]["apps"][i];
+        tileNotifications += i === 0 ? app.name : ", " + app.name;
+      }
+
+      currTile["isNotification"] = "block";
+    } else {
+      currTile["isNotification"] = "none";
+    }
+
+    if (currTile.hasOwnProperty("smart") && currTile["smart"].hasOwnProperty("apps") && currTile["smart"]["apps"].length > 0) {
+      for (let i = 0; i < currTile["smart"]["apps"].length; i++) {
+        var smartApp = currTile["smart"]["apps"][i];
+        tileSmart += i == 0 ? smartApp.name : ", " + smartApp.name;
+      }
+
+      currTile["isSmart"] = "block";
+    } else {
+      currTile["isSmart"] = "none";
+    }
+
+    if (currTile.hasOwnProperty("Apps") && currTile["Apps"].length > 0) {
+      for (let i = 0; i < currTile["Apps"].length; i++) {
+        var app = currTile["Apps"][i];
+        pageApps += i === 0 ? app.appName : ", " + app.appName;
+      }
+    }
+
+    if (currTile.hasOwnProperty("Procedure") && currTile["Procedure"].length > 0) {
+      for (let i = 0; i < currTile["Procedure"].length; i++) {
+        var procedure = currTile["Procedure"][i];
+        tileProcedure += i === 0 ? procedure.name : ", " + procedure.name;
+      }
+
+      currTile["isProcedure"] = "block";
+    } else {
+      currTile["isProcedure"] = "none";
+    }
+
+    if (currTile.hasOwnProperty("hsrRuleEngine") && currTile["hsrRuleEngine"].length > 0) {
+      for (let i = 0; i < currTile["hsrRuleEngine"].length; i++) {
+        var hsr = currTile["hsrRuleEngine"][i];
+        tileRules += i === 0 ? hsr.ruleName : ", " + hsr.ruleName;
+      }
+
+      currTile["isRules"] = "block";
+    } else {
+      currTile["isRules"] = "none";
+    }
+
+    currTile["isWeight"] = currTile.hasOwnProperty("isWeight") && currTile["isWeight"] ? "block" : "none";
+    currTile["isRole"] = currTile.hasOwnProperty("isRoleBased") && currTile["isRoleBased"] ? "block" : "none";
+    currTile["tileNotifications"] = tileNotifications;
+    currTile["tileSmart"] = tileSmart;
+    currTile["tileApps"] = pageApps;
+    currTile["tileProcedure"] = tileProcedure;
+    currTile["tileHealthStatusRules"] = tileRules;
+
+    return currTile;
   };
 
   setActivateDeactivate(currDragTile: any) {
@@ -474,7 +562,7 @@ export class EventsComponent implements OnInit {
       return false;
     }*/
 
-    if(this.eventCategoryId === "-1"){
+    if (this.eventCategoryId === "-1") {
       alert('Please select a type for the Event');
       return false;
     }
@@ -969,7 +1057,7 @@ export class EventsComponent implements OnInit {
 
     if (!evtExist) {
       this.checkNew('Would you like to save your previous work?', (r) => {
-        if (r) { 
+        if (r) {
           this.saveEvent("", false, false, "select", obj);
         } else {
           this.setEventData(true, obj);
@@ -1181,7 +1269,7 @@ export class EventsComponent implements OnInit {
       //$(this.evtCategory.nativeElement).combobox('setvalue', (objEvent.hasOwnProperty("category") && objEvent["category"]) ? objEvent["category"] : '-1');
       //this.e1.nativeElement.querySelector('#eventCategory')
 
-      this.eventCategoryId = objEvent.hasOwnProperty("category") && objEvent["category"]? objEvent["category"] : '-1';
+      this.eventCategoryId = objEvent.hasOwnProperty("category") && objEvent["category"] ? objEvent["category"] : '-1';
       this.event["draggedTiles"] = [];
 
       if (objEvent.hasOwnProperty("tiles") && objEvent["tiles"].length > 0) {
@@ -1418,7 +1506,7 @@ export class EventsComponent implements OnInit {
     tilist["tiles"] = this.getDraggedTiles();
 
     if (id !== '-1' && selectedLanguage != "en") {
-      tilist[selectedLanguage] = this.event["obj"][selectedLanguage] ? this.event["obj"][selectedLanguage] : {};
+      tilist[selectedLanguage] = this.event["obj"][selectedLanguage] ? Object.assign({}, this.event["obj"][selectedLanguage]) : {};
       tilist[selectedLanguage].name = this.eventName;
       delete tilist["name"];
     }
