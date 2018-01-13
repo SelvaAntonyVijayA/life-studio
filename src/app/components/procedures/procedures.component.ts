@@ -76,7 +76,7 @@ export class ProceduresComponent implements OnInit {
         "art": tile.hasOwnProperty("art") && !this.utils.isNullOrEmpty(tile["art"]) ? tile["art"] : "",
         "categoryName": tile.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(tile["categoryName"]) ? tile["categoryName"] : "",
         "tileApps": tile["tileApps"],
-        "isWeight": tile["isWeight"],
+        "isWgt": tile["isWgt"],
         "tileHealthStatusRules": tile["tileHealthStatusRules"],
         "isRules": tile["isRules"],
         "tileProcedure": tile["tileProcedure"],
@@ -296,6 +296,7 @@ export class ProceduresComponent implements OnInit {
     return uniqueId;
   };
 
+  /*Tile Notify Icons */
   tileNotifyIcons(currTile: Object) {
     var tileNotifications = "";
     var tileSmart = "";
@@ -303,64 +304,94 @@ export class ProceduresComponent implements OnInit {
     var tileProcedure = "";
     var tileRules = "";
 
-    if (currTile.hasOwnProperty("notification") && currTile["notification"].hasOwnProperty("apps") && currTile["notification"]["apps"].length > 0) {
-      for (let i = 0; i < currTile["notification"]["apps"].length; i++) {
-        var app = currTile["notification"]["apps"][i];
-        tileNotifications += i === 0 ? app.name : ", " + app.name;
-      }
+    if (!currTile.hasOwnProperty("isNotification")) {
+      if (currTile.hasOwnProperty("notification") && currTile["notification"].hasOwnProperty("apps") && currTile["notification"]["apps"].length > 0) {
+        for (let i = 0; i < currTile["notification"]["apps"].length; i++) {
+          var app = currTile["notification"]["apps"][i];
+          tileNotifications += i === 0 ? app.name : ", " + app.name;
+        }
 
-      currTile["isNotification"] = "block";
-    } else {
-      currTile["isNotification"] = "none";
-    }
-
-    if (currTile.hasOwnProperty("smart") && currTile["smart"].hasOwnProperty("apps") && currTile["smart"]["apps"].length > 0) {
-      for (let i = 0; i < currTile["smart"]["apps"].length; i++) {
-        var smartApp = currTile["smart"]["apps"][i];
-        tileSmart += i == 0 ? smartApp.name : ", " + smartApp.name;
-      }
-
-      currTile["isSmart"] = "block";
-    } else {
-      currTile["isSmart"] = "none";
-    }
-
-    if (currTile.hasOwnProperty("Apps") && currTile["Apps"].length > 0) {
-      for (let i = 0; i < currTile["Apps"].length; i++) {
-        var app = currTile["Apps"][i];
-        pageApps += i === 0 ? app.appName : ", " + app.appName;
+        currTile["isNotification"] = "block";
+      } else {
+        currTile["isNotification"] = "none";
       }
     }
 
-    if (currTile.hasOwnProperty("Procedure") && currTile["Procedure"].length > 0) {
-      for (let i = 0; i < currTile["Procedure"].length; i++) {
-        var procedure = currTile["Procedure"][i];
-        tileProcedure += i === 0 ? procedure.name : ", " + procedure.name;
-      }
+    if (!currTile.hasOwnProperty("isSmart")) {
+      if (currTile.hasOwnProperty("smart") && currTile["smart"].hasOwnProperty("apps") && currTile["smart"]["apps"].length > 0) {
+        for (let i = 0; i < currTile["smart"]["apps"].length; i++) {
+          var smartApp = currTile["smart"]["apps"][i];
+          tileSmart += i == 0 ? smartApp.name : ", " + smartApp.name;
+        }
 
-      currTile["isProcedure"] = "block";
-    } else {
-      currTile["isProcedure"] = "none";
+        currTile["isSmart"] = "block";
+      } else {
+        currTile["isSmart"] = "none";
+      }
     }
 
-    if (currTile.hasOwnProperty("hsrRuleEngine") && currTile["hsrRuleEngine"].length > 0) {
-      for (let i = 0; i < currTile["hsrRuleEngine"].length; i++) {
-        var hsr = currTile["hsrRuleEngine"][i];
-        tileRules += i === 0 ? hsr.ruleName : ", " + hsr.ruleName;
+    if (!currTile.hasOwnProperty("tileApps")) {
+      if (currTile.hasOwnProperty("Apps") && currTile["Apps"].length > 0) {
+        for (let i = 0; i < currTile["Apps"].length; i++) {
+          var app = currTile["Apps"][i];
+          pageApps += i === 0 ? app.appName : ", " + app.appName;
+        }
       }
-
-      currTile["isRules"] = "block";
-    } else {
-      currTile["isRules"] = "none";
     }
 
-    currTile["isWeight"] = currTile.hasOwnProperty("isWeight") && currTile["isWeight"] ? "block" : "none";
-    currTile["isRole"] = currTile.hasOwnProperty("isRoleBased") && currTile["isRoleBased"] ? "block" : "none";
-    currTile["tileNotifications"] = tileNotifications;
-    currTile["tileSmart"] = tileSmart;
-    currTile["tileApps"] = pageApps;
-    currTile["tileProcedure"] = tileProcedure;
-    currTile["tileHealthStatusRules"] = tileRules;
+    if (!currTile.hasOwnProperty("isProcedure")) {
+      if (currTile.hasOwnProperty("Procedure") && currTile["Procedure"].length > 0) {
+        for (let i = 0; i < currTile["Procedure"].length; i++) {
+          var procedure = currTile["Procedure"][i];
+          tileProcedure += i === 0 ? procedure.name : ", " + procedure.name;
+        }
+
+        currTile["isProcedure"] = "block";
+      } else {
+        currTile["isProcedure"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isRules")) {
+      if (currTile.hasOwnProperty("hsrRuleEngine") && currTile["hsrRuleEngine"].length > 0) {
+        for (let i = 0; i < currTile["hsrRuleEngine"].length; i++) {
+          var hsr = currTile["hsrRuleEngine"][i];
+          tileRules += i === 0 ? hsr.ruleName : ", " + hsr.ruleName;
+        }
+
+        currTile["isRules"] = "block";
+      } else {
+        currTile["isRules"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isWgt")) {
+      currTile["isWgt"] = currTile.hasOwnProperty("isWeight") && currTile["isWeight"] ? "block" : "none";
+    }
+
+    if (!currTile.hasOwnProperty("isRole")) {
+      currTile["isRole"] = currTile.hasOwnProperty("isRoleBased") && currTile["isRoleBased"] ? "block" : "none";
+    }
+
+    if (!currTile.hasOwnProperty("tileNotifications")) {
+      currTile["tileNotifications"] = tileNotifications;
+    }
+
+    if (!currTile.hasOwnProperty("tileSmart")) {
+      currTile["tileSmart"] = tileSmart;
+    }
+
+    if (!currTile.hasOwnProperty("tileApps")) {
+      currTile["tileApps"] = pageApps;
+    }
+
+    if (!currTile.hasOwnProperty("tileProcedure")) {
+      currTile["tileProcedure"] = tileProcedure;
+    }
+
+    if (!currTile.hasOwnProperty("tileHealthStatusRules")) {
+      currTile["tileHealthStatusRules"] = tileRules;
+    }
 
     return currTile;
   };

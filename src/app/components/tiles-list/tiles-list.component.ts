@@ -225,6 +225,7 @@ export class TilesListComponent {
         var categoryName = category[0] && category[0].hasOwnProperty("name") ? category[0]["name"] : "";
         tilesData[i]["search"] = this.utils.htmlEncode(tilesData[i].title) + " " + tilesData["title"];
         tilesData[i]["categoryName"] = categoryName;
+        tilesData[i] = this.tileNotifyIcons(tilesData[i]);
       }
     }
   };
@@ -370,6 +371,76 @@ export class TilesListComponent {
     this.destroyScroll();
   };
 
+  /*Tile Notify Icons */
+  tileNotifyIcons(currTile: Tile) {
+    var tileNotifications = "";
+    var tileSmart = "";
+    var pageApps = "";
+    var tileProcedure = "";
+    var tileRules = "";
+
+    if (currTile.hasOwnProperty("notification") && currTile["notification"].hasOwnProperty("apps") && currTile["notification"]["apps"].length > 0) {
+      for (let j = 0; j < currTile["notification"]["apps"].length; j++) {
+        var app = currTile["notification"]["apps"][j];
+        tileNotifications += j === 0 ? app.name : ", " + app.name;
+      }
+
+      currTile["isNotification"] = "block";
+    } else {
+      currTile["isNotification"] = "none";
+    }
+
+    if (currTile.hasOwnProperty("smart") && currTile["smart"].hasOwnProperty("apps") && currTile["smart"]["apps"].length > 0) {
+      for (let k = 0; k < currTile["smart"]["apps"].length; k++) {
+        var smartApp = currTile["smart"]["apps"][k];
+        tileSmart += k == 0 ? smartApp.name : ", " + smartApp.name;
+      }
+
+      currTile["isSmart"] = "block";
+    } else {
+      currTile["isSmart"] = "none";
+    }
+
+    if (currTile.hasOwnProperty("Apps") && currTile["Apps"].length > 0) {
+      for (let l = 0; l < currTile["Apps"].length; l++) {
+        var app = currTile["Apps"][l];
+        pageApps += l === 0 ? app.appName : ", " + app.appName;
+      }
+    }
+
+    if (currTile.hasOwnProperty("Procedure") && currTile["Procedure"].length > 0) {
+      for (let m = 0; m < currTile["Procedure"].length; m++) {
+        var procedure = currTile["Procedure"][m];
+        tileProcedure += m === 0 ? procedure.name : ", " + procedure.name;
+      }
+
+      currTile["isProcedure"] = "block";
+    } else {
+      currTile["isProcedure"] = "none";
+    }
+
+    if (currTile.hasOwnProperty("hsrRuleEngine") && currTile["hsrRuleEngine"].length > 0) {
+      for (let n = 0; n < currTile["hsrRuleEngine"].length; n++) {
+        var hsr = currTile["hsrRuleEngine"][n];
+        tileRules += n === 0 ? hsr.ruleName : ", " + hsr.ruleName;
+      }
+
+      currTile["isRules"] = "block";
+    } else {
+      currTile["isRules"] = "none";
+    }
+
+    currTile["isWgt"] = currTile.hasOwnProperty("isWeight") && currTile["isWeight"] ? "block" : "none";
+    currTile["isRole"] = currTile.hasOwnProperty("isRoleBased") && currTile["isRoleBased"] ? "block" : "none";
+    currTile["tileNotifications"] = tileNotifications;
+    currTile["tileSmart"] = tileSmart;
+    currTile["tileApps"] = pageApps;
+    currTile["tileProcedure"] = tileProcedure;
+    currTile["tileHealthStatusRules"] = tileRules;
+
+    return currTile;
+  };
+
   ngOnChanges(cHObj: any) {
     if (cHObj.hasOwnProperty("organizations") && cHObj["organizations"]["currentValue"].length > 0) {
       if (!cHObj["organizations"]["firstChange"] && this.utils.isArray(cHObj["organizations"]["previousValue"]) && cHObj["organizations"]["previousValue"].length == 0) {
@@ -406,13 +477,13 @@ export class TilesListComponent {
              <div [iliDraggable]="{data: tile, page: page}" [style.cursor]="cursor" class="main_tile_block tiles_list_single"> 
              <img [ngClass]="listType === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
              <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
-             <div class="tile_icons">
-             <span [title]="symbols!.tileApps" [style.display]="symbols!.isWeight" class="step weight"></span>
-             <span [title]="symbols!.tileHealthStatusRules" [style.display]="symbols!.isRules" class="step smart smarticon report-rule-tile"> <i class="icon ion-heart"></i> </span>
-             <span [title]="symbols!.tileProcedure" [style.display]="symbols!.isProcedure" class="step smart smarticon smarticon-tile"> <i class="icon ion-medkit"></i> </span>
-             <span [title]="symbols!.tileSmart" [style.display]="symbols!.isSmart" class="step smart smarticon smarticon-tile"> <i class="icon ion-lightbulb"></i> </span>
-             <span [title]="symbols!.tileNotifications" [style.display]="symbols!.isNotification" class="step smart noteicon smarticon-tile"  style="display: block;" aria-hidden="true"><i class="icon ion-android-notifications-none"></i></span>
-             <span [title]="symbols!.tileApps" [style.display]="symbols!.isRole" class="step smart smarticon smarticon-tile"> <i class="icon ion-android-person"></i> </span>
+             <div *ngIf="tile" class="tile_icons">
+             <span [title]="tile!.tileApps" [style.display]="tile!.isWgt" class="step weight"></span>
+             <span [title]="tile!.tileHealthStatusRules" [style.display]="tile!.isRules" class="step smart smarticon report-rule-tile"> <i class="icon ion-heart"></i> </span>
+             <span [title]="tile!.tileProcedure" [style.display]="tile!.isProcedure" class="step smart smarticon smarticon-tile"> <i class="icon ion-medkit"></i> </span>
+             <span [title]="tile!.tileSmart" [style.display]="tile!.isSmart" class="step smart smarticon smarticon-tile"> <i class="icon ion-lightbulb"></i> </span>
+             <span [title]="tile!.tileNotifications" [style.display]="tile!.isNotification" class="step smart noteicon smarticon-tile"  style="display: block;" aria-hidden="true"><i class="icon ion-android-notifications-none"></i></span>
+             <span [title]="tile!.tileApps" [style.display]="tile!.isRole" class="step smart smarticon smarticon-tile"> <i class="icon ion-android-person"></i> </span>
              </div>
              </div>`,
   styleUrls: ['./tiles-list.component.css'],
@@ -441,7 +512,7 @@ export class TilesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.showSymbols();
+    //this.showSymbols();
 
     if (this.page === "tiles") {
       this.cursor = "pointer";
@@ -465,7 +536,7 @@ export class TilesComponent implements OnInit {
     }
   };
 
-  showSymbols() {
+  /*showSymbols() {
     var tileNotifications = "";
     var tileSmart = "";
     var pageApps = "";
@@ -555,5 +626,5 @@ export class TilesComponent implements OnInit {
     this.symbols["tileApps"] = pageApps;
     this.symbols["tileProcedure"] = tileProcedure;
     this.symbols["tileHealthStatusRules"] = tileRules;
-  };
-}
+  };*/
+};

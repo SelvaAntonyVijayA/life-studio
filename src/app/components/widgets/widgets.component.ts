@@ -52,13 +52,15 @@ export class WidgetsComponent implements OnInit {
   organizations: any[] = [];
   oid: string = "";
   selectedOrganization: string = "-1";
-  private orgChangeDetect: any;
   scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
+  languageList: any[] = [];
+  selectedLanguage: string = "en";
+  private orgChangeDetect: any;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
-    elemRef: ElementRef, 
-    private tileService: TileService, 
-    private route: ActivatedRoute, 
+    elemRef: ElementRef,
+    private tileService: TileService,
+    private route: ActivatedRoute,
     private cms: CommonService,
     private mScrollbarService: MalihuScrollbarService
   ) {
@@ -86,7 +88,6 @@ export class WidgetsComponent implements OnInit {
   };*/
 
   /* Checking the block by block type */
-
   loadWidgets(type: any, blockData: any) {
     var blocks = this.blocks;
     var viewName = "";
@@ -254,8 +255,7 @@ export class WidgetsComponent implements OnInit {
             "option": "",
             "alert": "",
             "confirmation": "",
-            "popup": "",
-            "subQuestions": []
+            "popup": ""
           }],
           "confirmation": blockData.hasOwnProperty("confirmation") ? blockData.confirmation : [],
           "popup": blockData.hasOwnProperty("popup") ? blockData.popup : [],
@@ -610,7 +610,11 @@ export class WidgetsComponent implements OnInit {
     if (blkLength < blocks.length) {
       this.loadComponent(viewName);
     }
-  }
+  };
+
+  languageChange(langCode: string) {
+    this.selectedLanguage = langCode;
+  };
 
   getViewBlock(view: any, opt: string) {
     let index = this.blockSelected.viewContainerRef.indexOf(view);
@@ -633,7 +637,7 @@ export class WidgetsComponent implements OnInit {
         this.blockSelected.viewContainerRef.move(view, downIdx);
       }
     }
-  }
+  };
 
   resetTile(e: any) {
     if (this.blocks.length > 0) {
@@ -752,6 +756,8 @@ export class WidgetsComponent implements OnInit {
     this.profileDatas = [];
     this.tileCategories = [];
     this.selectedTileCategory = {};
+    this.languageList = [];
+    this.selectedLanguage = "en";
   };
 
   setWidgetDatas() {
@@ -778,11 +784,21 @@ export class WidgetsComponent implements OnInit {
       this.cms["appDatas"]["scrollList"] = ["#main-widget-container", "#main-container-tile-blocks"];
     }
   };
-  
+
   /*Destroy Scroll for the component elements*/
-  destroyScroll(){
+  destroyScroll() {
     this.cms.destroyScroll(["#main-widget-container", "#main-container-tile-blocks"]);
   };
+
+  getLanguages() {
+    if (this.languageList.length === 0) {
+      this.tileService.getLanguages()
+        .then(langs => {
+          this.languageList = langs;
+        });
+    }
+  };
+
 
   ngOnInit() {
     //this.setScrollOptions();
@@ -797,6 +813,7 @@ export class WidgetsComponent implements OnInit {
       this.oid = Cookie.get('oid');
       this.selectedOrganization = this.oid;
       this.resetWidgetDatas();
+      this.getLanguages();
 
       if (this.organizations.length > 0) {
         this.setWidgetDatas();

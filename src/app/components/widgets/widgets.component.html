@@ -4,7 +4,9 @@
       <div class="tile_form">
         <input id="txtTileTitle" [(ngModel)]="selectedTile!.title" class="ili-form tile_title" placeholder="Title" type="text">
         <div class="tile_language">
-          <select class="form-control input-sm" id="tileLanguage" placeholder="Select Language"></select>
+          <select [(ngModel)]="selectedLanguage" (ngModelChange)="languageChange($event)" class="form-control input-sm" id="tileLanguage" placeholder="Select Language">
+            <option *ngFor="let lang of languageList; let i = index" [value]="lang?.code">{{lang?.name}}</option>
+          </select>
         </div>
         <input id="txtTileTags" class="ili-form tile_notes" placeholder="Tags" type="text">
         <select id="tileTemplate" class="ili-form template_box" placeholder="Select Template"></select>

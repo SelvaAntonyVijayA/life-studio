@@ -182,22 +182,22 @@
               <div class="proc_main_tile_block proc_tiles_list_single">
                 <img class="proc_tile_list_art proc-tile-content-img" [src]="dragTile['tile']?.art | safe">
                 <div class="proc_tile_list_title proc-tile-content-title">{{dragTile['tile']?.title}}</div>
-                <div class="proc_tile_icons">
-                  <span [title]="dragTile['tile']!.tileApps" [style.display]="dragTile['tile']!.isWeight" class="step weight"></span>
-                  <span [title]="dragTile['tile']!.tileHealthStatusRules" [style.display]="dragTile['tile']!.isRules" class="step smart smarticon report-rule-tile">
+                <div *ngIf="dragTile?.tile" class="proc_tile_icons">
+                  <span [title]="dragTile.tile!.tileApps" [style.display]="dragTile.tile!.isWgt" class="step weight"></span>
+                  <span [title]="dragTile.tile!.tileHealthStatusRules" [style.display]="dragTile.tile!.isRules" class="step smart smarticon report-rule-tile">
                     <i class="icon ion-heart"></i>
                   </span>
-                  <span [title]="dragTile['tile']!.tileProcedure" [style.display]="dragTile['tile']!.isProcedure" class="step smart smarticon smarticon-tile">
+                  <span [title]="dragTile.tile!.tileProcedure" [style.display]="dragTile.tile!.isProcedure" class="step smart smarticon smarticon-tile">
                     <i class="icon ion-medkit"></i>
                   </span>
-                  <span [title]="dragTile['tile']!.tileSmart" [style.display]="dragTile['tile']!.isSmart" class="step smart smarticon smarticon-tile">
+                  <span [title]="dragTile.tile!.tileSmart" [style.display]="dragTile.tile!.isSmart" class="step smart smarticon smarticon-tile">
                     <i class="icon ion-lightbulb"></i>
                   </span>
-                  <span [title]="dragTile['tile']!.tileNotifications" [style.display]="dragTile['tile']!.isNotification" class="step smart noteicon smarticon-tile"
+                  <span [title]="dragTile.tile!.tileNotifications" [style.display]="dragTile.tile!.isNotification" class="step smart noteicon smarticon-tile"
                     aria-hidden="true">
                     <i class="icon ion-android-notifications-none"></i>
                   </span>
-                  <span [title]="dragTile['tile']!.tileApps" [style.display]="dragTile['tile']!.isRole" class="step smart smarticon smarticon-tile">
+                  <span [title]="dragTile.tile!.tileApps" [style.display]="dragTile.tile!.isRole" class="step smart smarticon smarticon-tile">
                     <i class="icon ion-android-person"></i>
                   </span>
                 </div>

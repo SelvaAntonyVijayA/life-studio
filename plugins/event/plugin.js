@@ -340,7 +340,6 @@ var activate = function (req, res, next) {
       var indx = req.params.position;
       tile = event.tiles[parseInt(indx)];
 
-      console.dir(tile);
       var currentDateTime = new Date();
       // currentDateTime = currentDateTime.setSeconds(0);
       currentDateTime = new Date(currentDateTime);

@@ -272,7 +272,85 @@ export class BlockChecker {
   };
 
   questionnaireBlock() {
+    this.block["data"]["mandatory"] = this.checkBlockExists(this.block) && this.block["data"].hasOwnProperty("mandatory") && !this.utils.isNullOrEmpty(this.block["data"]["mandatory"]) ? this.utils.convertToBoolean(this.block["data"]["mandatory"]) : false;
+    this.block["data"]["questionText"] = this.checkBlockExists(this.block) && this.block["data"].hasOwnProperty("questionText") && !this.utils.isNullOrEmpty(this.block["data"]["questionText"]) ? this.block["data"]["questionText"] : "";
+    this.block["data"]["inputControlType"] = this.checkBlockExists(this.block) && this.block["data"].hasOwnProperty("inputControlType") && !this.utils.isNullOrEmpty(this.block["data"]["inputControlType"]) ? this.block["data"]["inputControlType"] : "radio";
+    this.block["data"]["questionType"] = this.checkBlockExists(this.block) && this.block["data"].hasOwnProperty("questionType") && !this.utils.isNullOrEmpty(this.block["data"]["questionType"]) ? this.block["data"]["questionType"] : "single";
+    this.block["data"]["isNote"] = this.checkBlockExists(this.block) && this.block["data"].hasOwnProperty("isNote") && !this.utils.isNullOrEmpty(this.block["data"]["isNote"]) ? this.utils.convertToBoolean(this.block["data"]["isNote"]) : false;
+    //this.block["data"]["options"] = this.questionnaireOptions(1);
 
+    this.block["data"]["confirmation"] = [];
+    this.block["data"]["popup"] = [];
+    this.block["data"]["alerts"] = [];
+  };
+
+
+  questionnaireOptions(level: number, levelObj?: any[]) {
+    var options = [];
+    var confirmation = [];
+    var popup = [];
+    var alerts = [];
+    var currLevel = level === 1 ? 2 : 3;
+
+    var opts = [];
+
+    if (level === 1) {
+      opts = this.checkBlockExists(this.block) && this.block["data"].hasOwnProperty("options") && this.block["data"]["options"].length > 0 ? this.block["data"]["options"] : [{
+        "option": "",
+        "alert": "",
+        "confirmation": "",
+        "popup": ""
+      }];
+    } else if (level === 2) {
+
+    } else if (level === 3) {
+
+    }
+
+    var optsLen = opts.length
+
+    for (let i = 1; i <= optsLen; i++) {
+      var currOpt = opts[i];
+
+      if (level === 1) {
+        currOpt["option"] = currOpt.hasOwnProperty("option") && !this.utils.isNullOrEmpty(currOpt["option"]) ? currOpt["option"] : "";
+
+        if (currOpt.hasOwnProperty("subQuestions")) {
+          currOpt["subQuestions"] = this.utils.isArray(currOpt["subQuestions"]) && currOpt["subQuestions"].length > 0 ? this.questionnaireOptions(currLevel, currOpt["subQuestions"]) : [];
+        }
+
+        if (level === 1) {
+          if (currOpt.hasOwnProperty("alert") && this.utils.isArray(currOpt["alert"]) && currOpt["alert"].length > 0) {
+            alerts.push(currOpt["alert"]);
+          }
+
+          if (currOpt.hasOwnProperty("confirmation") && this.utils.isArray(currOpt["confirmation"]) && currOpt["confirmation"].length > 0) {
+            confirmation.push(currOpt["confirmation"]);
+          }
+
+          if (currOpt.hasOwnProperty("popup") && this.utils.isArray(currOpt["popup"]) && currOpt["popup"].length > 0) {
+            confirmation.push(currOpt["popup"]);
+          }
+        }
+      } else if (level === 2) {
+        if (currOpt.hasOwnProperty("type") && currOpt("type") === "questions") {
+          currOpt["type"] = "questions";
+          currOpt["questionText"] = currOpt.hasOwnProperty("questionText") && !this.utils.isNullOrEmpty(currOpt["questionText"]) ? currOpt["questionText"] : "";
+          currOpt["questionType"] = currOpt.hasOwnProperty("questionType") && !this.utils.isNullOrEmpty(currOpt["questionType"]) ? currOpt["questionType"] : "single";
+          currOpt["inputControlType"] = currOpt.hasOwnProperty("inputControlType") && !this.utils.isNullOrEmpty(currOpt["inputControlType"]) ? currOpt["inputControlType"] : "radio";
+
+          var currOpts = currOpt.hasOwnProperty("options") && this.utils.isArray(currOpt["options"]) && currOpt["options"].length > 0 ? currOpt["options"] : [{
+            "type": "questions",
+            "questionText": "",
+            "questionType": "single",
+            "inputControlType": "radio",
+            "options": [{ "option": "" }, { "option": "" }]
+          }];
+
+          currOpt["options"] = this.questionnaireOptions(currLevel, currOpts);
+        }
+      }
+    }
   };
 
   startWrapperBlock() {
@@ -490,5 +568,11 @@ export class BlockChecker {
     }
 
     return orgConnectDatas;
+  };
+
+  checkBlockExists(blk: any) {
+    var blkResult = !this.utils.isEmptyObject(blk) && blk.hasOwnProperty("data") ? true : false;
+
+    return blkResult;
   };
 }
