@@ -1,16 +1,12 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, ComponentFactoryResolver, OnDestroy } from '@angular/core';
 import { TileBlocksDirective } from './tileblocks.directive';
-import { BlockItem } from './block-item';
-import { BlockComponent } from './block.component';
-import { BlockChecker } from './block-checker';
+import { BlockChecker, BlockComponent, BlockItem } from './block-checker';
 import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
 import { CommonService } from '../../services/common.service';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
-//import { ISlimScrollOptions } from 'ng2-slimscroll';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
-
 
 import {
   TextBlockComponent, VideoBlockComponent, PictureBlockComponent, DisqusBlockComponent,
@@ -94,515 +90,206 @@ export class WidgetsComponent implements OnInit {
     var blkLength = blocks.length;
 
     if (type === "text") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(TextBlockComponent, {
-        "type": type,
-        "blockName": "Editor",
-        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : { "text": new String("") }
-      }));
-
+      blocks.push(new BlockItem(TextBlockComponent, new BlockChecker(blockData, type)));
       viewName = "textView";
     }
 
     if (type === "video") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(VideoBlockComponent, {
-        "type": type,
-        "blockName": "Upload Video",
-        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "caption": "",
-          "url": "",
-          "videoid": ""
-        }
-      }));
-
+      blocks.push(new BlockItem(VideoBlockComponent, new BlockChecker(blockData, type)));
       viewName = "videoView";
     }
 
     if (type === "picture") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(PictureBlockComponent, {
-        "type": type,
-        "blockName": "Event Media",
-        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "text": new String(""),
-          "moderated": "false",
-          "rate": "false",
-          "vote": "false"
-        }
-      }));
-
+      blocks.push(new BlockItem(PictureBlockComponent, new BlockChecker(blockData, type)));
       viewName = "pictureView";
     }
 
     if (type === "disqus") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(DisqusBlockComponent, {
-        "type": type,
-        "blockName": "Disqus",
-        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "disqus": false
-        }
-      }));
-
+      blocks.push(new BlockItem(DisqusBlockComponent, new BlockChecker(blockData, type)));
       viewName = "disqusView";
     }
 
     if (type === "feed") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(SocialFeedBlockComponent, {
-        "type": type,
-        "blockName": "Social Feed",
-        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "facebook": false,
-          "facebookurl": "",
-          "twitter": false,
-          "twitterurl": "",
-          "instagram": false,
-          "instaUserId": "",
-          "instaAccessToken": ""
-        }
-      }));
-
+      blocks.push(new BlockItem(SocialFeedBlockComponent, new BlockChecker(blockData, type)));
       viewName = "feedView";
     }
 
     if (type === "calendar") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(CalendarBlockComponent, {
-        "type": type,
-        "blockName": "Calendar",
-        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "text": new String("")
-        }
-      }));
-
+      blocks.push(new BlockItem(CalendarBlockComponent, new BlockChecker(blockData, type)));
       viewName = "calendarView";
     }
 
     if (type === "share") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(ShareBlockComponent, {
-        "type": type,
-        "blockName": "Facebook, Twitter & Email Sharing",
-        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "facebook": false,
-          "twitter": false,
-          "email": false
-        }
-      }));
-
+      blocks.push(new BlockItem(ShareBlockComponent, new BlockChecker(blockData, type)));
       viewName = "shareView";
     }
 
     if (type === "patients") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(PatientsBlockComponent, {
-        "type": type,
-        "blockName": "Patients",
-        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "patients": true,
-          "text": "Patients"
-        }
-      }));
-
+      blocks.push(new BlockItem(PatientsBlockComponent, new BlockChecker(blockData, type)));
       viewName = "patientsView";
     }
 
     if (type === "inquiry") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(InquiryBlockComponent, {
-        "type": type,
-        "blockName": "Inquiry",
-        "data": !this.utils.isEmptyObject(blockData) ? blockData.data : { "email": "", "inquiryText": "" }
-      }));
+      blocks.push(new BlockItem(InquiryBlockComponent, new BlockChecker(blockData, type)));
       viewName = "inquiryView";
     }
 
     if (type === "survey") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(SurveyBlockComponent, {
-        "type": type, "blockName": "Questionnaire", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "mandatory": false, "questionText": "",
-          "controls": "radio", "multiple": "false", "showInApp": false, "isNote": false, "questions": [""],
-          "confirmation": [], "popup": [], "alerts": []
-        }
-      }));
+      blocks.push(new BlockItem(SurveyBlockComponent, new BlockChecker(blockData, type)));
       viewName = "surveyView";
     }
 
     if (type === "questionnaire") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(QuestionnaireBlockComponent, {
-        "type": type, "blockName": "Cascading Questionnaire", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "mandatory": false,
-          "questionText": "",
-          "inputControlType": "radio",
-          "questionType": "single",
-          "isNote": false,
-          "options": [{
-            "option": "",
-            "alert": "",
-            "confirmation": "",
-            "popup": ""
-          }],
-          "confirmation": blockData.hasOwnProperty("confirmation") ? blockData.confirmation : [],
-          "popup": blockData.hasOwnProperty("popup") ? blockData.popup : [],
-          "alerts": blockData.hasOwnProperty("alerts") ? blockData.alerts : []
-        }
-      }));
-
+      blocks.push(new BlockItem(QuestionnaireBlockComponent, new BlockChecker(blockData, type)));
       viewName = "questionnaireView";
     }
 
     if (type === "startwrapper") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(StartWrapperBlockComponent, {
-        "type": type, "blockName": "Start Wrapper", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "refresh": false, "close": false, "redirectApp": false
-        }
-      }));
+      blocks.push(new BlockItem(StartWrapperBlockComponent, new BlockChecker(blockData, type)));
 
       viewName = "startWrapperView";
     }
 
     if (type === "title") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(FormTitleBlockComponent, {
-        "type": type, "blockName": "Form Title", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "titletext": "", "title": false
-        }
-      }));
-
+      blocks.push(new BlockItem(FormTitleBlockComponent, new BlockChecker(blockData, type)));
       viewName = "formTitleView";
     }
 
     if (type === "questions") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(QuestionsBlockComponent, {
-        "type": type, "blockName": "Questions & Answers", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "questions": [""], "mandatory": [false], "answerTypes": ["text"], "notes": [false],
-          "category": "", "categoryName": "", "redirectApp": false
-        }
-      }));
-
+      blocks.push(new BlockItem(QuestionsBlockComponent, new BlockChecker(blockData, type)));
       viewName = "questionsView";
     }
 
     if (type === "attendance") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(AttendanceBlockComponent, {
-        "type": type, "blockName": "Attendance", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "title": "", "person": false, "online": false,
-          "addMember": false, "addQuestion": "Additional Family members attending (not added from another app)", "options": [], "redirectApp": false
-        }
-      }));
-
+      blocks.push(new BlockItem(AttendanceBlockComponent, new BlockChecker(blockData, type)));
       viewName = "attendanceView";
     }
 
     if (type === "confirmation") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(ConfirmationBlockComponent, {
-        "type": type, "blockName": "Confirmation", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "text": new String(""), "submittext": ""
-        }
-      }));
-
+      blocks.push(new BlockItem(ConfirmationBlockComponent, new BlockChecker(blockData, type)));
       viewName = "confirmationView";
     }
 
     if (type === "password") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(PasswordBlockComponent, {
-        "type": type, "blockName": "Password", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "password": false
-        }
-      }));
-
+      blocks.push(new BlockItem(PasswordBlockComponent, new BlockChecker(blockData, type)));
       viewName = "passwordView";
     }
 
     if (type === "next") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(NextBlockComponent, {
-        "type": type, "blockName": "Next", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "text": "", "tileId": "", "tileTile": "", "type": "tile"
-        }
-      }));
+      blocks.push(new BlockItem(NextBlockComponent, new BlockChecker(blockData, type)));
 
       viewName = "nextView";
     }
 
     if (type === "formphoto") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(FormPhotoComponent, {
-        "type": type, "blockName": "Form Media", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "text": new String(""), "isVideo": false
-        }
-      }));
-
+      blocks.push(new BlockItem(FormPhotoComponent, new BlockChecker(blockData, type)));
       viewName = "formPhotoView";
     }
 
     if (type === "painlevel") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(PainLevelComponent, {
-        "type": type, "blockName": "Pain Level", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "painlevel": true, "question": "", "mandatory": false, "level": "image"
-        }
-      }));
+      blocks.push(new BlockItem(PainLevelComponent, new BlockChecker(blockData, type)));
 
       viewName = "painLevelView";
     }
 
     if (type === "drawtool") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(DrawToolBlockComponent, {
-        "type": type, "blockName": "Draw tool", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "drawtool": true, "text": ""
-        }
-      }));
-
+      blocks.push(new BlockItem(DrawToolBlockComponent, new BlockChecker(blockData, type)));
       viewName = "drawToolView";
     }
 
     if (type === "physician") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(PhysicianBlockComponent, {
-        "type": type, "blockName": "Physician", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "isPhysician": true, "mandatory": false, "text": "Physician"
-        }
-      }));
-
+      blocks.push(new BlockItem(PhysicianBlockComponent, new BlockChecker(blockData, type)));
       viewName = "physicianView";
     }
 
     if (type === "endwrapper") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(EndWrapperBlockComponent, {
-        "type": type, "blockName": "End Wrapper", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "text": "", "submitConfirmation": false
-        }
-      }));
-
+      blocks.push(new BlockItem(EndWrapperBlockComponent, new BlockChecker(blockData, type)));
       viewName = "endWrapperView";
     }
 
     if (type === "fill") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      blocks.push(new BlockItem(FillBlockComponent, {
-        "type": type, "blockName": "Fill-in the blanks", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "text": new String(""),
-        }
-      }));
+      blocks.push(new BlockItem(FillBlockComponent, new BlockChecker(blockData, type)));
 
       viewName = "fillView";
     }
 
     if (type === "notes") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      this.blocks.push(new BlockItem(NotesBlockComponent, {
-        "type": type, "blockName": "Notes", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "notes": true, "allNotes": false
-        }
-      }));
-
+      this.blocks.push(new BlockItem(NotesBlockComponent, new BlockChecker(blockData, type)));
       viewName = "notesView";
     }
 
     if (type === "buttons") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      this.blocks.push(new BlockItem(ButtonsBlockComponent, {
-        "type": type, "blockName": "Buttons", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : [{ "beforeText": "", "afterText": "" }],
-        "alerts": blockData.hasOwnProperty("alerts") ? blockData.alerts : []
-      }));
-
+      this.blocks.push(new BlockItem(ButtonsBlockComponent, new BlockChecker(blockData, type)));
       viewName = "buttonsView";
     }
 
     if (type === "contactus") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      this.blocks.push(new BlockItem(ContactUsBlockComponent, {
-        "type": type, "blockName": "ContactUs", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : { "email": "" }
-      }));
+      this.blocks.push(new BlockItem(ContactUsBlockComponent, new BlockChecker(blockData, type)));
 
       viewName = "contactusView";
     }
 
     if (type === "placefull") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      this.blocks.push(new BlockItem(PlacefullBlockComponent, {
-        "type": type, "blockName": "PlaceFull", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : { "text": "" }
-      }));
+      this.blocks.push(new BlockItem(PlacefullBlockComponent, new BlockChecker(blockData, type)));
 
       viewName = "placefullView";
     }
 
     if (type === "addtocart") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      this.blocks.push(new BlockItem(AddToCartBlockComponent, {
-        "type": type, "blockName": "Add To Cart", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "productName": "", "description": "", "price": "", "currency": "", "textCartButton": "",
-          "confirmationMessage": "", "productImage": "", "isProductName": true, "isProductDescription": true,
-          "isProductImage": true, "isProductPrice": true
-        }
-      }));
-
+      this.blocks.push(new BlockItem(AddToCartBlockComponent, new BlockChecker(blockData, type)));
       viewName = "addToCartView";
     }
 
     if (type === "cart") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      this.blocks.push(new BlockItem(CartBlockComponent, {
-        "type": type, "blockName": "Cart", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "productTitle": "", "notificationEmail": "", "textConfirmButton": "", "confirmationMessage": ""
-        }
-      }));
-
+      this.blocks.push(new BlockItem(CartBlockComponent, new BlockChecker(blockData, type)));
       viewName = "cartView";
     }
 
     if (type === "blanksform") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      this.blocks.push(new BlockItem(BlanksFormBlockComponent, {
-        "type": type, "blockName": "Blanks Form", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "email": "", "text": new String(""),
-          "imageLimit": "", "redirectApp": false
-        }
-      }));
-
+      this.blocks.push(new BlockItem(BlanksFormBlockComponent, new BlockChecker(blockData, type)));
       viewName = "blanksFormView";
     }
 
     if (type === "exclusiveurl") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      this.blocks.push(new BlockItem(ExclusiveUrlBlockComponent, {
-        "type": type, "blockName": "URL", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "url": "", "window": false, "iphonewindow": false
-        }
-      }));
-
+      this.blocks.push(new BlockItem(ExclusiveUrlBlockComponent, new BlockChecker(blockData, type)));
       viewName = "exclusiveUrlView";
     }
 
     if (type === "fileupload") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      this.blocks.push(new BlockItem(FileUploadBlockComponent, {
-        "type": type, "blockName": "File Upload", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "url": ""
-        }
-      }));
-
+      this.blocks.push(new BlockItem(FileUploadBlockComponent, new BlockChecker(blockData, type)));
       viewName = "fileUploadView";
     }
 
     if (type === "pushpay") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      this.blocks.push(new BlockItem(PushpayBlockComponent, {
-        "type": type, "blockName": "PushPay", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "pushpay": false,
-          "url": "",
-          "window": false,
-          "iphonewindow": false
-        }
-      }));
+      this.blocks.push(new BlockItem(PushpayBlockComponent, new BlockChecker(blockData, type)));
 
       viewName = "pushPayView";
     }
 
     if (type === "threedcart") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      this.blocks.push(new BlockItem(ThreedCartBlockComponent, {
-        "type": type, "blockName": "3dCart", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "cart": false, "url": "", "window": false, "iphonewindow": false
-        }
-      }));
-
+      this.blocks.push(new BlockItem(ThreedCartBlockComponent, new BlockChecker(blockData, type)));
       viewName = "threedCartView";
     }
 
     if (type === "blogs") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      this.blocks.push(new BlockItem(BlogsBlockComponent, {
-        "type": type, "blockName": "Blogs", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "wordPress": false, "wordPressUrl": "",
-          "wordPressTitle": "", "wordPressContent": new String("")
-        }
-      }));
+      this.blocks.push(new BlockItem(BlogsBlockComponent, new BlockChecker(blockData, type)));
 
       viewName = "blogsView";
     }
 
     if (type === "chat") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData) : {};
-
-      this.blocks.push(new BlockItem(ChatBlockComponent, {
-        "type": type, "blockName": "Blogs", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "chat": true, "isPrivate": false
-        }
-      }));
+      this.blocks.push(new BlockItem(ChatBlockComponent, new BlockChecker(blockData, type)));
 
       viewName = "chatView";
     }
 
     if (type === "account") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData, this.profileDatas) : {};
-
-      this.blocks.push(new BlockItem(AccountBlockComponent, {
-        "type": type, "blockName": "Connection Card", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "connectionCard": this.connectData("account"), "submember": []
-        }, "profileData": this.profileDatas
-      }));
-
+      this.blocks.push(new BlockItem(AccountBlockComponent, new BlockChecker(blockData, type, this.profileDatas)));
       viewName = "accountView";
     }
 
     if (type === "profile") {
-      blockData = this.checkBlockExists(blockData) ? new BlockChecker(blockData, this.profileDatas) : {};
-
-      this.blocks.push(new BlockItem(ProfileBlockComponent, {
-        "type": type, "blockName": "Profile", "data": !this.utils.isEmptyObject(blockData) ? blockData.data : {
-          "profile": this.connectData("profile")
-        }, "profileData": this.profileDatas
-      }));
-
+      this.blocks.push(new BlockItem(ProfileBlockComponent, new BlockChecker(blockData, type, this.profileDatas)));
       viewName = "profileView";
     }
 
@@ -683,39 +370,6 @@ export class WidgetsComponent implements OnInit {
         }
       }
     }
-  };
-
-  connectData(type: string) {
-    var profileData = this.profileDatas.length > 0 ? this.profileDatas.map(x => Object.assign({}, x)) : [];
-
-    if (type === "account") {
-      profileData.push({
-        required: false,
-        assigned: false,
-        name: "Add Family Member ?",
-        tag: "addMember",
-        type: "addMember"
-      });
-    }
-
-    if (profileData.length > 0) {
-      for (let i = 0; i < profileData.length; i++) {
-        var currData = profileData[i];
-        profileData[i]["assigned"] = currData.hasOwnProperty("required") && currData.required ? true : false;
-      }
-    }
-
-    return profileData;
-  };
-
-  checkBlockExists(blk: any) {
-    var blkResult = false;
-
-    if (typeof blk === "object" && blk.hasOwnProperty("data")) {
-      blkResult = true;
-    }
-
-    return blkResult;
   };
 
   /* Loading the block components */
