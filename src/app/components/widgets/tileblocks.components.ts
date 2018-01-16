@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, forwardRef, Input, SkipSelf, ViewContainerRef, PipeTransform, Pipe, ComponentFactoryResolver, ViewChild, ElementRef } from '@angular/core';
-import { BlockComponent } from './block.component';
+import { BlockComponent } from './block-checker';
 import { WidgetsComponent } from './widgets.component';
 import { DomSanitizer } from '@angular/platform-browser';
 
