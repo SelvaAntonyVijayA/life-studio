@@ -1,39 +1,52 @@
-import { Component, EventEmitter, OnInit, forwardRef, Input, SkipSelf, ViewContainerRef, PipeTransform, Pipe, ComponentFactoryResolver, ViewChild, ElementRef } from '@angular/core';
-import { BlockComponent } from './block-checker';
+import { Component, EventEmitter, OnInit, forwardRef, Input, SkipSelf, ViewContainerRef, ComponentFactoryResolver, ViewChild, ElementRef } from '@angular/core';
+import { BlockComponent } from './block-organizer';
 import { WidgetsComponent } from './widgets.component';
 import { DomSanitizer } from '@angular/platform-browser';
-
-@Pipe({ name: 'safe' })
-export class SafePipe implements PipeTransform {
-  constructor(private sanitizer: DomSanitizer) { }
-
-  transform(url) {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
-  }
-}
+import { Utils } from '../../helpers/utils';
 
 @Component({
   selector: 'block-controls',
   outputs: ["blockView"],
   template: `<div style="float:left;" class="drag_cursor"><span class="widgetstext">{{block.blockName}}</span></div>
-             <div class="tigger_btn"><span class="glyphicon glyphicon-off"></span></div>
-             <div class="tigger_btn" (click)="getBlock(block.view, 'delete')" title="Remove"><span class="glyphicon glyphicon-remove"></span></div>
-             <div class="tigger_btn" (click)="getBlock(block.view, 'down')" title="MoveDown"><span class="glyphicon glyphicon-arrow-down"></span></div>
-             <div class="tigger_btn" (click)="getBlock(block.view, 'up')" title="MoveUp"><span style="margin-top:-1px;" class="glyphicon glyphicon-arrow-up"></span></div>
-             <div style="display:none" id="divRedirectBackToApp" class="redirect-app-submit"><span class="redirect-back-app">Redirect back to app </span></div>`,
+             <div [title]="this.block['activate']? 'Deactivate': 'Activate'" [ngClass]="this.block['activate']? 'tigger_btn active-tile' : 'tigger_btn deactive-tile'"  (click)="activateDeactivate($event)"><span class="glyphicon glyphicon-off"></span></div>
+             <div class="tigger_btn" (click)="getBlock($event, block.view, 'delete')" title="Remove"><span class="glyphicon glyphicon-remove"></span></div>
+             <div class="tigger_btn" (click)="getBlock($event, block.view, 'down')" title="MoveDown"><span class="glyphicon glyphicon-arrow-down"></span></div>
+             <div class="tigger_btn" (click)="getBlock($event, block.view, 'up')" title="MoveUp"><span style="margin-top:-1px;" class="glyphicon glyphicon-arrow-up"></span></div>
+             <div *ngIf="checkCategory()" class="main-widget-category">
+             <select [(ngModel)]="block['data']['category']" class="form-control input-sm widget_category_box" placeholder="Select / Add Category">
+             <option disabled [value]="'-1'">Select / Add Category</option>
+             <option *ngFor="let wdgtCat of (block['widgetCategories'] | orderBy: true : 'name'); let i = index" [value]="wdgtCat?._id">{{wdgtCat?.name}}</option>
+             </select>
+             </div>
+             <!-- <div style="display:none" id="divRedirectBackToApp" class="redirect-app-submit"><span class="redirect-back-app">Redirect back to app </span></div> -->`,
   styleUrls: ['./tileblocks.component.css']
 })
 
 export class BlockControls {
-  @Input() block: any;
+  constructor() {
+    this.utils = Utils;
+  }
 
-  blockView = new EventEmitter<any>();
+  utils: any;
   view: any;
+  widgetCategoryId: string = "-1";
+  @Input() block: any;
+  blockView = new EventEmitter<any>();
 
-  getBlock(view: any, opt: string) {
+  getBlock(e: any, view: any, opt: string) {
+    e.preventDefault();
     var blk = { "view": view, "opt": opt }
     this.blockView.emit(blk)
-  }
+  };
+
+  checkCategory() {
+    return !this.utils.isEmptyObject(this.block) && this.block.hasOwnProperty('data') && !this.utils.isNullOrEmpty(this.block['data']['category']) ? true : false;
+  };
+
+  activateDeactivate(e: any) {
+    e.preventDefault();
+    this.block["activate"] = !this.block["activate"] ? true : false;
+  };
 };
 
 @Component({
@@ -79,8 +92,11 @@ export class TextBlockComponent implements BlockComponent {
 
 export class VideoBlockComponent implements BlockComponent {
   @Input() block: any;
+  utils: any;
 
-  constructor(public sanitizer: DomSanitizer) { }
+  constructor(public sanitizer: DomSanitizer) {
+    this.utils = Utils;
+  }
 
   videoView = new EventEmitter<any>();
 
@@ -89,7 +105,7 @@ export class VideoBlockComponent implements BlockComponent {
   };
 
   checkDisabled(e: any) {
-    return this.block.data.url !== "" && this.block.data.url !== null && typeof this.block.data.url !== "undefined" ? true : false;
+    return !this.utils.isNullOrEmpty(this.block.data.url) ? true : false;
   }
 };
 
@@ -154,11 +170,11 @@ export class DisqusBlockComponent implements BlockComponent {
              <input [(ngModel)]="block.data.facebookurl" type="text" placeholder="Facebook feed url" class="form-control"></div>
              <div class="input-group input-group-sm feed_content">
              <span class="input-group-addon"><input value="true" [checked]="block.data.twitter" [(ngModel)]="block.data.twitter" type="checkbox"></span>
-             <input type="text" [(ngModel)]="block.data.twitterurl" placeholder="Twitter feed url" value="" class="form-control"></div>
+             <input type="text" [(ngModel)]="block.data.twitterurl" placeholder="Twitter feed url" class="form-control"></div>
              <div class="input-group input-group-sm feed_content">
              <span class="input-group-addon"><input value="true" [checked]="block.data.instagram" [(ngModel)]="block.data.instagram" type="checkbox"></span>
-             <input type="text" [(ngModel)]="block.data.instaUserId" placeholder="Instagram User Id" value="" class="form-control">
-             <input type="text" [(ngModel)]="block.data.instaAccessToken" placeholder="Instagram Access Token" value="" class="form-control"></div>
+             <input type="text" [(ngModel)]="block.data.instaUserId" placeholder="Instagram User Id" class="form-control">
+             <input type="text" [(ngModel)]="block.data.instaAccessToken" placeholder="Instagram Access Token" class="form-control"></div>
              </div></div>`,
   styleUrls: ['./tileblocks.component.css']
 })
@@ -266,7 +282,7 @@ export class PatientsBlockComponent implements BlockComponent {
              <input type="text" placeholder="To email address" id="email" [(ngModel)]="block.data.email" class="form-control input-sm url_block_url">
              </div>
              <div class="confirmation_text_block">
-             <input [(ngModel)]="block.data.inquiryText" type="text" placeholder="Type your inquiry here" id="inquiry-text" value="" class="form-control input-sm url_block_url">
+             <input [(ngModel)]="block.data.inquiryText" type="text" placeholder="Type your inquiry here" id="inquiry-text" class="form-control input-sm url_block_url">
              </div></div>
              </div>`,
   styleUrls: ['./tileblocks.component.css']
@@ -451,7 +467,7 @@ export class SurveyBlockComponent implements BlockComponent {
              <div class="cc-questions-block">
              <b style="float: left;margin-left:11px;">*</b>
              <input value="true" [checked]="block.data.mandatory" [(ngModel)]="block.data.mandatory" title="Field is mandatory" class="cc-question-survey-md" type="checkbox">
-             <input type="text" [(ngModel)]="block.data.questionText" class="form-control input-sm cc_questionare_text" value="" placeholder="Type question or text here ">
+             <input type="text" [(ngModel)]="block.data.questionText" class="form-control input-sm cc_questionare_text" placeholder="Type question or text here ">
              <button (click)="addOption($event)" class="btn btn-info btn-xs cc-btn-add-text-box">Add Option</button></div>
              <div class="row cc-questionare-row">
              <span class="cc-decription-questionare">User can select</span>
@@ -471,7 +487,7 @@ export class SurveyBlockComponent implements BlockComponent {
              <div *ngFor="let opt of block.data.options; let i = index; trackBy:trackByIndex" class="row cc-options-main-row">
              <div class="cc-options-row">
              <span class="options-count">{{i + 1}}.</span>
-             <input type="text" [(ngModel)]="block.data.options[i].option" class="form-control input-sm cc_survey_option_box" value="" placeholder="Type option here">
+             <input type="text" [(ngModel)]="block.data.options[i].option" class="form-control input-sm cc_survey_option_box" placeholder="Type option here">
              <img (click)="removeOption(opt)"  class="cc-delete-quest-option" src="/img/close_bg.png">
              <img width="19" title="Add Question" (click)="addSubOption(opt)" class="cc-delete-quest-option" src="/img/add_sub_questionnaire.png">
              <img width="19" title="Add Textbox" class="cc-delete-quest-option" src="/img/add_sub_entry.png"></div>
@@ -680,7 +696,7 @@ export class StartWrapperBlockComponent implements BlockComponent {
              <div class="row text_row">
              <div class="input-group input-group-sm"><span class="input-group-addon">
              <input value="true" [checked]="block.data.title" [(ngModel)]="block.data.title" class="title" type="checkbox"></span>
-             <input type="text" [(ngModel)]="block.data.titletext" placeholder="Title" value="" class="form-control"></div></div>
+             <input type="text" [(ngModel)]="block.data.titletext" placeholder="Title" class="form-control"></div></div>
              </div>
              <p class="form_title_text">Check the box to make the Title clickable to the form.</p>
              </div>`,
@@ -707,7 +723,7 @@ export class FormTitleBlockComponent implements BlockComponent {
              <p class="text_header_content">This widget allows you to add one or multiple questions, each with a text box with answers. It can be used for collecting contact info, feedback, etc.</p>
              <div *ngFor="let ques of block.data.questions; let i = index; trackBy:trackByIndex" class="row qus_text_row"><b style="float:left;">*</b>
              <input value="true" [checked]="block.data.mandatory[i]" [(ngModel)]="block.data.mandatory[i]" title="Field is mandatory" class="ques-blk-mandate" type="checkbox">
-             <input [(ngModel)]="block.data.questions[i]" type="text" class="form-control input-sm ques-block-text" value="" placeholder="Type question here">
+             <input [(ngModel)]="block.data.questions[i]" type="text" class="form-control input-sm ques-block-text" placeholder="Type question here">
              <span class="answer-type">Answer Type :</span>
              <select [(ngModel)]="block.data.answerTypes[i]" class="form-control input-sm qus_select">
              <option *ngFor="let ansType of answerTypes; let ansI = index" [ngValue]="ansType.value" >{{ansType.text}}</option>
@@ -825,7 +841,7 @@ export class AttendanceBlockComponent implements BlockComponent {
              <div class="submit_row">
              <div class="input-group input-group-sm confirm_submit_text">
              <span class="input-group-addon">Submit button text:</span>
-             <input [(ngModel)]="block.data.submittext" type="text" placeholder="Submit text" value="" class="form-control"> 
+             <input [(ngModel)]="block.data.submittext" type="text" placeholder="Submit text" class="form-control"> 
              </div>
              <span class="confirmation_text"><p>Confirmation Format:</p></span>
              <div class="row main_confirm_content">
@@ -888,7 +904,7 @@ export class PasswordBlockComponent implements BlockComponent {
              <div class="next_tile_submit_row">
              <div class="input-group input-group-sm">
              <span class="input-group-addon">Redirect button text:</span>
-             <input type="text" [(ngModel)]="block.data.text" placeholder="Submit text" value="" class="form-control"> 
+             <input type="text" [(ngModel)]="block.data.text" placeholder="Submit text" class="form-control"> 
              </div></div><button class="btn btn-tile-link btn-info btn-xs">Link Tile</button></div>
              </div>
              <p>Tile Title: {{ block.data.tileTile }} </p>
@@ -939,7 +955,7 @@ export class FormPhotoComponent implements BlockComponent {
              <div class="input-group input-group-sm pain_level_content">
              <span class="input-group-addon"><b style="margin-right:2%">*</b>
              <input value="true" [checked]="block.data.mandatory" [(ngModel)]="block.data.question" title="Field is mandatory" type="checkbox"></span>
-             <input [(ngModel)]="block.data.question" type="text" placeholder="Enter Question here" value="" class="form-control"></div>
+             <input [(ngModel)]="block.data.question" type="text" placeholder="Enter Question here" class="form-control"></div>
              <div class="input-group input-group-sm pain_level_content">
              <form>
              <label style="font-size: 11px;" class="radio-inline"><input style="margin-top: 1px;" value="image" [checked]="block.data.level" [(ngModel)]="block.data.level" type="radio" name="optradio">Numeric Rating Scale with Emoticons</label>
@@ -1114,9 +1130,9 @@ export class NotesBlockComponent implements BlockComponent {
              <block-controls (blockView)="getButtons($event)" [(block)]= "block"> </block-controls></div>
              <div *ngFor="let btnData of block.data; let i = index; trackBy:trackByIndex" class='ili-panel buttons_panel'>
              <div class="row button_main_row">
-             <input type="text" [(ngModel)]="block.data[i].beforeText" class="form-control input-sm btn_before_text" value="" placeholder="Before Click">
+             <input type="text" [(ngModel)]="block.data[i].beforeText" class="form-control input-sm btn_before_text" placeholder="Before Click">
              <button *ngIf="i===0" (click)="addButton($event)" class="btn btn-info btn-xs btn-add-blocks">+ Button</button>
-             <input [disabled]="checkDisabled(btnData, 'afterText')" type="text" [(ngModel)]="block.data[i].afterText" class="form-control input-sm btn_after_text" value="" placeholder="After Click">
+             <input [disabled]="checkDisabled(btnData, 'afterText')" type="text" [(ngModel)]="block.data[i].afterText" class="form-control input-sm btn_after_text" placeholder="After Click">
              <label class="lbl-btn-txt">Or</label>
              <button (click)="addConfirmation(btnData)" [disabled]="checkDisabled(btnData, 'confirm')" class="btn btn-info btn-xs btn-add-confirmation">+ Confirmation</button></div>
              <div *ngIf="block.data[i]!.confirmation" class="row btn_confirm_main_content">
@@ -1135,8 +1151,12 @@ export class NotesBlockComponent implements BlockComponent {
 })
 
 export class ButtonsBlockComponent implements BlockComponent {
-  @Input() block: any;
+  constructor() {
+    this.utils = Utils;
+  }
 
+  utils: any;
+  @Input() block: any;
   buttonsView = new EventEmitter<any>();
 
   trackByIndex(index: number, obj: any): any {
@@ -1158,7 +1178,7 @@ export class ButtonsBlockComponent implements BlockComponent {
     if (opt === "afterText") {
       result = btnData.hasOwnProperty("confirmation") ? true : false;
     } else if (opt === "confirm") {
-      result = btnData["afterText"] !== "" ? true : false;
+      result = !this.utils.isNullOrEmpty(btnData["afterText"]) ? true : false;
     }
 
     return result
@@ -1246,7 +1266,7 @@ export class PlacefullBlockComponent implements BlockComponent {
              </div>
              <div class="row cart_text_row">
              <input type="text" [(ngModel)]="block.data.textCartButton" class="form-control input-sm add_cart_btn" placeholder="Add to Cart"></div>
-             <div class="row cart_text_row"><input [(ngModel)]="block.data.confirmationMessage" type="text" class="form-control input-sm add_confirm_message" value="" placeholder="Confirmation Message"></div>
+             <div class="row cart_text_row"><input [(ngModel)]="block.data.confirmationMessage" type="text" class="form-control input-sm add_confirm_message" placeholder="Confirmation Message"></div>
              <div class="row cart_text_row">
              <input value="true" [checked]="block.data.isProductImage" [(ngModel)]="block.data.isProductImage" class="cart-product-image-disable" title="Show the product image in the app" type="checkbox">
              <label style="font-size: 12px;">Product Image</label><button class="btn btn-success btn-xs btn-add-cart-picture">+ Add Picture</button></div>
@@ -1276,16 +1296,16 @@ export class AddToCartBlockComponent implements BlockComponent {
              <div class='ili-panel cart_panel'>
              <p style="font-size: 11px; float: left; margin-left: 12px;">This widget allows confirm all your added carts</p>
              <div class="row cart_text_row">
-             <input type="text" [(ngModel)]="block.data.productTitle" class="form-control input-sm cart_product_title" value="" placeholder="Cart Title">
+             <input type="text" [(ngModel)]="block.data.productTitle" class="form-control input-sm cart_product_title" placeholder="Cart Title">
              </div>
              <div class="row cart_text_row">
-             <input type="text" [(ngModel)]="block.data.notificationEmail" class="form-control input-sm cart_email_notification" value="" placeholder="Notification email address">
+             <input type="text" [(ngModel)]="block.data.notificationEmail" class="form-control input-sm cart_email_notification" placeholder="Notification email address">
              </div>
              <div class="row cart_text_row">
-             <input type="text" [(ngModel)]="block.data.textConfirmButton" class="form-control input-sm cart_confirm_order" value="" placeholder="Confirm Order">
+             <input type="text" [(ngModel)]="block.data.textConfirmButton" class="form-control input-sm cart_confirm_order" placeholder="Confirm Order">
              </div>
              <div class="row cart_text_row">
-             <input type="text" [(ngModel)]="block.data.confirmationMessage" class="form-control input-sm cart_confirm_msg" value="" placeholder="Confirmation Message">
+             <input type="text" [(ngModel)]="block.data.confirmationMessage" class="form-control input-sm cart_confirm_msg" placeholder="Confirmation Message">
              </div>
              </div></div>`,
   styleUrls: ['./tileblocks.component.css']
@@ -1406,7 +1426,7 @@ export class FileUploadBlockComponent implements BlockComponent {
              <div class='ili-panel push_pay_panel'>
              <div class="input-group input-group-sm push_pay_content">
              <span class="input-group-addon"><input value="true" [checked]="block.data.pushpay" [(ngModel)]="block.data.pushpay" type="checkbox"></span>
-             <input type="text" [(ngModel)]="block.data.url" placeholder="PushPay Url" value="" class="form-control"></div>
+             <input type="text" [(ngModel)]="block.data.url" placeholder="PushPay Url" class="form-control"></div>
              <div style="padding-left: 10px; font-size: 12px;" class="checkbox">
              <label><input style="margin-top: 2px;" type="checkbox" value="true" (change)="checkPushPayPriority('window')" [(ngModel)]="block.data.window" [checked]="block.data.window">Open in new window for all devices</label>
              </div>
@@ -1446,7 +1466,7 @@ export class PushpayBlockComponent implements BlockComponent {
              <div class='ili-panel threed_cart_panel'>
              <div class="input-group input-group-sm threed_cart_content">
              <span class="input-group-addon"><input value="true" [checked]="block.data.cart" [(ngModel)]="block.data.cart" type="checkbox"></span>
-             <input type="text" [(ngModel)]="block.data.url" placeholder="PushPay Url" value="" class="form-control"></div>
+             <input type="text" [(ngModel)]="block.data.url" placeholder="PushPay Url" class="form-control"></div>
              <div style="padding-left: 10px; font-size: 12px;" class="checkbox">
              <label><input style="margin-top: 2px;" type="checkbox" value="true" (change)="checkThreedCartPriority('window')" [(ngModel)]="block.data.window" [checked]="block.data.window">Open in new window for all devices</label>
              </div>
@@ -1485,10 +1505,10 @@ export class ThreedCartBlockComponent implements BlockComponent {
              <block-controls (blockView)="getBlogs($event)" [(block)]= "block"> </block-controls></div>
              <div class='ili-panel blogs_panel'>
              <div class="input-group input-group-sm blogs_content">
-             <input type="text" [(ngModel)]="block.data.wordPressTitle" placeholder="Word Press Title" value="" class="form-control"></div>
+             <input type="text" [(ngModel)]="block.data.wordPressTitle" placeholder="Word Press Title" class="form-control"></div>
              <div class="input-group input-group-sm contents_input_account">
              <span class="input-group-addon"><input (change)="openWordPress($event)" value="true" [checked]="block.data.wordPressTitle" [(ngModel)]="block.data.wordPressTitle" type="checkbox"></span>
-             <input type="text" [(ngModel)]="block.data.wordPressUrl" placeholder="Word Press Feed Url" value="" class="form-control"></div>
+             <input type="text" [(ngModel)]="block.data.wordPressUrl" placeholder="Word Press Feed Url" class="form-control"></div>
              <div class="row blogs_main_content">
              <ckeditor [(ngModel)]="block.data.wordPressContent"></ckeditor>
              </div>

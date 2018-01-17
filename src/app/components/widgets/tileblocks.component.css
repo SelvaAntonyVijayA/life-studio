@@ -1,635 +1,633 @@
 .tile_block {
-    width: 97.7%;
-    float: left;
-    z-index: 1px;
-    padding-left: 15px;
-    min-height: 35px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-    margin-left: 4px;
+  width: 97.7%;
+  float: left;
+  z-index: 1px;
+  padding-left: 15px;
+  min-height: 35px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  margin-left: 4px;
 }
 
 .url_block_url {
-    width: 97%;
-    margin-top: 10px;
+  width: 97%;
+  margin-top: 10px;
 }
 
-                /* Text Block */
+/* Text Block */
 
 .text_panel {
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
-    padding: 7px 0px 0px 0px;
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+  padding: 7px 0px 0px 0px;
 }
 
-.text_main_content{
-    width: 98.5%;
-    margin-left: 5px;
+.text_main_content {
+  width: 98.5%;
+  margin-left: 5px;
 }
 
-                /* Video Block */
+/* Video Block */
 
 .video_panel {
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
-    padding-left: 7px;
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+  padding-left: 7px;
 }
 
 .video_caption {
-    width: 96.2%;
-    margin-top: 5px;
-    margin-bottom: 1%;
+  width: 96.2%;
+  margin-top: 5px;
+  margin-bottom: 1%;
 }
 
 .btn_video_upload {
-    width: 81px;
-    height: 25px;
+  width: 81px;
+  height: 25px;
 }
 
 .video_url {
-    width: 83%;
-    float: right;
-    right: 25px;
-    position: relative;
-    margin-bottom: 8px;
+  width: 83%;
+  float: right;
+  right: 25px;
+  position: relative;
+  margin-bottom: 8px;
 }
 
-.main_video_content{
-    text-align: center;
-    margin-top: 12px;
+.main_video_content {
+  text-align: center;
+  margin-top: 12px;
 }
 
-                /* Picture Block */
+/* Picture Block */
 
 .picture_panel {
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
-    padding: 6px 3px 0px 2px;
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+  padding: 6px 3px 0px 2px;
 }
 
 .picture_main_content {
-    width: 99.5%;
-    margin-left: 2px;
+  width: 99.5%;
+  margin-left: 2px;
 }
 
-                /* Disqus Block */
+/* Disqus Block */
 
-.disqus_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;    
+.disqus_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .disqus_main_content {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-                /* Feed Block */
+/* Feed Block */
 
-.feed_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px; 
+.feed_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .feed_content {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-               /* Calendar Block */
+/* Calendar Block */
 
 .calendar_panel {
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
-    padding: 6px 3px 0px 2px;
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+  padding: 6px 3px 0px 2px;
 }
 
 .calendar_main_content {
-    width: 99.5%;
-    margin-left: 2px;
+  width: 99.5%;
+  margin-left: 2px;
 }
 
-                /* Share Block */
+/* Share Block */
 
-.share_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
+.share_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .main_share_content {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-                /* Patients Block */
+/* Patients Block */
 
-.patients_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
+.patients_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .patients_content {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-                /* Notes Block */
+/* Notes Block */
 
 .notes_panel {
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .contents_input_account {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
-    font-size: 11px;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 11px;
 }
 
-.inquiry_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
-    padding-left: 17px;
+.inquiry_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+  padding-left: 17px;
 }
 
 .txt-email-notes {
-    font-size: 11px;
+  font-size: 11px;
 }
 
 .url_block_url {
-    width: 97%;
-    margin-top: 10px;
+  width: 97%;
+  margin-top: 10px;
 }
 
 .input-group-sm>.form-control {
   font-size: 11px;
 }
 
-.content_buttons{
-    margin-bottom: 10px; 
-    position: relative; 
-    width: 100%; 
-    text-align: right; 
-    height: 15px;
+.content_buttons {
+  margin-bottom: 10px;
+  position: relative;
+  width: 100%;
+  text-align: right;
+  height: 15px;
 }
 
-.drag_cursor{ 
+.drag_cursor {}
 
+.widgetstext {
+  position: relative;
+  float: left;
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 0.8em;
 }
 
-.widgetstext{
-    position: relative; 
-    float: left; 
-    font-family: Verdana,Arial,sans-serif; 
-    font-size: 0.8em;
+.tigger_btn {
+  margin-right: 9px;
+  margin-top: 2px;
+  cursor: pointer;
+  float: right;
+  font-size: 11px;
 }
 
-.tigger_btn{
-    margin-right: 9px;
-    margin-top: 2px;
-    cursor: pointer;
-    float: right;
-    font-size: 11px;
+.redirect-app-submit {
+  float: right;
+  margin-right: 18px;
 }
 
-.redirect-app-submit{
-    float:right; 
-    margin-right: 18px;
+.redirect-back-app {
+  float: right;
+  font-weight: normal;
+  font-size: 11px;
+  font-size: 0.8em;
+  color: #666;
 }
 
-.redirect-back-app{
-    float: right; 
-    font-weight: normal; 
-    font-size: 11px; 
-    font-size: 0.8em; 
-    color: #666;
-}
-
-                /* Survey Block */
+/* Survey Block */
 
 .survey_panel {
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .text_header_content {
-    font-size: 11px;
-    float: left;
-    text-align: justify;
-    padding: 0 2%;
+  font-size: 11px;
+  float: left;
+  text-align: justify;
+  padding: 0 2%;
 }
 
 .survey_question_text {
-    width: 516px;
-    float: left;
-    margin-right: 5px;
-    margin-bottom: 5px;
+  width: 516px;
+  float: left;
+  margin-right: 5px;
+  margin-bottom: 5px;
 }
 
 .control_survey {
-    width: 98%;
-    float: left;
+  width: 98%;
+  float: left;
 }
 
 .decription-survey {
-    float: left;
-    margin-left: 30px;
-    margin-right: 5px;
-    padding: 0px 0px;
-    font-size: 93%;
-    margin-top: 1px;
+  float: left;
+  margin-left: 30px;
+  margin-right: 5px;
+  padding: 0px 0px;
+  font-size: 93%;
+  margin-top: 1px;
 }
 
-.ques-one, .ques-multiple, .ques-radio, .ques-dropdown{
-    margin-top: 2px;
+.ques-one, .ques-multiple, .ques-radio, .ques-dropdown {
+  margin-top: 2px;
 }
 
-.control-app{
-    margin-left: 30px;
+.control-app {
+  margin-left: 30px;
 }
 
-.survey_controls{
-    float: left;
-    margin-right: 11px;
-    width: 202px;
-    margin-bottom: 12px;
+.survey_controls {
+  float: left;
+  margin-right: 11px;
+  width: 202px;
+  margin-bottom: 12px;
 }
 
-.survey-opts{
-    float: left;
-    margin-right: 12px;
-    margin-bottom: 12px;
-    width: 233px;    
+.survey-opts {
+  float: left;
+  margin-right: 12px;
+  margin-bottom: 12px;
+  width: 233px;
 }
 
 .survey_text_row {
-    width: 87%;
-    float: left;
-    height: 4%;
-    margin-top: 10px;
-    padding: 0 4%;
+  width: 87%;
+  float: left;
+  height: 4%;
+  margin-top: 10px;
+  padding: 0 4%;
 }
 
 .options-count {
-    float: left;
-    padding: 4px 5px 0 0;
-    width:23px;
+  float: left;
+  padding: 4px 5px 0 0;
+  width: 23px;
 }
 
 .survey_option_box {
-    width: 473px;
-    float: left;
-    margin-bottom: 5px;
+  width: 473px;
+  float: left;
+  margin-bottom: 5px;
 }
 
 .delete-quest-option {
-    margin-left: 8px;
-    margin-top: 3px;
-    cursor: pointer;
+  margin-left: 8px;
+  margin-top: 3px;
+  cursor: pointer;
 }
 
 .btn-questionnaire {
-    width: 88px;
+  width: 88px;
 }
 
 .btn-add-text-box {
-    margin-bottom: 1px;
-    margin-top: 10px;
-    margin-left: 14px;
+  margin-bottom: 1px;
+  margin-top: 10px;
+  margin-left: 14px;
 }
 
-.chk-results, .enable-note{
-    margin-top: 2px;
+.chk-results, .enable-note {
+  margin-top: 2px;
 }
 
 .survey_add_alert {
-    width: 100%;
+  width: 100%;
 }
 
 .survey-confirmation {
-    margin-left: 5px;
-    width: 105px;
-    float: right;
+  margin-left: 5px;
+  width: 105px;
+  float: right;
 }
 
 .btn-ques-alert {
-    width: 80px;
-    float: right;
+  width: 80px;
+  float: right;
 }
 
 .btn-popup-alert {
-    width: 80px;
-    float: right;
-    margin-right: 5px;
+  width: 80px;
+  float: right;
+  margin-right: 5px;
 }
 
-.survey-option-btn{
-   float: right;
-   margin-right: 14px;
+.survey-option-btn {
+  float: right;
+  margin-right: 14px;
 }
 
 .ques_alert_row {
-    width: 100%;
-    height: 5%;
-    margin-top: 1%;
-    padding: 0px 4%;
-    margin-bottom: 1%;
+  width: 100%;
+  height: 5%;
+  margin-top: 1%;
+  padding: 0px 4%;
+  margin-bottom: 1%;
 }
 
 .ques-alert-count {
-    float: left;
-    padding: 4px 5px 0px 0px;
+  float: left;
+  padding: 4px 5px 0px 0px;
 }
 
 .ques_alert_box {
-   width: 97%;
-   float: left;
+  width: 97%;
+  float: left;
 }
 
-                /* Cascading Questionnaire Block */
+/* Cascading Questionnaire Block */
 
 .cc_text_header_content {
-    font-size: 11px;
-    float: left;
-    text-align: justify;
-    padding: 0 2%;
+  font-size: 11px;
+  float: left;
+  text-align: justify;
+  padding: 0 2%;
 }
 
 .cc_ques_panel {
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
-.cc-questions-block{
-    position:relative;
-    float: left; 
-    width: 98.5%; 
-    height: 30px;
+.cc-questions-block {
+  position: relative;
+  float: left;
+  width: 98.5%;
+  height: 30px;
 }
 
-.cc-question-survey-md{
-    margin-right:10px; 
-    float:left;
+.cc-question-survey-md {
+  margin-right: 10px;
+  float: left;
 }
 
-.cc_questionare_text{
-    width: 507px; 
-    margin-right: 1px;
-    float: left;
+.cc_questionare_text {
+  width: 507px;
+  margin-right: 1px;
+  float: left;
 }
 
 .cc-btn-add-text-box {
-    margin-bottom: 1px;
-    margin-left: 3px;
-    float: left;
-    width: 90px;
-    height: 24px;
+  margin-bottom: 1px;
+  margin-left: 3px;
+  float: left;
+  width: 90px;
+  height: 24px;
 }
 
-.cc-questionare-row{ 
-    width: 97%;
-    margin-left:15px; 
-    margin-right:0px;
-    float:left;
-    margin-bottom:5px;
+.cc-questionare-row {
+  width: 97%;
+  margin-left: 15px;
+  margin-right: 0px;
+  float: left;
+  margin-bottom: 5px;
 }
 
-.cc-decription-questionare{
-    margin-right: 10px;
-    float:left;
-    padding: 0;
-    font-size: 11px; 
-    margin-top:2px;
+.cc-decription-questionare {
+  margin-right: 10px;
+  float: left;
+  padding: 0;
+  font-size: 11px;
+  margin-top: 2px;
 }
 
-.cc-ques-one, .cc-ques-multiple, .cc-ques-radio, .cc-ques-dropdown{
-    margin-top: 2px;
+.cc-ques-one, .cc-ques-multiple, .cc-ques-radio, .cc-ques-dropdown {
+  margin-top: 2px;
 }
 
-.cc_questionnaire_controls{
-    float: left;
-    margin-right: 11px;
-    width: 202px;
-    margin-bottom: 12px;
+.cc_questionnaire_controls {
+  float: left;
+  margin-right: 11px;
+  width: 202px;
+  margin-bottom: 12px;
 }
 
-.cc-chk-enable-note{
-    float: left; 
-    margin: 1px 5px 0 0;    
+.cc-chk-enable-note {
+  float: left;
+  margin: 1px 5px 0 0;
 }
 
-.cc-take-notes{
-    float: left; 
-    margin-top: 2px; 
-    font-size: 11px; 
-    margin-right: 10px;
+.cc-take-notes {
+  float: left;
+  margin-top: 2px;
+  font-size: 11px;
+  margin-right: 10px;
 }
 
-.cc-ques-opts{
-    float: left;
-    margin-right: 12px;
-    margin-bottom: 12px;
-    width: 233px;    
+.cc-ques-opts {
+  float: left;
+  margin-right: 12px;
+  margin-bottom: 12px;
+  width: 233px;
 }
 
-.cc_questionare_text{
-    width: 509px; 
-    margin-right:10px;
+.cc_questionare_text {
+  width: 509px;
+  margin-right: 10px;
 }
 
-.cc-options-main-row{
-    width: 100%;
-    margin-top: 1%;
-    padding: 0 4%;
+.cc-options-main-row {
+  width: 100%;
+  margin-top: 1%;
+  padding: 0 4%;
 }
 
 .cc-options-row {
-    width: 100%;
-    position: relative;
-    float: left;
+  width: 100%;
+  position: relative;
+  float: left;
 }
 
 .cc-options-count {
-    float: left;
-    padding: 4px 5px 0 0;
+  float: left;
+  padding: 4px 5px 0 0;
 }
 
 .cc_survey_option_box {
-    width: 473px;
-    float: left;
-    margin-bottom: 5px;
+  width: 473px;
+  float: left;
+  margin-bottom: 5px;
 }
 
 .cc-delete-quest-option {
-    margin-left: 8px;
-    margin-top: 3px;
-    cursor: pointer;
+  margin-left: 8px;
+  margin-top: 3px;
+  cursor: pointer;
 }
 
 .cc_ques_add_alert {
-    width: 100%;
+  width: 100%;
 }
 
-                /* Sub Cascading  Questionnaire */
+/* Sub Cascading  Questionnaire */
 
-.cc-options-sub-row{
-    width: 100%;
-    margin-left: 15px;
-    margin-top: 10px;
-    padding: 0px;
-    float:left
+.cc-options-sub-row {
+  width: 100%;
+  margin-left: 15px;
+  margin-top: 10px;
+  padding: 0px;
+  float: left
 }
 
 .cc-options-sub-questionaire {
-    width: 105%;
-    margin-bottom: 10px; 
-    margin-top: 0px; 
-    margin-left: 0px;
-    float:left;
+  width: 105%;
+  margin-bottom: 10px;
+  margin-top: 0px;
+  margin-left: 0px;
+  float: left;
 }
 
-.cc-sub-question-no{
-    float: left; 
-    margin-right: 5px; 
-    margin-top: 5px;
+.cc-sub-question-no {
+  float: left;
+  margin-right: 5px;
+  margin-top: 5px;
 }
 
-.cc-sub-questionaire{
-    margin-left: 0px; 
-    float:left;
+.cc-sub-questionaire {
+  margin-left: 0px;
+  float: left;
 }
 
-.cc-sub-add-options{
-    margin-bottom: 0px; 
-    margin-top: 1px; 
-    margin-left: 5px;
-    float:left;
-    width:73px;
-    height: 24px;
+.cc-sub-add-options {
+  margin-bottom: 0px;
+  margin-top: 1px;
+  margin-left: 5px;
+  float: left;
+  width: 73px;
+  height: 24px;
 }
 
-.cc-delete-quest-option{
-    margin-left: 8px; 
-    margin-top: 3px; 
-    cursor: pointer;
+.cc-delete-quest-option {
+  margin-left: 8px;
+  margin-top: 3px;
+  cursor: pointer;
 }
 
-.cc-sub-questionare-options{
-    margin-bottom: 5px;
-    margin-top: 5px;
-    float:left;
-    width: 90.5%;
-    margin-left: 21px;
+.cc-sub-questionare-options {
+  margin-bottom: 5px;
+  margin-top: 5px;
+  float: left;
+  width: 90.5%;
+  margin-left: 21px;
 }
 
-.cc-sub-questionare-decription{
-  margin-right: 10px; 
-  float:left; 
-  font-size: 11px; 
-  margin-top:2px;
+.cc-sub-questionare-decription {
+  margin-right: 10px;
+  float: left;
+  font-size: 11px;
+  margin-top: 2px;
 }
 
-.cc_sub_questionnaire_controls{
-    float: left;
-    margin-right: 11px;
-    width: 202px;
-    margin-bottom: 12px;
+.cc_sub_questionnaire_controls {
+  float: left;
+  margin-right: 11px;
+  width: 202px;
+  margin-bottom: 12px;
 }
 
-.cc-sub-ques-opts{
-    float: left;
-    margin-right: 12px;
-    margin-bottom: 12px;
-    width: 233px;    
+.cc-sub-ques-opts {
+  float: left;
+  margin-right: 12px;
+  margin-bottom: 12px;
+  width: 233px;
 }
 
-.cc-sub-questions-row{
-    float: left;
-    width: 100%;
-    margin-top: 0px; 
-    margin-left: 21px;
+.cc-sub-questions-row {
+  float: left;
+  width: 100%;
+  margin-top: 0px;
+  margin-left: 21px;
 }
 
-.cc-sub-ques-list-input{
-    padding: 2px;
-    margin-left: 0px; 
-    width: 95%;  
-    float: left;
+.cc-sub-ques-list-input {
+  padding: 2px;
+  margin-left: 0px;
+  width: 95%;
+  float: left;
 }
 
-.cc_ques_option_box{
-    float: left;
-    margin-bottom:5px;
+.cc_ques_option_box {
+  float: left;
+  margin-bottom: 5px;
 }
 
-                /* Start Wrapper Block */
+/* Start Wrapper Block */
 
-.wrapper_block{
-  padding-left: 3px;   
+.wrapper_block {
+  padding-left: 3px;
 }
 
 .wrapper_start {
@@ -640,871 +638,885 @@
 }
 
 .wrapper-row-refresh {
-   height: 5px;
+  height: 5px;
 }
 
 .wrapper_row {
-   margin-left: 1px;
+  margin-left: 1px;
 }
 
 .refresh-assign-group {
-   float: right;
-   margin-right: 4px;
-   margin-top: 2px;
+  float: right;
+  margin-right: 4px;
+  margin-top: 2px;
 }
 
 .lbl-txt-clear-fields {
-   float: right;
-   font-weight: normal;
-   font-size: 11px;
-   margin-right: 5px;
-   margin-left: 5px;
+  float: right;
+  font-weight: normal;
+  font-size: 11px;
+  margin-right: 5px;
+  margin-left: 5px;
 }
 
 .refresh_form {
-   float: right;
+  float: right;
 }
 
-.close_form{
-   margin-top: 1px;   
+.close_form {
+  margin-top: 1px;
 }
 
-.main-wrapper-text{
-    float: right;
-    margin-top: 1px;
+.main-wrapper-text {
+  float: right;
+  margin-top: 1px;
 }
 
-                /* Form Title Block */
+/* Form Title Block */
 
 .text_row {
-    width: 100%;
-    height: 5%;
-    margin-top: 1%;
-    padding: 0% 0% 1% 4%;
+  width: 100%;
+  height: 5%;
+  margin-top: 1%;
+  padding: 0% 0% 1% 4%;
 }
 
 .form_title_text {
-    font-size: 11px;
-    float: left;
-    text-align: justify;
-    padding: 0 2%;
-    color: #ffffff;
+  font-size: 11px;
+  float: left;
+  text-align: justify;
+  padding: 0 2%;
+  color: #ffffff;
 }
 
-.form_title_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
+.form_title_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
+/* Questions Block */
 
-                /* Questions Block */
-
-.questions_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
+.questions_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .qus_text_row {
-    width: 105%;
-    float: left;
-    height: 60px;
-    margin-top: 1%;
-    padding: 0 4%;
+  width: 105%;
+  float: left;
+  height: 60px;
+  margin-top: 1%;
+  padding: 0 4%;
 }
 
-.ques-blk-mandate{
-    margin-right:.5%; 
-    float:left;    
+.ques-blk-mandate {
+  margin-right: .5%;
+  float: left;
 }
 
-.ques-block-text{
-    width: 83%;
-    float: left;
+.ques-block-text {
+  width: 83%;
+  float: left;
 }
 
-.answer-type{
-    float:left; 
-    width:12%; 
-    margin-top: 10px; 
-    margin-left: 3.3%; 
-    font-size: 92%;
+.answer-type {
+  float: left;
+  width: 12%;
+  margin-top: 10px;
+  margin-left: 3.3%;
+  font-size: 92%;
 }
 
-.qus_select{
-    width:360px;
-    float: left;
-    margin-top: 5px; 
-    margin-right:10px;
-    text-align: left !important;
-    color: #000;
+.qus_select {
+  width: 360px;
+  float: left;
+  margin-top: 5px;
+  margin-right: 10px;
+  text-align: left !important;
+  color: #000;
 }
 
 input[type="checkbox"].chk-ques-enable-note {
-    float: left;
-    margin: 8px 5px 0 0;
+  float: left;
+  margin: 8px 5px 0 0;
 }
 
 .qus-notes {
-    float: left;
-    margin-top: 10px;
-    font-size: 92%;
-    margin-right: 10px;
+  float: left;
+  margin-top: 10px;
+  font-size: 92%;
+  margin-right: 10px;
 }
 
 .btn-add-ques-ans {
-    margin-left: 4px;
-    font-size: 11px;
-    height: 25px;
-    width: 84px;
+  margin-left: 4px;
+  font-size: 11px;
+  height: 25px;
+  width: 84px;
 }
 
-                /* Attendance Block */
+/* Attendance Block */
 
-.attendance_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
+.attendance_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .attendance_title_row {
-    width: 100%;
-    height: 3%;
-    margin-top: 1%;
-    padding: 0 4%;
+  width: 100%;
+  height: 3%;
+  margin-top: 1%;
+  padding: 0 4%;
 }
 
-.attendance_text_row{
-    width: 100%; 
-    margin-top: 1%; 
-    padding: 1% 4%;
+.attendance_text_row {
+  width: 100%;
+  margin-top: 1%;
+  padding: 1% 4%;
 }
 
-.attendance-inapp-text{
-   color: #ffffff; 
-   font-size: 12px;
+.attendance-inapp-text {
+  color: #ffffff;
+  font-size: 12px;
 }
 
-.btn-option-box{
-    margin-left: 2%;
-    margin-top: 0px;
+.btn-option-box {
+  margin-left: 2%;
+  margin-top: 0px;
 }
 
-input[type="checkbox"].chk-attendance-in-person{
-    float: left; 
-    margin: 3px 8px 0 0;
+input[type="checkbox"].chk-attendance-in-person {
+  float: left;
+  margin: 3px 8px 0 0;
 }
 
-.attendance-main-text-in-person{
-    width: 69px; 
-    float: left; 
-    margin: 1px 0 0 0;
-    font-size: 12px;
+.attendance-main-text-in-person {
+  width: 69px;
+  float: left;
+  margin: 1px 0 0 0;
+  font-size: 12px;
 }
 
 .attendance-online {
-    padding-left: 10px;
-    float: left;
+  padding-left: 10px;
+  float: left;
 }
 
-input[type="checkbox"].chk-attendance-online{
-    float: left; 
-    margin: 3px 7px 0 0;
+input[type="checkbox"].chk-attendance-online {
+  float: left;
+  margin: 3px 7px 0 0;
 }
 
-.attendance-main-text-online{
-    width: 70px; 
-    margin-top: 1px;
-    font-size: 12px;
+.attendance-main-text-online {
+  width: 70px;
+  margin-top: 1px;
+  font-size: 12px;
 }
 
 .attendance_options_row {
-    padding-left: 2%;
-    width: 102.5%;
-    margin-top: 1%;
+  padding-left: 2%;
+  width: 102.5%;
+  margin-top: 1%;
 }
 
 .attendance_member_row {
-    width: 100%;
-    height: 5%;
-    margin-top: 1%;
-    margin-bottom: 1%;
-    padding: 0 4%;
+  width: 100%;
+  height: 5%;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  padding: 0 4%;
 }
 
-                /* Confirmation Block */
+/* Confirmation Block */
 
-.confirmation_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
-}    
+.confirmation_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+}
 
 .confirmation_text_block {
-    margin-top: 10px;
-    margin-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .submit_row {
-    width: 696px;
-    height: 5%;
-    margin-top: 1%;
+  width: 696px;
+  height: 5%;
+  margin-top: 1%;
 }
 
-.confirm_header_text{
-    padding: 5px 3px 1px 14px;
-    font-size: 11px;
+.confirm_header_text {
+  padding: 5px 3px 1px 14px;
+  font-size: 11px;
 }
 
-.confirm_submit_text{
-    width: 93%;
-    padding-left: 15px; 
-    margin-bottom: 11px; 
+.confirm_submit_text {
+  width: 93%;
+  padding-left: 15px;
+  margin-bottom: 11px;
 }
 
-.confirmation_text{
-    font-size: 12px;
-    float: left;
-    margin-left: 15px;
-} 
-
-.main_confirm_content{
-    width: 94.7%;
-    float: left;
-    margin-left: 2px;
+.confirmation_text {
+  font-size: 12px;
+  float: left;
+  margin-left: 15px;
 }
 
-                /* Password Block */
+.main_confirm_content {
+  width: 94.7%;
+  float: left;
+  margin-left: 2px;
+}
 
-.password_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;
-} 
+/* Password Block */
+
+.password_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+}
 
 .password_content {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
+/* Next Block */
 
-        /* Next Block */
-
-.next_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px; 
-    padding: 4px 0px 0px 14px;
+.next_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+  padding: 4px 0px 0px 14px;
 }
 
 .next-label {
-    float: left;
-    margin-right: 10px;
-    margin-bottom: 8px;
-    font-size: 92%;
-    margin-top: 2px;
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 8px;
+  font-size: 92%;
+  margin-top: 2px;
 }
 
 input[type="radio"].next-tile {
-    margin-top: 4px;
-    float: left;
+  margin-top: 4px;
+  float: left;
 }
 
 .next-options {
-    float: left;
-    font-size: 92%;
-    margin: 3px 2px 0 0;
+  float: left;
+  font-size: 92%;
+  margin: 3px 2px 0 0;
 }
 
 .tile_link_block {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    height: 30px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  height: 30px;
 }
 
 .next_tile_submit_row {
-    width: 550px;
-    float: left;
+  width: 550px;
+  float: left;
 }
 
 .btn-tile-link {
-    margin-left: 4px;
-    height: 30px;
-    width: 86px
+  margin-left: 4px;
+  height: 30px;
+  width: 86px
 }
 
-.header-next-block{
-    font-size: 12px;
+.header-next-block {
+  font-size: 12px;
 }
 
-                /* Form Media Row */
+/* Form Media Row */
 
-.form_media_main_content{
-    width: 97.5%;
-    float: left;
-    margin-left: 1px;
+.form_media_main_content {
+  width: 97.5%;
+  float: left;
+  margin-left: 1px;
 }
 
-                /* Pain Level Block */
+/* Pain Level Block */
 
-.pain_level_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px; 
-}  
+.pain_level_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+}
 
 .pain_level_content {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
-    font-size: 11px;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 11px;
 }
 
-                /* Draw Tool Block */
+/* Draw Tool Block */
 
-.draw_tool_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;     
-    padding: 3px 3px 3px 3px;
+.draw_tool_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+  padding: 3px 3px 3px 3px;
 }
 
 .draw_tool_content {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
-    font-size: 11px;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 11px;
 }
 
-                /* Physician Block */
+/* Physician Block */
 
-.physician_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;     
-    padding: 3px 3px 3px 3px;
+.physician_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+  padding: 3px 3px 3px 3px;
 }
 
 .physician_content {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
-    font-size: 11px;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 11px;
 }
 
-                /* End Wrapper Block */
+/* End Wrapper Block */
 
 .end-wrapper-submit-text {
-    width: 219px;
-    height: 24px;
-    border: 1px;
-    background-color: #F3F3F3;
-    box-shadow: 0px 0px 3px #DBE0EA;
-    padding: 0px 0px 0px 5px;
-    font-size: 12px;
-    float: right;
-    margin-right: 12px;
-    margin-top: -4px;
+  width: 219px;
+  height: 24px;
+  border: 1px;
+  background-color: #F3F3F3;
+  box-shadow: 0px 0px 3px #DBE0EA;
+  padding: 0px 0px 0px 5px;
+  font-size: 12px;
+  float: right;
+  margin-right: 12px;
+  margin-top: -4px;
 }
 
 .lbl-disable-confirm {
-    float: right;
-    font-weight: normal;
-    font-size: 11px;
-    margin-top: 1px;
-    margin-right: 9px;
+  float: right;
+  font-weight: normal;
+  font-size: 11px;
+  margin-top: 1px;
+  margin-right: 9px;
 }
 
 input[type="checkbox"].end_wrapper_disable {
-    float: right;
-    margin-right: 8px;
-    margin-top: 2px;
+  float: right;
+  margin-right: 8px;
+  margin-top: 2px;
 }
 
 .wrapper_end {
-    font-weight: normal;
-    font-size: 11px;
-    float: right;
-    margin-top: 1px;
-    padding-right: 4px;
+  font-weight: normal;
+  font-size: 11px;
+  float: right;
+  margin-top: 1px;
+  padding-right: 4px;
 }
 
-                /* Fill in Block */
+/* Fill in Block */
 
-.fill_in_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;     
-    padding: 3px 3px 3px 3px;    
+.fill_in_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+  padding: 3px 3px 3px 3px;
 }
 
-.fill_in_main_content{
-    width: 99.7%;    
-    float: left;
-    margin-left: 1px;
+.fill_in_main_content {
+  width: 99.7%;
+  float: left;
+  margin-left: 1px;
 }
 
-                /* Buttons Block */
+/* Buttons Block */
 
-.buttons_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;     
-    padding: 3px 3px 3px 3px;    
+.buttons_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+  padding: 3px 3px 3px 3px;
 }
 
 .button_main_row {
-    width: 105%;
-    float: left;
-    height: 4%;
-    margin-top: 1%;
-    padding: 0 4%;
+  width: 105%;
+  float: left;
+  height: 4%;
+  margin-top: 1%;
+  padding: 0 4%;
 }
 
 .btn_before_text {
-    width: 77%;
-    float: left;
+  width: 77%;
+  float: left;
 }
 
 .btn_after_text {
-    width: 77%;
-    float: left;
-    margin-top: 1.2%;
+  width: 77%;
+  float: left;
+  margin-top: 1.2%;
 }
 
 .btn-add-blocks {
-    width: 95px;
-    float: left;
-    margin-left: 46px;
+  width: 95px;
+  float: left;
+  margin-left: 46px;
 }
 
 .lbl-btn-txt {
-    float: left;
-    font-size: 80%;
-    margin-top: 15px;
-    margin-left: 3%;
+  float: left;
+  font-size: 80%;
+  margin-top: 15px;
+  margin-left: 3%;
 }
 
 .btn-add-confirmation {
-    margin-left: 15px;
-    margin-top: 12px;
-    width: 95px;
-    float: left;
+  margin-left: 15px;
+  margin-top: 12px;
+  width: 95px;
+  float: left;
 }
 
 .button_add_alert {
-    margin-left: 80.2%;
+  margin-left: 80.2%;
 }
 
 .btn-added-alert {
-    margin-left: 10px;
-    margin-top: 9px;
-    width: 95px;
+  margin-left: 10px;
+  margin-top: 9px;
+  width: 95px;
 }
 
 .btn_alert_row {
-    width: 100%;
-    height: 5%;
-    margin-top: 1%;
-    padding: 0 4%;
+  width: 100%;
+  height: 5%;
+  margin-top: 1%;
+  padding: 0 4%;
 }
 
 .btn_alert_box {
-    width: 79.3%;
-    float: left;
+  width: 79.3%;
+  float: left;
 }
 
-.btn_confirm_main_content{
-    width: 99%;
-    float: left;
-    margin-top: 10px;
-    margin-left: 3px;
+.btn_confirm_main_content {
+  width: 99%;
+  float: left;
+  margin-top: 10px;
+  margin-left: 3px;
 }
 
-                /* Contactus Block */
+/* Contactus Block */
 
-.contactus_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;       
-    padding: 4px 2px 0px 18px;  
+.contactus_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+  padding: 4px 2px 0px 18px;
 }
 
-                /* Placefull block */
+/* Placefull block */
 
-.placefull_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;         
+.placefull_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .placefull {
-    width: 99.5%;
-    height: 70px;
-    margin-top: 2px;
-    margin-left: 1px;
-    color: #4a4a4a;
+  width: 99.5%;
+  height: 70px;
+  margin-top: 2px;
+  margin-left: 1px;
+  color: #4a4a4a;
 }
 
-                /* AddToCart Panel */
+/* AddToCart Panel */
 
-.addtocart_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;    
+.addtocart_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .cart_text_row {
-    width: 105%;
-    padding: 0 4%;
-    float: left;
-    margin-bottom: 11px;
+  width: 105%;
+  padding: 0 4%;
+  float: left;
+  margin-bottom: 11px;
 }
 
 input[type=checkbox].cart-product-name-disable {
-    float: left;
-    margin-right: 7px;
+  float: left;
+  margin-right: 7px;
 }
 
 .add_cart_product_name {
-    float: left;
-    width: 95.5%;
+  float: left;
+  width: 95.5%;
 }
 
 input[type=checkbox].cart-product-desc-disable {
-    float: left;
-    margin-right: 7px;
+  float: left;
+  margin-right: 7px;
 }
 
 .add_cart_description {
-    width: 95.5%;
-    float: left;
+  width: 95.5%;
+  float: left;
 }
 
 input[type=checkbox].cart-product-price-disable {
-    float: left;
-    margin-right: 6px;
+  float: left;
+  margin-right: 6px;
 }
 
 .add_cart_price {
-    width: 46.9%;
-    float: left;
-    margin-left: 1px;
+  width: 46.9%;
+  float: left;
+  margin-left: 1px;
 }
 
 .add_cart_currency {
-    width: 48.2%;
-    float: left;
-    margin-left: 3px;
+  width: 48.2%;
+  float: left;
+  margin-left: 3px;
 }
 
 .add_cart_btn {
-    width: 98.7%;
+  width: 98.7%;
 }
 
 .add_confirm_message {
-    width: 98.7%;
+  width: 98.7%;
 }
 
 input[type=checkbox].cart-product-image-disable {
-    float: left;
-    margin-right: 6px;
+  float: left;
+  margin-right: 6px;
 }
 
 .btn-add-cart-picture {
-    width: 100px;
-    margin-left: 11px;
+  width: 100px;
+  margin-left: 11px;
 }
 
 .cart-product-image {
-    max-width: 190px;
-    max-height: 190px;
-    margin: 0 auto;
-    margin-left: 218px;
-    margin-bottom: 8px;
+  max-width: 190px;
+  max-height: 190px;
+  margin: 0 auto;
+  margin-left: 218px;
+  margin-bottom: 8px;
 }
 
-                /* Cart Block */
-.cart_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;    
+/* Cart Block */
+
+.cart_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .cart_product_title {
-    width: 99.5%;
+  width: 99.5%;
 }
 
 .cart_email_notification {
-    width: 99.5%;
+  width: 99.5%;
 }
 
 .cart_confirm_order {
-    width: 99.5%;
+  width: 99.5%;
 }
 
 .cart_confirm_msg {
-    width: 99.5%;
+  width: 99.5%;
 }
 
-                /* Blanks Form Block */
+/* Blanks Form Block */
 
-.blanks_form_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;    
-    padding: 2px 5px 3px 8px;    
+.blanks_form_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
+  padding: 2px 5px 3px 8px;
 }
 
-.blank-form-content{
-    width: 99.5%;
-    margin-left: 1px;
+.blank-form-content {
+  width: 99.5%;
+  margin-left: 1px;
 }
 
-                /* ExclusiveUrl Block */
+/* ExclusiveUrl Block */
 
-.exclusive_url_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;         
+.exclusive_url_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .contents_exclusiveurl {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: 10px;
-    margin-right: 10px;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
-                /* File Upload Block */
+/* File Upload Block */
 
-.file_upload_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;         
+.file_upload_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
-.file_upload_content{
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: 10px;
-    margin-right: 10px;
+.file_upload_content {
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .file_upload_wrapper {
-    margin-left: 10px;
-    width: 98%;
-    margin-bottom: 5px;
-    position: relative;
-    display: inline-block;
-    overflow: hidden;
-    cursor: pointer;
+  margin-left: 10px;
+  width: 98%;
+  margin-bottom: 5px;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  cursor: pointer;
 }
 
 .file_upload_wrapper input {
-    height:35px; 
-    width: 100%; 
-    position: absolute;
-    top: 0;
-    right: 0;
-    filter: alpha(opacity=1);
-    opacity: 0.01; 
-    -moz-opacity: 0.01; 
-    cursor: pointer;
+  height: 35px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  filter: alpha(opacity=1);
+  opacity: 0.01;
+  -moz-opacity: 0.01;
+  cursor: pointer;
 }
 
 .file_upload_wrapper .button {
-    border: 1px solid #D3D3D3;
-    color: #030303;
-    background: #E2E2E2;
-    padding: 4px 18px;
-    margin-right: 4px;
-    border-radius: 0px;
-    -moz-border-radius: 0px;
-    -webkit-border-radius: 0px;
-    display: inline-block;
-    cursor: pointer;
-    font-size: 11px;
+  border: 1px solid #D3D3D3;
+  color: #030303;
+  background: #E2E2E2;
+  padding: 4px 18px;
+  margin-right: 4px;
+  border-radius: 0px;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 11px;
 }
 
-                /* Push Pay Block */
+/* Push Pay Block */
 
-.push_pay_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;         
+.push_pay_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .push_pay_content {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
+/* Push Pay Block */
 
-                /* Push Pay Block */
-
-.threed_cart_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;         
+.threed_cart_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .threed_cart_content {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-                /* Blogs Block */
+/* Blogs Block */
 
-.blogs_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;         
+.blogs_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .blogs_content {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.blogs_main_content{
-    float: left;
-    width: 99%;
-    margin-left: 3px;
+.blogs_main_content {
+  float: left;
+  width: 99%;
+  margin-left: 3px;
 }
 
-                /* Chat Panel */
+/* Chat Panel */
 
-.chat_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;         
+.chat_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
 .chat_enable_content {
-    margin-bottom: 1%;
-    margin-top: 1%;
-    width: 98%;
-    margin-left: auto;
-    margin-right: auto;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 98%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-            /* Account Panel */
+/* Account Panel */
 
-.account_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;         
+.account_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
-            /* Profile Panel */
+/* Profile Panel */
 
-.profile_panel{
-    width: 98%;
-    float: left;
-    margin-top: 5px;
-    border-radius: 0px;
-    border-color: #ddd;
-    margin-bottom: 8px;         
+.profile_panel {
+  width: 98%;
+  float: left;
+  margin-top: 5px;
+  border-radius: 0px;
+  border-color: #ddd;
+  margin-bottom: 8px;
 }
 
+/* Widget Category */
 
+.widget_category_box {
+  width: 205px;
+  height: 24px;
+  float: right;
+  margin-top: -2px;
+}
 
+.main-widget-category {
+  float: right;
+  width: 210px;
+  margin-right: 9px;
+}
 
+/* Trigger Buttons */
 
+.active-tile {
+  color: rgba(255, 0, 0, 0.99);
+  font-weight: bolder;
+}
 
-
-
-
-
-
+.deactive-tile {
+  color: rgba(0, 128, 0, 0.91);
+  font-weight: bolder;
+}

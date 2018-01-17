@@ -11,21 +11,20 @@ export class BlockItem {
   }
 };
 
-export class BlockChecker {
+export class BlockOrganizer {
   block: any = {};
   utils: any;
 
-  constructor(blk: any, type: string, orgConnectDatas?: any[]) {
+  constructor(blk: any, type: string, orgConnectDatas?: any[], widgetCategories?: any[]) {
     this.utils = Utils;
     this.block = {};
-    this.getType(blk, type, orgConnectDatas);
+    this.getType(blk, type, orgConnectDatas, widgetCategories);
 
     return this.block;
   }
 
   /* Get Block Types */
-
-  getType(blk: any, type: string, orgConnectDatas: any) {
+  getType(blk: any, type: string, orgConnectDatas: any, widgetCategories?: any[]) {
     if (type === "text") {
       this.textBlock(blk, type);
       return;
@@ -72,12 +71,12 @@ export class BlockChecker {
     }
 
     if (type === "survey") {
-      this.surveyBlock(blk, type);
+      this.surveyBlock(blk, type, widgetCategories);
       return;
     }
 
     if (type === "questionnaire") {
-      this.questionnaireBlock(blk, type);
+      this.questionnaireBlock(blk, type, widgetCategories);
       return;
     }
 
@@ -92,7 +91,7 @@ export class BlockChecker {
     }
 
     if (type === "questions") {
-      this.questionsBlock(blk, type);
+      this.questionsBlock(blk, type, widgetCategories);
       return;
     }
 
@@ -337,14 +336,15 @@ export class BlockChecker {
     this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
   };
 
-  surveyBlock(blockData: any, type: string) {
+  surveyBlock(blockData: any, type: string, widgetCategories: any[]) {
     this.assignBlockId(blockData);
     this.block["type"] = type;
     this.block["blockName"] = "Simple Questionnaire";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
+    this.block["widgetCategories"] = widgetCategories;
     this.block["data"] = {};
-    
+
     this.block["data"]["mandatory"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("mandatory") && !this.utils.isNullOrEmpty(blockData["data"]["mandatory"]) ? this.utils.convertToBoolean(blockData["data"]["mandatory"]) : false;
     this.block["data"]["questionText"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("questionText") && !this.utils.isNullOrEmpty(blockData["data"]["questionText"]) ? blockData["data"]["questionText"] : "";
     this.block["data"]["controls"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["controls"]) ? blockData["data"]["controls"] : "radio";
@@ -359,12 +359,13 @@ export class BlockChecker {
     this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
   };
 
-  questionnaireBlock(blockData: any, type: string) {
+  questionnaireBlock(blockData: any, type: string, widgetCategories: any[]) {
     this.assignBlockId(blockData);
     this.block["type"] = type;
     this.block["blockName"] = "Cascading Questionnaire";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
+    this.block["widgetCategories"] = widgetCategories;
     this.block["data"] = {};
 
     this.block["data"]["mandatory"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("mandatory") && !this.utils.isNullOrEmpty(blockData["data"]["mandatory"]) ? this.utils.convertToBoolean(blockData["data"]["mandatory"]) : false;
@@ -505,22 +506,23 @@ export class BlockChecker {
     this.block["data"]["title"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["title"]) ? this.utils.convertToBoolean(blockData["data"]["title"]) : false;
   };
 
-  questionsBlock(blockData: any, type: string) {
+  questionsBlock(blockData: any, type: string, widgetCategories: any[]) {
     this.assignBlockId(blockData);
     this.block["type"] = type;
     this.block["blockName"] = "Questions & Answers";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
+    this.block["widgetCategories"] = widgetCategories;
     this.block["data"] = {};
 
-    this.block["data"]["questions"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["questions"]) ? blockData["data"]["questions"] : "";
+    this.block["data"]["questions"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["questions"]) ? blockData["data"]["questions"] : [""];
     this.block["data"]["mandatory"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["mandatory"]) ? blockData["data"]["mandatory"] : [false];
     this.block["data"]["answerTypes"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["answerTypes"]) ? blockData["data"]["answerTypes"] : ["text"];
     this.block["data"]["notes"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["notes"]) ? blockData["data"]["notes"] : [false];
     this.block["data"]["category"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["category"]) ? blockData["data"]["category"] : "";
     this.block["data"]["categoryName"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["categoryName"]) ? blockData["data"]["categoryName"] : "";
     this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
-    this.block["data"]["category"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("category") && !this.utils.isNullOrEmpty(blockData["data"]["category"]) ? blockData["data"]["category"] : "-1";
+    //this.block["data"]["category"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("category") && !this.utils.isNullOrEmpty(blockData["data"]["category"]) ? blockData["data"]["category"] : "-1";
   };
 
   attendanceBlock(blockData: any, type: string) {

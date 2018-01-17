@@ -10,7 +10,7 @@ import { WidgetsComponent } from '../../components/widgets/widgets.component';
 import { HomeRoutingModule } from '../../app-routes/home-routing.module';
 import { HeaderComponent } from '../../components/header/header.component';
 import { TilesListComponent, TilesComponent } from '../../components/tiles-list/tiles-list.component';
-import { TileBlocksComponents, SafePipe } from '../../components/widgets/tileblocks.components';
+import { TileBlocksComponents} from '../../components/widgets/tileblocks.components';
 import { EventsComponent } from '../../components/events/events.component';
 import { FoldersComponent } from '../../components/folders/folders.component';
 import { AccountComponent } from '../../components/account/account.component';
@@ -31,19 +31,17 @@ import { ProcedureService } from '../../services/procedure.service';
 import { ThemeService } from '../../services/theme.service';
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
-import { DyBindDirective } from '../../components/widgets/dynamic-bind.directive';
-
 //import { DragDropDirectiveModule} from "angular4-drag-drop";
 
 //import { SlimScrollModule } from 'ng2-slimscroll';
 //import { VirtualScrollModule } from 'angular2-virtual-scroll';
 
 import { FilterByTextPipe, OrderByPipe, ReversePipe } from '../../helpers/filters.pipe';
+import { SafePipe } from '../../helpers/ili-security.pipe';
 import { MalihuScrollbarModule } from 'ngx-malihu-scrollbar';
 import { DraggableDirective } from '../../helpers/draggable.directive';
 import { DropTargetDirective } from '../../helpers/drop-target.directive';
 import { OnlyNumbersDirective } from '../../helpers/only-numbers.directive';
-
 import { DateTimePickerDirective } from '../../helpers/date-time-picker.directive';
 
 @NgModule({
@@ -54,7 +52,7 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
-    TileBlocksDirective, DyBindDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
+    TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,

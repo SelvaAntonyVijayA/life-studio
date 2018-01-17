@@ -103,9 +103,26 @@ var _getBlocks = function (blockIds, cb) {
   });
 };
 
+var widgetCategoryList = function (req, res, next) {
+  query = {};
+  options = {};
+  options["sort"] = [['name', 'asc']];
+  query["organizationId"] = req.params.orgId;
+
+  if (!__util.isNullOrEmpty(query["organizationId"]) && query["organizationId"] !== "-1"){
+    $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.widgetCategory, query, options, function (result) {
+      console.dir(result);
+      res.send(result);
+    });
+  }else{
+    res.send([]);
+  }
+};
+
 module.exports = {
   "init": init,
   "getBlocks": getBlocks,
   "getProfile": getProfile,
-  "_getBlocks": _getBlocks
+  "_getBlocks": _getBlocks,
+  "widgetCategoryList": widgetCategoryList
 };

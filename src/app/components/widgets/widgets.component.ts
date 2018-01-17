@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, ComponentFactoryResolver, OnDestroy } from '@angular/core';
 import { TileBlocksDirective } from './tileblocks.directive';
-import { BlockChecker, BlockComponent, BlockItem } from './block-checker';
+import { BlockOrganizer, BlockComponent, BlockItem } from './block-organizer';
 import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
 import { CommonService } from '../../services/common.service';
@@ -51,6 +51,7 @@ export class WidgetsComponent implements OnInit {
   scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
   languageList: any[] = [];
   selectedLanguage: string = "en";
+  widgetCategories: any[] = [];
   private orgChangeDetect: any;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
@@ -90,206 +91,199 @@ export class WidgetsComponent implements OnInit {
     var blkLength = blocks.length;
 
     if (type === "text") {
-      blocks.push(new BlockItem(TextBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(TextBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "textView";
     }
 
     if (type === "video") {
-      blocks.push(new BlockItem(VideoBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(VideoBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "videoView";
     }
 
     if (type === "picture") {
-      blocks.push(new BlockItem(PictureBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(PictureBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "pictureView";
     }
 
     if (type === "disqus") {
-      blocks.push(new BlockItem(DisqusBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(DisqusBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "disqusView";
     }
 
     if (type === "feed") {
-      blocks.push(new BlockItem(SocialFeedBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(SocialFeedBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "feedView";
     }
 
     if (type === "calendar") {
-      blocks.push(new BlockItem(CalendarBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(CalendarBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "calendarView";
     }
 
     if (type === "share") {
-      blocks.push(new BlockItem(ShareBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(ShareBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "shareView";
     }
 
     if (type === "patients") {
-      blocks.push(new BlockItem(PatientsBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(PatientsBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "patientsView";
     }
 
     if (type === "inquiry") {
-      blocks.push(new BlockItem(InquiryBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(InquiryBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "inquiryView";
     }
 
     if (type === "survey") {
-      blocks.push(new BlockItem(SurveyBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(SurveyBlockComponent, new BlockOrganizer(blockData, type, [], this.widgetCategories)));
       viewName = "surveyView";
     }
 
     if (type === "questionnaire") {
-      blocks.push(new BlockItem(QuestionnaireBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(QuestionnaireBlockComponent, new BlockOrganizer(blockData, type, [], this.widgetCategories)));
       viewName = "questionnaireView";
     }
 
     if (type === "startwrapper") {
-      blocks.push(new BlockItem(StartWrapperBlockComponent, new BlockChecker(blockData, type)));
-
+      blocks.push(new BlockItem(StartWrapperBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "startWrapperView";
     }
 
     if (type === "title") {
-      blocks.push(new BlockItem(FormTitleBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(FormTitleBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "formTitleView";
     }
 
     if (type === "questions") {
-      blocks.push(new BlockItem(QuestionsBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(QuestionsBlockComponent, new BlockOrganizer(blockData, type, [], this.widgetCategories)));
       viewName = "questionsView";
     }
 
     if (type === "attendance") {
-      blocks.push(new BlockItem(AttendanceBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(AttendanceBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "attendanceView";
     }
 
     if (type === "confirmation") {
-      blocks.push(new BlockItem(ConfirmationBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(ConfirmationBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "confirmationView";
     }
 
     if (type === "password") {
-      blocks.push(new BlockItem(PasswordBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(PasswordBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "passwordView";
     }
 
     if (type === "next") {
-      blocks.push(new BlockItem(NextBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(NextBlockComponent, new BlockOrganizer(blockData, type)));
 
       viewName = "nextView";
     }
 
     if (type === "formphoto") {
-      blocks.push(new BlockItem(FormPhotoComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(FormPhotoComponent, new BlockOrganizer(blockData, type)));
       viewName = "formPhotoView";
     }
 
     if (type === "painlevel") {
-      blocks.push(new BlockItem(PainLevelComponent, new BlockChecker(blockData, type)));
-
+      blocks.push(new BlockItem(PainLevelComponent, new BlockOrganizer(blockData, type)));
       viewName = "painLevelView";
     }
 
     if (type === "drawtool") {
-      blocks.push(new BlockItem(DrawToolBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(DrawToolBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "drawToolView";
     }
 
     if (type === "physician") {
-      blocks.push(new BlockItem(PhysicianBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(PhysicianBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "physicianView";
     }
 
     if (type === "endwrapper") {
-      blocks.push(new BlockItem(EndWrapperBlockComponent, new BlockChecker(blockData, type)));
+      blocks.push(new BlockItem(EndWrapperBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "endWrapperView";
     }
 
     if (type === "fill") {
-      blocks.push(new BlockItem(FillBlockComponent, new BlockChecker(blockData, type)));
-
+      blocks.push(new BlockItem(FillBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "fillView";
     }
 
     if (type === "notes") {
-      this.blocks.push(new BlockItem(NotesBlockComponent, new BlockChecker(blockData, type)));
+      this.blocks.push(new BlockItem(NotesBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "notesView";
     }
 
     if (type === "buttons") {
-      this.blocks.push(new BlockItem(ButtonsBlockComponent, new BlockChecker(blockData, type)));
+      this.blocks.push(new BlockItem(ButtonsBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "buttonsView";
     }
 
     if (type === "contactus") {
-      this.blocks.push(new BlockItem(ContactUsBlockComponent, new BlockChecker(blockData, type)));
-
+      this.blocks.push(new BlockItem(ContactUsBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "contactusView";
     }
 
     if (type === "placefull") {
-      this.blocks.push(new BlockItem(PlacefullBlockComponent, new BlockChecker(blockData, type)));
+      this.blocks.push(new BlockItem(PlacefullBlockComponent, new BlockOrganizer(blockData, type)));
 
       viewName = "placefullView";
     }
 
     if (type === "addtocart") {
-      this.blocks.push(new BlockItem(AddToCartBlockComponent, new BlockChecker(blockData, type)));
+      this.blocks.push(new BlockItem(AddToCartBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "addToCartView";
     }
 
     if (type === "cart") {
-      this.blocks.push(new BlockItem(CartBlockComponent, new BlockChecker(blockData, type)));
+      this.blocks.push(new BlockItem(CartBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "cartView";
     }
 
     if (type === "blanksform") {
-      this.blocks.push(new BlockItem(BlanksFormBlockComponent, new BlockChecker(blockData, type)));
+      this.blocks.push(new BlockItem(BlanksFormBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "blanksFormView";
     }
 
     if (type === "exclusiveurl") {
-      this.blocks.push(new BlockItem(ExclusiveUrlBlockComponent, new BlockChecker(blockData, type)));
+      this.blocks.push(new BlockItem(ExclusiveUrlBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "exclusiveUrlView";
     }
 
     if (type === "fileupload") {
-      this.blocks.push(new BlockItem(FileUploadBlockComponent, new BlockChecker(blockData, type)));
+      this.blocks.push(new BlockItem(FileUploadBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "fileUploadView";
     }
 
     if (type === "pushpay") {
-      this.blocks.push(new BlockItem(PushpayBlockComponent, new BlockChecker(blockData, type)));
-
+      this.blocks.push(new BlockItem(PushpayBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "pushPayView";
     }
 
     if (type === "threedcart") {
-      this.blocks.push(new BlockItem(ThreedCartBlockComponent, new BlockChecker(blockData, type)));
+      this.blocks.push(new BlockItem(ThreedCartBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "threedCartView";
     }
 
     if (type === "blogs") {
-      this.blocks.push(new BlockItem(BlogsBlockComponent, new BlockChecker(blockData, type)));
-
+      this.blocks.push(new BlockItem(BlogsBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "blogsView";
     }
 
     if (type === "chat") {
-      this.blocks.push(new BlockItem(ChatBlockComponent, new BlockChecker(blockData, type)));
-
+      this.blocks.push(new BlockItem(ChatBlockComponent, new BlockOrganizer(blockData, type)));
       viewName = "chatView";
     }
 
     if (type === "account") {
-      this.blocks.push(new BlockItem(AccountBlockComponent, new BlockChecker(blockData, type, this.profileDatas)));
+      this.blocks.push(new BlockItem(AccountBlockComponent, new BlockOrganizer(blockData, type, this.profileDatas)));
       viewName = "accountView";
     }
 
     if (type === "profile") {
-      this.blocks.push(new BlockItem(ProfileBlockComponent, new BlockChecker(blockData, type, this.profileDatas)));
+      this.blocks.push(new BlockItem(ProfileBlockComponent, new BlockOrganizer(blockData, type, this.profileDatas)));
       viewName = "profileView";
     }
 
@@ -339,6 +333,7 @@ export class WidgetsComponent implements OnInit {
     var result = this.blocks;
   };
 
+  /* Getting the tile content datas */
   getTileContent(tileObj: any) {
     this.resetTile("");
 
@@ -393,8 +388,16 @@ export class WidgetsComponent implements OnInit {
 
   getOrgProfileDatas() {
     this.tileService.getProfileDatas(this.selectedOrganization)
-      .then(profOrgDatas => this.profileDatas = profOrgDatas);
+      .then(profOrgDatas => { this.profileDatas = profOrgDatas });
   };
+
+  /* Get widget categories */
+
+  getWidgetCategories() {
+    this.tileService.getWidgetCategories(this.oid)
+      .then(wdgtCats => {this.widgetCategories = wdgtCats});
+  };
+
 
   /*   Get Tile Categories datas    */
 
@@ -411,11 +414,13 @@ export class WidgetsComponent implements OnInit {
     this.tileCategories = [];
     this.selectedTileCategory = {};
     this.languageList = [];
+    this.widgetCategories = [];
     this.selectedLanguage = "en";
   };
 
   setWidgetDatas() {
     this.getOrgProfileDatas();
+    this.getWidgetCategories();
     //this.getTileCategory();
   };
 

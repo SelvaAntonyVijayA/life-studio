@@ -88,6 +88,14 @@ export class TileService {
       .catch(this.handleError);
   };
 
+  getWidgetCategories(orgId: string) {
+    return this.http
+      .get("/tileblock/category/list/" + orgId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  }
+
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);

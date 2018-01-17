@@ -1,22 +1,29 @@
 <div class="container">
   <div class="page_header">
-    <img class="header_logo" src="/img/header/QIL_logo.png">
+    <div class="il_header_logo">
+      <img class="header_logo" src="/img/header/QIL_logo.png">
+    </div>
+    <div *ngIf="!utils.isNullOrEmpty(selectedPageTitle)" class="page_selected_title">
+      <label class="lbl_page_title_separator">{{"/" }}</label>
+      <label class="lbl_selected_page_title">{{selectedPageTitle}}</label>
+    </div>
     <div class="header_user_info" style="bottom: 51px;">
-      <select class="user_organization" [ngModel]="selectedOrgId" (ngModelChange)="orgChangeSet($event)" id="ddUserOrganization" style="display: inline-block;">
-         	<option [value]="'-1'" disabled>Select Organization</option>
-         <option *ngFor="let org of orgs; let i = index" [value]="org?._id" >{{org?.name}}</option>
+      <select class="user_organization" [ngModel]="selectedOrgId" (ngModelChange)="orgChangeSet($event)" id="ddUserOrganization"
+        style="display: inline-block;">
+        <option [value]="'-1'" disabled>Select Organization</option>
+        <option *ngFor="let org of orgs; let i = index" [value]="org?._id">{{org?.name}}</option>
       </select>
       <a class="header_username" (click)="accountPage()" href="javascript:void(0);">{{userName}}</a>
       <a (click)="userLogout()" class="header_logout" href="javascript:void(0);">Logout</a>
     </div>
-    <div class="navbar navbar-default" id="ili_menu">
+    <div class="navbar header_ili_menu navbar-default" id="ili_menu">
       <ul class="nav navbar-nav" id="ili_menu_ulLeft">
         <li [attr.id]="menuLeft.id" *ngFor="let menuLeft of menusDatas.left; let i = index;">
 
           <a [attr.id]="menuLeft.aId" class="dropdown-toggle" href="javascript:void(0);" data-toggle="dropdown" *ngIf="menuLeft.type.indexOf('multi') !== -1">
-           {{menuLeft.text}}
+            {{menuLeft.text}}
             <b class="caret"></b>
-            </a>
+          </a>
           <ul class="dropdown-menu">
             <li [attr.id]="subPage.id" *ngFor="let subPage of menuLeft.subPages; let i = index;">
               <a href="javascript:void(0);" (click)="loadPage(subPage, true)" [attr.url]="subPage.url" [attr.id]="subPage.aId">{{subPage.name}}</a>
@@ -26,7 +33,7 @@
           <a [attr.id]="menuLeft.aId" href="javascript:void(0);" *ngIf="menuLeft.type.indexOf('single') !== -1">
             {{menuLeft.text}}
             <b class="caret"></b>
-            </a>
+          </a>
           <ul class="dropdown-menu">
             <li [attr.id]="subPage.id" *ngFor="let subPage of menuLeft.subPages; let i = index;">
               <a href="javascript:void(0);" (click)="loadPage(subPage, true)" [attr.url]="subPage.url" [attr.id]="subPage.aId">{{subPage.name}}</a>
@@ -38,9 +45,9 @@
         <li [attr.id]="menuRight.id" *ngFor="let menuRight of menusDatas.right; let i = index;">
 
           <a [attr.id]="menuRight.aId" class="dropdown-toggle" href="javascript:void(0);" data-toggle="dropdown" *ngIf="menuRight.type.indexOf('multi') !== -1">
-           {{menuRight.text}}
+            {{menuRight.text}}
             <b class="caret"></b>
-            </a>
+          </a>
           <ul class="dropdown-menu">
             <li [attr.id]="subPage.id" *ngFor="let subPage of menuRight.subPages; let i = index;">
               <a href="javascript:void(0);" (click)="loadPage(subPage, true)" [attr.id]="subPage.aId">{{subPage.name}}</a>
@@ -50,7 +57,7 @@
           <a [attr.id]="menuRight.aId" href="javascript:void(0);" *ngIf="menuRight.type.indexOf('single') !== -1">
             {{menuRight.text}}
             <b class="caret"></b>
-            </a>
+          </a>
           <ul class="dropdown-menu">
             <li [attr.id]="subPage.id" *ngFor="let subPage of menuRight.subPages; let i = index;">
               <a href="javascript:void(0);" (click)="loadPage(subPage, true)" [attr.id]="subPage.aId">{{subPage.name}}</a>

@@ -44,6 +44,7 @@ export class HeaderComponent implements OnInit {
   selectedOrgId: string = "-1";
   selectedOrg: Organization;
   selectedPage: Object = {};
+  selectedPageTitle: string = "";
 
   menusDatas: Object = {
     "left": [],
@@ -56,7 +57,7 @@ export class HeaderComponent implements OnInit {
       Cookie.set('oid', orgId);
     } else {
       var currOid = Cookie.get('oid');
-      this.selectedOrgId = !this.utils.isNullOrEmpty(currOid)? currOid : "-1";
+      this.selectedOrgId = !this.utils.isNullOrEmpty(currOid) ? currOid : "-1";
     }
 
     if (this.selectedOrgId !== "-1") {
@@ -222,10 +223,27 @@ export class HeaderComponent implements OnInit {
     });
   };
 
+  setPageTitle(currPageUrl: string) {
+
+    if (!this.utils.isNullOrEmpty(currPageUrl)) {
+      var pgLib = this.pageLib;
+      var pageKeys = Object.keys(this.pageLib);
+
+      for (let i = 0; i < pageKeys.length; i++) {
+        var pageUrl  = pgLib[pageKeys[i]];
+
+        if(pageUrl === currPageUrl){
+          this.selectedPageTitle = pageKeys[i].replace("_", " ");
+        }
+      }
+    }
+  };
+
   loadPage(page: any, isMenu?: boolean) {
     let token = Cookie.get('token');
     let oid = Cookie.get('oid');
     var currPageName = "";
+    this.selectedPageTitle = "";
 
     if (isMenu) {
       currPageName = typeof page === "string" ? page : typeof page === "object" && page.hasOwnProperty("url") ? page["url"] : "";
@@ -233,8 +251,9 @@ export class HeaderComponent implements OnInit {
       var pageName = Cookie.get('pageName');
       currPageName = !this.utils.isNullOrEmpty(pageName) ? pageName : typeof page === "string" ? page : typeof page === "object" && page.hasOwnProperty("url") ? page["url"] : "";
     }
-
+    
     Cookie.set('pageName', currPageName);
+    this.setPageTitle(currPageName);
 
     if (!this.utils.isNullOrEmpty(token) && !this.utils.isNullOrEmpty(oid)) {
       var pageAddress = currPageName;
@@ -451,6 +470,7 @@ export class HeaderComponent implements OnInit {
       this.dmDatas = domainDatas[0];
       this.userObj = domainDatas[1] && domainDatas[1].length > 0 ? domainDatas[1] : [];
       this.rAcesss = !$.isEmptyObject(domainDatas[2]) && domainDatas[2].hasOwnProperty("role") ? domainDatas[2]["role"] : {};
+      this.selectedPageTitle = "";
 
       if (this.userObj.length > 0) {
         if (this.userObj[0].hasOwnProperty('organizations')) {
