@@ -28,7 +28,9 @@ export class Utils {
 
   // Coverting a given string to boolean
   public static convertToBoolean(value: any) {
-    return value = typeof value === "boolean" ? value : typeof value === "string" ? Boolean(value) : false;
+
+    var re1 = typeof value === "boolean" ? value : typeof value === "string" ? Boolean(value) : false;
+    return typeof value === "boolean" ? value : typeof value === "string" ? Boolean(value) : false;
   };
 
   // Check wheather the given object is empty or not

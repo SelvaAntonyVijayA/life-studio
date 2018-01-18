@@ -287,7 +287,6 @@ export class WidgetsComponent implements OnInit {
       viewName = "profileView";
     }
 
-
     if (blkLength < blocks.length) {
       this.loadComponent(viewName);
     }
@@ -329,7 +328,7 @@ export class WidgetsComponent implements OnInit {
     }
   };
 
-  saveBlocks(e: any) {
+  saveTile(e: any) {
     var result = this.blocks;
   };
 
@@ -385,22 +384,18 @@ export class WidgetsComponent implements OnInit {
   };
 
   /*   Get Organization profile datas    */
-
   getOrgProfileDatas() {
     this.tileService.getProfileDatas(this.selectedOrganization)
       .then(profOrgDatas => { this.profileDatas = profOrgDatas });
   };
 
   /* Get widget categories */
-
   getWidgetCategories() {
     this.tileService.getWidgetCategories(this.oid)
-      .then(wdgtCats => {this.widgetCategories = wdgtCats});
+      .then(wdgtCats => { this.widgetCategories = wdgtCats });
   };
 
-
   /*   Get Tile Categories datas    */
-
   /*getTileCategory() {
     this.tileService.getTileCategory(this.selectedOrganization)
       .then(tileCategories => this.tileCategories = tileCategories);
@@ -457,7 +452,6 @@ export class WidgetsComponent implements OnInit {
         });
     }
   };
-
 
   ngOnInit() {
     //this.setScrollOptions();

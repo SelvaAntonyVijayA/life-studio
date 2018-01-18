@@ -471,9 +471,12 @@ export class BlockOrganizer {
         subQuesObj["questionText"] = currSubQues.hasOwnProperty("questionText") && !this.utils.isNullOrEmpty(currSubQues["questionText"]) ? currSubQues["questionText"] : "";
         subQuesObj["questionType"] = currSubQues.hasOwnProperty("questionType") && !this.utils.isNullOrEmpty(currSubQues["questionType"]) ? currSubQues["questionType"] : "single";
         subQuesObj["inputControlType"] = currSubQues.hasOwnProperty("inputControlType") && !this.utils.isNullOrEmpty(currSubQues["inputControlType"]) ? currSubQues["inputControlType"] : "radio";
-
         subQuesObj["options"] = this.utils.isArray(currSubQues["options"]) && currSubQues["options"].length > 0 ? this.questionnaireOptions(currSubQues["options"]) : [{ "option": "" }, { "option": "" }];
-
+        subQuestions.push(subQuesObj);
+      }else if(currSubQues.hasOwnProperty("type") && currSubQues["type"] === "description"){
+        subQuesObj["type"] = "description",
+        subQuesObj["controlType"] =  currSubQues.hasOwnProperty("controlType") && !this.utils.isNullOrEmpty(currSubQues["controlType"]) ? currSubQues["controlType"] : "text";
+        subQuesObj["questionText"] = currSubQues.hasOwnProperty("questionText") && !this.utils.isNullOrEmpty(currSubQues["questionText"]) ? currSubQues["questionText"] : "";
         subQuestions.push(subQuesObj);
       }
     }
@@ -851,7 +854,7 @@ export class BlockOrganizer {
     this.block["profileData"] = orgConnectDatas;
     this.block["data"] = {};
 
-    var profileDatas = !this.utils.isNullOrEmpty(blockData["data"]["profile"]) ? this.mapOrgProfileData(orgConnectDatas, blockData["data"]["profile"], "profile") : this.mapOrgProfileData(orgConnectDatas, [], "profile");
+    var profileDatas = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["profile"]) ? this.mapOrgProfileData(orgConnectDatas, blockData["data"]["profile"], "profile") : this.mapOrgProfileData(orgConnectDatas, [], "profile");
     this.block["data"]["profile"] = profileDatas;
     this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
   };
@@ -912,7 +915,7 @@ export class BlockOrganizer {
   };
 
   assignActivate(blockData: any) {
-    var activateResult = !this.utils.isEmptyObject(blockData) && blockData.hasOwnProperty("activate") && !this.utils.isNullOrEmpty(blockData["activate"]) ? !this.utils.convertToBoolean(blockData["activate"]) : true;
+    var activateResult = !this.utils.isEmptyObject(blockData) && blockData.hasOwnProperty("activate") && !this.utils.isNullOrEmpty(blockData["activate"]) ? this.utils.convertToBoolean(blockData["activate"]) : true;
     return activateResult;
   };
 

@@ -431,7 +431,7 @@ export class SurveyBlockComponent implements BlockComponent {
       var confirmToAppend = quesLength - confirmLength;
 
       for (let i = 1; i <= confirmToAppend; i++) {
-        this.block.data.confirmation.push("content");
+        this.block.data.confirmation.push("");
       }
     }
   };
@@ -489,22 +489,46 @@ export class SurveyBlockComponent implements BlockComponent {
              <span class="options-count">{{i + 1}}.</span>
              <input type="text" [(ngModel)]="block.data.options[i].option" class="form-control input-sm cc_survey_option_box" placeholder="Type option here">
              <img (click)="removeOption(opt)"  class="cc-delete-quest-option" src="/img/close_bg.png">
-             <img width="19" title="Add Question" (click)="addSubOption(opt)" class="cc-delete-quest-option" src="/img/add_sub_questionnaire.png">
-             <img width="19" title="Add Textbox" class="cc-delete-quest-option" src="/img/add_sub_entry.png"></div>
-             <questionnaire-sub-option [questionWidth]="499" [optionWidth]="486" [isLevel]="true" (removeSubLevel)="deleteLevel($event)" [levelIndex]="1" [currentIndex]="subIndex" [parentIndex]="i" [subOption]="subOpt" *ngFor="let subOpt of opt?.subQuestions; let subIndex = index"> 
+             <img width="19" title="Add Question" (click)="addSubOption($event, opt, 'questions')" class="cc-delete-quest-option" src="/img/add_sub_questionnaire.png">
+             <img width="19" title="Add Textbox" (click)="addSubOption($event, opt, 'description')" class="cc-delete-quest-option" src="/img/add_sub_entry.png"></div>
+             <div *ngFor="let subOpt of opt?.subQuestions; let subIndex = index; trackBy:trackByIndex">
+             <questionnaire-sub-option *ngIf="!utils.isEmptyObject(subOpt) && subOpt.hasOwnProperty('type') && subOpt['type'] === 'questions'"  [questionWidth]="499" [optionWidth]="486" [isLevel]="true" (removeSubLevel)="deleteLevel($event)" [levelIndex]="1" [currentIndex]="subIndex" [parentIndex]="i" [subOption]="subOpt"> 
              </questionnaire-sub-option>
-             </div>
-             </div>
+             <description-sub-option *ngIf="!utils.isEmptyObject(subOpt) && subOpt.hasOwnProperty('type') && subOpt['type'] === 'description'" [selectWidth]="428" [descriptionWidth]="494" (removeSubLevel)="deleteLevel($event)" [levelIndex]="1" [currentIndex]="subIndex" [parentIndex]="i" [subOption]="subOpt">
+             </description-sub-option>
+             </div></div></div>
              <div class="row cc_ques_add_alert">
              <button (click)="addConfirm($event)" class="btn btn-info btn-xs survey-confirmation" style="display: block;">Add Confirmation</button>
              <button (click)="addAlert($event)" class="btn btn-ques-alert btn-info btn-xs">Add Alert</button>
              <button (click)="addPopup($event)" class="btn btn-popup-alert btn-info btn-xs">Pop Up</button>
              </div>
+             <div *ngIf="block.data.alerts.length > 0" class="ili-panel cc_ques_panel">
+             <div  *ngFor="let alrt of block.data.alerts; let i = index; trackBy:trackByIndex" class="row cc_ques_alert_row">
+             <span class="cc_ques_alert_count">{{i + 1}}.</span>
+             <input type="text" [(ngModel)]="block.data.alerts[i]" class="form-control input-sm cc_ques_alert_box" placeholder="Type email address to receive an alert when corresponding option is selected"></div>
+             </div>
+             <span *ngIf="block.data.popup.length > 0" class="txt-email-notes txt-popup">PopUp note for Selected Option</span>
+             <div  *ngFor="let pp of block.data.popup; let i = index; trackBy:trackByIndex" style="margin-top: 8px;" class="row">
+             <div style="width:98%; margin-top: 7px;" class="col-md-11">
+             <div style="float:left; width:2.2%;">{{i + 1}}.</div>
+             <div style="float: left; width: 97.5%;"><ckeditor [(ngModel)]="block.data.popup[i]"></ckeditor></div>
+             </div></div>
+             <span *ngIf="block.data.confirmation.length > 0" class="txt-email-notes txt-popup">Confirmation for Selected Option</span>
+             <div *ngFor="let cc of block.data.confirmation; let i = index; trackBy:trackByIndex" style="margin-top: 8px;" class="row">
+             <div style="width:98%; margin-top: 7px;" class="col-md-11">
+             <div style="float:left; width:2.2%;">{{i + 1}}.</div>
+             <div style="float: left; width: 97.5%;"><ckeditor [(ngModel)]="block.data.confirmation[i]"></ckeditor></div>
+             </div></div>
              </div>`,
   styleUrls: ['./tileblocks.component.css']
 })
 
 export class QuestionnaireBlockComponent implements BlockComponent {
+  constructor() {
+    this.utils = Utils;
+  }
+
+  utils: any;
   @Input() block: any;
   questionnaireView = new EventEmitter<any>();
 
@@ -513,6 +537,8 @@ export class QuestionnaireBlockComponent implements BlockComponent {
   };
 
   addOption(e: any) {
+    e.preventDefault();
+
     var optData = {
       "option": "",
       "alert": "",
@@ -521,20 +547,46 @@ export class QuestionnaireBlockComponent implements BlockComponent {
     };
 
     this.block.data.options.push(optData);
+
+    var popLength = this.block.data.popup.length;
+    var alertsLength = this.block.data.alerts.length;
+    var confirmLength = this.block.data.confirmation.length;
+
+    if (popLength > 0) {
+      this.addPopup("");
+    }
+
+    if (alertsLength > 0) {
+      this.addAlert("");
+    }
+
+    if (confirmLength > 0) {
+      this.addConfirm("");
+    }
   };
 
-  addSubOption(data: any) {
+  addSubOption(e: any, data: any, type: string) {
+    e.preventDefault();
+
     if (!data.hasOwnProperty("subQuestions")) {
       data["subQuestions"] = [];
     }
 
-    data["subQuestions"].push({
-      "type": "questions",
-      "questionText": "",
-      "questionType": "single",
-      "inputControlType": "radio",
-      "options": [{ "option": "" }, { "option": "" }]
-    });
+    if (type === "questions") {
+      data["subQuestions"].push({
+        "type": "questions",
+        "questionText": "",
+        "questionType": "single",
+        "inputControlType": "radio",
+        "options": [{ "option": "" }, { "option": "" }]
+      });
+    } else if (type === "description") {
+      data["subQuestions"].push({
+        "type": "description",
+        "controlType": "text",
+        "questionText": ""
+      });
+    }
   };
 
   trackByIndex(index: number, obj: any): any {
@@ -550,6 +602,49 @@ export class QuestionnaireBlockComponent implements BlockComponent {
 
     if (index !== -1 && this.block.data.options.length >= 2) {
       this.block.data.options.splice(index, 1);
+      this.block.data.popup.splice(index, 1);
+      this.block.data.alerts.splice(index, 1);
+      this.block.data.confirmation.splice(index, 1);
+    }
+  };
+
+  addPopup(e: any) {
+    var optsLength = this.block.data.options.length;
+    var popLength = this.block.data.popup.length;
+
+    if (optsLength > popLength) {
+      var popToAppend = optsLength - popLength;
+      var contentValue = new String("");
+
+      for (let i = 1; i <= popToAppend; i++) {
+        this.block.data.popup.push(contentValue);
+      }
+    }
+  };
+
+  addAlert(e: any) {
+    var optsLength = this.block.data.options.length;
+    var alertsLength = this.block.data.alerts.length;
+
+    if (optsLength > alertsLength) {
+      var alertsToAppend = optsLength - alertsLength;
+
+      for (let i = 1; i <= alertsToAppend; i++) {
+        this.block.data.alerts.push("");
+      }
+    }
+  };
+
+  addConfirm(e: any) {
+    var optsLength = this.block.data.options.length;
+    var confirmLength = this.block.data.confirmation.length;
+
+    if (optsLength > confirmLength) {
+      var confirmToAppend = optsLength - confirmLength;
+
+      for (let i = 1; i <= confirmToAppend; i++) {
+        this.block.data.confirmation.push("");
+      }
     }
   };
 };
@@ -580,18 +675,26 @@ export class QuestionnaireBlockComponent implements BlockComponent {
              <div class="cc-sub-ques-list-input">
              <input [style.width]="optionWidth + 'px'" [(ngModel)]="subOption.options[opI]!.option" type="text" class="form-control input-sm cc_ques_option_box" placeholder="Type option here"> 
              <img (click)="removeOption(subMain)" class="cc-delete-quest-option" src="/img/close_bg.png">
-             <img *ngIf="isLevel" width="19" title="Add Question" (click)="addSubOption(subMain)" class="cc-delete-quest-option" src="/img/add_sub_questionnaire.png">
-             <img *ngIf="isLevel" width="19" title="Add Textbox" class="cc-delete-quest-option" src="/img/add_sub_entry.png"></div>
-             <questionnaire-sub-option [questionWidth]="461" [optionWidth]="460" [isLevel]="false" (removeSubLevel)="deleteLevel($event)" [levelIndex]="2" [currentIndex]="subIndex" [parentIndex]="opI" [subOption]="subOpt" *ngFor="let subOpt of subOption.options[opI]?.subQuestions; let subIndex = index"> 
+             <img *ngIf="isLevel" width="19" title="Add Question" (click)="addSubOption($event, subMain, 'questions')" class="cc-delete-quest-option" src="/img/add_sub_questionnaire.png">
+             <img *ngIf="isLevel" width="19" title="Add Textbox" (click)="addSubOption($event, subMain, 'description')"  class="cc-delete-quest-option" src="/img/add_sub_entry.png"></div>
+             <div *ngFor="let subOpt of subOption.options[opI]?.subQuestions; let subIndex = index; trackBy:trackByIndex">
+             <questionnaire-sub-option *ngIf="!utils.isEmptyObject(subOpt) && subOpt.hasOwnProperty('type') && subOpt['type'] === 'questions'" [questionWidth]="461" [optionWidth]="460" [isLevel]="false" (removeSubLevel)="deleteLevel($event)" [levelIndex]="2" [currentIndex]="subIndex" [parentIndex]="opI" [subOption]="subOpt"> 
              </questionnaire-sub-option>
+             <description-sub-option *ngIf="!utils.isEmptyObject(subOpt) && subOpt.hasOwnProperty('type') && subOpt['type'] === 'description'" [selectWidth]="393" [descriptionWidth]="461" (removeSubLevel)="deleteLevel($event)" [levelIndex]="2" [currentIndex]="subIndex" [parentIndex]="opI" [subOption]="subOpt">
+             </description-sub-option>
+             </div>
              </div>
              </div>
              </div>`,
   styleUrls: ['./tileblocks.component.css']
 })
 
-export class QuestionnaireSubOptionComponent implements BlockComponent {
-  @Input() block: any;
+export class QuestionnaireSubOptionComponent {
+  constructor() {
+    this.utils = Utils;
+  }
+
+  utils: any;
   @Input('subOption') subOption: any;
   @Input('parentIndex') parentIndex: number;
   @Input('currentIndex') currentIndex: number;
@@ -610,18 +713,28 @@ export class QuestionnaireSubOptionComponent implements BlockComponent {
     this.subOption.options.push(optionObj);
   };
 
-  addSubOption(option: any) {
+  addSubOption(e: any, option: any, type: string) {
+    e.preventDefault();
+
     if (!option.hasOwnProperty("subQuestions")) {
       option["subQuestions"] = [];
     }
 
-    option["subQuestions"].push({
-      "type": "questions",
-      "questionText": "",
-      "questionType": "single",
-      "inputControlType": "radio",
-      "options": [{ "option": "" }, { "option": "" }]
-    });
+    if (type === "questions") {
+      option["subQuestions"].push({
+        "type": "questions",
+        "questionText": "",
+        "questionType": "single",
+        "inputControlType": "radio",
+        "options": [{ "option": "" }, { "option": "" }]
+      });
+    } else if (type === "description") {
+      option["subQuestions"].push({
+        "type": "description",
+        "controlType": "text",
+        "questionText": ""
+      });
+    }
   };
 
   trackByIndex(index: number, obj: any): any {
@@ -653,6 +766,77 @@ export class QuestionnaireSubOptionComponent implements BlockComponent {
     if (index !== -1 && this.subOption.options.length >= 2) {
       this.subOption.options.splice(index, 1);
     }
+  };
+};
+
+@Component({
+  selector: 'description-sub-option',
+  outputs: ["removeSubLevel"],
+  template: `<div class="row cc-options-sub-row cc_desc_opt">
+             <span class="cc-sub-question-no">{{getLevelIndex()}}.{{getAlphaLetter(currentIndex)}}</span>
+             <span class="cc_ques_answer_type">Answer Type </span>
+             <select [(ngModel)]="subOption.controlType" [style.width]="selectWidth + 'px'" class="form-control input-sm cc_ques_desc_select">
+             <option value="text">Text</option>
+             <option value="text_na">Text with Unknown</option>
+             <option value="text_nil">Text with N/A</option>
+             <option value="textarea">Text Area </option>
+             <option value="textarea_na">Text Area with Unknown</option>
+             <option value="textarea_nil">Text Area with N/A</option>
+             <option value="date">Date</option>
+             <option value="date_na">Date with Unknown</option>
+             <option value="date_nil">Date with N/A</option>
+             <option value="date_approximate">Date with approximate</option>
+             <option value="datetime-local">Date and Time</option>
+             <option value="datetime-local_na">Date and Time with Unknown</option>
+             <option value="datetime-local_nil">Date and Time with N/A</option>
+             <option value="datetime-local_approximate">Date and Time with approximate</option>
+             <option value="time">Time Only</option>
+             <option value="time_na">Time Only with Unknown</option>
+             <option value="time_nil">Time Only with N/A</option>
+             <option value="time_approximate">Time Only with approximate</option>
+             <option value="number">Number</option>
+             <option value="number_na">Number with Unknown</option>
+             <option value="number_nil">Number with N/A</option>
+             </select>
+             <img (click)="deleteSubLevel($event)" class="cc-delete-quest-option" src="/img/close_bg.png">
+             <textarea [(ngModel)]="subOption.questionText" [style.width]="descriptionWidth + 'px'" class="cc_sub_description">
+             </textarea>
+             </div>`,
+  styleUrls: ['./tileblocks.component.css']
+})
+
+export class DescriptionSubOptionComponent {
+
+  constructor() {
+    this.utils = Utils;
+  }
+
+  utils: any;
+  @Input('subOption') subOption: any;
+  @Input('parentIndex') parentIndex: number;
+  @Input('currentIndex') currentIndex: number;
+  @Input('selectWidth') selectWidth: any;
+  @Input('descriptionWidth') descriptionWidth: any;
+  @Input('levelIndex') levelIndex: number;
+  removeSubLevel = new EventEmitter<any>();
+
+  getAlphaLetter(i: number) {
+    return (i >= 26 ? this.getAlphaLetter((i / 26 >> 0) - 1) : '') + 'abcdefghijklmnopqrstuvwxyz'[i % 26 >> 0];
+  };
+
+  trackByIndex(index: number, obj: any): any {
+    return index;
+  };
+
+  getLevelIndex() {
+    var idx = "i";
+    
+    return this.levelIndex == 2 ? idx = idx + "i" : idx;
+  };
+
+  deleteSubLevel() {
+    var level = { "parentIndex": this.parentIndex, "currentIndex": this.currentIndex };
+    this.removeSubLevel.emit(level);
   };
 };
 
@@ -1682,7 +1866,7 @@ export const TileBlocksComponents = [
   TextBlockComponent, VideoBlockComponent, PictureBlockComponent, DisqusBlockComponent,
   SocialFeedBlockComponent, CalendarBlockComponent, ShareBlockComponent, PatientsBlockComponent,
   InquiryBlockComponent, NotesBlockComponent, BlockControls, SurveyBlockComponent,
-  QuestionnaireBlockComponent, FormTitleBlockComponent, QuestionnaireSubOptionComponent,
+  QuestionnaireBlockComponent, FormTitleBlockComponent, QuestionnaireSubOptionComponent, DescriptionSubOptionComponent,
   StartWrapperBlockComponent, QuestionsBlockComponent, AttendanceBlockComponent,
   ConfirmationBlockComponent, PasswordBlockComponent, NextBlockComponent, FormPhotoComponent,
   PainLevelComponent, DrawToolBlockComponent, PhysicianBlockComponent, EndWrapperBlockComponent,

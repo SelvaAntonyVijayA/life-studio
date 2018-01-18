@@ -1,13 +1,13 @@
 .widgets_container {
-    height: 920px;
+  height: 920px;
 }
 
 .tiles_head {
-    width: 99.97%;
-    height: 78px;
-    float: left;
-    margin-left: 1px;
-    margin-bottom: 1px;
+  width: 99.97%;
+  height: 78px;
+  float: left;
+  margin-left: 1px;
+  margin-bottom: 1px;
 }
 
 .widgets_content_blocks {
@@ -19,67 +19,78 @@
 }
 
 .tile_settings_count {
-    height: 1.5%;
-    margin-top: 3%;
+  height: 1.5%;
+  margin-top: 3%;
 }
 
 /*Tiles Buttons */
 
-.tile_form_btns{
-   width: 390px;
-   float: left;
-   margin: 7px 0 0 0px;
+.tile_form_btns {
+  width: 314px;
+  float: right;
+  height: 70px;
+  margin: 7px 0 0 0px;
 }
 
-.reset_tile_btn { 
-  border-bottom-color: #228B22; 
+.reset_tile_btn {
+  border-bottom-color: #228B22;
   border-bottom-width: 3px;
 }
 
-.save_tile_btn { 
-  border-bottom-color: #1E90FF; 
+.save_tile_btn {
+  border-bottom-color: #1E90FF;
   border-bottom-width: 3px;
 }
 
-.duplicate_tile_btn { 
-  border-bottom-color: #C71585; 
+.duplicate_tile_btn {
+  border-bottom-color: #C71585;
   border-bottom-width: 3px;
 }
 
-.delete_tile_btn { 
-  border-bottom-color: #FF0000; 
+.delete_tile_btn {
+  border-bottom-color: #FF0000;
   border-bottom-width: 3px;
 }
 
-.preview_tile_btn { 
-  border-bottom-color: #2E8B57; 
+.preview_tile_btn {
+  border-bottom-color: #2E8B57;
   border-bottom-width: 3px;
+  width: 153.2px;
+  margin-top: 5px;
+}
+
+.icon_tile_btn {
+  border-bottom-color: #FF8C00;
+  border-bottom-width: 3px;
+  width: 153.2px;
+  margin-top: 5px;
 }
 
 /* Tile Prime */
 
-.tile_prime{
-  float:left;
+.tile_prime {
+  float: left;
   width: 9%;
-  margin-top: 12px;
+  margin-top: 5px;
 }
 
-.tile_language{
+.tile_language {
   display: inline-block;
   float: left;
   margin-left: 7px;
 }
 
-.tile_language .custom_combobox{
-  top: 9px; left: 13px;
+.tile_language .custom_combobox {
+  top: 9px;
+  left: 13px;
 }
 
-#tileLanguage{
-  height: 25px; 
+#tileLanguage {
+  height: 25px;
   width: 166px;
 }
 
-.tile_form{
+.tile_form {
   margin-top: 10px;
   float: left;
   width: 45%;
@@ -87,28 +98,28 @@
 }
 
 .tile_title {
-    width: 345px;
-    display: inline-block;
-    float: left;
+  width: 345px;
+  display: inline-block;
+  float: left;
 }
 
 .tile_notes {
-    width: 196px;
-    margin-top: 6px;
-    margin-right: 5px;
-    display: inline-block;
-    float: left;
+  width: 196px;
+  margin-top: 6px;
+  margin-right: 5px;
+  display: inline-block;
+  float: left;
 }
 
 .template_box {
-    float: left;
-    margin-right: 7px;
-    width: 144px;
-    display: inline-block;
-    margin-top: 6px;
+  float: left;
+  margin-right: 7px;
+  width: 144px;
+  display: inline-block;
+  margin-top: 6px;
 }
 
-.tile_art{
+/*.tile_art{
     width: 10%;
     height: 77px;
     float: left;
@@ -120,28 +131,28 @@
     max-width: 100px;
     max-height: 50px;
     margin-top: 6px;
-}
+}*/
 
 .custom_combobox {
-    color: black;
-    height: 25px;
-    width: 160px;
-    display: inline-block;
-    top: 0px;
+  color: black;
+  height: 25px;
+  width: 160px;
+  display: inline-block;
+  top: 0px;
 }
 
-.tile_cat_box{
-    width: 166px;
-    margin-top: 6px;
+.tile_cat_box {
+  width: 166px;
+  margin-top: 6px;
 }
 
 .widgets_block {
-    width: 161px;
-    height: 880px;
-    text-align: center;
-    position:relative; 
-    float: left;
-    margin-left: -1px;
+  width: 161px;
+  height: 880px;
+  text-align: center;
+  position: relative;
+  float: left;
+  margin-left: -1px;
 }
 
 /*.widget-container{
@@ -149,153 +160,156 @@
     width: 99.99%;
     height: 911px;
 }*/
-   
-  /*Tile Widgets */
-  
-  .tile_widget_text {
-    position: relative;
-    font-size: 16px;
-    top: 5px;
-    margin-bottom: 5px;
-    text-align: center;
-    float: left;
-    width: 150px;
+
+/*Tile Widgets */
+
+.tile_widget_text {
+  position: relative;
+  font-size: 16px;
+  top: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+  float: left;
+  width: 150px;
 }
 
-.content_widget_btns{
-  position:relative; 
-  top: 1%; 
-  height: 833px; 
-  overflow-y: hidden; 
-  overflow-x: hidden; 
-  float: left; 
+.content_widget_btns {
+  position: relative;
+  top: 1%;
+  height: 833px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  float: left;
   width: 100%;
 }
 
-.content_widget_btns .widget_btn{
-  padding-bottom:10px; 
-  display:inline-block; 
-  text-align: center; 
-  cursor: pointer; 
-  width: 48%; 
+.content_widget_btns .widget_btn {
+  padding-bottom: 10px;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  width: 48%;
   float: left;
 }
 
-.content_widget_btns .widget_btn_separator{
-   margin-left: 12px;
-   margin-bottom: 15px;
-   display: inline-block;
-   position: relative;
-   text-align: center;
-   width: 80%;
-   float: left;
-   border: 0;
-   border-top: 0px solid #B5B8C8;
+.content_widget_btns .widget_btn_separator {
+  margin-left: 12px;
+  margin-bottom: 15px;
+  display: inline-block;
+  position: relative;
+  text-align: center;
+  width: 80%;
+  float: left;
+  border: 0;
+  border-top: 0px solid #B5B8C8;
 }
 
-.content_widget_btns .normal-pointer{
+.content_widget_btns .normal-pointer {
   cursor: default;
 }
 
-.content_widget_btns label{
-  font-size:9px;
+.content_widget_btns label {
+  font-size: 9px;
 }
 
-.content_widget_btns img{
-  width:28px; 
-  height:28px;
+.content_widget_btns img {
+  width: 28px;
+  height: 28px;
 }
 
-.widget-basic-collapse{
-  max-height: 142px; 
-  overflow: hidden; cursor: 
-  pointer; position: 
-  relative; transition: 1s;
-}
-
-.widget-basic-collapse:hover{
-  max-height: 397px; 
-  overflow: hidden; 
-  cursor: pointer; 
+.widget-basic-collapse {
+  max-height: 142px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
   transition: 1s;
 }
 
-.widget-basic-collapse:hover .widgets-load-more{
-   display : none;
+.widget-basic-collapse:hover {
+  max-height: 397px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 1s;
+}
+
+.widget-basic-collapse:hover .widgets-load-more {
+  display: none;
 }
 
 /* Widgets Separator */
 
-.separator-text{
-  text-align: center; 
-  position: relative; 
-  z-index: 2; 
+.separator-text {
+  text-align: center;
+  position: relative;
+  z-index: 2;
   font-size: 12px;
 }
 
-.line-left{
-  position: absolute; 
-  top: 50%; left: 0; 
-  border-top: 
-  solid 1px #B5B8C8; z-index: -1;
+.line-left {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  border-top: solid 1px #B5B8C8;
+  z-index: -1;
 }
 
-.line-right{
-  position: absolute; 
-  top: 50%; right: 0; 
-  border-top: solid 1px #B5B8C8; 
+.line-right {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  border-top: solid 1px #B5B8C8;
   z-index: -1;
 }
 
 .line-center {
-  margin: 0; 
-  padding: 0 2px; 
+  margin: 0;
+  padding: 0 2px;
   display: inline-block;
 }
 
-.line-restricted{
+.line-restricted {
   width: 23%;
 }
 
-.line-basic{
+.line-basic {
   width: 33.5%;
 }
 
-.line-form{
+.line-form {
   width: 34%;
 }
 
-.line-exclusive{
+.line-exclusive {
   width: 24%;
 }
 
-.widgets-load-more{
-    position: absolute; 
-    bottom: -4px; 
-    right: 20px; 
-    font-weight: bolder;
+.widgets-load-more {
+  position: absolute;
+  bottom: -4px;
+  right: 20px;
+  font-weight: bolder;
 }
 
 .tile_blocks-content {
-    position: relative;
-    width: 726px;
-    height: 880px;
-    float: left;
-    margin-left: 1px;
+  position: relative;
+  width: 726px;
+  height: 880px;
+  float: left;
+  margin-left: 1px;
 }
 
-.widget-forms-collapse{
-  max-height: 140px; 
-  overflow: hidden; 
-  cursor: pointer; 
-  position: relative; 
+.widget-forms-collapse {
+  max-height: 140px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
   transition: 2s;
 }
 
-.widget-forms-collapse:hover{
-  max-height: 565px; 
-  overflow: hidden; 
-  cursor: pointer; 
+.widget-forms-collapse:hover {
+  max-height: 565px;
+  overflow: hidden;
+  cursor: pointer;
   transition: 2s;
 }
 
@@ -303,70 +317,63 @@
   display: none;
 }
 
-.widget-restricted-collapse{
-    max-height: 140px;
-   overflow: hidden; 
-   cursor: pointer; 
-   position: relative; 
-   transition: 1s;
-  }
-
-.widget-restricted-collapse:hover{
-  max-height: 300px; 
-  overflow: hidden; 
-  cursor: pointer; 
+.widget-restricted-collapse {
+  max-height: 140px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
   transition: 1s;
 }
 
-.widget-restricted-collapse:hover .widgets-load-more{
+.widget-restricted-collapse:hover {
+  max-height: 300px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 1s;
+}
+
+.widget-restricted-collapse:hover .widgets-load-more {
   display: none;
 }
 
-.widget-exclusive-collapse{
-  max-height: 140px; 
-  overflow: hidden; 
-  cursor: pointer; 
+.widget-exclusive-collapse {
+  max-height: 140px;
+  overflow: hidden;
+  cursor: pointer;
   transition: 1s;
 }
 
-.widget-exclusive-collapse:hover{
-  max-height: 210px; 
-  overflow: hidden; 
-  cursor: pointer; 
+.widget-exclusive-collapse:hover {
+  max-height: 210px;
+  overflow: hidden;
+  cursor: pointer;
   transition: 1s;
 }
 
-.widget-exclusive-collapse:hover .widgets-load-more{
-    display : none;
+.widget-exclusive-collapse:hover .widgets-load-more {
+  display: none;
 }
 
-.widget-exclusive-collapse:hover .exclusive-widgets-load-more{
-   display : none;
+.widget-exclusive-collapse:hover .exclusive-widgets-load-more {
+  display: none;
 }
 
-.exclusive-widgets-load-more{
-  position: relative; 
-  bottom: 0px; 
-  top: 124px; 
-  right: 20px; 
+.exclusive-widgets-load-more {
+  position: relative;
+  bottom: 0px;
+  top: 124px;
+  right: 20px;
   font-weight: bolder;
 }
 
-.tile_art_btn {
+.tile_blocks_msg {
+  margin-top: 20px;
+  text-align: center;
+}
+
+/*.tile_art_btn {
     color: #FFFFFF;
     text-decoration: none;
     font-size: 10px;
     z-index: 1;
-}
-
-
-
-
-
-
-
-
-
-
-
-
+}*/

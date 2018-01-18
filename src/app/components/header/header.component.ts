@@ -221,19 +221,63 @@ export class HeaderComponent implements OnInit {
         bindMenu(pages, "right", self);
       }
     });
+
+
+    if (this.utils.isNullOrEmpty(this.selectedPageTitle)) {
+      var pageUrl = Cookie.get('pageName');
+
+      if (!this.utils.isNullOrEmpty(pageUrl)) {
+        this.setPageTitle(pageUrl);
+      }
+    }
   };
 
   setPageTitle(currPageUrl: string) {
-
     if (!this.utils.isNullOrEmpty(currPageUrl)) {
+      var menusObjLeft = !this.utils.isEmptyObject(this.menusDatas) && this.menusDatas.hasOwnProperty("left") && this.utils.isArray(this.menusDatas["left"]) ? this.menusDatas["left"] : [];
+      var menusObjRight = !this.utils.isEmptyObject(this.menusDatas) && this.menusDatas.hasOwnProperty("right") && this.utils.isArray(this.menusDatas["right"]) ? this.menusDatas["right"] : [];
+      var menuObj = menusObjLeft.concat(menusObjRight);
       var pgLib = this.pageLib;
       var pageKeys = Object.keys(this.pageLib);
 
       for (let i = 0; i < pageKeys.length; i++) {
-        var pageUrl  = pgLib[pageKeys[i]];
+        var pgTitle = "";
+        var pageUrl = pgLib[pageKeys[i]];
 
-        if(pageUrl === currPageUrl){
-          this.selectedPageTitle = pageKeys[i].replace("_", " ");
+        if (pageUrl === currPageUrl) {
+          pgTitle = pageKeys[i].replace("_", " ");
+        }
+
+        if (!this.utils.isNullOrEmpty(pgTitle)) {
+          for (let j = 0; j < menuObj.length; j++) {
+            var currMenuObj = menuObj[j];
+            var grpName = !this.utils.isEmptyObject(currMenuObj) && currMenuObj.hasOwnProperty("text") && !this.utils.isNullOrEmpty(currMenuObj["text"]) ? currMenuObj["text"] : "";
+
+
+            if (!this.utils.isNullOrEmpty(grpName) && currMenuObj.hasOwnProperty("subPages")) {
+              if (this.utils.isArray(currMenuObj["subPages"]) && currMenuObj["subPages"].length > 0) {
+                for (let k = 0; k < currMenuObj["subPages"].length; k++) {
+                  var currSubPg = currMenuObj["subPages"][k];
+
+                  if (!this.utils.isEmptyObject(currSubPg) && currSubPg.hasOwnProperty("url") && !this.utils.isNullOrEmpty(currSubPg["url"])) {
+                    if (currSubPg["url"] === currPageUrl) {
+
+                      this.selectedPageTitle = grpName + " - " + pgTitle;
+                      break;
+                    }
+                  }
+                }
+              }
+
+              if (!this.utils.isNullOrEmpty(this.selectedPageTitle)) {
+                break;
+              }
+            }
+          }
+        }
+
+        if (!this.utils.isNullOrEmpty(this.selectedPageTitle)) {
+          break;
         }
       }
     }
@@ -251,9 +295,8 @@ export class HeaderComponent implements OnInit {
       var pageName = Cookie.get('pageName');
       currPageName = !this.utils.isNullOrEmpty(pageName) ? pageName : typeof page === "string" ? page : typeof page === "object" && page.hasOwnProperty("url") ? page["url"] : "";
     }
-    
+
     Cookie.set('pageName', currPageName);
-    this.setPageTitle(currPageName);
 
     if (!this.utils.isNullOrEmpty(token) && !this.utils.isNullOrEmpty(oid)) {
       var pageAddress = currPageName;
@@ -264,6 +307,8 @@ export class HeaderComponent implements OnInit {
       this.cms.destroyScroll();
       this.router.navigate(link, { queryParams: { "_dt": currDate }, relativeTo: this.route });
     }
+
+    this.setPageTitle(currPageName);
   };
 
   userLogout() {

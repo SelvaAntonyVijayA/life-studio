@@ -210,6 +210,8 @@
 
 .txt-email-notes {
   font-size: 11px;
+  float: left;
+  margin-top: 7px;
 }
 
 .url_block_url {
@@ -532,6 +534,24 @@
   width: 100%;
 }
 
+.cc_ques_alert_row {
+  width: 100%;
+  height: 5%;
+  margin-top: 1%;
+  padding: 0px 4%;
+  margin-bottom: 1%;
+}
+
+.cc_ques_alert_count {
+  float: left;
+  padding: 4px 5px 0px 0px;
+}
+
+.cc_ques_alert_box {
+  width: 97%;
+  float: left;
+}
+
 /* Sub Cascading  Questionnaire */
 
 .cc-options-sub-row {
@@ -622,6 +642,33 @@
 .cc_ques_option_box {
   float: left;
   margin-bottom: 5px;
+}
+
+/* Sub Cascading Description */
+
+.cc_ques_desc_select {
+  width: 428px;
+  float: left;
+  margin-bottom: 5px;
+}
+
+.cc_sub_description {
+  margin-left: 22px;
+  width: 498px;
+  height: 70px;
+  float: left;
+  color: #666;
+}
+
+.cc_ques_answer_type {
+  float: left;
+  width: 70px;
+  margin-top: 6px;
+  font-size: 11px;
+}
+
+.cc_desc_opt{
+  margin-bottom: 10px;
 }
 
 /* Start Wrapper Block */
