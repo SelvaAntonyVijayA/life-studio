@@ -5,7 +5,7 @@ import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 })
 export class OnlyNumbersDirective {
 
-  constructor(private el: ElementRef) { }
+  constructor(private el?: ElementRef) { }
 
   @Input() OnlyNumbers: boolean;
 

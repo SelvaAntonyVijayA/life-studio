@@ -1,194 +1,196 @@
 .tile_list_text {
-    font-size: 16px;
-    position: relative;
-    top: 5px;
-    margin-bottom: 5px;
-    text-align: center;
-    float: left;
-    width: 290px;
+  font-size: 16px;
+  position: relative;
+  top: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+  float: left;
+  width: 290px;
 }
 
 .tiles_list {
-    border: 0px solid;
-    width: 280px;
-    height: 880px;
-    float: left;
-    margin-left: 1px;
+  border: 0px solid;
+  width: 280px;
+  height: 880px;
+  float: left;
+  margin-left: 1px;
 }
 
 .tiles_list_search {
-    padding-left: 5px;
-    padding-right: 2px;
-    text-align: center;
-    margin-top: 3px;
-    float: left;
-    width: 279px;
+  padding-left: 5px;
+  padding-right: 2px;
+  text-align: center;
+  margin-top: 3px;
+  float: left;
+  width: 279px;
 }
 
 .filter_select_box {
-    margin-top: 5px;
-    width: 133px;
-    display: inline;
+  margin-top: 5px;
+  width: 133px;
+  display: inline;
 }
 
 .orgs_box {
-    float: left;
+  float: left;
 }
 
 .category_box {
-    float: right;
-    margin-right: 2px;
+  float: right;
+  margin-right: 2px;
 }
 
 .tiles_sort {
-    float: left;
-    width: 279px;
-    margin-top: 4%;
+  float: left;
+  width: 279px;
+  margin-top: 4%;
 }
 
 .txt_arrange {
-    font-size: 11px;
-    float: left;
-    margin-top: 4px;
-    margin-left: 5px;
+  font-size: 11px;
+  float: left;
+  margin-top: 4px;
+  margin-left: 5px;
 }
 
 .sort_box {
-    float: left;
-    margin-left: 5px;
-    width: 86px;
+  float: left;
+  margin-left: 5px;
+  width: 86px;
 }
 
-.not_show{
-  display: none; 
-  float:right;
+.not_show {
+  display: none;
+  float: right;
 }
 
-.do_sort{
-    margin-right: 20px; 
-    margin-top: 4px; 
-    font-size: 11px; 
-    cursor:pointer;
-    float: right;
+.do_sort {
+  margin-right: 20px;
+  margin-top: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  float: right;
 }
 
-.sort_image{
-    margin-left: 5px;
+.sort_image {
+  margin-left: 5px;
 }
 
-.tiles_count_main{
-    width: 100%; 
-    font-size: 12px; 
-    float: left; 
-    height: 1.5%; 
-    margin-top: 3%;
+.tiles_count_main {
+  width: 100%;
+  font-size: 12px;
+  float: left;
+  height: 1.5%;
+  margin-top: 3%;
 }
 
-.tile-view-change{
-    float: left;
-    margin-left: 8px;
+.tile-view-change {
+  float: left;
+  margin-left: 8px;
 }
 
-.tile-view-change img{
-    cursor: pointer; 
-    padding-right: 2px;
+.tile-view-change img {
+  cursor: pointer;
+  padding-right: 2px;
 }
 
-.tiles_list_count{
-    float: right; color:
-    #666666; 
-    font-size: 80%; 
-    padding-right: 7%; 
-    padding-top: 5px;
+.tiles_list_count {
+  float: right;
+  color: #666666;
+  font-size: 80%;
+  padding-right: 7%;
+  padding-top: 5px;
 }
 
-.tiles_list_show_tiles{
-    margin-top: 8px;
-    width: 100%;
-    float: left;
-    height: 726px;
+.tiles_list_show_tiles {
+  margin-top: 8px;
+  width: 100%;
+  float: left;
+  height: 726px;
 }
 
-                /* Tiles */
-
-.main_tile_block{
-    background-color: #FFFFFF;
-    border-radius: 0px;
-}
+/* Tiles */
 
 .tiles_list_single {
-    float: left;
-    display: table;
-    position: relative;
-    text-align: left;
-    margin-left: 7px;
-    margin-bottom: 4px;
-    width: 257px;
-    min-height: 32px;
-    padding-bottom: 2px;
-    color: #000000;
-    border: 2px outset rgba(255, 255, 255, .5);
+  float: left;
+  display: table;
+  position: relative;
+  text-align: left;
+  margin-left: 7px;
+  margin-bottom: 4px;
+  width: 257px;
+  min-height: 32px;
+  padding-bottom: 2px;
+  color: #000000;
+  border: 2px outset rgba(255, 255, 255, .5);
+  background-color: #FFFFFF;
+  border-radius: 0px;
+}
+
+.tiles_list_single:hover{
+  background-color: #F2F2F2;
+}
+
+.tiles_list_single.selected {
+  background-color: #3c3c3c;
+  color: #FFFFFF;
 }
 
 .tile_list_art {
-    max-width: 240px;
-    margin-top: 8px;
-    margin-left: 5px;
-    margin-bottom: 5px;
-    margin-right: 4px;
-    float: left; 
+  max-width: 240px;
+  margin-top: 8px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  margin-right: 4px;
+  float: left;
 }
 
-.tile_list_art.tile-content-img{
-    max-width: 30px;
-    max-height: 25px; 
-    margin-top: 3px;
+.tile_list_art.tile-content-img {
+  max-width: 30px;
+  max-height: 25px;
+  margin-top: 3px;
 }
 
-.tile_list_art.tile-details-img{
-    max-width: 240px;
-    max-height: none; 
+.tile_list_art.tile-details-img {
+  max-width: 240px;
+  max-height: none;
 }
 
-.tile_list_title{
-    float:left;
-    width: 235px; 
-    margin-top: 2px; 
-    margin-left: 5px; 
-    font-size: 11px; 
-    text-align: justify; 
-    word-wrap: break-word;
+.tile_list_title {
+  float: left;
+  width: 235px;
+  margin-top: 2px;
+  margin-left: 5px;
+  font-size: 11px;
+  text-align: justify;
+  word-wrap: break-word;
 }
 
-.tile_list_title.tile-content-title{  
-    width: 200px;
+.tile_list_title.tile-content-title {
+  width: 200px;
 }
 
-                /* Tile Icons */
+/* Tile Icons */
 
 .tile_icons {
-    position: relative;
-    right: 0;
-    bottom: 2px;
-    width: 100%;
-    float: right;
+  position: relative;
+  right: 0;
+  bottom: 2px;
+  width: 100%;
+  float: right;
 }
 
 virtual-scroll {
-    display: block;
-    width: 100%;
-    height: 723px;
+  display: block;
+  width: 100%;
+  height: 723px;
 }
 
-.highlight{
-    width: 258px;
-    min-height: 32px;
-    padding-right: 13px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    float: left;
+.highlight {
+  width: 258px;
+  min-height: 32px;
+  padding-right: 13px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  float: left;
 }
-
-
-
-

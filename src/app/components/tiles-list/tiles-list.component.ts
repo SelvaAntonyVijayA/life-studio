@@ -24,6 +24,7 @@ export class TilesListComponent {
   @Input('draggedTiles') draggedTiles: any[];
   @Input('isMerge') isMerge: Object;
   @Input('tilesToUpdate') tilesToUpdate: any[];
+  @Input("selectedTile") selectedTile : Object;
   tileContent = new EventEmitter<any>();
   //private organizations: any[] = [];
   tileCategories: any[] = [];
@@ -474,7 +475,7 @@ export class TilesListComponent {
   template: `<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" />
              <link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
              <link rel="stylesheet" href="/css/ti_icons.css">
-             <div [iliDraggable]="{data: tile, page: page}" [style.cursor]="cursor" class="main_tile_block tiles_list_single"> 
+             <div [iliDraggable]="{data: tile, page: page}" [style.cursor]="cursor" [ngClass]="!utils.isEmptyObject(selectedTile) && selectedTile.hasOwnProperty('_id') && !utils.isNullOrEmpty(selectedTile['_id']) && selectedTile['_id'] === tile['_id'] ? 'tiles_list_single selected' : 'tiles_list_single'"> 
              <img [ngClass]="listType === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
              <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
              <div *ngIf="tile" class="tile_icons">
@@ -491,9 +492,19 @@ export class TilesListComponent {
 })
 
 export class TilesComponent implements OnInit {
+  constructor(private e1: ElementRef,
+    private renderer: Renderer,
+    private tileService: TileService,
+    private viewContainerRef: ViewContainerRef,
+    private resolver: ComponentFactoryResolver) {
+      this.utils = Utils;
+  }
+
+  utils: any;
   @Input() tile: any;
   @Input('page') page: string;
   @Input('listType') listType: string;
+  @Input("selectedTile") selectedTile : Object;
   tileData = new EventEmitter<any>();
   dropped = new EventEmitter<any>();
   //@ViewChild(this, { read: ViewContainerRef }) tileListSingle;
@@ -503,21 +514,15 @@ export class TilesComponent implements OnInit {
   tileSelect: Function;
   cursor: string = "crosshair";
 
-  constructor(private e1: ElementRef,
-    private renderer: Renderer,
-    private tileService: TileService,
-    private viewContainerRef: ViewContainerRef,
-    private resolver: ComponentFactoryResolver) {
-
-  }
-
   ngOnInit() {
     //this.showSymbols();
 
     if (this.page === "tiles") {
       this.cursor = "pointer";
       this.tileSelect = this.renderer.listen(this.e1.nativeElement, 'click', (event) => {
+        this.selectedTile = {};
         var blocksIds = this.tile.blocks;
+        this.selectedTile = this.tile;
 
         this.tileService.getTileBlocks(blocksIds)
           .then(blocks => this.assignTileData(blocks));
@@ -535,96 +540,4 @@ export class TilesComponent implements OnInit {
       this.tileSelect();
     }
   };
-
-  /*showSymbols() {
-    var tileNotifications = "";
-    var tileSmart = "";
-    var pageApps = "";
-    var tileProcedure = "";
-    var tileRules = this.emptyString;
-
-    if (this.tile.hasOwnProperty("notification") && this.tile.notification.hasOwnProperty("apps") && this.tile.notification.apps.length > 0) {
-      for (let i = 0; i < this.tile.notification.apps.length; i++) {
-        var app = this.tile.notification.apps[i];
-
-        if (i === 0) {
-          tileNotifications += app.name;
-        } else {
-          tileNotifications += ", " + app.name;
-        }
-      }
-
-      this.symbols["isNotification"] = "block";
-    } else {
-      this.symbols["isNotification"] = "none";
-    }
-
-    if (this.tile.hasOwnProperty("smart") && this.tile.smart.hasOwnProperty("apps") && this.tile.smart.apps.length > 0) {
-      for (let i = 0; i < this.tile.smart.apps.length; i++) {
-        var smartApp = this.tile.smart.apps[i];
-
-        if (i == 0) {
-          tileSmart += smartApp.name;
-        } else {
-          tileSmart += ", " + smartApp.name;
-        }
-      }
-
-      this.symbols["isSmart"] = "block";
-    } else {
-      this.symbols["isSmart"] = "none";
-    }
-
-    if (this.tile.hasOwnProperty("Apps") && this.tile.Apps.length > 0) {
-      for (let i = 0; i < this.tile.Apps.length; i++) {
-        var app = this.tile.Apps[i];
-
-        if (i === 0) {
-          pageApps += app.appName;
-        } else {
-          pageApps += ", " + app.appName;
-        }
-      }
-    }
-
-    if (this.tile.hasOwnProperty("Procedure") && this.tile.Procedure.length > 0) {
-      for (let i = 0; i < this.tile.Procedure.length; i++) {
-        var procedure = this.tile.Procedure[i];
-
-        if (i === 0) {
-          tileProcedure += procedure.name;
-        } else {
-          tileProcedure += ", " + procedure.name;
-        }
-      }
-
-      this.symbols["isProcedure"] = "block";
-    } else {
-      this.symbols["isProcedure"] = "none";
-    }
-
-    if (this.tile.hasOwnProperty("hsrRuleEngine") && this.tile.hsrRuleEngine.length > 0) {
-      for (let i = 0; i < this.tile.hsrRuleEngine.length; i++) {
-        var hsr = this.tile.hsrRuleEngine[i];
-
-        if (i == 0) {
-          tileRules += hsr.ruleName;
-        } else {
-          tileRules += ", " + hsr.ruleName;
-        }
-      }
-
-      this.symbols["isRules"] = "block";
-    } else {
-      this.symbols["isRules"] = "none";
-    }
-
-    this.symbols["isWeight"] = this.tile.hasOwnProperty("isWeight") && this.tile.isWeight ? "block" : "none";
-    this.symbols["isRole"] = this.tile.hasOwnProperty("isRoleBased") && this.tile.isRoleBased ? "block" : "none";
-    this.symbols["tileNotifications"] = tileNotifications;
-    this.symbols["tileSmart"] = tileSmart;
-    this.symbols["tileApps"] = pageApps;
-    this.symbols["tileProcedure"] = tileProcedure;
-    this.symbols["tileHealthStatusRules"] = tileRules;
-  };*/
 };

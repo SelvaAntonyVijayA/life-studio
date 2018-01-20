@@ -16,7 +16,7 @@ export class DraggableDirective {
   }
 
   private options: DraggableOptions = {};
-  
+
   @HostBinding('draggable')
   get draggable() {
     var isDraggable = this.options.page != "tiles" ? true : false;
@@ -37,7 +37,7 @@ export class DraggableDirective {
     event.dataTransfer.setData('Text', JSON.stringify(data));
   };
 
-  @HostListener('mouseover', ['$event'])
+  /*@HostListener('mouseover', ['$event'])
   onMouseOver(event) {
     this.el.nativeElement.style.backgroundColor = '#F2F2F2';
     this.el.nativeElement.style.border = "2px outset #999999";
@@ -47,5 +47,5 @@ export class DraggableDirective {
   onMouseOut(event) {
     this.el.nativeElement.style.backgroundColor = '#FFFFFF';
     this.el.nativeElement.style.border = "2px outset rgba(255, 255, 255, .5)";
-  };
+  };*/
 }

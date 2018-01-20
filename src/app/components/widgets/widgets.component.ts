@@ -326,6 +326,8 @@ export class WidgetsComponent implements OnInit {
       this.blocks = [];
       this.currentAddIndex = -1;
     }
+
+    this.selectedTile = {};
   };
 
   saveTile(e: any) {
@@ -411,6 +413,7 @@ export class WidgetsComponent implements OnInit {
     this.languageList = [];
     this.widgetCategories = [];
     this.selectedLanguage = "en";
+    this.selectedTile = {};
   };
 
   setWidgetDatas() {
