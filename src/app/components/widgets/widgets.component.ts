@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, ComponentFactoryResolver, OnDestroy } from '@angular/core';
 import { TileBlocksDirective } from './tileblocks.directive';
-import { BlockOrganizer, BlockComponent, BlockItem } from './block-organizer';
+import { BlockOrganizer, BlockComponent, BlockItem, GetBlocks } from './block-organizer';
 import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
 import { CommonService } from '../../services/common.service';
@@ -331,7 +331,36 @@ export class WidgetsComponent implements OnInit {
   };
 
   saveTile(e: any) {
-    var result = this.blocks;
+    var currentBlocks = this.blocks;
+    var blckObj = new GetBlocks(currentBlocks, this.selectedLanguage);
+    var blkDataObjs = blckObj.getBlockDatas();
+
+    var savedBlocks = [];
+
+    if (blkDataObjs["blocks"].length > 0) {
+      for (let i = 0; i < blkDataObjs["blocks"].length; i++) {
+        var currBlock = blkDataObjs["blocks"][i];
+        this.tileService.saveTileBlocks(currBlock, i)
+          .then(resBlk => {
+            if (!this.utils.isEmptyObject(resBlk) && resBlk.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(resBlk["_id"])) {
+              savedBlocks.push(resBlk);
+
+              if (savedBlocks.length === blkDataObjs["blocks"].length) {
+                this.arrangeBlocks(savedBlocks);
+              }
+            }
+          });
+      }
+    }
+  };
+  
+  /* Arranging the saved tileblocks in order */
+  arrangeBlocks(currBlks: any[]) {
+    var arrangedBlocks = this.utils.sortArray(currBlks, true, "idx");
+
+    var tileBlks = arrangedBlocks.map((tileBlk) => {
+      delete tileBlk["idx"];
+    });
   };
 
   /* Getting the tile content datas */

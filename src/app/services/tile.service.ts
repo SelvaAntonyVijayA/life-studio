@@ -94,7 +94,19 @@ export class TileService {
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);
-  }
+  };
+
+  saveTileBlocks(block: Object, idx: number) {
+    return this.http
+      .post("/tileblock/save", { headers: this.headers })
+      .toPromise()
+      .then(response => {
+        var blockRes = response.json();
+        blockRes["_id"] = blockRes["_id"];
+        blockRes["idx"] = idx;
+        return blockRes;
+      }).catch(this.handleError);
+  };
 
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);

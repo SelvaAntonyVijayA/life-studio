@@ -20,6 +20,27 @@ var init = function (app) {
   });
 };*/
 
+var save = function (req, res, next) {
+  var obj = req.body.form_data;
+
+  if (__util.isNullOrEmpty(obj._id)) {
+    saveBlock(obj, function (result) {
+      var resObj = { "_id": result };
+      res.send(resObj);
+    });
+  } else {
+    options = {};
+    query = {};
+    query._id = obj._id;
+    delete obj["_id"];
+
+    $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.tileBlocks, query, options, obj, function (result) {
+      var resObj = { "_id": query._id };
+      res.send(resObj);
+    });
+  }
+};
+
 
 /* Fetching TileBlocks */
 var getBlocks = function (req, res, next) {
@@ -109,18 +130,26 @@ var widgetCategoryList = function (req, res, next) {
   options["sort"] = [['name', 'asc']];
   query["organizationId"] = req.params.orgId;
 
-  if (!__util.isNullOrEmpty(query["organizationId"]) && query["organizationId"] !== "-1"){
+  if (!__util.isNullOrEmpty(query["organizationId"]) && query["organizationId"] !== "-1") {
     $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.widgetCategory, query, options, function (result) {
       console.dir(result);
       res.send(result);
     });
-  }else{
+  } else {
     res.send([]);
   }
 };
 
+var saveBlock = function (obj, cb) {
+  $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.tileBlocks, obj, function (result) {
+    cb(result);
+  });
+};
+
 module.exports = {
   "init": init,
+  "save": save,
+  "saveBlock": saveBlock,
   "getBlocks": getBlocks,
   "getProfile": getProfile,
   "_getBlocks": _getBlocks,

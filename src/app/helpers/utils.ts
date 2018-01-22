@@ -80,7 +80,7 @@ export class Utils {
       }
     }
 
-    var resultOutput = !this.isNullOrEmpty(result)? result.toLowerCase() : result;
+    var resultOutput = !this.isNullOrEmpty(result) ? result.toLowerCase() : result;
 
     return resultOutput;
   };
@@ -98,7 +98,7 @@ export class Utils {
       }
     }
 
-    var resultOutput = !this.isNullOrEmpty(result)? result.toLowerCase() : result;
+    var resultOutput = !this.isNullOrEmpty(result) ? result.toLowerCase() : result;
 
     return resultOutput;
   };
@@ -254,7 +254,7 @@ export class Utils {
     if (!(y instanceof Object)) { return false; }
 
     var p = Object.keys(x);
-     
+
     return Object.keys(y).every(function (i) { return p.indexOf(i) !== -1; }) ?
       p.every(function (i) { return self.compareObj(x[i], y[i]); }) : false;
   };
@@ -265,5 +265,30 @@ export class Utils {
     }
 
     return str;
+  };
+
+  public static sortArray = function (reqArray: any[], isAsc?: boolean, propName?: string, optPropName?: string) {
+    if (this.isArray(reqArray) && reqArray.length > 0 && !this.isNullOrEmpty(propName) && typeof isAsc !== "undefined") {
+      var self = this;
+      let direction = isAsc ? 1 : -1;
+
+      return reqArray.sort(function (a, b) {
+        var prop1 = a.hasOwnProperty(propName) ? propName : !self.isNullOrEmpty(optPropName) && a.hasOwnProperty(optPropName) ? optPropName : "";
+        var prop2 = b.hasOwnProperty(propName) ? propName : !self.isNullOrEmpty(optPropName) && b.hasOwnProperty(optPropName) ? optPropName : "";
+
+        if (a[prop1] < b[prop2]) {
+          return -1 * direction;
+        }
+        else if (a[prop1] > b[prop2]) {
+          return 1 * direction;
+        }
+        else {
+          return 0;
+        }
+      });
+
+    } else {
+      return reqArray;
+    }
   };
 }

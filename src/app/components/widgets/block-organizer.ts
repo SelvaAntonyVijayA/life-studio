@@ -229,7 +229,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Editor";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
@@ -241,7 +242,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Upload Video";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["caption"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["caption"]) ? blockData["data"]["caption"] : "";
@@ -255,13 +257,14 @@ export class BlockOrganizer {
     this.block["blockName"] = "Event Media";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
-    this.block["data"]["moderated"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["moderated"]) ? blockData["data"]["moderated"].toString() : "false";
-    this.block["data"]["rate"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["rate"]) ? blockData["data"]["rate"].toString() : "false";
-    this.block["data"]["vote"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["vote"]) ? blockData["data"]["vote"].toString() : "false";
+    //this.block["data"]["moderated"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["moderated"]) ? blockData["data"]["moderated"].toString() : "false";
+    //this.block["data"]["rate"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["rate"]) ? blockData["data"]["rate"].toString() : "false";
+    //this.block["data"]["vote"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["vote"]) ? blockData["data"]["vote"].toString() : "false";
   };
 
   disqusBlock(blockData: any, type: string) {
@@ -270,7 +273,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Disqus";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["disqus"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["disqus"]) ? this.utils.convertToBoolean(blockData["data"]["disqus"]) : false;
@@ -282,7 +286,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Social Feed";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["facebook"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["facebook"]) ? this.utils.convertToBoolean(blockData["data"]["facebook"]) : false;
@@ -300,7 +305,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Calendar";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
@@ -312,7 +318,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Facebook, Twitter & Email Sharing";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["facebook"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["facebook"]) ? this.utils.convertToBoolean(blockData["data"]["facebook"]) : false;
@@ -326,7 +333,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Facebook, Twitter & Email Sharing";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["patients"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["patients"]) ? this.utils.convertToBoolean(blockData["data"]["patients"]) : false;
@@ -339,7 +347,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Inquiry";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["email"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["email"]) ? blockData["data"]["email"] : "";
@@ -353,8 +362,9 @@ export class BlockOrganizer {
     this.block["blockName"] = "Simple Questionnaire";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
     this.block["widgetCategories"] = widgetCategories;
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["mandatory"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("mandatory") && !this.utils.isNullOrEmpty(blockData["data"]["mandatory"]) ? this.utils.convertToBoolean(blockData["data"]["mandatory"]) : false;
@@ -378,8 +388,9 @@ export class BlockOrganizer {
     this.block["blockName"] = "Cascading Questionnaire";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
     this.block["widgetCategories"] = widgetCategories;
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["mandatory"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("mandatory") && !this.utils.isNullOrEmpty(blockData["data"]["mandatory"]) ? this.utils.convertToBoolean(blockData["data"]["mandatory"]) : false;
@@ -389,7 +400,7 @@ export class BlockOrganizer {
     this.block["data"]["isNote"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("isNote") && !this.utils.isNullOrEmpty(blockData["data"]["isNote"]) ? this.utils.convertToBoolean(blockData["data"]["isNote"]) : false;
     this.block["data"]["showInApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["showInApp"]) ? this.utils.convertToBoolean(blockData["data"]["showInApp"]) : false;
     this.block["data"]["category"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("category") && !this.utils.isNullOrEmpty(blockData["data"]["category"]) ? blockData["data"]["category"] : "-1";
-    this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(blockData["data"]["categoryName"]) ? blockData["data"]["categoryName"] : "";
+    this.block["data"]["categoryName"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(blockData["data"]["categoryName"]) ? blockData["data"]["categoryName"] : "";
     this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
 
     var options = [];
@@ -506,7 +517,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Start Wrapper";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["refresh"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["refresh"]) ? this.utils.convertToBoolean(blockData["data"]["refresh"]) : false;
@@ -520,7 +532,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Form Title";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["titletext"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["titletext"]) ? blockData["data"]["titletext"] : "";
@@ -533,8 +546,9 @@ export class BlockOrganizer {
     this.block["blockName"] = "Questions & Answers";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
     this.block["widgetCategories"] = widgetCategories;
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["questions"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["questions"]) ? blockData["data"]["questions"] : [""];
@@ -553,7 +567,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Attendance";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["title"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["title"]) ? blockData["data"]["title"] : "";
@@ -571,7 +586,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Confirmation";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
@@ -584,7 +600,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Password";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["password"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["password"]) ? this.utils.convertToBoolean(blockData["data"]["password"]) : false;
@@ -596,7 +613,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Next";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : "";
@@ -611,7 +629,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Form Media";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
@@ -624,7 +643,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Pain Level";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["painlevel"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["painlevel"]) ? this.utils.convertToBoolean(blockData["data"]["painlevel"]) : false;
@@ -639,7 +659,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Draw tool";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["drawtool"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["drawtool"]) ? this.utils.convertToBoolean(blockData["data"]["drawtool"]) : true;
@@ -652,7 +673,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Physician";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["isPhysician"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["isPhysician"]) ? this.utils.convertToBoolean(blockData["data"]["isPhysician"]) : true;
@@ -666,7 +688,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "End Wrapper";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : "";
@@ -679,7 +702,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Fill-in the blanks";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
@@ -691,7 +715,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Notes";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["notes"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["notes"]) ? this.utils.convertToBoolean(blockData["data"]["notes"]) : true;
@@ -705,7 +730,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Buttons";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]) ? blockData["data"] : [{ "beforeText": "", "afterText": "" }];
@@ -718,10 +744,11 @@ export class BlockOrganizer {
     this.block["blockName"] = "ContactUs";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
-    this.block["email"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["email"]) ? blockData["data"]["email"] : "";
+    this.block["data"]["email"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["email"]) ? blockData["data"]["email"] : "";
   };
 
   placefullBlock(blockData: any, type: string) {
@@ -730,10 +757,11 @@ export class BlockOrganizer {
     this.block["blockName"] = "PlaceFull";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
-    this.block["text"] = !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : "";
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : "";
   };
 
   addToCartBlock(blockData: any, type: string) {
@@ -742,16 +770,17 @@ export class BlockOrganizer {
     this.block["blockName"] = "Add To Cart";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
-    this.block["productName"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["productName"]) ? blockData["productName"] : "";
-    this.block["description"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["description"]) ? blockData["description"] : "";
-    this.block["price"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["price"]) ? blockData["price"] : "";
-    this.block["currency"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["currency"]) ? blockData["currency"] : "";
-    this.block["textCartButton"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["textCartButton"]) ? blockData["textCartButton"] : "";
-    this.block["confirmationMessage"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["confirmationMessage"]) ? blockData["confirmationMessage"] : "";
-    this.block["productImage"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["productImage"]) ? blockData["productImage"] : "";
+    this.block["data"]["productName"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["productName"]) ? blockData["data"]["productName"] : "";
+    this.block["data"]["description"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["description"]) ? blockData["data"]["description"] : "";
+    this.block["data"]["price"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["price"]) ? blockData["data"]["price"] : "";
+    this.block["data"]["currency"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["currency"]) ? blockData["data"]["currency"] : "";
+    this.block["data"]["textCartButton"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["textCartButton"]) ? blockData["data"]["textCartButton"] : "";
+    this.block["data"]["confirmationMessage"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["confirmationMessage"]) ? blockData["data"]["confirmationMessage"] : "";
+    this.block["data"]["productImage"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["productImage"]) ? blockData["data"]["productImage"] : "";
 
     this.block["data"]["isProductName"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["isProductName"]) ? this.utils.convertToBoolean(blockData["data"]["isProductName"]) : true;
     this.block["data"]["isProductDescription"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["isProductDescription"]) ? this.utils.convertToBoolean(blockData["data"]["isProductDescription"]) : true;
@@ -765,13 +794,14 @@ export class BlockOrganizer {
     this.block["blockName"] = "Cart";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
-    this.block["productTitle"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["productTitle"]) ? blockData["data"]["productTitle"] : "";
-    this.block["notificationEmail"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["notificationEmail"]) ? blockData["data"]["notificationEmail"] : "";
-    this.block["textConfirmButton"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["textConfirmButton"]) ? blockData["data"]["textConfirmButton"] : "";
-    this.block["confirmationMessage"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["confirmationMessage"]) ? blockData["data"]["confirmationMessage"] : "";
+    this.block["data"]["productTitle"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["productTitle"]) ? blockData["data"]["productTitle"] : "";
+    this.block["data"]["notificationEmail"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["notificationEmail"]) ? blockData["data"]["notificationEmail"] : "";
+    this.block["data"]["textConfirmButton"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["textConfirmButton"]) ? blockData["data"]["textConfirmButton"] : "";
+    this.block["data"]["confirmationMessage"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["confirmationMessage"]) ? blockData["data"]["confirmationMessage"] : "";
   };
 
   blanksFormBlock(blockData: any, type: string) {
@@ -780,13 +810,14 @@ export class BlockOrganizer {
     this.block["blockName"] = "Blanks Form";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
-    this.block["email"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["email"]) ? blockData["data"]["email"] : "";
-    this.block["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
-    this.block["imageLimit"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["imageLimit"]) ? blockData["data"]["imageLimit"] : "";
-    this.block["redirectApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
+    this.block["data"]["email"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["email"]) ? blockData["data"]["email"] : "";
+    this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
+    this.block["data"]["imageLimit"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["imageLimit"]) ? blockData["data"]["imageLimit"] : "";
+    this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
   };
 
   exclusiveUrlBlock(blockData: any, type: string) {
@@ -795,10 +826,11 @@ export class BlockOrganizer {
     this.block["blockName"] = "URL";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
-    this.block["url"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["url"]) ? blockData["data"]["url"] : "";
+    this.block["data"]["url"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["url"]) ? blockData["data"]["url"] : "";
     this.block["data"]["window"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["window"]) ? this.utils.convertToBoolean(blockData["data"]["window"]) : false;
     this.block["data"]["iphonewindow"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["iphonewindow"]) ? this.utils.convertToBoolean(blockData["data"]["iphonewindow"]) : false;
   };
@@ -809,10 +841,11 @@ export class BlockOrganizer {
     this.block["blockName"] = "File Upload";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
-    this.block["url"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["url"]) ? blockData["data"]["url"] : "";
+    this.block["data"]["url"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["url"]) ? blockData["data"]["url"] : "";
   };
 
   pushPayBlock(blockData: any, type: string) {
@@ -821,11 +854,12 @@ export class BlockOrganizer {
     this.block["blockName"] = "PushPay";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["pushpay"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["pushpay"]) ? this.utils.convertToBoolean(blockData["data"]["pushpay"]) : false;
-    this.block["url"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["url"]) ? blockData["data"]["url"] : "";
+    this.block["data"]["url"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["url"]) ? blockData["data"]["url"] : "";
     this.block["data"]["window"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["window"]) ? this.utils.convertToBoolean(blockData["data"]["window"]) : false;
     this.block["data"]["iphonewindow"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["iphonewindow"]) ? this.utils.convertToBoolean(blockData["data"]["iphonewindow"]) : false;
   };
@@ -836,11 +870,12 @@ export class BlockOrganizer {
     this.block["blockName"] = "3dCart";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["cart"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["cart"]) ? this.utils.convertToBoolean(blockData["data"]["cart"]) : false;
-    this.block["url"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["url"]) ? blockData["data"]["url"] : "";
+    this.block["data"]["url"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["url"]) ? blockData["data"]["url"] : "";
     this.block["data"]["window"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["window"]) ? this.utils.convertToBoolean(blockData["data"]["window"]) : false;
     this.block["data"]["iphonewindow"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["iphonewindow"]) ? this.utils.convertToBoolean(blockData["data"]["iphonewindow"]) : false;
   };
@@ -851,13 +886,14 @@ export class BlockOrganizer {
     this.block["blockName"] = "Blogs";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["wordPress"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["wordPress"]) ? this.utils.convertToBoolean(blockData["data"]["wordPress"]) : false;
-    this.block["wordPressUrl"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["wordPressUrl"]) ? blockData["wordPressUrl"] : "";
-    this.block["wordPressTitle"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["wordPressTitle"]) ? blockData["wordPressTitle"] : "";
-    this.block["wordPressContent"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["wordPressContent"]) ? blockData["wordPressContent"] : new String("");
+    this.block["data"]["wordPressUrl"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["wordPressUrl"]) ? blockData["data"]["wordPressUrl"] : "";
+    this.block["data"]["wordPressTitle"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["wordPressTitle"]) ? blockData["data"]["wordPressTitle"] : "";
+    this.block["data"]["wordPressContent"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["wordPressContent"]) ? blockData["data"]["wordPressContent"] : new String("");
   };
 
   chatBlock(blockData: any, type: string) {
@@ -866,7 +902,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Chat";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = false;
+    this.block["isForm"] = "false";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["data"] = {};
 
     this.block["data"]["chat"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["chat"]) ? this.utils.convertToBoolean(blockData["data"]["chat"]) : true;
@@ -879,7 +916,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Connection Card";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["profileData"] = orgConnectDatas;
     this.block["data"] = {};
 
@@ -895,7 +933,8 @@ export class BlockOrganizer {
     this.block["blockName"] = "Profile";
     this.block["activate"] = this.assignActivate(blockData);
     this.block["version"] = this.assignVersion(blockData);
-    this.block["isForm"] = true;
+    this.block["isForm"] = "true";
+    this.block["existingData"] = this.assignExists(blockData);
     this.block["profileData"] = orgConnectDatas;
     this.block["data"] = {};
 
@@ -970,24 +1009,28 @@ export class BlockOrganizer {
       this.block["_id"] = blockData["_id"];
     }
   };
+
+  assignExists(blockData: any) {
+    return !this.utils.isEmptyObject(blockData) ? blockData : {};
+  };
 };
 
-export class getBlocks {
-  constructor(blcks: any[], isSave?: boolean) {
+export class GetBlocks {
+  constructor(blcks: any[], langCode?: string) {
     this.utils = Utils;
     this.currentBlocks = blcks;
-
-    if (isSave) {
-      this.isSave = isSave;
-    }
+    this.langCode = langCode;
   }
 
   utils: any;
+  langCode: string = "en";
   currentBlocks: any[] = [];
   blocks: any[] = [];
-  isSave: boolean = false;
+  isChat: boolean = false;
 
   getBlockDatas() {
+    var isChat = false;
+
     if (this.currentBlocks.length > 0) {
       for (let i = 0; i < this.currentBlocks.length; i++) {
         var currBlock = !this.utils.isEmptyObject(this.currentBlocks[i]) && this.currentBlocks[i].hasOwnProperty("block") ? this.currentBlocks[i]["block"] : {};
@@ -1001,210 +1044,213 @@ export class getBlocks {
           }
 
           if (type === "text") {
-            blockData["type"] = type;
             blockData["data"] = this.getText(currBlock);
           }
 
           if (type === "video") {
-            blockData["type"] = type;
             blockData["data"] = this.getVideo(currBlock);
           }
 
           if (type === "picture") {
-            blockData["type"] = type;
             blockData["data"] = this.getPicture(currBlock);
 
-            /*if (this.getMediaChatCheck(blockData)) {
-              blocks.isChat = true;
-            }*/
+            if (this.getMediaChatCheck(blockData)) {
+              this.isChat = true;
+            }
           }
 
           if (type === "disqus") {
-            blockData["type"] = type;
             blockData["data"] = this.getDisqus(currBlock);
           }
 
           if (type === "feed") {
-            blockData["type"] = type;
             blockData["data"] = this.getFeed(currBlock);
           }
 
           if (type === "calendar") {
-            blockData["type"] = type;
             blockData["data"] = this.getCalendar(currBlock);
           }
 
           if (type === "share") {
-            blockData["type"] = type;
             blockData["data"] = this.getShare(currBlock);
           }
 
           if (type === "patients") {
-            blockData["type"] = type;
-            this.getPatients(currBlock);
+            blockData["data"] = this.getPatients(currBlock);
           }
 
           if (type === "inquiry") {
-            blockData["type"] = type;
-            this.getInquiry(currBlock);
+            blockData["data"] = this.getInquiry(currBlock);
           }
 
           if (type === "survey") {
-            blockData["type"] = type;
-            this.getSurvey(currBlock);
+            blockData["data"] = this.getSurvey(currBlock);
           }
 
           if (type === "questionnaire") {
-            blockData["type"] = type;
-            this.getQuestionnaire(currBlock);
+            blockData["data"] = this.getQuestionnaire(currBlock);
           }
 
           if (type === "startwrapper") {
-            blockData["type"] = type;
-            this.getStartWrapper(currBlock);
+            blockData["data"] = this.getStartWrapper(currBlock);
           }
 
           if (type === "title") {
-            blockData["type"] = type;
-            this.getTitle(currBlock);
+            blockData["data"] = this.getTitle(currBlock);
           }
 
           if (type === "questions") {
-            blockData["type"] = type;
-            this.getQuestions(currBlock);
+            blockData["data"] = this.getQuestions(currBlock);
           }
 
           if (type === "attendance") {
-            blockData["type"] = type;
-            this.getAttendance(currBlock);
+            blockData["data"] = this.getAttendance(currBlock);
           }
 
           if (type === "confirmation") {
-            blockData["type"] = type;
-            this.getConfirmation(currBlock);
+            blockData["data"] = this.getConfirmation(currBlock);
           }
 
           if (type === "password") {
-            blockData["type"] = type;
-            this.getPassword(currBlock);
+            blockData["data"] = this.getPassword(currBlock);
           }
 
           if (type === "next") {
-            blockData["type"] = type;
-            this.getNext(currBlock);
+            blockData["data"] = this.getNext(currBlock);
           }
 
           if (type === "formphoto") {
-            blockData["type"] = type;
-            this.getFormPhoto(currBlock);
+            blockData["data"] = this.getFormPhoto(currBlock);
           }
 
           if (type === "painlevel") {
-            blockData["type"] = type;
-            this.getPainLevel(currBlock);
+            blockData["data"] = this.getPainLevel(currBlock);
           }
 
           if (type === "drawtool") {
-            blockData["type"] = type;
-            this.getDrawTool(currBlock);
+            blockData["data"] = this.getDrawTool(currBlock);
           }
 
           if (type === "physician") {
-            blockData["type"] = type;
-            this.getPhysician(currBlock);
+            blockData["data"] = this.getPhysician(currBlock);
           }
 
           if (type === "endwrapper") {
-            blockData["type"] = type;
-            this.getEndWrapper(currBlock);
+            blockData["data"] = this.getEndWrapper(currBlock);
           }
 
           if (type === "fill") {
-            blockData["type"] = type;
-            this.getFill(currBlock);
+            blockData["data"] = this.getFill(currBlock);
           }
 
           if (type === "notes") {
-            blockData["type"] = type;
-            this.getNotes(currBlock);
+            blockData["data"] = this.getNotes(currBlock);
           }
 
           if (type === "buttons") {
-            blockData["type"] = type;
             blockData["data"] = this.getButtons(currBlock);
             blockData["alerts"] = currBlock["alerts"];
           }
 
           if (type === "contactus") {
-            blockData["type"] = type;
-            this.getContactUs(currBlock);
+            blockData["data"] = this.getContactUs(currBlock);
           }
 
           if (type === "placefull") {
-            blockData["type"] = type;
-            this.getPlaceFull(currBlock);
+            blockData["data"] = this.getPlaceFull(currBlock);
           }
 
           if (type === "addtocart") {
-            blockData["type"] = type;
-            this.getAddToCart(currBlock);
+            blockData["data"] = this.getAddToCart(currBlock);
           }
 
           if (type === "cart") {
-            blockData["type"] = type;
-            this.getCart(currBlock);
+            blockData["data"] = this.getCart(currBlock);
           }
 
           if (type === "blanksform") {
-            blockData["type"] = type;
-            this.getBlanksForm(currBlock);
+            blockData["data"] = this.getBlanksForm(currBlock);
           }
 
           if (type === "exclusiveurl") {
-            blockData["type"] = type;
-            this.getExclusiveUrl(currBlock);
+            blockData["data"] = this.getExclusiveUrl(currBlock);
           }
 
           if (type === "fileupload") {
-            blockData["type"] = type;
-            this.getFileUpload(currBlock);
+            blockData["data"] = this.getFileUpload(currBlock);
           }
 
           if (type === "pushpay") {
-            blockData["type"] = type;
-            this.getPushPay(currBlock);
+            blockData["data"] = this.getPushPay(currBlock);
           }
 
           if (type === "threedcart") {
-            blockData["type"] = type;
-            this.getThreeDCart(currBlock);
+            blockData["data"] = this.getThreeDCart(currBlock);
           }
 
           if (type === "blogs") {
-            blockData["type"] = type;
-            this.getBlogs(currBlock);
+            blockData["data"] = this.getBlogs(currBlock);
           }
 
           if (type === "chat") {
-            blockData["type"] = type;
-            this.getChat(currBlock);
+            blockData["data"] = this.getChat(currBlock);
+            this.isChat = true;
           }
 
           if (type === "account") {
-            blockData["type"] = type;
-            this.getAccount(currBlock);
+            blockData["data"] = this.getAccount(currBlock);
           }
 
           if (type === "profile") {
-            blockData["type"] = type;
-            this.getProfile(currBlock);
+            blockData["data"] = this.getProfile(currBlock);
           }
+
+          var blkData = blockData.hasOwnProperty("_id") ? Object.assign({}, currBlock["existingData"]) : blockData;
+          blkData["isForm"] = currBlock["isForm"];
+          blkData["type"] = type;
+          blkData["activate"] = currBlock["activate"];
+          blkData["version"] = currBlock["version"];
+
+          if (this.langCode !== "en") {
+            var lang = {};
+
+            /*if (blockData.hasOwnProperty("isChat")) {
+              lang["isChat"] = blockData["isChat"];
+            }*/
+
+            if (blockData.hasOwnProperty("alerts")) {
+              lang["alerts"] = blockData["alerts"];
+            }
+
+            lang["data"] = blockData["data"];
+            blkData[this.langCode] = lang;
+          } else {
+            /*if (blockData.hasOwnProperty("isChat")) {
+              blkData["isChat"] = blockData["isChat"];
+            }*/
+
+            if (blockData.hasOwnProperty("alerts")) {
+              blkData["alerts"] = blockData["alerts"];
+            }
+
+            blkData["data"] = blockData["data"];
+          }
+
+          if (blkData.hasOwnProperty("_id")) {
+            var oldBlockData = currBlock["existingData"]
+            var result = this.utils.compareObj(blkData, oldBlockData);
+
+            if (!result) {
+              blkData["version"] = parseInt(blkData["version"]) + 1;
+            }
+          }
+
+          this.blocks.push(blkData);
         }
       }
     }
 
-
-    return this.blocks;
+    return { "blocks": this.blocks, "isChat": this.isChat };
   };
 
   getText(blk: Object) {
@@ -1532,27 +1578,27 @@ export class getBlocks {
 
   getContactUs(blk: Object) {
     var data = {};
-    data["email"] = blk["email"];
+    data["email"] = blk["data"]["email"];
 
     return data;
   };
 
   getPlaceFull(blk: Object) {
     var data = {};
-    data["text"] = blk["text"];
+    data["text"] = blk["data"]["text"];
 
     return data;
   };
 
   getAddToCart(blk: Object) {
     var data = {};
-    data["productName"] = blk["productName"];
-    data["description"] = blk["description"];
-    data["price"] = blk["price"];
-    data["currency"] = blk["currency"];
-    data["textCartButton"] = blk["textCartButton"];
-    data["confirmationMessage"] = blk["confirmationMessage"];
-    data["productImage"] = blk["productImage"];
+    data["productName"] = blk["data"]["productName"];
+    data["description"] = blk["data"]["description"];
+    data["price"] = blk["data"]["price"];
+    data["currency"] = blk["data"]["currency"];
+    data["textCartButton"] = blk["data"]["textCartButton"];
+    data["confirmationMessage"] = blk["data"]["confirmationMessage"];
+    data["productImage"] = blk["data"]["productImage"];
 
     data["isProductName"] = blk["data"]["isProductName"];
     data["isProductDescription"] = blk["data"]["isProductDescription"];
@@ -1565,10 +1611,10 @@ export class getBlocks {
   getCart(blk: Object) {
     var data = {};
 
-    data["productTitle"] = blk["productTitle"];
-    data["notificationEmail"] = blk["notificationEmail"];
-    data["textConfirmButton"] = blk["textConfirmButton"];
-    data["confirmationMessage"] = data["confirmationMessage"];
+    data["productTitle"] = blk["data"]["productTitle"];
+    data["notificationEmail"] = blk["data"]["notificationEmail"];
+    data["textConfirmButton"] = blk["data"]["textConfirmButton"];
+    data["confirmationMessage"] = data["data"]["confirmationMessage"];
 
     return data;
   };
@@ -1576,10 +1622,10 @@ export class getBlocks {
   getBlanksForm(blk: Object) {
     var data = {};
 
-    data["email"] = blk["email"];
-    data["text"] = blk["text"];
-    data["imageLimit"] = blk["imageLimit"];
-    data["redirectApp"] = blk["redirectApp"];
+    data["email"] = blk["data"]["email"];
+    data["text"] = blk["data"]["text"];
+    data["imageLimit"] = blk["data"]["imageLimit"];
+    data["redirectApp"] = blk["data"]["redirectApp"];
 
     return data;
   };
@@ -1587,18 +1633,17 @@ export class getBlocks {
   getExclusiveUrl(blk: Object) {
     var data = {};
 
-    data["url"] = blk["url"]
+    data["url"] = blk["data"]["url"]
     data["window"] = blk["data"]["window"];
     data["iphonewindow"] = blk["data"]["iphonewindow"];
 
     return data;
   };
 
-
   getFileUpload(blk: Object) {
     var data = {};
 
-    data["url"] = blk["url"];
+    data["url"] = blk["data"]["url"];
 
     return data;
   };
@@ -1607,7 +1652,7 @@ export class getBlocks {
     var data = {};
 
     data["pushpay"] = blk["data"]["pushpay"];
-    data["url"] = blk["url"];
+    data["url"] = blk["data"]["url"];
     data["window"] = blk["data"]["window"];
     data["iphonewindow"] = blk["data"]["iphonewindow"];
 
@@ -1618,7 +1663,7 @@ export class getBlocks {
     var data = {};
 
     data["cart"] = blk["data"]["cart"]
-    data["url"] = blk["url"];
+    data["url"] = blk["data"]["url"];
     data["window"] = blk["data"]["window"];
     data["iphonewindow"] = blk["data"]["iphonewindow"];
 
@@ -1629,10 +1674,10 @@ export class getBlocks {
     var data = {};
 
     data["wordPress"] = blk["data"]["wordPress"];
-    data["wordPressUrl"] = blk["wordPressUrl"];
-    data["wordPressTitle"] = blk["wordPressTitle"];
+    data["wordPressUrl"] = blk["data"]["wordPressUrl"];
+    data["wordPressTitle"] = blk["data"]["wordPressTitle"];
 
-    data["wordPressContent"] = blk["wordPressContent"];
+    data["wordPressContent"] = blk["data"]["wordPressContent"];
 
     return data;
   };
@@ -1667,7 +1712,7 @@ export class getBlocks {
   getMediaChatCheck(blk: Object) {
     var text = !this.utils.isNullOrEmpty(blk["data"]["text"]) ? blk["data"]["text"] : "";
     return !this.utils.isNullOrEmpty(text) && $(text).find('a[type=eventVideo]').attr('chat') == "true" ? true : false;
-  }
+  };
 };
 
 

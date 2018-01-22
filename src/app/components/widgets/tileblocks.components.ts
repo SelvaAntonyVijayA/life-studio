@@ -1273,14 +1273,20 @@ export class FillBlockComponent implements BlockComponent {
              <div class="row contents_input_account">
              <div class="input-group input-group-sm">
              <span class="input-group-addon">
-             <input value="true" (change)="notesAssign($event, 'notes')" [checked]="block.data.notes" [(ngModel)]="block.data.notes" type="checkbox"></span>
+             <input value="true" [disabled]="isNotes" (change)="notesAssign($event, 'notes')" [checked]="block.data.notes" [(ngModel)]="block.data.notes" type="checkbox"></span>
              <span class="form-control">Notes</span>
              </div></div>
              <div class="row contents_input_account">
              <div class="input-group input-group-sm">
              <span class="input-group-addon">
-             <input value="true" (change)="notesAssign($event, 'allnotes')" [checked]="block.data.allNotes" [(ngModel)]="block.data.allNotes" type="checkbox"></span>
+             <input value="true" [disabled]="isAllnotes" (change)="notesAssign($event, 'allnotes')" [checked]="block.data.allNotes" [(ngModel)]="block.data.allNotes" type="checkbox"></span>
              <span class="form-control"> Notes Archive </span>
+             </div></div>
+             <div class="row contents_input_account">
+             <div class="input-group input-group-sm">
+             <span class="input-group-addon">
+             <input value="true" [disabled]="isJournal" (change)="notesAssign($event, 'journal')" [checked]="block.data.journal" [(ngModel)]="block.data.journal" type="checkbox"></span>
+             <span class="form-control"> Journal </span>
              </div></div>
              </div></div>`,
   styleUrls: ['./tileblocks.component.css']
@@ -1290,6 +1296,9 @@ export class NotesBlockComponent implements BlockComponent {
   @Input() block: any;
 
   notesView = new EventEmitter<any>();
+  isNotes: boolean = true;
+  isAllnotes: boolean = false;
+  isJournal : boolean = false;
 
   getNotes(view: any) {
     this.notesView.emit(view);
@@ -1297,12 +1306,23 @@ export class NotesBlockComponent implements BlockComponent {
 
   notesAssign(e: any, type: string) {
     if (type === "allnotes") {
-      this.block.data.notes = this.block.data.allNotes ? false : true;
+      this.block.data.notes = false
+      this.block.data.journal = false
     }
 
     if (type === "notes") {
-      this.block.data.allNotes = this.block.data.notes ? false : true;
+      this.block.data.allNotes = false;
+      this.block.data.journal = false;
     }
+
+    if(type === "journal"){
+      this.block.data.notes = false;
+      this.block.data.journal = false;
+    }
+    
+    this.isNotes = this.block.data.notes;
+    this.isAllnotes = this.block.data.allNotes;
+    this.isJournal = this.block.data.journal;
   };
 };
 
