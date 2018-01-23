@@ -1,18 +1,28 @@
+
+import { AlertService } from '../services/alert.service';
+import { AlertType, AlertSettings, ResolveEmit } from '../helpers/alerts';
+
 export class Utils {
+  constructor(private _alert: AlertService) {
+
+  }
+
+  alertSetting: AlertSettings = {};
+  
   // Encode a given string
-  public static htmlEncode(text: string) {
+  htmlEncode(text: string) {
     text = text.replace(/'/g, "&#39;");
     return text;
   };
 
   // Decode a given string
-  public static htmlDecode(text: string) {
+  htmlDecode(text: string) {
     text = text.replace("&#39;", "'");
     return text;
   };
 
   // Converting quotes to escaping quotes from the given string
-  public static escapingQuotes(stringElem: string) {
+  escapingQuotes(stringElem: string) {
     if (stringElem && stringElem != "" && stringElem != null && typeof stringElem !== "undefined") {
       stringElem = stringElem.replace(/'/g, "&apos;");
       stringElem = stringElem.replace(/"/g, "&#34;");
@@ -22,24 +32,24 @@ export class Utils {
   };
 
   // Check wheather the given value is empty or not
-  public static isNullOrEmpty(str: any) {
+  isNullOrEmpty(str: any) {
     return (typeof str === "undefined" || str === null || str === "") ? true : (typeof str === "string" && str.trim().length > 0) || (typeof str === "boolean" || typeof str === "object" || typeof str === "number" || typeof str === "function" || this.isDate(str)) ? false : true;
   };
 
   // Coverting a given string to boolean
-  public static convertToBoolean(value: any) {
+  convertToBoolean(value: any) {
 
     var re1 = typeof value === "boolean" ? value : typeof value === "string" ? Boolean(value) : false;
     return typeof value === "boolean" ? value : typeof value === "string" ? Boolean(value) : false;
   };
 
   // Check wheather the given object is empty or not
-  public static isEmptyObject(obj: any) {
+  isEmptyObject(obj: any) {
     return (typeof obj === "undefined" || obj === null || obj === "") ? true : (obj && (Object.keys(obj).length === 0));
   }
 
   // Getting parameters from the given url
-  public static getParameterByName(name: any) {
+  getParameterByName(name: any) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
 
@@ -47,29 +57,29 @@ export class Utils {
   };
 
   // Check wheather the given array is array or not
-  public static isArray(obj: any) {
+  isArray(obj: any) {
     return !!obj && obj.constructor === Array;
   };
 
   // Move an array from given position to the mentioned position
-  public static arrayMove(arr: any[], fromIndex: number, toIndex: number) {
+  arrayMove(arr: any[], fromIndex: number, toIndex: number) {
     var element = arr[fromIndex];
     arr.splice(fromIndex, 1);
     arr.splice(toIndex, 0, element);
   };
 
   //Check wheather the number is decimal or not
-  public static isDecimal(num: number) {
+  isDecimal(num: number) {
     return isNaN(num) ? false : num % 1 === 0 ? false : true;
   };
 
   //Check wheather a string or object is valid date
-  public static isDate = function (date: any) {
+  isDate(date: any) {
     return toString.call(date) === '[object Date]' && !isNaN(date);
   };
 
   // Converting Date Object or Date string to UTC format 
-  public static toUTCDateTime = function (dt: any) {
+  toUTCDateTime(dt: any) {
     var result = "";
 
     if (!this.isNullOrEmpty(dt)) {
@@ -86,7 +96,7 @@ export class Utils {
   };
 
   // Converting Date Object or Date string to local format 
-  public static toLocalDateTime = function (dt: any, format?: any) {
+  toLocalDateTime(dt: any, format?: any) {
     var result = "";
     var currentFormat = !this.isNullOrEmpty(format) ? format : "mm/dd/yy gg:ii:ss a";
 
@@ -104,7 +114,7 @@ export class Utils {
   };
 
   // Converting the date to the given format
-  public static formatDateTime = function (date?: Date, format?: string) {
+  formatDateTime(date?: Date, format?: string) {
     var output = '';
     var literal = false;
     var iFormat = 0;
@@ -233,7 +243,7 @@ export class Utils {
     return output;
   };
 
-  public static compareObj = function (x: any, y: any) {
+  compareObj(x: any, y: any) {
     var self = this;
 
     if (x instanceof Function) {
@@ -259,7 +269,7 @@ export class Utils {
       p.every(function (i) { return self.compareObj(x[i], y[i]); }) : false;
   };
 
-  public static trim = function (str: any) {
+  trim(str: any) {
     if (!this.isNullOrEmpty(str)) {
       str.replace(/^\s+|\s+$/gm, '');
     }
@@ -267,7 +277,7 @@ export class Utils {
     return str;
   };
 
-  public static sortArray = function (reqArray: any[], isAsc?: boolean, propName?: string, optPropName?: string) {
+  sortArray(reqArray: any[], isAsc?: boolean, propName?: string, optPropName?: string) {
     if (this.isArray(reqArray) && reqArray.length > 0 && !this.isNullOrEmpty(propName) && typeof isAsc !== "undefined") {
       var self = this;
       let direction = isAsc ? 1 : -1;
@@ -291,4 +301,43 @@ export class Utils {
       return reqArray;
     }
   };
+
+  iAlert(type: AlertType, title?: string, msg?: string) {
+    //create(type: 'success' | 'error' | 'wearning', 'info', message: (string | HTML | TemplateRef) = '', title: (string | HTML | TemplateRef) = '',  title: {(string)}, settings: AlertSettings = {})
+    this.alertSetting.duration = 5000;
+    this.alertSetting.overlay = true;
+    this.alertSetting.overlayClickToClose = false;
+    this.alertSetting.showCloseButton = true;
+
+    this._alert.create(type, msg, title, this.alertSetting);
+  }
+
+  iAlertConfirm(type: AlertType, title?: string, msg?: string, yes?: string, no?: string, cb?: any) {
+    //create(type: 'success' | 'error' | 'wearning', 'info', message: (string | HTML | TemplateRef) = '', title: (string | HTML | TemplateRef) = '',  title: {(string)}, settings: AlertSettings = {})
+    this.alertSetting.duration = 0;
+    this.alertSetting.overlay = true;
+    this.alertSetting.overlayClickToClose = false;
+    this.alertSetting.showCloseButton = true;
+    this.alertSetting.confirmText = yes;
+    this.alertSetting.declineText = no;
+
+    this._alert.create(type, msg, title, this.alertSetting)
+      .subscribe((ans: ResolveEmit) => cb(ans));
+  }
+
+  iQuestions(type: AlertType, title?: string, msg?: string, text1?: string, text2?: string, text3?: string, cb?: any) {
+    //create(type: 'success' | 'error' | 'wearning', 'info', message: (string | HTML | TemplateRef) = '', title: (string | HTML | TemplateRef) = '',  title: {(string)}, settings: AlertSettings = {})
+    this.alertSetting.duration = 0;
+    this.alertSetting.overlay = true;
+    this.alertSetting.overlayClickToClose = false;
+    this.alertSetting.showCloseButton = true;
+    this.alertSetting.btnText1 = text1;
+    this.alertSetting.btnText2 = text2;
+    this.alertSetting.btnText3 = text3;
+    this.alertSetting.messageIsTemplate = true;
+    this.alertSetting.titleIsTemplate = false;
+
+    this._alert.create(type, msg, title, this.alertSetting)
+      .subscribe((ans: ResolveEmit) => cb(ans));
+  }
 }
