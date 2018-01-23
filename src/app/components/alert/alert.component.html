@@ -1,8 +1,17 @@
 <div *ngIf="incomingData.overlay" class="il__alert_overlay" [@overlayAn]="animationState" (click)="overlayClick()"></div>
 <div class="il__alert_wrapper" [@wrapperAn]="animationState">
-  <div class="il__alert_wrapper_close" *ngIf="incomingData.showCloseButton" (click)="closeSelf()">
-    <span class="close_alert">×</span>
+
+  <div *ngIf="type==='question'; else otherblock">
+    <div class="il__alert_wrapper_close" *ngIf="incomingData.showCloseButton" (click)="closeSelf({resolved: -1})">
+      <span class="close_alert">×</span>
+    </div>
   </div>
+  <ng-template #otherblock>
+    <div class="il__alert_wrapper_close" *ngIf="incomingData.showCloseButton" (click)="closeSelf({resolved: false})">
+      <span class="close_alert">×</span>
+    </div>
+  </ng-template>
+
   <div class="il__alert_wrapper_symbol" [ngSwitch]="type">
     <ng-template ngSwitchCase="success">
       <span [@symbolAn]="animationState" class="glyphicon glyphicon-ok-sign success"></span>
@@ -24,6 +33,10 @@
       <span [@symbolAn]="animationState" class="glyphicon glyphicon-question-sign confirm"></span>
     </ng-template>
 
+    <ng-template ngSwitchCase="question">
+      <span [@symbolAn]="animationState" class="glyphicon glyphicon-question-sign confirm"></span>
+    </ng-template>
+
     <div class="il__alert_wrapper_short">
       <p [@shortAn]="animationState" *ngIf="!incomingData.title else customTitle">
         {{type}}!
@@ -31,7 +44,7 @@
 
       <ng-template #customTitle>
         <div [@shortAn]="animationState" *ngIf="incomingData.titleIsTemplate else regularTitle">
-          <ng-container *ngTemplateOutlet="incomingData.title"></ng-container>
+          <ng-container *ngTemplateOutlet="regularTitle;"></ng-container>
         </div>
         <ng-template #regularTitle>
           <div [innerHTML]="incomingData.title"></div>
@@ -41,7 +54,7 @@
   </div>
   <div class="il__alert_wrapper_message" [@messageAn]="animationState">
     <div *ngIf="incomingData.messageIsTemplate else regularMessage">
-      <ng-container *ngTemplateOutlet="incomingData.message"></ng-container>
+      <ng-container *ngTemplateOutlet="regularMessage;"></ng-container>
     </div>
     <ng-template #regularMessage>
       <div [innerHTML]="incomingData.message"></div>
@@ -55,5 +68,28 @@
     <button class="default" (click)="resolve({resolved: false})">
       {{incomingData?.declineText}}
     </button>
+  </div>
+
+  <div class="il__confirmation_dialog-actions" *ngIf="type==='question'">
+    <div *ngIf="incomingData.btnText1 !==''">
+      <button class="default" (click)="resolve({resolved: 0})">
+        {{incomingData?.btnText1}}
+      </button>
+    </div>
+    <div *ngIf="incomingData.btnText2 !==''">
+      <button class="default" (click)="resolve({resolved: 1})">
+        {{incomingData?.btnText2}}
+      </button>
+    </div>
+    <div *ngIf="incomingData.btnText3 !==''">
+      <button class="default" (click)="resolve({resolved: 2})">
+        {{incomingData?.btnText3}}
+      </button>
+    </div>
+    <div *ngIf="incomingData.btnText4 !==''">
+      <button class="default" (click)="resolve({resolved: 3})">
+        {{incomingData?.btnText4}}
+      </button>
+    </div>
   </div>
 </div>

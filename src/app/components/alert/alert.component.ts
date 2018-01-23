@@ -6,6 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { AlertType, AlertSettings, ResolveEmit } from '../../helpers/alerts';
 import { AlertService } from '../../services/alert.service';
+import { Utils } from '../../helpers/utils';
 
 
 @Component({
@@ -59,12 +60,13 @@ export class AlertComponent implements OnInit {
 
   constructor(
     private _ngZone: NgZone
-  ) { }
+  ) { this.utils = Utils; }
 
   //@Output() close = new EventEmitter();
   @HostBinding('class') type: AlertType;
 
   animationState = 'enter';
+  utils: any;
   incomingData: any = {
     title: '',
     titleIsTemplate: false,
@@ -78,32 +80,41 @@ export class AlertComponent implements OnInit {
     confirmTextIsTemplate: false,
     declineText: 'No',
     declineTextIsTemplate: false,
+    btnText1: '',
+    btnText2: '',
+    btnText3: '',
+    btnText4: ''
   };
 
   ngOnInit() {
-    /*
-    if (this.incomingData.duration && this.incomingData.duration != 0) {
+
+    if (!this.utils.isNullOrEmpty(this.incomingData.duration) && this.incomingData.duration != 0) {
       this._ngZone.runOutsideAngular(() =>
         setTimeout(() =>
-          this._ngZone.run(() =>
-            this.close('overlayClick')
+          this._ngZone.run(() => {
+            if (this.type == "question") {
+              this.close({ resolved: -1 })
+            } else {
+              this.close({ resolved: false })
+            }
+          }
           ),
           this.incomingData.duration
         )
       );
-    } */
+    }
   }
 
-  closeSelf() {
-    this.close('overlayClick')
+  closeSelf(res?: ResolveEmit) {
+    this.close(res)
   }
 
-  close(type: string) {
+  close(res?: ResolveEmit) {
     this.animationState = 'leave';
     this._ngZone.runOutsideAngular(() => {
       setTimeout(() => {
         this._ngZone.run(() => {
-          this.resolve({ resolved: false });
+          this.resolve(res);
         });
       }, 450);
     });
@@ -125,7 +136,7 @@ export class AlertComponent implements OnInit {
       return;
     }
 
-    this.close('overlayClick')
+    this.close({ resolved: false })
   }
 }
 
@@ -153,9 +164,15 @@ export class AlertsComponent implements OnInit, OnDestroy {
     overlay: true,
     overlayClickToClose: true,
     showCloseButton: true,
+    messageIsTemplate: false,
+    titleIsTemplate: false,
     duration: 3000,
     confirmText: 'Yes',
-    declineText: 'No'
+    declineText: 'No',
+    btnText1: '',
+    btnText2: '',
+    btnText3: '',
+    btnText4: ''
   };
 
   private _current: any;

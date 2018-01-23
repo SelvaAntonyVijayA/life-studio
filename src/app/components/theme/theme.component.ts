@@ -102,6 +102,22 @@ export class ThemeComponent implements OnInit {
       .subscribe((ans: ResolveEmit) => cb(ans));
   }
 
+  iQuestions(type: AlertType, title?: string, msg?: string, text1?: string, text2?: string, text3?: string, cb?: any) {
+    //create(type: 'success' | 'error' | 'wearning', 'info', message: (string | HTML | TemplateRef) = '', title: (string | HTML | TemplateRef) = '',  title: {(string)}, settings: AlertSettings = {})
+    this.alertSetting.duration = 0;
+    this.alertSetting.overlay = true;
+    this.alertSetting.overlayClickToClose = false;
+    this.alertSetting.showCloseButton = true;
+    this.alertSetting.btnText1 = text1;
+    this.alertSetting.btnText2 = text2;
+    this.alertSetting.btnText3 = text3;
+    this.alertSetting.messageIsTemplate = true;
+    this.alertSetting.titleIsTemplate = false;
+
+    this._alert.create(type, msg, title, this.alertSetting)
+      .subscribe((ans: ResolveEmit) => cb(ans));
+  }
+
   newTheme() {
     this.loadNew();
   };
@@ -153,7 +169,9 @@ export class ThemeComponent implements OnInit {
   };
 
   previewTheme() {
-
+    this.iQuestions("question", "Warning", "This tile was assigned to the organizations : <li>Hopewell Baptist Church</li>.<br>If you choose to modify it, it will create a new copy in this organization", "Text1", "Text2", "Text3", (res) => {
+      console.log(res)
+    })
   };
 
   themeChange(theme: string) {
