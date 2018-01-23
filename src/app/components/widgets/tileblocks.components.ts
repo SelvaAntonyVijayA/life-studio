@@ -23,11 +23,10 @@ import { Utils } from '../../helpers/utils';
 })
 
 export class BlockControls {
-  constructor() {
-    this.utils = Utils;
+  constructor(public utils: Utils) {
+    
   }
 
-  utils: any;
   view: any;
   widgetCategoryId: string = "-1";
   @Input() block: any;
@@ -92,10 +91,8 @@ export class TextBlockComponent implements BlockComponent {
 
 export class VideoBlockComponent implements BlockComponent {
   @Input() block: any;
-  utils: any;
-
-  constructor(public sanitizer: DomSanitizer) {
-    this.utils = Utils;
+  
+  constructor(public sanitizer: DomSanitizer, public utils: Utils) {
   }
 
   videoView = new EventEmitter<any>();
@@ -524,11 +521,9 @@ export class SurveyBlockComponent implements BlockComponent {
 })
 
 export class QuestionnaireBlockComponent implements BlockComponent {
-  constructor() {
-    this.utils = Utils;
+  constructor(public utils: Utils) {
   }
 
-  utils: any;
   @Input() block: any;
   questionnaireView = new EventEmitter<any>();
 
@@ -690,11 +685,9 @@ export class QuestionnaireBlockComponent implements BlockComponent {
 })
 
 export class QuestionnaireSubOptionComponent {
-  constructor() {
-    this.utils = Utils;
+  constructor(public utils: Utils) {
   }
 
-  utils: any;
   @Input('subOption') subOption: any;
   @Input('parentIndex') parentIndex: number;
   @Input('currentIndex') currentIndex: number;
@@ -807,11 +800,9 @@ export class QuestionnaireSubOptionComponent {
 
 export class DescriptionSubOptionComponent {
 
-  constructor() {
-    this.utils = Utils;
+  constructor(public utils: Utils) {
   }
 
-  utils: any;
   @Input('subOption') subOption: any;
   @Input('parentIndex') parentIndex: number;
   @Input('currentIndex') currentIndex: number;
@@ -1355,11 +1346,10 @@ export class NotesBlockComponent implements BlockComponent {
 })
 
 export class ButtonsBlockComponent implements BlockComponent {
-  constructor() {
-    this.utils = Utils;
+  constructor(public utils: Utils) {
+    
   }
 
-  utils: any;
   @Input() block: any;
   buttonsView = new EventEmitter<any>();
 

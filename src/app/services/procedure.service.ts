@@ -13,10 +13,7 @@ export class ProcedureService {
     'charset': 'UTF-8'
   });
 
-  utils: any;
-
-  constructor(private http: Http) {
-    this.utils = Utils;
+  constructor(private http: Http, public utils: Utils) {
   };
 
   saveProcedure(procObj: Object) {

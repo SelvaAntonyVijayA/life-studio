@@ -40,10 +40,9 @@ export class WidgetsComponent implements OnInit {
   //opts: ISlimScrollOptions;
   tileBlocks: any[] = [];
   selectedTile: Object = {};
-  utils: any;
   profileDatas: any[] = [];
   tileCategories: any[] = [];
-  selectedTileCategory: Object = {};
+  //selectedTileCategory: Object = {};
   defaultSelected = -1;
   organizations: any[] = [];
   oid: string = "";
@@ -52,6 +51,15 @@ export class WidgetsComponent implements OnInit {
   languageList: any[] = [];
   selectedLanguage: string = "en";
   widgetCategories: any[] = [];
+  tileTitle: string = "";
+  art: string = "/img/tile_default.jpg";
+  seletedTileCategory: string = "-1";
+  tileNotes: string = "";
+  template: string = "-1";
+  requiresLogin: boolean = false;
+  enableZoom: boolean = false;
+  rtl: boolean = false;
+
   private orgChangeDetect: any;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
@@ -59,17 +67,18 @@ export class WidgetsComponent implements OnInit {
     private tileService: TileService,
     private route: ActivatedRoute,
     private cms: CommonService,
-    private mScrollbarService: MalihuScrollbarService
+    private mScrollbarService: MalihuScrollbarService,
+    public utils:  Utils
   ) {
-    this.utils = Utils;
+    
     //this.oid = Cookie.get('oid');
   }
 
   /* Change Tile Category */
 
-  tileCategoryChange(tileCat: any) {
+  /*tileCategoryChange(tileCat: any) {
     this.selectedTileCategory = tileCat;
-  };
+  };*/
 
   /* Set Scroll Options */
 
@@ -353,7 +362,7 @@ export class WidgetsComponent implements OnInit {
       }
     }
   };
-  
+
   /* Arranging the saved tileblocks in order */
   arrangeBlocks(currBlks: any[]) {
     var arrangedBlocks = this.utils.sortArray(currBlks, true, "idx");
@@ -361,6 +370,41 @@ export class WidgetsComponent implements OnInit {
     var tileBlks = arrangedBlocks.map((tileBlk) => {
       delete tileBlk["idx"];
     });
+  };
+
+  tileSave() {
+    var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? this.selectedTile : {};
+    var tile = {};
+
+    if (!this.utils.isEmptyObject(currTileExists)) {
+
+    }
+
+    tile["title"] = this.tileTitle;
+    tile["notes"] = this.tileNotes;
+    tile["art"] = this.art;
+    tile["organizationId"] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("organizationId") ? this.getOrganizationIds(currTileExists["organizationId"]) : [this.selectedOrganization];
+    tile["createdOrg"] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("createdOrg") ? currTileExists["createdOrg"] : this.selectedOrganization;
+    tile["lastUpdatedOn"] = (new Date()).toUTCString();
+    tile["type"] = "content";
+    tile["template"] = this.template;
+    tile["category"] = this.seletedTileCategory;
+    var categoryObj = this.seletedTileCategory !== "-1" ? this.getTileCategoryName(this.seletedTileCategory) : "";
+    tile["categoryName"] = categoryObj.length > 0 && categoryObj[0].hasOwnProperty("name") ? categoryObj[0]["name"] : "";
+    tile["appSettings"] = false;
+
+
+  };
+
+  getTileCategoryName(id: string) {
+    return this.tileCategories.filter(function (cat) {
+      return cat["_id"] === id;
+    });
+  };
+
+  getOrganizationIds(orgId: any) {
+    var currOrgIds = typeof orgId !== "object" ? orgId.split(',') : orgId;
+    return currOrgIds;
   };
 
   /* Getting the tile content datas */
@@ -433,16 +477,23 @@ export class WidgetsComponent implements OnInit {
   };*/
 
   resetWidgetDatas() {
-    this.resetTile("");
-    this.tileBlocks = [];
-    this.selectedTile = {};
+    this.widgetTileReset();
     this.profileDatas = [];
     this.tileCategories = [];
-    this.selectedTileCategory = {};
+    //this.selectedTileCategory = {};
     this.languageList = [];
     this.widgetCategories = [];
+  };
+
+  widgetTileReset() {
+    this.resetTile("");
+    this.tileBlocks = [];
     this.selectedLanguage = "en";
-    this.selectedTile = {};
+    this.tileTitle = "";
+    this.art = "/img/tile_default.jpg";
+    this.seletedTileCategory = "-1";
+    this.tileNotes = "";
+    this.template = "55ee9e7ffc95d118f476a021";
   };
 
   setWidgetDatas() {

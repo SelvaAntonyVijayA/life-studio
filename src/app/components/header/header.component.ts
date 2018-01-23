@@ -26,14 +26,13 @@ export class HeaderComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private mScrollbarService: MalihuScrollbarService,
-    @Inject(DOCUMENT) private document: any
+    @Inject(DOCUMENT) private document: any,
+    public utils: Utils
   ) {
     //this.cms = cms;
-    this.utils = Utils;
   }
 
   userName: string = "";
-  utils: any;
   accessList: Object = {};
   domainName: string = "ili";
   dmDatas: any[] = [];

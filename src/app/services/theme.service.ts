@@ -13,10 +13,7 @@ export class ThemeService {
     'charset': 'UTF-8'
   });
 
-  utils: any;
-
-  constructor(private http: Http) {
-    this.utils = Utils;
+  constructor(private http: Http, public utils: Utils) {
   }
 
   private handleError(error: any): Promise<any> {

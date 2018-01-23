@@ -4,8 +4,7 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { CommonService } from '../../services/common.service';
 import { Utils } from '../../helpers/utils';
 import { ThemeService } from '../../services/theme.service';
-import { AlertService } from '../../services/alert.service';
-import { AlertType, AlertSettings, ResolveEmit } from '../../helpers/alerts';
+
 declare var $: any;
 
 @Component({
@@ -17,13 +16,12 @@ export class ThemeComponent implements OnInit {
   constructor(private route: ActivatedRoute,
     private cms: CommonService,
     private themeService: ThemeService,
-    private _alert: AlertService,
     private e1: ElementRef,
-    private renderer: Renderer2) {
-    this.utils = Utils;
+    private renderer: Renderer2,
+    public utils: Utils) {
+
   }
 
-  utils: any;
   themes: any[] = [];
   selectedOrganization: string = "-1";
   theme: Object = {};
@@ -77,54 +75,14 @@ export class ThemeComponent implements OnInit {
   save: string = "block";
   saveAs: string = "block";
   delete: string = "block";
-  alertSetting: AlertSettings = {};
-
-  iAlert(type: AlertType, title?: string, msg?: string) {
-    //create(type: 'success' | 'error' | 'wearning', 'info', message: (string | HTML | TemplateRef) = '', title: (string | HTML | TemplateRef) = '',  title: {(string)}, settings: AlertSettings = {})
-    this.alertSetting.duration = 5000;
-    this.alertSetting.overlay = true;
-    this.alertSetting.overlayClickToClose = false;
-    this.alertSetting.showCloseButton = true;
-
-    this._alert.create(type, msg, title, this.alertSetting);
-  }
-
-  iAlertConfirm(type: AlertType, title?: string, msg?: string, yes?: string, no?: string, cb?: any) {
-    //create(type: 'success' | 'error' | 'wearning', 'info', message: (string | HTML | TemplateRef) = '', title: (string | HTML | TemplateRef) = '',  title: {(string)}, settings: AlertSettings = {})
-    this.alertSetting.duration = 0;
-    this.alertSetting.overlay = true;
-    this.alertSetting.overlayClickToClose = false;
-    this.alertSetting.showCloseButton = true;
-    this.alertSetting.confirmText = yes;
-    this.alertSetting.declineText = no;
-
-    this._alert.create(type, msg, title, this.alertSetting)
-      .subscribe((ans: ResolveEmit) => cb(ans));
-  }
-
-  iQuestions(type: AlertType, title?: string, msg?: string, text1?: string, text2?: string, text3?: string, cb?: any) {
-    //create(type: 'success' | 'error' | 'wearning', 'info', message: (string | HTML | TemplateRef) = '', title: (string | HTML | TemplateRef) = '',  title: {(string)}, settings: AlertSettings = {})
-    this.alertSetting.duration = 0;
-    this.alertSetting.overlay = true;
-    this.alertSetting.overlayClickToClose = false;
-    this.alertSetting.showCloseButton = true;
-    this.alertSetting.btnText1 = text1;
-    this.alertSetting.btnText2 = text2;
-    this.alertSetting.btnText3 = text3;
-    this.alertSetting.messageIsTemplate = true;
-    this.alertSetting.titleIsTemplate = false;
-
-    this._alert.create(type, msg, title, this.alertSetting)
-      .subscribe((ans: ResolveEmit) => cb(ans));
-  }
-
+  
   newTheme() {
     this.loadNew();
   };
 
   saveTheme() {
     if (this.name == "") {
-      this.iAlert('error', 'Error', 'Theme name is empty');
+      this.utils.iAlert('error', 'Error', 'Theme name is empty');
       return false;
     }
 
@@ -133,12 +91,12 @@ export class ThemeComponent implements OnInit {
 
   saveAsTheme() {
     if (this.name == "") {
-      this.iAlert('error', 'Error', 'Theme name is empty');
+      this.utils.iAlert('error', 'Error', 'Theme name is empty');
       return false;
     }
 
     if (this.name == this.oldName) {
-      this.iAlert('error', 'Error', 'Theme name already exists');
+      this.utils.iAlert('error', 'Error', 'Theme name already exists');
       return false;
     }
 
@@ -147,16 +105,16 @@ export class ThemeComponent implements OnInit {
 
   deleteTheme() {
     if (this.id.trim() != '' && this.id.trim() != '0') {
-      this.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this theme?", "Yes", "No", (res) => {
+      this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this theme?", "Yes", "No", (res) => {
         if (res.hasOwnProperty("resolved") && res["resolved"] == true) {
 
           this.themeService.deleteTheme(this.id)
             .then(res => {
 
               if (res && res.msg == 'exists') {
-                this.iAlert('error', 'Error', 'Theme can not be deleted. Theme has been assigned to tiles');
+                this.utils.iAlert('error', 'Error', 'Theme can not be deleted. Theme has been assigned to tiles');
               } else {
-                this.iAlert('success', '', 'Theme deleted successfully');
+                this.utils.iAlert('success', '', 'Theme deleted successfully');
                 this.loadThemes();
                 this.loadNew();
               }
@@ -164,12 +122,12 @@ export class ThemeComponent implements OnInit {
         }
       })
     } else {
-      this.iAlert('error', 'Error', 'Please select a theme to delete');
+      this.utils.iAlert('error', 'Error', 'Please select a theme to delete');
     }
   };
 
   previewTheme() {
-    this.iQuestions("question", "Warning", "This tile was assigned to the organizations : <li>Hopewell Baptist Church</li>.<br>If you choose to modify it, it will create a new copy in this organization", "Text1", "Text2", "Text3", (res) => {
+    this.utils.iQuestions("question", "Warning", "This tile was assigned to the organizations : <li>Hopewell Baptist Church</li>.<br>If you choose to modify it, it will create a new copy in this organization", "Text1", "Text2", "Text3", (res) => {
       console.log(res)
     })
   };
@@ -207,7 +165,7 @@ export class ThemeComponent implements OnInit {
   };
 
   notValidColor() {
-    this.iAlert('error', 'Error', 'Not a valid color code');
+    this.utils.iAlert('error', 'Error', 'Not a valid color code');
   };
 
   getUserSession() {
@@ -377,7 +335,7 @@ export class ThemeComponent implements OnInit {
         if (auto) {
           this.updatePreviewTile(this.themeList, true);
         } else {
-          this.iAlert('success', '', 'Theme saved successfully');
+          this.utils.iAlert('success', '', 'Theme saved successfully');
         }
       });
   };
@@ -398,7 +356,7 @@ export class ThemeComponent implements OnInit {
         }
       } else {
         if (isOpen) {
-          this.iAlert('error', 'Error', 'Unable to preview');
+          this.utils.iAlert('error', 'Error', 'Unable to preview');
         }
       }
     });

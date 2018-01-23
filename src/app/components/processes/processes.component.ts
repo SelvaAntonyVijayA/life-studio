@@ -21,14 +21,13 @@ export class ProcessesComponent implements OnInit {
     private mScrollbarService: MalihuScrollbarService,
     private e1: ElementRef,
     private tileService: TileService,
-    private renderer: Renderer) {
-    this.utils = Utils;
+    private renderer: Renderer,
+    public utils: Utils) {
   }
 
   organizations: any[] = [];
   private orgChangeDetect: any;
   oid: string = "";
-  utils: any;
   draggedTiles: any[] = [];
   tileDropped: Object = {};
   tilesToUpdate: any[] = [];

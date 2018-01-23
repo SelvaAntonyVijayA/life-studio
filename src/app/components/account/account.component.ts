@@ -11,11 +11,13 @@ import { AccountService } from '../../services/account.service';
   styleUrls: ['./account.component.css']
 })
 export class AccountComponent implements OnInit {
-  constructor(private cms: CommonService, private accountService: AccountService) {
-    this.utils = Utils;
+  constructor(private cms: CommonService, 
+    private accountService: AccountService,
+    public utils: Utils
+  ) {
+    
   }
 
-  utils: any;
   oid: string = "";
   users: any[] = [];
   name: string = "";

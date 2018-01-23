@@ -48,17 +48,15 @@ export class TilesListComponent {
   private orgChangeDetect: any;
   protected loading: boolean;
   scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
-  utils: any;
-
+  
   constructor(private tileService: TileService,
     private route: ActivatedRoute,
     private cms: CommonService,
     private e1: ElementRef,
     private renderer: Renderer,
     private mScrollbarService: MalihuScrollbarService,
+    public utils: Utils
   ) {
-
-    this.utils = Utils;
     this.oid = Cookie.get('oid');
   }
 
@@ -496,11 +494,11 @@ export class TilesComponent implements OnInit {
     private renderer: Renderer,
     private tileService: TileService,
     private viewContainerRef: ViewContainerRef,
-    private resolver: ComponentFactoryResolver) {
-      this.utils = Utils;
+    private resolver: ComponentFactoryResolver,
+    public utils: Utils
+  ) {
   }
 
-  utils: any;
   @Input() tile: any;
   @Input('page') page: string;
   @Input('listType') listType: string;

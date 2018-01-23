@@ -8,7 +8,6 @@ import { AlertType, AlertSettings, ResolveEmit } from '../../helpers/alerts';
 import { AlertService } from '../../services/alert.service';
 import { Utils } from '../../helpers/utils';
 
-
 @Component({
   selector: 'il-alert',
   templateUrl: './alert.component.html',
@@ -59,14 +58,14 @@ import { Utils } from '../../helpers/utils';
 export class AlertComponent implements OnInit {
 
   constructor(
-    private _ngZone: NgZone
-  ) { this.utils = Utils; }
+    private _ngZone: NgZone,
+    public utils : Utils
+  ) {  }
 
   //@Output() close = new EventEmitter();
   @HostBinding('class') type: AlertType;
 
-  animationState = 'enter';
-  utils: any;
+  animationState = 'enter'; 
   incomingData: any = {
     title: '',
     titleIsTemplate: false,

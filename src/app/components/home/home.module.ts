@@ -43,6 +43,7 @@ import { DraggableDirective } from '../../helpers/draggable.directive';
 import { DropTargetDirective } from '../../helpers/drop-target.directive';
 import { OnlyNumbersDirective } from '../../helpers/only-numbers.directive';
 import { DateTimePickerDirective } from '../../helpers/date-time-picker.directive';
+import { Utils } from '../../helpers/utils';
 
 @NgModule({
   imports: [
@@ -55,8 +56,8 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent],
-  providers: [HeaderService, TileService, CommonService, DragService, EventService,
-    FolderService, AccountService, CategoryService, ProcedureService, ThemeService]
+  providers: [HeaderService, TileService, CommonService, DragService, EventService, 
+    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, Utils]
 })
 
 export class HomeModule { }

@@ -4,11 +4,10 @@ import { Utils } from '../helpers/utils';
 
 @Injectable()
 export class CommonService {
-  constructor(private mScrollbarService: MalihuScrollbarService) {
-    this.utils = Utils;
+  constructor(private mScrollbarService: MalihuScrollbarService,
+    public utils: Utils) {
   }
 
-  utils: any;
   private appDatas: Object = {};
 
   setCms(option: string, value: any) {

@@ -19,8 +19,8 @@ export class FoldersComponent implements OnInit {
     private folderService: FolderService,
     private mScrollbarService: MalihuScrollbarService,
     private e1: ElementRef,
-    private renderer: Renderer) {
-    this.utils = Utils;
+    private renderer: Renderer,
+    public utils: Utils) {
   }
 
   private orgChangeDetect: any;
@@ -44,7 +44,6 @@ export class FoldersComponent implements OnInit {
       }
     }
   };
-  utils: any;
   dragIndex: number = -1;
   availableStart: any = "";
   availableEnd: any = "";

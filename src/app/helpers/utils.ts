@@ -1,10 +1,10 @@
-
+import { Injectable, ReflectiveInjector } from '@angular/core';
 import { AlertService } from '../services/alert.service';
 import { AlertType, AlertSettings, ResolveEmit } from '../helpers/alerts';
 
+@Injectable()
 export class Utils {
   constructor(private _alert: AlertService) {
-
   }
 
   alertSetting: AlertSettings = {};

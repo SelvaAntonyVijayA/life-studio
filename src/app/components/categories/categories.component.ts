@@ -20,13 +20,14 @@ export class CategoriesComponent implements OnInit {
     private categoryService: CategoryService,
     private mScrollbarService: MalihuScrollbarService,
     private e1: ElementRef,
-    private renderer: Renderer) {
-    this.utils = Utils;
+    private renderer: Renderer,
+    public utils : Utils
+  ) {
+  
   }
 
   private orgChangeDetect: any;
   scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
-  utils: any;
   groupType: string = "list";
   oid: string = "";
   tileCategories: any[] = [];

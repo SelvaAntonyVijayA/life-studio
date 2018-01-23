@@ -26,9 +26,9 @@ export class EventsComponent implements OnInit {
     private mScrollbarService: MalihuScrollbarService,
     private e1: ElementRef,
     private renderer: Renderer,
-    private tileService: TileService
+    private tileService: TileService,
+    public utils: Utils
   ) {
-    this.utils = Utils;
   }
 
 
@@ -47,7 +47,6 @@ export class EventsComponent implements OnInit {
   art: string = "";
   dragIndex: number = -1;
   intervalId: any = -1;
-  utils: any;
   eventStart: any = "";
   availableEnd: any = "";
   groupType: string = "list";

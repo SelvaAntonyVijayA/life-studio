@@ -14,8 +14,7 @@ export class BlockItem {
 };
 
 export class BlockOrganizer {
-  constructor(blk: any, type: string, orgConnectDatas?: any[], widgetCategories?: any[]) {
-    this.utils = Utils;
+  constructor(blk: any, type: string, orgConnectDatas?: any[], widgetCategories?: any[], public utils?: Utils) {
     this.block = {};
     this.getType(blk, type, orgConnectDatas, widgetCategories);
 
@@ -23,7 +22,7 @@ export class BlockOrganizer {
   }
 
   block: any = {};
-  utils: any;
+
 
   /* Get Block Types */
   getType(blk: any, type: string, orgConnectDatas: any, widgetCategories?: any[]) {
@@ -989,7 +988,7 @@ export class BlockOrganizer {
 
   checkBlockExists(blockData: any) {
     let utils = Utils;
-    var blkResult = !utils.isEmptyObject(blockData) && blockData.hasOwnProperty("data") ? true : false;
+    var blkResult = !this.utils.isEmptyObject(blockData) && blockData.hasOwnProperty("data") ? true : false;
 
     return blkResult;
   };
@@ -1016,13 +1015,11 @@ export class BlockOrganizer {
 };
 
 export class GetBlocks {
-  constructor(blcks: any[], langCode?: string) {
-    this.utils = Utils;
+  constructor(blcks: any[], langCode?: string, public utils?: Utils) {
     this.currentBlocks = blcks;
     this.langCode = langCode;
   }
 
-  utils: any;
   langCode: string = "en";
   currentBlocks: any[] = [];
   blocks: any[] = [];

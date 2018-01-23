@@ -6,11 +6,8 @@ import { Utils } from '../helpers/utils';
   pure: false
 })
 export class FilterByTextPipe implements PipeTransform {
-  constructor() {
-    this.utils = Utils;
+  constructor(public utils: Utils) {
   }
-
-  utils: any;
 
   transform(reqArray: any[], propName?: string, searchTxt?: string, page?: string): any {
     if ((this.utils.isArray(reqArray) && reqArray.length > 0 && !this.utils.isNullOrEmpty(propName) && !this.utils.isNullOrEmpty(searchTxt) && searchTxt !== "-1") || (!this.utils.isNullOrEmpty(page) && page === "category")) {
@@ -29,11 +26,8 @@ export class FilterByTextPipe implements PipeTransform {
   pure: false
 })
 export class OrderByPipe implements PipeTransform {
-  constructor() {
-    this.utils = Utils;
+  constructor(public utils: Utils) {
   }
-
-  utils: any;
 
   transform(reqArray: any[], isAsc?: boolean, propName?: string, optPropName?: string): any {
     return this.utils.sortArray(reqArray, isAsc, propName, optPropName);

@@ -2,33 +2,35 @@
   <!-- <div class="widget-container"> -->
   <div class="page_block tiles_head">
     <div class="tile_form">
-      <input id="txtTileTitle" [(ngModel)]="selectedTile!.title" class="ili-form tile_title" placeholder="Title" type="text">
+      <input id="txtTileTitle" [(ngModel)]="tileTitle" class="ili-form tile_title" placeholder="Title" type="text">
       <div class="tile_language">
         <select [(ngModel)]="selectedLanguage" (ngModelChange)="languageChange($event)" class="form-control input-sm" id="tileLanguage"
           placeholder="Select Language">
           <option *ngFor="let lang of languageList; let i = index" [value]="lang?.code">{{lang?.name}}</option>
         </select>
       </div>
-      <input id="txtTileTags" class="ili-form tile_notes" placeholder="Tags" type="text">
-      <select id="tileTemplate" class="ili-form template_box" placeholder="Select Template"></select>
-      <select id="tileCategory" [(ngModel)]="defaultSelected" (ngModelChange)="tileCategoryChange($event)" class="ili-form tile_cat_box"
+      <input [(ngModel)]="tileNotes" class="ili-form tile_notes" placeholder="Tags" type="text" />
+      <select id="tileTemplate" class="ili-form template_box" placeholder="Select Template">
+
+      </select>
+      <select [(ngModel)]="seletedTileCategory" class="ili-form tile_cat_box"
         placeholder="Select / Add Category">
-        <option [value]="-1" disabled>All Categories</option>
-        <option *ngFor="let tileCat of tileCategories; let i = index" [selected]="tileCat === selectedTileCategory" [ngValue]="tileCat">{{tileCat?.name}}</option>
+        <option [value]="'-1'" disabled>All Categories</option>
+        <option *ngFor="let tileCat of tileCategories; let i = index" [ngValue]="tileCat['_id']">{{tileCat?.name}}</option>
       </select>
     </div>
     <div class='tile_prime'>
       <div style="margin-top: 4px; padding-left: 0px; margin-bottom: 2px;" class="checkbox">
         <label style="font-size: 11px;">
-          <input style="margin-top: 2px;" type="checkbox">Right To Left</label>
+          <input [(ngModel)]="rtl" style="margin-top: 2px;" type="checkbox">Right To Left</label>
       </div>
       <div style="margin-top: 2px; padding-left: 0px; margin-bottom: 2px;" class="checkbox">
         <label style="font-size: 11px;">
-          <input style="margin-top: 2px;" type="checkbox">Requires Login</label>
+          <input [(ngModel)]="requiresLogin" style="margin-top: 2px;" type="checkbox">Requires Login</label>
       </div>
       <div style="margin-top: 2px; padding-left: 0px;" class="checkbox">
         <label style="font-size: 11px;">
-          <input style="margin-top: 2px;" type="checkbox">Enable Zoom</label>
+          <input [(ngModel)]="enableZoom" style="margin-top: 2px;" type="checkbox">Enable Zoom</label>
       </div>
     </div>
 
