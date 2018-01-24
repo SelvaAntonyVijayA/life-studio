@@ -29,6 +29,7 @@ import { AccountService } from '../../services/account.service';
 import { CategoryService } from '../../services/category.service';
 import { ProcedureService } from '../../services/procedure.service';
 import { ThemeService } from '../../services/theme.service';
+import { AlertService } from '../../services/alert.service';
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 //import { DragDropDirectiveModule} from "angular4-drag-drop";

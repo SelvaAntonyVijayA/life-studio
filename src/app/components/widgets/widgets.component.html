@@ -13,8 +13,7 @@
       <select id="tileTemplate" class="ili-form template_box" placeholder="Select Template">
 
       </select>
-      <select [(ngModel)]="seletedTileCategory" class="ili-form tile_cat_box"
-        placeholder="Select / Add Category">
+      <select [(ngModel)]="seletedTileCategory" class="ili-form tile_cat_box" placeholder="Select / Add Category">
         <option [value]="'-1'" disabled>All Categories</option>
         <option *ngFor="let tileCat of tileCategories; let i = index" [ngValue]="tileCat['_id']">{{tileCat?.name}}</option>
       </select>
@@ -45,7 +44,7 @@
       <button (click)="resetTile($event)" class="ili-btn reset_tile_btn">
         New
       </button>
-      <button (click)="saveTile($event)" class="ili-btn save_tile_btn">
+      <button (click)="tileSave($event)" class="ili-btn save_tile_btn">
         Save
       </button>
       <button class="ili-btn duplicate_tile_btn">
@@ -502,7 +501,8 @@
 
     <!-- Tiles List -->
 
-    <tiles-list [selectedTile]="selectedTile" (tileContent)="getTileContent($event)" [organizations]="organizations" [page]="'tiles'"></tiles-list>
+    <tiles-list [selectedTile]="selectedTile" (tileContent)="getTileContent($event)" [tilesToUpdate]="tileIdsUpdate" [organizations]="organizations"
+      [page]="'tiles'"></tiles-list>
   </div>
   <!-- </div> -->
 </div>

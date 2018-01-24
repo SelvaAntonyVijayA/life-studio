@@ -146,6 +146,22 @@ var saveBlock = function (obj, cb) {
   });
 };
 
+var updateBlock = function (query, options, obj, cb) {
+  $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.tileBlocks, query, options, obj, function (result) {
+    cb(result);
+  });
+};
+
+var block = function (query, options, cb) {
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.tileBlocks, query, options, function (blocks) {
+    if (blocks && blocks.length > 0) {
+      cb(blocks);
+    } else {
+      cb([]);
+    }
+  });
+};
+
 module.exports = {
   "init": init,
   "save": save,
@@ -153,5 +169,7 @@ module.exports = {
   "getBlocks": getBlocks,
   "getProfile": getProfile,
   "_getBlocks": _getBlocks,
-  "widgetCategoryList": widgetCategoryList
+  "widgetCategoryList": widgetCategoryList,
+  "updateBlock": updateBlock,
+  "block": block
 };

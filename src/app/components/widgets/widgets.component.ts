@@ -58,6 +58,7 @@ export class WidgetsComponent implements OnInit {
   requiresLogin: boolean = false;
   enableZoom: boolean = false;
   rtl: boolean = false;
+  tileIdsUpdate: any[] = [];
   private orgChangeDetect: any;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
@@ -98,199 +99,199 @@ export class WidgetsComponent implements OnInit {
     var blkLength = blocks.length;
 
     if (type === "text") {
-      blocks.push(new BlockItem(TextBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(TextBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "textView";
     }
 
     if (type === "video") {
-      blocks.push(new BlockItem(VideoBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(VideoBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "videoView";
     }
 
     if (type === "picture") {
-      blocks.push(new BlockItem(PictureBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(PictureBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "pictureView";
     }
 
     if (type === "disqus") {
-      blocks.push(new BlockItem(DisqusBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(DisqusBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "disqusView";
     }
 
     if (type === "feed") {
-      blocks.push(new BlockItem(SocialFeedBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(SocialFeedBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "feedView";
     }
 
     if (type === "calendar") {
-      blocks.push(new BlockItem(CalendarBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(CalendarBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "calendarView";
     }
 
     if (type === "share") {
-      blocks.push(new BlockItem(ShareBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(ShareBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "shareView";
     }
 
     if (type === "patients") {
-      blocks.push(new BlockItem(PatientsBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(PatientsBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "patientsView";
     }
 
     if (type === "inquiry") {
-      blocks.push(new BlockItem(InquiryBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(InquiryBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "inquiryView";
     }
 
     if (type === "survey") {
-      blocks.push(new BlockItem(SurveyBlockComponent, new BlockOrganizer(blockData, type, [], this.widgetCategories)));
+      blocks.push(new BlockItem(SurveyBlockComponent, new BlockOrganizer(blockData, type, [], this.widgetCategories, this.utils)));
       viewName = "surveyView";
     }
 
     if (type === "questionnaire") {
-      blocks.push(new BlockItem(QuestionnaireBlockComponent, new BlockOrganizer(blockData, type, [], this.widgetCategories)));
+      blocks.push(new BlockItem(QuestionnaireBlockComponent, new BlockOrganizer(blockData, type, [], this.widgetCategories, this.utils)));
       viewName = "questionnaireView";
     }
 
     if (type === "startwrapper") {
-      blocks.push(new BlockItem(StartWrapperBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(StartWrapperBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "startWrapperView";
     }
 
     if (type === "title") {
-      blocks.push(new BlockItem(FormTitleBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(FormTitleBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "formTitleView";
     }
 
     if (type === "questions") {
-      blocks.push(new BlockItem(QuestionsBlockComponent, new BlockOrganizer(blockData, type, [], this.widgetCategories)));
+      blocks.push(new BlockItem(QuestionsBlockComponent, new BlockOrganizer(blockData, type, [], this.widgetCategories, this.utils)));
       viewName = "questionsView";
     }
 
     if (type === "attendance") {
-      blocks.push(new BlockItem(AttendanceBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(AttendanceBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "attendanceView";
     }
 
     if (type === "confirmation") {
-      blocks.push(new BlockItem(ConfirmationBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(ConfirmationBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "confirmationView";
     }
 
     if (type === "password") {
-      blocks.push(new BlockItem(PasswordBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(PasswordBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "passwordView";
     }
 
     if (type === "next") {
-      blocks.push(new BlockItem(NextBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(NextBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
 
       viewName = "nextView";
     }
 
     if (type === "formphoto") {
-      blocks.push(new BlockItem(FormPhotoComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(FormPhotoComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "formPhotoView";
     }
 
     if (type === "painlevel") {
-      blocks.push(new BlockItem(PainLevelComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(PainLevelComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "painLevelView";
     }
 
     if (type === "drawtool") {
-      blocks.push(new BlockItem(DrawToolBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(DrawToolBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "drawToolView";
     }
 
     if (type === "physician") {
-      blocks.push(new BlockItem(PhysicianBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(PhysicianBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "physicianView";
     }
 
     if (type === "endwrapper") {
-      blocks.push(new BlockItem(EndWrapperBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(EndWrapperBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "endWrapperView";
     }
 
     if (type === "fill") {
-      blocks.push(new BlockItem(FillBlockComponent, new BlockOrganizer(blockData, type)));
+      blocks.push(new BlockItem(FillBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "fillView";
     }
 
     if (type === "notes") {
-      this.blocks.push(new BlockItem(NotesBlockComponent, new BlockOrganizer(blockData, type)));
+      this.blocks.push(new BlockItem(NotesBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "notesView";
     }
 
     if (type === "buttons") {
-      this.blocks.push(new BlockItem(ButtonsBlockComponent, new BlockOrganizer(blockData, type)));
+      this.blocks.push(new BlockItem(ButtonsBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "buttonsView";
     }
 
     if (type === "contactus") {
-      this.blocks.push(new BlockItem(ContactUsBlockComponent, new BlockOrganizer(blockData, type)));
+      this.blocks.push(new BlockItem(ContactUsBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "contactusView";
     }
 
     if (type === "placefull") {
-      this.blocks.push(new BlockItem(PlacefullBlockComponent, new BlockOrganizer(blockData, type)));
+      this.blocks.push(new BlockItem(PlacefullBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
 
       viewName = "placefullView";
     }
 
     if (type === "addtocart") {
-      this.blocks.push(new BlockItem(AddToCartBlockComponent, new BlockOrganizer(blockData, type)));
+      this.blocks.push(new BlockItem(AddToCartBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "addToCartView";
     }
 
     if (type === "cart") {
-      this.blocks.push(new BlockItem(CartBlockComponent, new BlockOrganizer(blockData, type)));
+      this.blocks.push(new BlockItem(CartBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "cartView";
     }
 
     if (type === "blanksform") {
-      this.blocks.push(new BlockItem(BlanksFormBlockComponent, new BlockOrganizer(blockData, type)));
+      this.blocks.push(new BlockItem(BlanksFormBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "blanksFormView";
     }
 
     if (type === "exclusiveurl") {
-      this.blocks.push(new BlockItem(ExclusiveUrlBlockComponent, new BlockOrganizer(blockData, type)));
+      this.blocks.push(new BlockItem(ExclusiveUrlBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "exclusiveUrlView";
     }
 
     if (type === "fileupload") {
-      this.blocks.push(new BlockItem(FileUploadBlockComponent, new BlockOrganizer(blockData, type)));
+      this.blocks.push(new BlockItem(FileUploadBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "fileUploadView";
     }
 
     if (type === "pushpay") {
-      this.blocks.push(new BlockItem(PushpayBlockComponent, new BlockOrganizer(blockData, type)));
+      this.blocks.push(new BlockItem(PushpayBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "pushPayView";
     }
 
     if (type === "threedcart") {
-      this.blocks.push(new BlockItem(ThreedCartBlockComponent, new BlockOrganizer(blockData, type)));
+      this.blocks.push(new BlockItem(ThreedCartBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "threedCartView";
     }
 
     if (type === "blogs") {
-      this.blocks.push(new BlockItem(BlogsBlockComponent, new BlockOrganizer(blockData, type)));
+      this.blocks.push(new BlockItem(BlogsBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "blogsView";
     }
 
     if (type === "chat") {
-      this.blocks.push(new BlockItem(ChatBlockComponent, new BlockOrganizer(blockData, type)));
+      this.blocks.push(new BlockItem(ChatBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
       viewName = "chatView";
     }
 
     if (type === "account") {
-      this.blocks.push(new BlockItem(AccountBlockComponent, new BlockOrganizer(blockData, type, this.profileDatas)));
+      this.blocks.push(new BlockItem(AccountBlockComponent, new BlockOrganizer(blockData, type, this.profileDatas, [], this.utils)));
       viewName = "accountView";
     }
 
     if (type === "profile") {
-      this.blocks.push(new BlockItem(ProfileBlockComponent, new BlockOrganizer(blockData, type, this.profileDatas)));
+      this.blocks.push(new BlockItem(ProfileBlockComponent, new BlockOrganizer(blockData, type, this.profileDatas, [], this.utils)));
       viewName = "profileView";
     }
 
@@ -335,28 +336,38 @@ export class WidgetsComponent implements OnInit {
     }
 
     this.selectedTile = {};
+
+    if (!this.utils.isNullOrEmpty(e)) {
+      this.widgetTileReset(true);
+    }
   };
 
-  saveTile(e: any) {
-    var currentBlocks = this.blocks;
-    var blckObj = new GetBlocks(currentBlocks, this.selectedLanguage);
-    var blkDataObjs = blckObj.getBlockDatas();
-    var savedBlocks = [];
+  saveTile(tileObj: Object) {
+    if (!this.utils.isEmptyObject(tileObj)) {
+      this.tileService.saveTile(tileObj)
+        .then(resTile => {
+          if (!this.utils.isEmptyObject(resTile) && resTile.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(resTile["_id"])) {
+            var isNew = tileObj.hasOwnProperty("_id") ? false : true;
+            this.tileIdsUpdate = [];
+            var obj = {};
+            obj[resTile["_id"]] = isNew
+            this.tileIdsUpdate = [obj];
+          }
+        });
+    }
+  };
 
-    if (blkDataObjs["blocks"].length > 0) {
-      for (let i = 0; i < blkDataObjs["blocks"].length; i++) {
-        var currBlock = blkDataObjs["blocks"][i];
-        this.tileService.saveTileBlocks(currBlock, i)
-          .then(resBlk => {
-            if (!this.utils.isEmptyObject(resBlk) && resBlk.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(resBlk["_id"])) {
-              savedBlocks.push(resBlk);
-
-              if (savedBlocks.length === blkDataObjs["blocks"].length) {
-                this.arrangeBlocks(savedBlocks);
-              }
-            }
-          });
-      }
+  setTile(currTile: Object) {
+    if (!this.utils.isEmptyObject(currTile)) {
+      this.selectedTile = currTile;
+      this.tileTitle = currTile.hasOwnProperty("title") && !this.utils.isNullOrEmpty(currTile["title"]) ? currTile["title"] : "";
+      this.tileNotes = currTile.hasOwnProperty("notes") && !this.utils.isNullOrEmpty(currTile["notes"]) ? currTile["notes"] : "";
+      this.selectedLanguage = currTile.hasOwnProperty("language") && !this.utils.isNullOrEmpty(currTile["language"]) ? currTile["language"] : "en";
+      this.seletedTileCategory = currTile.hasOwnProperty("category") && !this.utils.isNullOrEmpty(currTile["category"]) ? currTile["category"] : "-1";
+      this.requiresLogin = currTile.hasOwnProperty("requiresLogin") && !this.utils.isNullOrEmpty(currTile["requiresLogin"]) ? this.utils.convertToBoolean(currTile["requiresLogin"]) : false;
+      this.enableZoom = currTile.hasOwnProperty("enableZoom") && !this.utils.isNullOrEmpty(currTile["enableZoom"]) ? this.utils.convertToBoolean(currTile["enableZoom"]) : false;
+      this.rtl = currTile.hasOwnProperty("rtl") && !this.utils.isNullOrEmpty(currTile["rtl"]) ? this.utils.convertToBoolean(currTile["rtl"]) : false;
+      this.art = currTile.hasOwnProperty("art") && !this.utils.isNullOrEmpty(currTile["art"]) ? currTile["art"] : "/img/tile_default.jpg";
     }
   };
 
@@ -364,19 +375,31 @@ export class WidgetsComponent implements OnInit {
   arrangeBlocks(currBlks: any[]) {
     var arrangedBlocks = this.utils.sortArray(currBlks, true, "idx");
 
-    var tileBlks = arrangedBlocks.map((tileBlk) => {
-      delete tileBlk["idx"];
-    });
+    for (let i = 0; i < arrangedBlocks.length; i++) {
+      delete arrangedBlocks[i]["idx"];
+    }
+
+    return arrangedBlocks;
   };
 
-  tileSave() {
+  tileSave(e: any) {
     var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? this.selectedTile : {};
     var tile = {};
 
     if (!this.utils.isEmptyObject(currTileExists)) {
+      tile["_id"] = currTileExists["_id"];
 
+      if (currTileExists.hasOwnProperty("notification")) {
+        tile["notification"] = currTileExists["notification"];
+      }
+
+      if (currTileExists.hasOwnProperty("smart")) {
+        tile["smart"] = currTileExists["smart"];
+      }
     }
 
+    tile["userId"] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("userId") && !this.utils.isNullOrEmpty(currTileExists["userId"]) ? currTileExists["userId"] : "";
+    tile["dateCreated"] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("dateCreated") ? currTileExists["dateCreated"] : (new Date()).toUTCString();
     tile["title"] = this.tileTitle;
     tile["notes"] = this.tileNotes;
     tile["art"] = this.art;
@@ -390,7 +413,66 @@ export class WidgetsComponent implements OnInit {
     tile["categoryName"] = categoryObj.length > 0 && categoryObj[0].hasOwnProperty("name") ? categoryObj[0]["name"] : "";
     tile["appSettings"] = false;
 
-    
+    tile["requiresLogin"] = this.requiresLogin;
+    tile["enableZoom"] = this.enableZoom;
+    tile["language"] = this.selectedLanguage;
+    tile["rtl"] = this.rtl;
+
+    if (this.utils.isNullOrEmpty(tile["title"])) {
+      this.utils.iAlert('error', 'Information', 'You must at least enter a Tile title');
+      return false;
+    }
+
+    if (tile["category"] === "-1") {
+      this.utils.iAlert('error', 'Information', 'Please select a category for the Tile');
+      return false;
+    }
+
+    this.saveBlocks((blks, isChat) => {
+      tile["blocks"] = blks.length > 0 ? blks.map(b => b["_id"]) : [];
+      tile["isChat"] = isChat;
+
+      var selectedLanguage = this.selectedLanguage;
+
+      if (tile.hasOwnProperty("_id") && selectedLanguage !== "en") {
+        tile[selectedLanguage] = {};
+        tile[selectedLanguage]["title"] = this.tileTitle;
+        tile[selectedLanguage]["notes"] = this.tileNotes;
+        tile[selectedLanguage]["rtl"] = this.rtl;
+        delete tile["title"];
+        delete tile["notes"];
+        delete tile["rtl"];
+      }
+
+      this.saveTile(tile);
+    });
+  };
+
+  saveBlocks(cb) {
+    var currentBlocks = this.blocks;
+    var blckObj = new GetBlocks(currentBlocks, this.selectedLanguage, this.utils);
+    var blkDataObjs = blckObj.getBlockDatas();
+    var savedBlocks = [];
+
+    if (blkDataObjs["blocks"].length > 0) {
+      for (let i = 0; i < blkDataObjs["blocks"].length; i++) {
+        var currBlock = blkDataObjs["blocks"][i];
+
+        this.tileService.saveTileBlocks(currBlock, i)
+          .then(resBlk => {
+            if (!this.utils.isEmptyObject(resBlk) && resBlk.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(resBlk["_id"])) {
+              savedBlocks.push(resBlk);
+
+              if (savedBlocks.length === blkDataObjs["blocks"].length) {
+                var savedBlks = this.arrangeBlocks(savedBlocks);
+                cb(savedBlks, blkDataObjs["isChat"]);
+              }
+            }
+          });
+      }
+    } else {
+      cb([], false);
+    }
   };
 
   getTileCategoryName(id: string) {
@@ -406,7 +488,7 @@ export class WidgetsComponent implements OnInit {
 
   /* Getting the tile content datas */
   getTileContent(tileObj: any) {
-    this.resetTile("");
+    this.widgetTileReset();
 
     if (tileObj.hasOwnProperty("tileCategories")) {
       this.tileCategories = tileObj.tileCategories;
@@ -422,7 +504,7 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (tileObj.hasOwnProperty("tile")) {
-      this.selectedTile = tileObj.tile;
+      this.setTile(tileObj.tile);
     }
 
     if (tileObj.hasOwnProperty("blocks")) {
@@ -482,8 +564,11 @@ export class WidgetsComponent implements OnInit {
     this.widgetCategories = [];
   };
 
-  widgetTileReset() {
-    this.resetTile("");
+  widgetTileReset(isNew?: boolean) {
+    if (!isNew) {
+      this.resetTile("");
+    }
+
     this.tileBlocks = [];
     this.selectedLanguage = "en";
     this.tileTitle = "";
@@ -491,6 +576,10 @@ export class WidgetsComponent implements OnInit {
     this.seletedTileCategory = "-1";
     this.tileNotes = "";
     this.template = "55ee9e7ffc95d118f476a021";
+    this.requiresLogin = false;
+    this.enableZoom = false;
+    this.rtl = false;
+    this.tileIdsUpdate = [];
   };
 
   setWidgetDatas() {

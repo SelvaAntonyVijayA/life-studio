@@ -60,7 +60,7 @@ export class AlertComponent implements OnInit {
   constructor(
     private _ngZone: NgZone,
     public utils : Utils
-  ) {  }
+  ) { }
 
   //@Output() close = new EventEmitter();
   @HostBinding('class') type: AlertType;

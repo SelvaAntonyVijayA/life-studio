@@ -76,7 +76,6 @@ export class ThemeComponent implements OnInit {
   saveAs: string = "block";
   delete: string = "block";
   
-
   newTheme() {
     this.loadNew();
   };

@@ -9,6 +9,60 @@ var init = function (app) {
   settingsConf = app.get('settings');
 };
 
+var save = function (req, res, next) {
+  var obj = req.body.form_data;
+  var blocks = obj && obj.blocks && obj.blocks.length > 0 ? obj.blocks : [];
+  var tokenObj = $authtoken.get(req.cookies.token);
+
+  if (__util.isNullOrEmpty(obj._id)) {
+    obj["userId"] = tokenObj.uid;
+    obj["lastUpdatedBy"] = tokenObj.uid;
+
+    saveTile(obj, function (result) {
+      var resObj = {};
+      resObj["_id"] = result;
+
+      if (result) {
+        var tileId = result.toString();
+        updateTileBlocksTileId(tileId, blocks);
+        updateTileWithBlocksData(tileId, blocks);
+      }
+
+      res.send(resObj);
+    });
+  } else {
+    options = {};
+    query = {};
+    query._id = obj._id;
+    delete obj["_id"];
+
+    var newBlocks = obj && !__util.isEmptyObject(obj) && obj.hasOwnProperty("newBlocks") && obj.newBlocks.length > 0 ? obj.newBlocks : [];
+
+    obj["lastUpdatedBy"] = tokenObj.uid;
+
+    if (obj.hasOwnProperty("newBlocks")) {
+      delete obj["newBlocks"];
+    }
+
+    $tile.tileUpdate(query, options, obj, function (result) {
+      var resObj = {};
+      resObj["_id"] = query._id;
+
+      if (query._id && !__util.isNullOrEmpty(query._id)) {
+        var tileId = query._id.toString();
+        updateTileBlocksTileId(tileId, blocks);
+        updateTileWithBlocksData(tileId, blocks);
+
+        if (newBlocks.length > 0) {
+          //$tilestatus.updateNewBlockStatus(newBlocks, query._id);
+        }
+      }
+
+      res.send(resObj);
+    });
+  }
+};
+
 var list = function (req, res, next) {
   query = {};
   options = {};
@@ -18,8 +72,12 @@ var list = function (req, res, next) {
     $nin: [true]
   };
 
+  if (!__util.isNullOrEmpty(req.query.tileId)) {
+    query["_id"] = req.query.tileId;
+  }
+
   if (!__util.isNullOrEmpty(req.params.organizationId)) {
-    query.organizationId = {
+    query["organizationId"] = {
       $in: [req.params.organizationId]
     };
   }
@@ -27,10 +85,13 @@ var list = function (req, res, next) {
   if (req.body.hasOwnProperty("form_data") && !__util.isEmptyObject(req.body.form_data)) {
     var orgIds = req.body.form_data;
 
-    query.organizationId = {
+    query["organizationId"] = {
       $in: orgIds._ids
     };
   }
+
+
+  console.dir(query);
 
   _getTiles(query, function (tiles) {
     res.send(tiles);
@@ -196,13 +257,79 @@ var _setTileObj = function (tiles) {
   return tiles;
 };
 
+var saveTile = function (obj, cb) {
+  if (!__util.isNullOrEmpty(obj)) {
+    obj = _setTileObj(obj);
+  }
+
+  $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.tile, obj, function (result) {
+    cb(result);
+  });
+};
+
+var updateTileBlocksTileId = function (tileId, blocks) {
+  if (tileId && !__util.isNullOrEmpty(tileId) && blocks.length > 0) {
+    _.each(blocks, function (blckId) {
+      var blckQuery = { "_id": blckId };
+      options = {};
+      var updateData = { "tileId": tileId };
+
+      $tileblock.updateBlock(blckQuery, options, updateData, function (updateRes) {
+
+      });
+    });
+  }
+};
+
+var updateTileWithBlocksData = function (tileId, blockIds) {
+  if (tileId && !__util.isNullOrEmpty(tileId) && blockIds && blockIds.length > 0) {
+    $async.waterfall([
+      function (cb) {
+        var bquery = { _id: blockIds };
+
+        $tileblock.block(bquery, {}, function (blocks) {
+          cb(null, blocks);
+        });
+      }], function (error, blocks) {
+        if (blocks && blocks.length > 0) {
+          query = { "_id": tileId.toString() };
+          options = {};
+
+          var sorted = [];
+
+          blocks = $general.convertToJsonObject(blocks);
+
+          _.each(blockIds, function (item, index) {
+            var obj = _.findWhere(blocks, { _id: item });
+            
+            if (!__util.isNullOrEmpty(obj._id)) {
+              obj._id = $db.objectId(obj._id);
+
+              sorted.push(obj);
+            }
+          });
+
+          var obj = { "blocksData": sorted };
+
+          $tile.tileUpdate(query, options, obj, function (result) {
+
+          });
+        }
+      });
+  }
+};
+
 
 module.exports = {
   "init": init,
+  "save": save,
+  "saveTile": saveTile,
   "list": list,
   "_getTiles": _getTiles,
   "tileByIds": tileByIds,
   "getSpecificFields": getSpecificFields,
   "update": update,
   "tileUpdate": tileUpdate,
+  "updateTileBlocksTileId": updateTileBlocksTileId,
+  "updateTileWithBlocksData": updateTileWithBlocksData
 };

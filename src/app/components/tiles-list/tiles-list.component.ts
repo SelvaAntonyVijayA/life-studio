@@ -24,7 +24,7 @@ export class TilesListComponent {
   @Input('draggedTiles') draggedTiles: any[];
   @Input('isMerge') isMerge: Object;
   @Input('tilesToUpdate') tilesToUpdate: any[];
-  @Input("selectedTile") selectedTile : Object;
+  @Input("selectedTile") selectedTile: Object;
   tileContent = new EventEmitter<any>();
   //private organizations: any[] = [];
   tileCategories: any[] = [];
@@ -48,7 +48,7 @@ export class TilesListComponent {
   private orgChangeDetect: any;
   protected loading: boolean;
   scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
-  
+
   constructor(private tileService: TileService,
     private route: ActivatedRoute,
     private cms: CommonService,
@@ -440,6 +440,25 @@ export class TilesListComponent {
     return currTile;
   };
 
+  getTileUpdate(currTiles: any[]) {
+    if (currTiles.length > 0) {
+      var currTileId = Object.keys(currTiles[0]);
+      var isNew = currTiles[0][currTileId[0]];
+
+      this.tileService.getTiles(this.selectedOrg, currTileId[0]).then(tileList => {
+        if (!isNew) {
+          var tileIdx = this.tiles.map(function (tile) { return tile['_id']; }).indexOf(currTileId[0]);
+
+          if (tileIdx !== -1) {
+            this.tiles[tileIdx] = tileList[0];
+          }
+        } else {
+          this.tiles.push(tileList[0]);
+        }
+      });
+    }
+  };
+
   ngOnChanges(cHObj: any) {
     if (cHObj.hasOwnProperty("organizations") && cHObj["organizations"]["currentValue"].length > 0) {
       if (!cHObj["organizations"]["firstChange"] && this.utils.isArray(cHObj["organizations"]["previousValue"]) && cHObj["organizations"]["previousValue"].length == 0) {
@@ -462,7 +481,11 @@ export class TilesListComponent {
     }
 
     if (cHObj.hasOwnProperty("tilesToUpdate") && cHObj["tilesToUpdate"]["currentValue"].length > 0) {
-      this.updateTileData(cHObj["tilesToUpdate"]["currentValue"]);
+      if (this.page === "tiles") {
+        this.getTileUpdate(cHObj["tilesToUpdate"]["currentValue"]);
+      } else {
+        this.updateTileData(cHObj["tilesToUpdate"]["currentValue"]);
+      }
     }
   };
 }
@@ -502,7 +525,7 @@ export class TilesComponent implements OnInit {
   @Input() tile: any;
   @Input('page') page: string;
   @Input('listType') listType: string;
-  @Input("selectedTile") selectedTile : Object;
+  @Input("selectedTile") selectedTile: Object;
   tileData = new EventEmitter<any>();
   dropped = new EventEmitter<any>();
   //@ViewChild(this, { read: ViewContainerRef }) tileListSingle;

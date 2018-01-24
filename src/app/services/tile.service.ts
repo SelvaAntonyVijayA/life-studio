@@ -4,19 +4,23 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
+import { Utils } from '../helpers/utils';
 
 @Injectable()
 export class TileService {
-  constructor(private http: Http) { }
+  constructor(private http: Http, public utils: Utils) { }
 
   private headers = new Headers({
     'Content-Type': 'application/json',
     'charset': 'UTF-8'
   });
 
-  getTiles(orgId: string) {
+  getTiles(orgId: string, tileId?: string) {
+    var tileUrl = "/tile/list/" + orgId;
+    tileUrl = !this.utils.isNullOrEmpty(tileId) ? tileUrl + "?tileId=" + tileId : tileUrl;
+
     return this.http
-      .post("/tile/list/" + orgId, JSON.stringify({}), { headers: this.headers })
+      .post(tileUrl, JSON.stringify({}), { headers: this.headers })
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);
@@ -98,14 +102,22 @@ export class TileService {
 
   saveTileBlocks(block: Object, idx: number) {
     return this.http
-      .post("/tileblock/save", { headers: this.headers })
+      .post("/tileblock/save", JSON.stringify({ "form_data": block }), { headers: this.headers })
       .toPromise()
       .then(response => {
         var blockRes = response.json();
-        blockRes["_id"] = blockRes["_id"];
-        blockRes["idx"] = idx;
-        return blockRes;
+        block["_id"] = blockRes["_id"];
+        block["idx"] = idx;
+        return block;
       }).catch(this.handleError);
+  };
+
+  saveTile(tile: Object) {
+    return this.http
+      .post("/tile/save", JSON.stringify({ "form_data": tile }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
   };
 
   private handleError(error: any): Promise<any> {
