@@ -1,4 +1,4 @@
-import { Injectable, ReflectiveInjector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { AlertService } from '../services/alert.service';
 import { AlertType, AlertSettings, ResolveEmit } from '../helpers/alerts';
 
@@ -8,7 +8,7 @@ export class Utils {
   }
 
   alertSetting: AlertSettings = {};
-  
+
   // Encode a given string
   htmlEncode(text: string) {
     text = text.replace(/'/g, "&#39;");
@@ -38,7 +38,6 @@ export class Utils {
 
   // Coverting a given string to boolean
   convertToBoolean(value: any) {
-
     var re1 = typeof value === "boolean" ? value : typeof value === "string" ? Boolean(value) : false;
     return typeof value === "boolean" ? value : typeof value === "string" ? Boolean(value) : false;
   };
@@ -310,7 +309,7 @@ export class Utils {
     this.alertSetting.showCloseButton = true;
 
     this._alert.create(type, msg, title, this.alertSetting);
-  }
+  };
 
   iAlertConfirm(type: AlertType, title?: string, msg?: string, yes?: string, no?: string, cb?: any) {
     //create(type: 'success' | 'error' | 'wearning', 'info', message: (string | HTML | TemplateRef) = '', title: (string | HTML | TemplateRef) = '',  title: {(string)}, settings: AlertSettings = {})
@@ -323,7 +322,7 @@ export class Utils {
 
     this._alert.create(type, msg, title, this.alertSetting)
       .subscribe((ans: ResolveEmit) => cb(ans));
-  }
+  };
 
   iQuestions(type: AlertType, title?: string, msg?: string, text1?: string, text2?: string, text3?: string, cb?: any) {
     //create(type: 'success' | 'error' | 'wearning', 'info', message: (string | HTML | TemplateRef) = '', title: (string | HTML | TemplateRef) = '',  title: {(string)}, settings: AlertSettings = {})
@@ -339,5 +338,10 @@ export class Utils {
 
     this._alert.create(type, msg, title, this.alertSetting)
       .subscribe((ans: ResolveEmit) => cb(ans));
-  }
-}
+  };
+};
+
+
+
+
+

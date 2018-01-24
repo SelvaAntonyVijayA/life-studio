@@ -15,6 +15,7 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 
 import { AlertComponent , AlertsComponent} from './components/alert/alert.component';
 import { AlertService } from './services/alert.service';
+import { Utils } from './helpers/utils';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,7 @@ import { AlertService } from './services/alert.service';
   imports: [
     BrowserModule, BrowserAnimationsModule, HttpClientModule, AppRoutesModule, FormsModule, HttpModule
   ],
-  providers: [LoginService, AlertService],
+  providers: [LoginService, AlertService, Utils],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

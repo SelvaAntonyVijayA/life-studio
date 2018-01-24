@@ -13,14 +13,14 @@ declare var $: any;
   styleUrls: ['./theme.component.css']
 })
 export class ThemeComponent implements OnInit {
-  constructor(private route: ActivatedRoute,
+  constructor(
+    private route: ActivatedRoute,
     private cms: CommonService,
     private themeService: ThemeService,
     private e1: ElementRef,
     private renderer: Renderer2,
-    public utils: Utils) {
-
-  }
+    public utils: Utils
+  ) {}
 
   themes: any[] = [];
   selectedOrganization: string = "-1";
@@ -76,6 +76,7 @@ export class ThemeComponent implements OnInit {
   saveAs: string = "block";
   delete: string = "block";
   
+
   newTheme() {
     this.loadNew();
   };

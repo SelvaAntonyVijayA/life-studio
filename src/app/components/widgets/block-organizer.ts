@@ -1,6 +1,5 @@
-import { Type, HostListener } from '@angular/core';
+import { Type, HostListener, ReflectiveInjector } from '@angular/core';
 import { Utils } from '../../helpers/utils';
-
 declare var $: any;
 
 export interface BlockComponent {
@@ -14,15 +13,17 @@ export class BlockItem {
 };
 
 export class BlockOrganizer {
-  constructor(blk: any, type: string, orgConnectDatas?: any[], widgetCategories?: any[], public utils?: Utils) {
+  constructor(blk: any, type: string, orgConnectDatas?: any[], widgetCategories?: any[]) {
     this.block = {};
+    let injector: ReflectiveInjector;
+    injector = ReflectiveInjector.resolveAndCreate([Utils]);
+    this.utils = injector.get(Utils);
     this.getType(blk, type, orgConnectDatas, widgetCategories);
-
     return this.block;
   }
-
+  
+  utils: any;
   block: any = {};
-
 
   /* Get Block Types */
   getType(blk: any, type: string, orgConnectDatas: any, widgetCategories?: any[]) {
@@ -1015,11 +1016,15 @@ export class BlockOrganizer {
 };
 
 export class GetBlocks {
-  constructor(blcks: any[], langCode?: string, public utils?: Utils) {
+  constructor(blcks: any[], langCode?: string) {
+    let injector: ReflectiveInjector;
+    injector = ReflectiveInjector.resolveAndCreate([Utils]);
+    this.utils = injector.get(Utils);
     this.currentBlocks = blcks;
     this.langCode = langCode;
   }
 
+  utils: any;
   langCode: string = "en";
   currentBlocks: any[] = [];
   blocks: any[] = [];

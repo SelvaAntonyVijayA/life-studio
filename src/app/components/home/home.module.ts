@@ -43,7 +43,7 @@ import { DraggableDirective } from '../../helpers/draggable.directive';
 import { DropTargetDirective } from '../../helpers/drop-target.directive';
 import { OnlyNumbersDirective } from '../../helpers/only-numbers.directive';
 import { DateTimePickerDirective } from '../../helpers/date-time-picker.directive';
-import { Utils } from '../../helpers/utils';
+
 
 @NgModule({
   imports: [
@@ -57,7 +57,7 @@ import { Utils } from '../../helpers/utils';
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService, 
-    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, Utils]
+    FolderService, AccountService, CategoryService, ProcedureService, ThemeService]
 })
 
 export class HomeModule { }

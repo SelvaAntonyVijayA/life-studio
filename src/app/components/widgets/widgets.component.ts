@@ -23,7 +23,6 @@ import {
   BlogsBlockComponent, ChatBlockComponent, AccountBlockComponent, ProfileBlockComponent
 } from './tileblocks.components';
 
-
 declare var $: any;
 
 @Component({
@@ -59,7 +58,6 @@ export class WidgetsComponent implements OnInit {
   requiresLogin: boolean = false;
   enableZoom: boolean = false;
   rtl: boolean = false;
-
   private orgChangeDetect: any;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
@@ -68,9 +66,9 @@ export class WidgetsComponent implements OnInit {
     private route: ActivatedRoute,
     private cms: CommonService,
     private mScrollbarService: MalihuScrollbarService,
-    public utils:  Utils
+    public utils: Utils
   ) {
-    
+
     //this.oid = Cookie.get('oid');
   }
 
@@ -343,7 +341,6 @@ export class WidgetsComponent implements OnInit {
     var currentBlocks = this.blocks;
     var blckObj = new GetBlocks(currentBlocks, this.selectedLanguage);
     var blkDataObjs = blckObj.getBlockDatas();
-
     var savedBlocks = [];
 
     if (blkDataObjs["blocks"].length > 0) {
@@ -393,7 +390,7 @@ export class WidgetsComponent implements OnInit {
     tile["categoryName"] = categoryObj.length > 0 && categoryObj[0].hasOwnProperty("name") ? categoryObj[0]["name"] : "";
     tile["appSettings"] = false;
 
-
+    
   };
 
   getTileCategoryName(id: string) {
