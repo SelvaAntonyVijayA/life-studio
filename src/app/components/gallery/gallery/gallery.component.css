@@ -1,0 +1,18 @@
+.plain-container {
+    align-items: center;
+    display: flex;
+}
+
+.plain-container .image {
+    cursor: pointer;
+    height: auto;
+    margin-left: 2px;
+    margin-right: 2px;
+    width: 50px;
+}
+
+.plain-container .a-tag-image {
+    cursor: pointer;
+    margin-left: 2px;
+    margin-right: 2px;
+}

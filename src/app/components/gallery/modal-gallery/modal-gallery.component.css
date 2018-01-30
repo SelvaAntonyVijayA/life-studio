@@ -1,0 +1,21 @@
+#modal-gallery-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10000;
+  }
+  
+  #flex-min-height-ie-fix {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  #modal-gallery-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+  }
