@@ -19,6 +19,8 @@ import { ThemeComponent } from '../../components/theme/theme.component';
 import { ProcessesComponent } from '../../components/processes/processes.component';
 import { PagesComponent } from '../../components/pages/pages.component';
 import { DemoComponent } from '../../components/demo/demo.component';
+import { NotificationsComponent } from '../../components/notifications/notifications.component';
+import { SmartComponent } from '../../components/smart/smart.component';
 
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { HeaderService } from '../../services/header.service';
@@ -60,7 +62,7 @@ import { GalleryModule } from '../../module/gallery.module';
     TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
-    ProcessesComponent, PagesComponent],
+    ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService]
 })

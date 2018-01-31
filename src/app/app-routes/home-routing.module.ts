@@ -12,6 +12,8 @@ import { ProceduresComponent } from '../components/procedures/procedures.compone
 import { ProcessesComponent } from '../components/processes/processes.component';
 import { PagesComponent } from '../components/pages/pages.component';
 import { DemoComponent } from '../components/demo/demo.component';
+import { NotificationsComponent } from '../components/notifications/notifications.component';
+import { SmartComponent } from '../components/smart/smart.component';
 
 const homeRoutes: Routes = [
   {
@@ -53,6 +55,14 @@ const homeRoutes: Routes = [
       {
         path: 'pages',
         component: PagesComponent
+      },
+      {
+        path: 'notifications',
+        component: NotificationsComponent
+      },
+      {
+        path: 'smart',
+        component: SmartComponent
       },
       {
         path: 'demo',
