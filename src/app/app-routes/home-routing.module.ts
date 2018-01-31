@@ -10,6 +10,8 @@ import { CategoriesComponent } from '../components/categories/categories.compone
 import { ThemeComponent } from '../components/theme/theme.component';
 import { ProceduresComponent } from '../components/procedures/procedures.component';
 import { ProcessesComponent } from '../components/processes/processes.component';
+import { PagesComponent } from '../components/pages/pages.component';
+import { DemoComponent } from '../components/demo/demo.component';
 
 const homeRoutes: Routes = [
   {
@@ -47,6 +49,14 @@ const homeRoutes: Routes = [
       {
         path: 'processes',
         component: ProcessesComponent
+      },
+      {
+        path: 'pages',
+        component: PagesComponent
+      },
+      {
+        path: 'demo',
+        component: DemoComponent
       }
     ]
   }

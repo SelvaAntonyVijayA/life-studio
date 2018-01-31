@@ -10,13 +10,15 @@ import { WidgetsComponent } from '../../components/widgets/widgets.component';
 import { HomeRoutingModule } from '../../app-routes/home-routing.module';
 import { HeaderComponent } from '../../components/header/header.component';
 import { TilesListComponent, TilesComponent } from '../../components/tiles-list/tiles-list.component';
-import { TileBlocksComponents} from '../../components/widgets/tileblocks.components';
+import { TileBlocksComponents } from '../../components/widgets/tileblocks.components';
 import { EventsComponent } from '../../components/events/events.component';
 import { FoldersComponent } from '../../components/folders/folders.component';
 import { AccountComponent } from '../../components/account/account.component';
 import { CategoriesComponent } from '../../components/categories/categories.component';
 import { ThemeComponent } from '../../components/theme/theme.component';
 import { ProcessesComponent } from '../../components/processes/processes.component';
+import { PagesComponent } from '../../components/pages/pages.component';
+import { DemoComponent } from '../../components/demo/demo.component';
 
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { HeaderService } from '../../services/header.service';
@@ -44,20 +46,22 @@ import { DraggableDirective } from '../../helpers/draggable.directive';
 import { DropTargetDirective } from '../../helpers/drop-target.directive';
 import { OnlyNumbersDirective } from '../../helpers/only-numbers.directive';
 import { DateTimePickerDirective } from '../../helpers/date-time-picker.directive';
-
+import 'hammerjs';
+import 'mousetrap';
+import { GalleryModule } from '../../module/gallery.module';
 
 @NgModule({
   imports: [
     CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule,
-    ColorPickerModule, CKEditorModule
+    ColorPickerModule, CKEditorModule, GalleryModule.forRoot()
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
-    ProcessesComponent],
-  providers: [HeaderService, TileService, CommonService, DragService, EventService, 
+    ProcessesComponent, PagesComponent],
+  providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService]
 })
 

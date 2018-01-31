@@ -127,9 +127,6 @@ export class ThemeComponent implements OnInit {
   };
 
   previewTheme() {
-    this.utils.iQuestions("question", "Warning", "This tile was assigned to the organizations : <li>Hopewell Baptist Church</li>.<br>If you choose to modify it, it will create a new copy in this organization", "Text1", "Text2", "Text3", (res) => {
-      console.log(res)
-    })
   };
 
   themeChange(theme: string) {

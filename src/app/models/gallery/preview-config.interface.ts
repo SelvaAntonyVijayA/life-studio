@@ -8,6 +8,6 @@ export interface PreviewConfig {
   number?: number;
   arrows?: boolean;
   clickable?: boolean;
-  // alwaysCenter?: boolean; // TODO implement this - still not used
+  alwaysCenter?: boolean; // TODO implement this - still not used
   size?: Size;
 }

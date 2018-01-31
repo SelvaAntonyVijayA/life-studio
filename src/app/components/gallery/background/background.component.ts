@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { AccessibilityConfig } from '../../../models/gallery';
 
 @Component({
-  selector: 'app-background',
+  selector: 'g-background',
   templateUrl: './background.component.html',
   styleUrls: ['./background.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
