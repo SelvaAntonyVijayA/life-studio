@@ -132,7 +132,6 @@ var widgetCategoryList = function (req, res, next) {
 
   if (!__util.isNullOrEmpty(query["organizationId"]) && query["organizationId"] !== "-1") {
     $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.widgetCategory, query, options, function (result) {
-      console.dir(result);
       res.send(result);
     });
   } else {

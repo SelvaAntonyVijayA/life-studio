@@ -90,9 +90,6 @@ var list = function (req, res, next) {
     };
   }
 
-
-  console.dir(query);
-
   _getTiles(query, function (tiles) {
     res.send(tiles);
   });
@@ -299,10 +296,10 @@ var updateTileWithBlocksData = function (tileId, blockIds) {
 
           blocks = $general.convertToJsonObject(blocks);
 
-          _.each(blockIds, function (item, index) {
-            var obj = _.findWhere(blocks, { _id: item });
+          _.each(blockIds, function (blkId, index) {
+            var obj = _.findWhere(blocks, { "_id": blkId });
             
-            if (!__util.isNullOrEmpty(obj._id)) {
+            if (!__util.isEmptyObject(obj) && obj.hasOwnProperty("_id") && !__util.isNullOrEmpty(obj._id)) {
               obj._id = $db.objectId(obj._id);
 
               sorted.push(obj);

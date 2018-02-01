@@ -82,7 +82,6 @@ export class AccountComponent implements OnInit {
   };
 
   passwordChange(e: any) {
-
     if (!this.utils.isNullOrEmpty(this.password) && !this.utils.isNullOrEmpty(this.confirmPassword)) {
 
       if (this.password != this.confirmPassword) {

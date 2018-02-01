@@ -50,14 +50,18 @@ export class ThemeService {
       .catch(this.handleError);
   };
 
-  getThemes(orgId?: string, id?: string) {
+  getThemes(orgId?: string, id?: string, createdOrg?: string) {
     var url = '/tiletheme/list/';
     var query = {};
 
-    if (!this.utils.isNullOrEmpty(id)) {
-      query["_id"] = id;
-    } else {
-      query["organizationId"] = orgId;
+    if (this.utils.isNullOrEmpty(createdOrg)) {
+      if (!this.utils.isNullOrEmpty(id)) {
+        query["_id"] = id;
+      } else {
+        query["organizationId"] = orgId;
+      }
+    }else{
+      query["createdOrg"] = createdOrg;
     }
 
     return this.http

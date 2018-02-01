@@ -4,14 +4,14 @@
     <div class="tile_form">
       <input id="txtTileTitle" [(ngModel)]="tileTitle" class="ili-form tile_title" placeholder="Title" type="text">
       <div class="tile_language">
-        <select [(ngModel)]="selectedLanguage" (ngModelChange)="languageChange($event)" class="form-control input-sm" id="tileLanguage"
+        <select [(ngModel)]="selectedLanguage" class="form-control input-sm lang_tile" 
           placeholder="Select Language">
           <option *ngFor="let lang of languageList; let i = index" [value]="lang?.code">{{lang?.name}}</option>
         </select>
       </div>
       <input [(ngModel)]="tileNotes" class="ili-form tile_notes" placeholder="Tags" type="text" />
-      <select id="tileTemplate" class="ili-form template_box" placeholder="Select Template">
-
+      <select [(ngModel)]="template" class="ili-form template_box" placeholder="Select Template">
+        <option *ngFor="let theme of tileThemes; let i = index" [value]="theme?._id">{{ getWhiteTheme(theme)}}{{theme?.name}}</option>
       </select>
       <select [(ngModel)]="seletedTileCategory" class="ili-form tile_cat_box" placeholder="Select / Add Category">
         <option [value]="'-1'" disabled>All Categories</option>

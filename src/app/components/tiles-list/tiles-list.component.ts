@@ -25,6 +25,7 @@ export class TilesListComponent {
   @Input('isMerge') isMerge: Object;
   @Input('tilesToUpdate') tilesToUpdate: any[];
   @Input("selectedTile") selectedTile: Object;
+  @Input("tileToDelete") tileToDelete: string[];
   tileContent = new EventEmitter<any>();
   //private organizations: any[] = [];
   tileCategories: any[] = [];
@@ -213,6 +214,8 @@ export class TilesListComponent {
     this.sortOpt["isAsc"] = false;
     //this.selectedOrg = "-1";
     this.selectedCategory = "-1"
+    this.selectedTile = {};
+    this.draggedSeparatedTiles = {};
   };
 
   setTileSearch() {
@@ -358,9 +361,9 @@ export class TilesListComponent {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       //this.setOrganizations();
       this.setScrollList();
+      this.resetTiles();
       this.oid = Cookie.get('oid');
       this.selectedOrg = this.oid;
-      this.resetTiles();
       this.setTileListData();
     });
   };
@@ -446,16 +449,43 @@ export class TilesListComponent {
       var isNew = currTiles[0][currTileId[0]];
 
       this.tileService.getTiles(this.selectedOrg, currTileId[0]).then(tileList => {
+        let tileObj : Tile;
+
+        if (this.utils.isArray(tileList) && tileList[0]) {
+          tileObj = this.tileNotifyIcons(tileList[0]);
+        }
+
         if (!isNew) {
           var tileIdx = this.tiles.map(function (tile) { return tile['_id']; }).indexOf(currTileId[0]);
 
-          if (tileIdx !== -1) {
-            this.tiles[tileIdx] = tileList[0];
+          if (tileIdx !== -1 && !this.utils.isEmptyObject(tileObj)) {
+            this.tiles[tileIdx] = tileObj;
           }
-        } else {
+        } else if(!this.utils.isEmptyObject(tileObj)) {
           this.tiles.push(tileList[0]);
         }
+
+        if (!this.utils.isEmptyObject(tileObj)) {
+          this.selectedTile = tileObj;
+          
+          var emitData = {"savedUpdated": true, "tile": tileObj};
+          this.tileContent.emit(emitData);
+        }
       });
+    }
+  };
+
+  /* Dragged tile by uniqueId */
+  trackByTileId(index: number, obj: any) {
+    return obj["_id"];
+  };
+
+  deleteTiles(tileIds: string[]) {
+    if (tileIds.length > 0) {
+      for (let i = 0; i < tileIds.length; i++) {
+        var tileIdx = this.tiles.map(function (tile) { return tile['_id']; }).indexOf(tileIds[i]);
+        this.tiles.splice(tileIdx, 1);
+      }
     }
   };
 
@@ -487,8 +517,14 @@ export class TilesListComponent {
         this.updateTileData(cHObj["tilesToUpdate"]["currentValue"]);
       }
     }
+
+    if (cHObj.hasOwnProperty("tilesToDelete") && cHObj["tilesToDelete"]["currentValue"].length > 0) {
+      if (this.page === "tiles") {
+        this.deleteTiles(cHObj["tilesToDelete"]["currentValue"]);
+      }
+    }
   };
-}
+};
 
 @Component({
   selector: 'tiles',
@@ -513,7 +549,8 @@ export class TilesListComponent {
 })
 
 export class TilesComponent implements OnInit {
-  constructor(private e1: ElementRef,
+  constructor(
+    private e1: ElementRef,
     private renderer: Renderer,
     private tileService: TileService,
     private viewContainerRef: ViewContainerRef,

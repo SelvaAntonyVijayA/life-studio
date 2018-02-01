@@ -19,7 +19,7 @@ export class BlockOrganizer {
     this.getType(blk, type, orgConnectDatas, widgetCategories);
     return this.block;
   }
-  
+
   utils: any;
   block: any = {};
 
@@ -1013,10 +1013,11 @@ export class BlockOrganizer {
 };
 
 export class GetBlocks {
-  constructor(blcks: any[], langCode?: string, utils?: any) {
+  constructor(blcks: any[], langCode?: string, isNewBlock?: boolean, utils?: any) {
     this.utils = utils;
     this.currentBlocks = blcks;
     this.langCode = langCode;
+    this.isNewBlock = isNewBlock;
   }
 
   utils: any;
@@ -1024,6 +1025,7 @@ export class GetBlocks {
   currentBlocks: any[] = [];
   blocks: any[] = [];
   isChat: boolean = false;
+  isNewBlock: boolean = false;
 
   getBlockDatas() {
     var isChat = false;
@@ -1036,7 +1038,7 @@ export class GetBlocks {
           var blockData = {};
           var type = currBlock["type"];
 
-          if (currBlock.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(currBlock["_id"])) {
+          if (!this.isNewBlock && currBlock.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(currBlock["_id"])) {
             blockData["_id"] = currBlock["_id"];
           }
 
