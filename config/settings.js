@@ -172,5 +172,25 @@ module.exports = {
   "web": {
     "host": "localhost",
     "port": 8080
+  },
+  "image": {
+    "imgfolderpath": "public/img/orgs/{0}/",
+    "imgurlpath": "/img/orgs/{0}/",
+    "imgAppFolderPath": "public/img/apps/{0}/{1}/",
+    "imgAppUrlPath": "/img/apps/{0}/{1}/",
+    "tileImagefolder": "public/img/tile/{0}/",
+    "tileImageUrl": "/img/tile/{0}/{1}/",
+    "imgBgFolderPath": "public/img/apps/{0}/",
+    "imgGroupFolderPath": "public/img/groups/{0}/{1}/",
+    "imgGroupUrlPath": "/img/groups/{0}/{1}/",
+    "imgEmoticonsFolderPath": "public/img/emoticons/{0}/",
+    "imgEmoticonsUrlPath": "/img/emoticons/{0}/",
+    "imgProfileFolderPath": "public/img/profile/{0}/",
+    "imgProfileUrlPath": "/img/profile/{0}/",
+    "imgStreamFolerPath": "public/img/streams/{0}/",
+    "imgStreamUrlPath": "/img/streams/{0}/",
+    "imgFormPhotoFolderPath": "public/img/formphotos/{0}/",
+    "imgFormPhotoUrlPath": "/img/formphotos/{0}/",
+    "imgStreamCrownUrlPath": "/img/streams/{0}/{1}/"
   }
 }

@@ -20,7 +20,8 @@ var plugins = {
   "healthstatusrules": "healthstatusrules",
   "member": "member",
   "memberblockdata": "memberblockdata",
-  "db": "database"
+  "db": "database",
+  "image": "image"
 };
 
 module.exports = function (appPath, dirName, app) {
