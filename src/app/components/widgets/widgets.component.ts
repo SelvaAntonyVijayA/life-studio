@@ -59,7 +59,7 @@ export class WidgetsComponent implements OnInit {
   requiresLogin: boolean = false;
   enableZoom: boolean = false;
   rtl: boolean = false;
-  tileIdsUpdate: any[] = [];
+  tileIdsUpdate: Object = {};
   tileIdsDelete: string[] = [];
   tileThemes: any[] = [];
   defaultThemeId: string = "-1";
@@ -348,25 +348,34 @@ export class WidgetsComponent implements OnInit {
     }
   };
 
-  saveTile(tileObj: Object, deleteId?: string, savedBlocks?: any[]) {
+  saveTile(tileObj: Object, deleteId?: string, savedBlocks?: any[], isUpdate?: boolean, isDuplicate?: boolean, updatedId?: string) {
     if (!this.utils.isEmptyObject(tileObj)) {
       this.tileService.saveTile(tileObj)
         .then(resTile => {
           if (!this.utils.isEmptyObject(resTile) && resTile.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(resTile["_id"])) {
-            var isNew = tileObj.hasOwnProperty("_id") ? false : true;
-            this.tileIdsUpdate = [];
-            this.tileIdsDelete = [];
-            var obj = {};
-            obj[resTile["_id"]] = isNew;
-            this.tileIdsUpdate = [obj];
+            if ((!isUpdate && isDuplicate)) {
+              var isNew = tileObj.hasOwnProperty("_id") ? false : true;
+              this.tileIdsUpdate = {};
+              this.tileIdsDelete = [];
+              //var obj = {};
+              //obj[resTile["_id"]] = isNew;
+              this.tileIdsUpdate[resTile["_id"]] = isNew;
 
-            if (!this.utils.isNullOrEmpty(deleteId) && deleteId !== "-1") {
-              this.tileIdsDelete = [deleteId];
+              if (!this.utils.isNullOrEmpty(deleteId) && deleteId !== "-1") {
+                this.tileIdsDelete = [deleteId];
+              }
+
+              var tileMessage = tileObj.hasOwnProperty("_id") ? "updated" : "saved";
+              this.utils.iAlert('success', '', 'Tile ' + tileMessage + ' successfully');
+              this.assignBlockData(savedBlocks);
+            } else if (!isUpdate && isDuplicate) {
+              this.tileIdsUpdate = {};
+              this.tileIdsDelete = [];
+              this.tileIdsUpdate[resTile["_id"]] = true;
+              this.tileIdsUpdate[updatedId] = false;
+              
+              this.utils.iAlert('success', '', 'Tile duplicated successfully');
             }
-
-            var tileMessage = tileObj.hasOwnProperty("_id") ? "updated" : "saved";
-            this.utils.iAlert('success', '', 'Tile ' + tileMessage +' successfully');
-            this.assignBlockData(savedBlocks);
           }
         });
     }
@@ -448,7 +457,7 @@ export class WidgetsComponent implements OnInit {
     return tile;
   };
 
-  tileSave(e: any) {
+  tileSave(e: any, isUpdate: boolean, isDuplicate: boolean) {
     var tileObj = this.getTileObj();
 
     if (this.utils.isNullOrEmpty(tileObj["title"])) {
@@ -480,7 +489,7 @@ export class WidgetsComponent implements OnInit {
           delete currTileObj["rtl"];
         }
 
-        this.saveTile(currTileObj, deleteId, blks);
+        this.saveTile(currTileObj, deleteId, blks, isUpdate, isDuplicate);
       });
     });
   };
@@ -527,6 +536,276 @@ export class WidgetsComponent implements OnInit {
     } else {
       cb(tile, deleteId);
     }
+  };
+
+  newTile(message, yesBtn, noBtn, cb) {
+    var currResult = this.objMatching();
+
+    if (!currResult) {
+      this.utils.iAlertConfirm("confirm", "Confirm", message, yesBtn, noBtn, (res) => {
+        cb(res["resolved"]);
+      });
+    } else {
+      cb(false, true);
+    }
+  };
+
+  duplicateTile(e: any) {
+    e.preventDefault();
+    var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? this.selectedTile : {};
+
+    if (!this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("_id")) {
+      this.newTile('Would you like to save your work and duplicate?', 'Yes', 'No', (isChanged, auto) => {
+        if (isChanged) {
+
+        } else {
+
+        }
+      });
+    }
+
+  };
+
+  getTileValues() {
+    var tile = {};
+    var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? this.selectedTile : {};
+
+    tile["_id"] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("_id") ? currTileExists["_id"] : "";
+    tile["title"] = this.tileTitle;
+    tile["notes"] = this.tileNotes;
+    tile["art"] = this.art;
+    tile["organizationId"] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("organizationId") ? currTileExists["organizationId"] : this.selectedOrganization;
+    tile["createdOrg"] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("createdOrg") ? currTileExists["createdOrg"] : this.selectedOrganization;
+    tile["type"] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("type") ? currTileExists["type"] : "content";
+    tile["template"] = this.template;
+
+    tile["category"] = tile["type"] !== 'settings' ? this.seletedTileCategory : "";
+
+    tile["requiresLogin"] = (tile["type"] === "content" || tile["type"] === "url") ? this.requiresLogin : false;
+    tile["enableZoom"] = (tile["type"] === "content" || tile["type"] === "url") ? this.enableZoom : false;
+    tile["language"] = (tile["type"] === "content" || tile["type"] === "url") ? this.selectedLanguage : "";
+
+    var currentBlocks = this.blocks;
+    var blckObj = new GetBlocks(currentBlocks, this.selectedLanguage, false, this.utils);
+    var blkDataObjs = blckObj.getBlockDatas();
+    var currBlks = blkDataObjs["blocks"];
+    //var blks = currBlks.length > 0 ? currBlks.map(b => b["_id"]) : [];
+
+    tile["blocks"] = currBlks;
+
+    if (!this.utils.isNullOrEmpty(tile["_id"]) && this.selectedLanguage != "en") {
+      tile[this.selectedLanguage] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty(this.selectedLanguage) ? Object.assign(currTileExists[this.selectedLanguage]) : {};
+      tile[this.selectedLanguage].title = this.tileTitle;
+      tile[this.selectedLanguage].notes = this.tileNotes;
+      delete tile["title"];
+      delete tile["notes"];
+    }
+
+    if (this.selectedLanguage === "en") {
+      if (this.utils.isNullOrEmpty(tile["title"]) && this.utils.isNullOrEmpty(tile["notes"]) && this.seletedTileCategory === "-1" && tile["blocks"].length === 0) {
+        return {};
+      }
+    }
+
+    return tile;
+  };
+
+  objMatching() {
+    var id = $('.tile_id').val();
+    var selectedLanguage = $('#tileLanguage').val();
+    var obj1 = Object.assign(this.getTileValues());
+    var obj2 = {};
+
+    if (obj1.hasOwnProperty("_id")) {
+      obj2 = !this.utils.isEmptyObject(this.selectedTile) ? Object.assign(this.selectedTile) : {};
+      delete obj2['blocks'];
+
+      obj2["blocks"] = this.tileBlocks;
+
+      if (obj2["blocks"].length > 0) {
+        obj2["blocks"][0]["type"] = obj2["blocks"][0].hasOwnProperty("type") && obj2["blocks"][0]["type"] === "url" ? "exclusiveurl" : obj2["blocks"][0]["type"];
+
+        for (let i = 0; i < obj2["blocks"].length; i++) {
+          delete obj2["blocks"][i]["tileId"];
+        }
+      }
+
+      //obj2[organizationId = typeof obj2.organizationId != "object" ? obj2.organizationId.split(',') : obj2.organizationId;
+      delete obj2['userId'];
+      delete obj2['dateCreated'];
+      delete obj2['appSettings'];
+      delete obj2['userName'];
+      delete obj2['categoryName'];
+      delete obj2['lastUpdatedBy'];
+      delete obj2['lastUpdatedOn'];
+      delete obj2['lastUpdatedUser'];
+      delete obj2['notification'];
+      delete obj2['smart'];
+      delete obj2['isRoleBased'];
+      delete obj2['Apps'];
+      delete obj2['Procedure'];
+      delete obj2['isChat'];
+      delete obj2['hsrRuleEngine'];
+      delete obj2['serializeFunctions'];
+      delete obj2['blocksData'];
+      delete obj2['isWeight'];
+
+      delete obj2['isNotification'];
+      delete obj2['isSmart'];
+      delete obj2['isProcedure'];
+      delete obj2['isRules'];
+      delete obj2['isWgt'];
+      delete obj2['isRole'];
+      delete obj2['tileNotifications'];
+      delete obj2['tileSmart'];
+      delete obj2['tileApps'];
+      delete obj2['tileProcedure'];
+      delete obj2['tileHealthStatusRules'];
+      delete obj2['search'];
+
+      if (this.selectedLanguage !== "en") {
+        delete obj2["title"];
+        delete obj2["notes"];
+      }
+
+      obj2["language"] = obj2.hasOwnProperty("language") && !this.utils.isNullOrEmpty(obj2["language"]) && obj2["language"].length > 12 ? "en" : obj2["language"];
+      obj2 = this.processBlocksValues(obj2);
+    }
+
+    /*if (this.selectedLanguage !== obj2["createdOrg"]) {
+      obj1["category"] = obj2["category"];
+
+
+      if (this.selectedLanguage === "-1") {
+        obj2["category"] = obj1.category;
+      } else {
+        obj2["category"] = this.selectedLanguage;
+      }
+    }*/
+
+
+    for (let i = 0; i < this.languageList.length; i++) {
+      var currLang = this.languageList[i];
+
+      if (currLang["code"] !== this.selectedLanguage) {
+        delete obj1[currLang["code"]];
+        delete obj2[currLang["code"]];
+      }
+    }
+
+    if (!this.utils.isEmptyObject(obj1) && obj1.hasOwnProperty("blocks") && obj1["blocks"].length > 0) {
+      for (let i = 0; i < obj1.blocks.length; i++) {
+        var blockObj = obj1.blocks[i];
+        if (blockObj.hasOwnProperty("version")) {
+          delete blockObj["version"];
+        }
+
+        if (blockObj.hasOwnProperty("weight")) {
+          delete blockObj["weight"];
+        }
+
+        if (blockObj.hasOwnProperty("data") && blockObj.data.hasOwnProperty("category")) {
+          delete blockObj["data"]["category"];
+        }
+
+        if (blockObj.hasOwnProperty("data") && blockObj.data.hasOwnProperty("categoryName")) {
+          delete blockObj["data"]["categoryName"];
+        }
+
+        delete blockObj["tileId"];
+      };
+    }
+
+    if (!this.utils.isEmptyObject(obj2) && obj2.hasOwnProperty("blocks") && obj2["blocks"].length > 0) {
+      for (let i = 0; i < obj2["blocks"].length; i++) {
+        var blockObj = obj2["blocks"][i];
+
+        if (blockObj.hasOwnProperty("version")) {
+          delete blockObj["version"];
+        }
+
+        if (blockObj.hasOwnProperty("weight")) {
+          delete blockObj["weight"];
+        }
+
+        if (blockObj.hasOwnProperty("data") && blockObj.data.hasOwnProperty("category")) {
+          delete blockObj["data"]["category"];
+        }
+
+        if (blockObj.hasOwnProperty("data") && blockObj.data.hasOwnProperty("categoryName")) {
+          delete blockObj["data"]["categoryName"];
+        }
+
+        delete blockObj["tileId"];
+      }
+    }
+
+    delete obj1['language'];
+    delete obj2['language'];
+    delete obj2['blockObj'];
+    delete obj2['rtl'];
+    delete obj1['rtl'];
+    delete obj1['hsrRuleEngine'];
+    delete obj1['serializeFunctions'];
+    delete obj1['premium'];
+    delete obj2['premium'];
+
+    if (obj1.hasOwnProperty('newBlocks')) {
+      delete obj1['newBlocks'];
+    }
+
+    if (obj2.hasOwnProperty('newBlocks')) {
+      delete obj2['newBlocks'];
+    }
+
+    var result = this.utils.compareObj(obj1, obj2);
+
+    return result;
+  };
+
+  processBlocksValues(obj) {
+    if (!this.utils.isEmptyObject(obj) && obj.hasOwnProperty("blocks") && obj["blocks"].length > 0) {
+
+      for (let i = 0; i < obj.blocks; i++) {
+        var currBlock = obj.blocks[i];
+        var vobjRes = this.removeVisitedObj(currBlock);
+
+        if (vobjRes.result) {
+          delete currBlock[vobjRes.name];
+        }
+
+        if (currBlock["type"] == "startwrapper") {
+          if (!currBlock["data"]) {
+            var blockDataObj = {};
+            blockDataObj["refresh"] = false;
+            currBlock["data"] = blockDataObj;
+          }
+        }
+      }
+    }
+
+    return obj;
+  };
+
+  removeVisitedObj(currObj) {
+    var objConstructor = {}.constructor;
+    var objResult = { result: false, name: "" };
+
+    if (currObj && !$.isEmptyObject(currObj)) {
+      var keys = Object.keys(currObj);
+
+      for (let tobj = 0; tobj < keys.length; tobj++) {
+        var objExist = currObj[keys[tobj]];
+
+        if (objExist && objExist.constructor == objConstructor && objExist.hasOwnProperty('visited')) {
+          objResult["result"] = true;
+          objResult["name"] = keys[tobj];
+          break;
+        }
+      }
+    }
+
+    return objResult;
   };
 
   saveBlocks(isNewBlock: boolean, cb) {
@@ -666,7 +945,7 @@ export class WidgetsComponent implements OnInit {
     this.requiresLogin = false;
     this.enableZoom = false;
     this.rtl = false;
-    this.tileIdsUpdate = [];
+    this.tileIdsUpdate = {};
     this.tileIdsDelete = [];
   };
 
@@ -731,17 +1010,26 @@ export class WidgetsComponent implements OnInit {
       this.themeService.getThemes("", "", orgId)
         .then(themes => {
           this.tileThemes = themes;
+          this.getWhiteTheme();
         });
     }
   };
 
-  getWhiteTheme(themeObj: Object) {
-    if (!this.utils.isEmptyObject(themeObj)) {
-      if (themeObj.hasOwnProperty("name") && !this.utils.isNullOrEmpty(themeObj["name"]) && this.utils.trim(themeObj["name"].toLowerCase()) === "white") {
-        this.defaultThemeId = themeObj["_id"];
-        this.template = this.defaultThemeId;
+  getWhiteTheme() {
+    this.defaultThemeId = "-1";
+
+    if (this.utils.isArray(this.tileThemes) && this.tileThemes.length > 0) {
+      for (let i = 0; i < this.tileThemes.length; i++) {
+        var themeObj = this.tileThemes[i];
+
+        if (themeObj.hasOwnProperty("name") && !this.utils.isNullOrEmpty(themeObj["name"]) && this.utils.trim(themeObj["name"].toLowerCase()) === "white") {
+          this.defaultThemeId = themeObj["_id"];
+          break;
+        }
       }
     }
+
+    this.template = this.defaultThemeId;
   };
 
   organizationCheck(createdOrg: string, orgs: any[], cb) {

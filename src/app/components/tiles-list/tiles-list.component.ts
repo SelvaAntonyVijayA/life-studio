@@ -24,6 +24,7 @@ export class TilesListComponent {
   @Input('draggedTiles') draggedTiles: any[];
   @Input('isMerge') isMerge: Object;
   @Input('tilesToUpdate') tilesToUpdate: any[];
+  @Input('tilesObjectUpdate') tilesObjectUpdate: {};
   @Input("selectedTile") selectedTile: Object;
   @Input("tileToDelete") tileToDelete: string[];
   tileContent = new EventEmitter<any>();
@@ -268,7 +269,6 @@ export class TilesListComponent {
   };
 
   private releaseDrop(currTile: any) {
-
     if (currTile && !this.utils.isEmptyObject(currTile) && currTile.hasOwnProperty("_id")) {
       let index = this.tiles.map(function (t) { return t['_id']; }).indexOf(currTile._id);
 
@@ -443,35 +443,49 @@ export class TilesListComponent {
     return currTile;
   };
 
-  getTileUpdate(currTiles: any[]) {
-    if (currTiles.length > 0) {
-      var currTileId = Object.keys(currTiles[0]);
-      var isNew = currTiles[0][currTileId[0]];
+  getTileUpdate(currTiles: Object) {
+    if (!this.utils.isEmptyObject(currTiles)) {
+      var resCount = 0;
+      var resEmitted = false;
+      let tileToSend: Tile;
+      var currTileIds = Object.keys(currTiles);
 
-      this.tileService.getTiles(this.selectedOrg, currTileId[0]).then(tileList => {
-        let tileObj : Tile;
+      for (let i = 0; i < currTileIds.length; i++) {
+        this.tileService.getTiles(this.selectedOrg, currTileIds[i]).then(tileList => {
+          let tileObj: Tile;
+          var isNew = false;
 
-        if (this.utils.isArray(tileList) && tileList[0]) {
-          tileObj = this.tileNotifyIcons(tileList[0]);
-        }
-
-        if (!isNew) {
-          var tileIdx = this.tiles.map(function (tile) { return tile['_id']; }).indexOf(currTileId[0]);
-
-          if (tileIdx !== -1 && !this.utils.isEmptyObject(tileObj)) {
-            this.tiles[tileIdx] = tileObj;
+          if (this.utils.isArray(tileList) && tileList[0]) {
+            tileObj = this.tileNotifyIcons(tileList[0]);
+            isNew = currTiles[tileObj["_id"]];
           }
-        } else if(!this.utils.isEmptyObject(tileObj)) {
-          this.tiles.push(tileList[0]);
-        }
 
-        if (!this.utils.isEmptyObject(tileObj)) {
-          this.selectedTile = tileObj;
-          
-          var emitData = {"savedUpdated": true, "tile": tileObj};
-          this.tileContent.emit(emitData);
-        }
-      });
+          if (!isNew && !this.utils.isEmptyObject(tileObj)) {
+            var tileIdx = this.tiles.map(function (tile) { return tile['_id']; }).indexOf(tileObj["_id"]);
+
+            if (tileIdx !== -1) {
+              this.tiles[tileIdx] = tileObj;
+            }
+          } else if (!this.utils.isEmptyObject(tileObj)) {
+            this.tiles.push(tileObj);
+          }
+
+          if (currTileIds.length > 1 && currTileIds[0] === tileObj["_id"]) {
+            tileToSend = tileObj;
+          }
+
+          if (!this.utils.isEmptyObject(tileObj)) {
+            if ((currTileIds.length === 1) || (!resEmitted && currTileIds.length > 1 && !this.utils.isEmptyObject(tileToSend))) {
+              resEmitted = true;
+              this.selectedTile = currTileIds.length == 1 ? tileObj : tileToSend;
+
+              var emitData = { "savedUpdated": true };
+              emitData["tile"] = currTileIds.length == 1 ? tileObj : tileToSend;
+              this.tileContent.emit(emitData);
+            }
+          }
+        });
+      }
     }
   };
 
@@ -511,10 +525,12 @@ export class TilesListComponent {
     }
 
     if (cHObj.hasOwnProperty("tilesToUpdate") && cHObj["tilesToUpdate"]["currentValue"].length > 0) {
+      this.updateTileData(cHObj["tilesToUpdate"]["currentValue"]);
+    }
+
+    if (cHObj.hasOwnProperty("tilesObjectUpdate") && !this.utils.isEmptyObject(cHObj["tilesObjectUpdate"]["currentValue"])) {
       if (this.page === "tiles") {
-        this.getTileUpdate(cHObj["tilesToUpdate"]["currentValue"]);
-      } else {
-        this.updateTileData(cHObj["tilesToUpdate"]["currentValue"]);
+        this.getTileUpdate(cHObj["tilesObjectUpdate"]["currentValue"]);
       }
     }
 
