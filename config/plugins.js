@@ -21,7 +21,8 @@ var plugins = {
   "member": "member",
   "memberblockdata": "memberblockdata",
   "db": "database",
-  "image": "image"
+  "image": "image",
+  "log": "log"
 };
 
 module.exports = function (appPath, dirName, app) {

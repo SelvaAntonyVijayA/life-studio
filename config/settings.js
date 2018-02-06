@@ -114,7 +114,7 @@ module.exports = {
     "warn": false,
     "info": false,
     "store": "files",
-    "filepath": "/apps/tilist/log/tilist.log"
+    "filepath": "log/tilist.log"
   },
   "blog": {
     "client_id": 42666,

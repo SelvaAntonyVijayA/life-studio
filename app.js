@@ -10,10 +10,12 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const env = process.env.NODE_ENV || 'development';
+const fs = require('fs');
 //var mongoose = require('mongoose');
 //var db = require('./config/db-connect');
 const app = express();
 var context = require('./app-middlewares/context');
+var logDirectory = path.join(__dirname, 'log');
 
 app.set('settings', require(path.join(process.cwd(), 'config', 'settings')));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -33,6 +35,9 @@ var routes = require('./config/routes');
 //db(mongoose, app);
 plugins(path, __dirname, app);
 routes(app);
+
+// ensure log directory exists
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
