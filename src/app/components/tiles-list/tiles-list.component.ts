@@ -26,7 +26,7 @@ export class TilesListComponent {
   @Input('tilesToUpdate') tilesToUpdate: any[];
   @Input('tilesObjectUpdate') tilesObjectUpdate: {};
   @Input("selectedTile") selectedTile: Object;
-  @Input("tileToDelete") tileToDelete: string[];
+  @Input("tilesToDelete") tilesToDelete: string[];
   tileContent = new EventEmitter<any>();
   //private organizations: any[] = [];
   tileCategories: any[] = [];
@@ -75,6 +75,7 @@ export class TilesListComponent {
 
   categoryChange(catId: string) {
     this.selectedCategory = catId;
+    this.tileContent.emit({ "tileCategory": catId });
   };
 
   trackByIndex(index: number, obj: any): any {
@@ -89,6 +90,15 @@ export class TilesListComponent {
     if (data.hasOwnProperty("dropped")) {
       this.releaseDrop(data["dropped"]);
     } else {
+
+      if (this.page === "tiles") {
+        data["isNew"] = true;
+
+        if (data.hasOwnProperty("tile")) {
+          this["selectedTile"] = data["tile"];
+        }
+      }
+
       this.tileContent.emit(data);
     }
   };
@@ -288,19 +298,19 @@ export class TilesListComponent {
     var tileIndexes = [];
     var tileDatas = this.tiles.filter(function (currTile) {
       var tIndex = tileIds.indexOf(currTile["_id"]);
-
+  
       if (tIndex > -1) {
         tileIndexes.push(tIndex);
       }
       return currTile && tileIds.indexOf(currTile["_id"]) > -1;
     });
-
+  
     if (tileIndexes.length > 0) {
       for (let i = 0; i < tileIndexes.length; i++) {
         this.tiles.splice(tileIndexes[i], 1);
       }
     }
-
+  
     if (tileDatas.length > 0) {
       this.tileContent.emit({ "draggedTiles": tileDatas });
     }
@@ -448,6 +458,8 @@ export class TilesListComponent {
       var resCount = 0;
       var resEmitted = false;
       let tileToSend: Tile;
+      var isEmit = currTiles.hasOwnProperty("noEmit") ? false : true;
+      delete currTiles["noEmit"];
       var currTileIds = Object.keys(currTiles);
 
       for (let i = 0; i < currTileIds.length; i++) {
@@ -470,16 +482,19 @@ export class TilesListComponent {
             this.tiles.push(tileObj);
           }
 
-          if (currTileIds.length > 1 && currTileIds[0] === tileObj["_id"]) {
+          if (currTileIds.length > 1 && !this.utils.isEmptyObject(tileObj) && currTileIds[0] === tileObj["_id"]) {
             tileToSend = tileObj;
           }
 
-          if (!this.utils.isEmptyObject(tileObj)) {
+          if (!this.utils.isEmptyObject(tileObj) && isEmit) {
             if ((currTileIds.length === 1) || (!resEmitted && currTileIds.length > 1 && !this.utils.isEmptyObject(tileToSend))) {
               resEmitted = true;
               this.selectedTile = currTileIds.length == 1 ? tileObj : tileToSend;
 
-              var emitData = { "savedUpdated": true };
+              var emitKey = isNew ? "assignBlocks" : "savedUpdated";
+              var emitData = {};
+              emitData[emitKey] = true;
+
               emitData["tile"] = currTileIds.length == 1 ? tileObj : tileToSend;
               this.tileContent.emit(emitData);
             }

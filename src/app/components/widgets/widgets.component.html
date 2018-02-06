@@ -4,8 +4,7 @@
     <div class="tile_form">
       <input id="txtTileTitle" [(ngModel)]="tileTitle" class="ili-form tile_title" placeholder="Title" type="text">
       <div class="tile_language">
-        <select [(ngModel)]="selectedLanguage" class="form-control input-sm lang_tile" 
-          placeholder="Select Language">
+        <select [(ngModel)]="selectedLanguage" class="form-control input-sm lang_tile" placeholder="Select Language">
           <option *ngFor="let lang of languageList; let i = index" [value]="lang?.code">{{lang?.name}}</option>
         </select>
       </div>
@@ -50,7 +49,7 @@
       <button (click)="duplicateTile($event)" class="ili-btn duplicate_tile_btn">
         Duplicate
       </button>
-      <button class="ili-btn delete_tile_btn">
+      <button (click)="deleteTile($event)" class="ili-btn delete_tile_btn">
         Delete
       </button>
       <button class="ili-btn preview_tile_btn">
@@ -501,8 +500,8 @@
 
     <!-- Tiles List -->
 
-    <tiles-list [selectedTile]="selectedTile" (tileContent)="getTileContent($event)" [tilesObjectUpdate]="tileIdsUpdate" [organizations]="organizations"
-      [page]="'tiles'"></tiles-list>
+    <tiles-list [selectedTile]="selectedTile" [tilesToDelete]="tileIdsDelete" (tileContent)="getTileContent($event)" [tilesObjectUpdate]="tileIdsUpdate"
+      [organizations]="organizations" [page]="'tiles'"></tiles-list>
   </div>
   <!-- </div> -->
 </div>

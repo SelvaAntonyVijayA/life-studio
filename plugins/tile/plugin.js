@@ -316,12 +316,61 @@ var updateTileWithBlocksData = function (tileId, blockIds) {
   }
 };
 
+var remove = function (req, res, next) {
+  $async.waterfall([
+    function (callback) {
+      options = {};
+      query = {};
+      query._id = req.params.tileId;
+
+      $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.tile, query, options, function (tiles) {
+        callback(null, tiles);
+      });
+    },
+    function (tiles, callback) {
+      if (tiles.length > 0) {
+        if (tiles[0].blocks && tiles[0].blocks.length > 0) {
+          var blockQuery = {};
+          options = {};
+          blockQuery._id = tiles[0].blocks;
+
+          $tileblock._remove(blockQuery, options, function (result) {
+            callback(null, result);
+          });
+        } else {
+          callback(null, {});
+        }
+      } else {
+        callback(null, {});
+      }
+
+    }], function (err, result) {
+      options = {};
+      query = {};
+      query._id = req.params.tileId;
+
+      _removeTile(query, options, function (result) {
+        var obj = {};
+        obj.deleted = result;
+        res.send(obj);
+      });
+    });
+};
+
+var _removeTile = function (queryRemoveTile, options, cb) {
+  $db.remove(settingsConf.dbname.tilist_core, settingsConf.collections.tile, queryRemoveTile, options, function (result) {
+    if (cb) {
+      cb(result);
+    }
+  });
+};
 
 module.exports = {
   "init": init,
   "save": save,
   "saveTile": saveTile,
   "list": list,
+  "remove": remove,
   "_getTiles": _getTiles,
   "tileByIds": tileByIds,
   "getSpecificFields": getSpecificFields,

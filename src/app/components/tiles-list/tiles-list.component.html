@@ -54,8 +54,8 @@
   <div id="main-tiles-container" class='tiles_list_show_tiles'>
     <!--  <div style="overflow: hidden; width: 100%; float: left; height: 723px;" slimScroll [options]="opts"> -->
     <!-- <div [iliDraggable]="{data: tile}" *ngFor="let tile of (tiles | filterByText:'title':tileSearchText | orderBy:sortOpt['isAsc']:sortOpt['values'][sortOpt['selectedOpt']][0]: sortOpt['values'][sortOpt['selectedOpt']][1]); let i = index; trackBy: trackByIndex"> -->
-      <tiles (tileData)="getTileData($event)" [selectedTile]="selectedTile" [listType]="listType" [page]="page" [tile]="tile" *ngFor="let tile of (tiles | filterByText:'title':tileSearchText | orderBy:sortOpt['isAsc']:sortOpt['values'][sortOpt['selectedOpt']][0]: sortOpt['values'][sortOpt['selectedOpt']][1]); let i = index; trackBy: trackByTileId"></tiles>
-      <!-- </div> -->
-   <!-- </div> -->
+    <tiles (tileData)="getTileData($event)" [selectedTile]="selectedTile" [listType]="listType" [page]="page" [tile]="tile" *ngFor="let tile of (tiles | filterByText:'title':tileSearchText | filterByText:'category': selectedCategory | orderBy:sortOpt['isAsc']:sortOpt['values'][sortOpt['selectedOpt']][0]: sortOpt['values'][sortOpt['selectedOpt']][1]); let i = index; trackBy: trackByTileId"></tiles>
+    <!-- </div> -->
+    <!-- </div> -->
   </div>
 </div>

@@ -63,6 +63,7 @@ export class WidgetsComponent implements OnInit {
   tileIdsDelete: string[] = [];
   tileThemes: any[] = [];
   defaultThemeId: string = "-1";
+  orgTileCategory: string = "-1";
   private orgChangeDetect: any;
 
   constructor(
@@ -348,12 +349,12 @@ export class WidgetsComponent implements OnInit {
     }
   };
 
-  saveTile(tileObj: Object, deleteId?: string, savedBlocks?: any[], isUpdate?: boolean, isDuplicate?: boolean, updatedId?: string) {
+  saveTile(tileObj: Object, deleteId?: string, savedBlocks?: any[], isUpdate?: boolean, isDuplicate?: boolean, updatedId?: string, newTileObj?: Object) {
     if (!this.utils.isEmptyObject(tileObj)) {
       this.tileService.saveTile(tileObj)
         .then(resTile => {
           if (!this.utils.isEmptyObject(resTile) && resTile.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(resTile["_id"])) {
-            if ((!isUpdate && isDuplicate)) {
+            if (!isUpdate && !isDuplicate) {
               var isNew = tileObj.hasOwnProperty("_id") ? false : true;
               this.tileIdsUpdate = {};
               this.tileIdsDelete = [];
@@ -372,9 +373,20 @@ export class WidgetsComponent implements OnInit {
               this.tileIdsUpdate = {};
               this.tileIdsDelete = [];
               this.tileIdsUpdate[resTile["_id"]] = true;
-              this.tileIdsUpdate[updatedId] = false;
-              
+
+              if (updatedId !== "-1") {
+                this.tileIdsUpdate[updatedId] = false;
+              }
+
               this.utils.iAlert('success', '', 'Tile duplicated successfully');
+              this.assignBlockData(savedBlocks);
+            } else if (isUpdate && isDuplicate) {
+              this.tileSave("", false, true, true);
+            } else if (isUpdate && !isDuplicate) {
+              var isNew = tileObj.hasOwnProperty("_id") ? false : true;
+              this.tileIdsUpdate = { "noEmit": true };
+              this.tileIdsUpdate[resTile["_id"]] = isNew;
+              this.setTileContent(newTileObj, true);
             }
           }
         });
@@ -419,7 +431,7 @@ export class WidgetsComponent implements OnInit {
   };
 
   getTileObj() {
-    var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? this.selectedTile : {};
+    var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? Object.assign({}, this.selectedTile) : {};
     var tile = {};
 
     if (!this.utils.isEmptyObject(currTileExists)) {
@@ -440,6 +452,7 @@ export class WidgetsComponent implements OnInit {
     tile["notes"] = this.tileNotes;
     tile["art"] = this.art;
     tile["organizationId"] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("organizationId") ? this.getOrganizationIds(currTileExists["organizationId"]) : [this.selectedOrganization];
+
     tile["createdOrg"] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("createdOrg") ? currTileExists["createdOrg"] : this.selectedOrganization;
     tile["lastUpdatedOn"] = (new Date()).toUTCString();
     tile["type"] = "content";
@@ -457,8 +470,23 @@ export class WidgetsComponent implements OnInit {
     return tile;
   };
 
-  tileSave(e: any, isUpdate: boolean, isDuplicate: boolean) {
+  tileSave(e: any, isUpdate: boolean, isDuplicate: boolean, updated?: boolean, newTileObj?: Object) {
+    if (!this.utils.isNullOrEmpty(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    var updateId = "-1";
     var tileObj = this.getTileObj();
+
+    if (!isUpdate && isDuplicate) {
+      if (updated) {
+        updateId = tileObj["_id"];
+      }
+
+      tileObj["title"] = "Copy of " + tileObj["title"];
+      delete tileObj["_id"];
+    }
 
     if (this.utils.isNullOrEmpty(tileObj["title"])) {
       this.utils.iAlert('error', 'Information', 'You must at least enter a Tile title');
@@ -489,7 +517,7 @@ export class WidgetsComponent implements OnInit {
           delete currTileObj["rtl"];
         }
 
-        this.saveTile(currTileObj, deleteId, blks, isUpdate, isDuplicate);
+        this.saveTile(currTileObj, deleteId, blks, isUpdate, isDuplicate, updateId, newTileObj);
       });
     });
   };
@@ -505,7 +533,7 @@ export class WidgetsComponent implements OnInit {
       if (orgs.length > 0) {
         this.organizationCheck(createdOrg, orgs, (result1, result2) => {
           if ((result1 === 0 && result2 === 0) || (result1 === 2 && result2 === 2)) {
-            var obj2 = !this.utils.isEmptyObject(this.selectedTile) ? this.selectedTile : {};
+            var obj2 = !this.utils.isEmptyObject(this.selectedTile) ? Object.assign({}, this.selectedTile) : {};
             var title = this.tileTitle;
 
             if (title === obj2["title"]) {
@@ -552,23 +580,84 @@ export class WidgetsComponent implements OnInit {
 
   duplicateTile(e: any) {
     e.preventDefault();
-    var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? this.selectedTile : {};
+    var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? Object.assign({}, this.selectedTile) : {};
 
     if (!this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("_id")) {
       this.newTile('Would you like to save your work and duplicate?', 'Yes', 'No', (isChanged, auto) => {
         if (isChanged) {
-
+          this.tileSave("", true, true);
         } else {
-
+          this.tileSave("", false, true);
         }
       });
     }
-
   };
+
+  deleteTile(e: any) {
+    e.preventDefault();
+    var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? Object.assign({}, this.selectedTile) : {};
+
+    if (!this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("_id")) {
+      this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Tile?", "Delete", "Cancel", (r) => {
+        if (r["resolved"]) {
+          var apps = currTileExists.hasOwnProperty("Apps") ? currTileExists["Apps"] : [];
+          var procedure = currTileExists.hasOwnProperty("Procedure") ? currTileExists["Procedure"] : [];
+          var isDelete = (apps.length == 0) && (procedure.length == 0) ? true : false;
+          var orgIds = currTileExists.hasOwnProperty("organizationId") ? this.getOrganizationIds(currTileExists["organizationId"]) : [];
+          var orgIdx = orgIds.indexOf(this.selectedOrganization);
+          var assignedOrg = orgIdx !== -1 ? orgIds[orgIdx] : "";
+
+          if (!isDelete) {
+            this.utils.iAlert('info', 'Information', 'This Tile cannot be deleted because it is being used in Apps');
+            return;
+          }
+
+          if (this.selectedOrganization === currTileExists["createdOrg"] && orgIds.length > 1) {
+            var html = "";
+
+            var orgNames = this.getOrganizationName(orgIds, currTileExists["createdOrg"]).split(',');
+            html += "<ul style='text-align: left;'>";
+
+            for (let i = 0; i < orgNames.length; i++) {
+              html += '<li>' + name + '</li>';
+            }
+
+            html += "<ul>";
+
+            this.utils.iAlert('info', 'Information', 'This Tile cannot be deleted because it is being used in other organizations <br/><br/>' + html);
+          } else if (orgIds.length === 1) {
+            this.tileService.tileRemove(currTileExists["_id"])
+              .then(delRes => {
+                if (delRes["deleted"]) {
+                  this.tileIdsDelete = [];
+                  this.tileIdsDelete.push(currTileExists["_id"]);
+
+                  this.utils.iAlert('success', '', 'Tile deleted successfully');
+                  this.widgetTileReset();
+                  this.tileIdsDelete.push(currTileExists["_id"]);
+                }
+              });
+          } else if (orgIds.length > 1) {
+            var currOrgs = orgIds;
+            var orgIdx = currOrgs.indexOf(this.selectedOrganization);
+            currOrgs.splice(orgIdx, 1);
+
+            var updateData = { "organizationId": currOrgs };
+            this.tileService.tileUpdate(currTileExists["_id"], updateData);
+            this.utils.iAlert('success', '', 'Tile deleted successfully');
+            this.widgetTileReset();
+            this.tileIdsDelete.push(currTileExists["_id"]);
+          }
+        }
+      });
+    } else {
+      this.utils.iAlert('info', '', 'Please select a Tile to delete');
+    }
+  }
 
   getTileValues() {
     var tile = {};
-    var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? this.selectedTile : {};
+    var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? Object.assign({}, this.selectedTile) : {};
 
     tile["_id"] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("_id") ? currTileExists["_id"] : "";
     tile["title"] = this.tileTitle;
@@ -594,7 +683,7 @@ export class WidgetsComponent implements OnInit {
     tile["blocks"] = currBlks;
 
     if (!this.utils.isNullOrEmpty(tile["_id"]) && this.selectedLanguage != "en") {
-      tile[this.selectedLanguage] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty(this.selectedLanguage) ? Object.assign(currTileExists[this.selectedLanguage]) : {};
+      tile[this.selectedLanguage] = !this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty(this.selectedLanguage) ? Object.assign({}, currTileExists[this.selectedLanguage]) : {};
       tile[this.selectedLanguage].title = this.tileTitle;
       tile[this.selectedLanguage].notes = this.tileNotes;
       delete tile["title"];
@@ -613,14 +702,14 @@ export class WidgetsComponent implements OnInit {
   objMatching() {
     var id = $('.tile_id').val();
     var selectedLanguage = $('#tileLanguage').val();
-    var obj1 = Object.assign(this.getTileValues());
+    var obj1 = Object.assign({}, this.getTileValues());
     var obj2 = {};
 
     if (obj1.hasOwnProperty("_id")) {
-      obj2 = !this.utils.isEmptyObject(this.selectedTile) ? Object.assign(this.selectedTile) : {};
+      obj2 = !this.utils.isEmptyObject(this.selectedTile) ? Object.assign({}, this.selectedTile) : {};
       delete obj2['blocks'];
 
-      obj2["blocks"] = this.tileBlocks;
+      obj2["blocks"] = this.tileBlocks.length > 0 ? this.tileBlocks.map(x => Object.assign({}, x)) : [];
 
       if (obj2["blocks"].length > 0) {
         obj2["blocks"][0]["type"] = obj2["blocks"][0].hasOwnProperty("type") && obj2["blocks"][0]["type"] === "url" ? "exclusiveurl" : obj2["blocks"][0]["type"];
@@ -649,7 +738,7 @@ export class WidgetsComponent implements OnInit {
       delete obj2['serializeFunctions'];
       delete obj2['blocksData'];
       delete obj2['isWeight'];
-
+    
       delete obj2['isNotification'];
       delete obj2['isSmart'];
       delete obj2['isProcedure'];
@@ -694,8 +783,8 @@ export class WidgetsComponent implements OnInit {
     }
 
     if (!this.utils.isEmptyObject(obj1) && obj1.hasOwnProperty("blocks") && obj1["blocks"].length > 0) {
-      for (let i = 0; i < obj1.blocks.length; i++) {
-        var blockObj = obj1.blocks[i];
+      for (let i = 0; i < obj1["blocks"].length; i++) {
+        var blockObj = obj1["blocks"][i];
         if (blockObj.hasOwnProperty("version")) {
           delete blockObj["version"];
         }
@@ -848,39 +937,58 @@ export class WidgetsComponent implements OnInit {
 
   /* Getting the tile content datas */
   getTileContent(tileObj: any) {
-    if (!this.utils.isEmptyObject(tileObj) && !tileObj.hasOwnProperty("savedUpdated")) {
-      this.widgetTileReset();
-
-      if (tileObj.hasOwnProperty("tileCategories")) {
-        this.tileCategories = tileObj.tileCategories;
-      }
-
-      if (tileObj.hasOwnProperty("orgId")) {
-        this.resetWidgetDatas();
-        this.selectedOrganization = tileObj.orgId;
-
-        if (this.organizations.length > 0) {
-          this.setWidgetDatas();
-        }
-      }
-
-      if (tileObj.hasOwnProperty("tile")) {
-        this.setTile(tileObj.tile);
-      }
-
-      if (tileObj.hasOwnProperty("blocks")) {
-        this.tileBlocks = tileObj.blocks;
-
-        if (this.tileBlocks.length > 0) {
-          for (let i = 0; i < this.tileBlocks.length; i++) {
-            var currentBlock = this.tileBlocks[i];
-            var type = this.tileBlocks[i].hasOwnProperty("type") ? this.tileBlocks[i].type : "";
-            this.loadWidgets(type, currentBlock);
+    if (!this.utils.isEmptyObject(tileObj) && !tileObj.hasOwnProperty("savedUpdated") || tileObj.hasOwnProperty("assignBlocks")) {
+      if (tileObj.hasOwnProperty("isNew")) {
+        this.newTile('Would you like to save your previous work?', 'Save', 'Discard', (isChanged, auto) => {
+          if (isChanged) {
+            this.tileSave("", true, false, false, tileObj);
+          } else {
+            this.setTileContent(tileObj);
           }
-        }
+        });
+      } else {
+        this.setTileContent(tileObj);
       }
     } else if (!this.utils.isEmptyObject(tileObj) && tileObj.hasOwnProperty("savedUpdated")) {
       this.selectedTile = tileObj.hasOwnProperty("tile") ? tileObj["tile"] : {};
+    }
+  };
+
+  setTileContent(tileObj: Object, isUpdate?: boolean) {
+    var isBlocks = tileObj.hasOwnProperty("assignBlocks") ? true : false;
+    this.widgetTileReset(false, isBlocks, isUpdate);
+
+    if (tileObj.hasOwnProperty("tileCategories")) {
+      this.tileCategories = tileObj["tileCategories"];
+    }
+
+    if (tileObj.hasOwnProperty("orgId")) {
+      this.resetWidgetDatas(true);
+      this.selectedOrganization = tileObj["orgId"];
+
+      if (this.organizations.length > 0) {
+        this.setWidgetDatas();
+      }
+    }
+
+    if (tileObj.hasOwnProperty("tile")) {
+      this.setTile(tileObj["tile"]);
+    }
+
+    if (tileObj.hasOwnProperty("tileCategory")) {
+      this.orgTileCategory = tileObj["tileCategory"];
+    }
+
+    if (tileObj.hasOwnProperty("blocks")) {
+      this.tileBlocks = tileObj["blocks"];
+
+      if (this.tileBlocks.length > 0) {
+        for (let i = 0; i < this.tileBlocks.length; i++) {
+          var currentBlock = this.tileBlocks[i];
+          var type = this.tileBlocks[i].hasOwnProperty("type") ? this.tileBlocks[i].type : "";
+          this.loadWidgets(type, currentBlock);
+        }
+      }
     }
   };
 
@@ -919,8 +1027,11 @@ export class WidgetsComponent implements OnInit {
       .then(tileCategories => this.tileCategories = tileCategories);
   };*/
 
-  resetWidgetDatas() {
-    this.widgetTileReset();
+  resetWidgetDatas(isChanged: boolean) {
+    if (!isChanged) {
+      this.widgetTileReset();
+    }
+
     this.profileDatas = [];
     this.tileCategories = [];
     //this.selectedTileCategory = {};
@@ -930,12 +1041,15 @@ export class WidgetsComponent implements OnInit {
     this.defaultThemeId = "-1";
   };
 
-  widgetTileReset(isNew?: boolean) {
+  widgetTileReset(isNew?: boolean, isBlocks?: boolean, isUpdate?: boolean) {
     if (!isNew) {
       this.resetTile("");
     }
 
-    this.tileBlocks = [];
+    if (!isBlocks) {
+      this.tileBlocks = [];
+    }
+
     this.selectedLanguage = "en";
     this.tileTitle = "";
     this.art = "/img/tile_default.jpg";
@@ -945,7 +1059,12 @@ export class WidgetsComponent implements OnInit {
     this.requiresLogin = false;
     this.enableZoom = false;
     this.rtl = false;
-    this.tileIdsUpdate = {};
+    this.orgTileCategory = "-1";
+
+    if (!isUpdate) {
+      this.tileIdsUpdate = {};
+    }
+
     this.tileIdsDelete = [];
   };
 
@@ -1090,7 +1209,7 @@ export class WidgetsComponent implements OnInit {
       this.setOrganizations();
       this.oid = Cookie.get('oid');
       this.selectedOrganization = this.oid;
-      this.resetWidgetDatas();
+      this.resetWidgetDatas(false);
       this.getLanguages();
       this.getThemes(this.selectedOrganization);
 

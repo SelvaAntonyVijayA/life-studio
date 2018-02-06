@@ -12,6 +12,7 @@ module.exports = function (app) {
   router.all('/tile/list/:organizationId*?', $tile.list);
   router.post('/tile/tilebyids/', $tile.tileByIds);
   router.all('/tile/update/:tileId', $tile.update);
+  router.get('/tile/remove/:tileId', $tile.remove);
   router.post('/tileblock/save', $tileblock.save);
   router.all('/tileblock/tile/:tileId*?', $tileblock.getBlocks);
   router.get('/tileblock/getprofile/:orgId/:language*?', $tileblock.getProfile);

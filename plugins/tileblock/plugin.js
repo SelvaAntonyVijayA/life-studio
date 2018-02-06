@@ -161,6 +161,15 @@ var block = function (query, options, cb) {
   });
 };
 
+var _remove = function (blockQuery, options, cb) {
+  $db.remove(settingsConf.dbname.tilist_core, settingsConf.collections.tileBlocks, blockQuery, options, function (result) {
+    var obj = {};
+    obj.deleted = result;
+
+    cb(obj);
+  });
+};
+
 module.exports = {
   "init": init,
   "save": save,
@@ -170,5 +179,6 @@ module.exports = {
   "_getBlocks": _getBlocks,
   "widgetCategoryList": widgetCategoryList,
   "updateBlock": updateBlock,
-  "block": block
+  "block": block,
+  "_remove": _remove
 };
