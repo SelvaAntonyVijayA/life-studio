@@ -9,6 +9,9 @@
 # dependencies
 /node_modules
 
+# images
+/src/img/orgs
+
 # log
 /log
 

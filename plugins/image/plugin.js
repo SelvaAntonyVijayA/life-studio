@@ -1,4 +1,4 @@
-var imageConf, appConf;
+var imageConf, appConf, __appPath;
 const fs = require('fs');
 const path = require('path');
 const easyImg = require('easyimage');
@@ -7,6 +7,7 @@ const util = require('util');
 var init = function (app) {
   appConf = app.get('settings');
   imageConf = appConf["image"];
+  __appPath = appConf["path"];
 };
 
 var list = function (req, res, next) {
