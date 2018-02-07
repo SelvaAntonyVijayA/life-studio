@@ -150,7 +150,7 @@ export class NgSelectComponent implements OnInit, OnDestroy, OnChanges, AfterVie
         return this.loading || this._typeaheadLoading;
     }
 
-    ngOnChanges(changes: SimpleChanges) {
+    ngOnChanges(changes: any) {
         if (changes.multiple) {
             this.itemsList.clearSelected();
         }

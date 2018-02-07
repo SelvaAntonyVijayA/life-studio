@@ -17,7 +17,7 @@ module.exports = {
       "password": "M$tsy$2011"
     }
   },
-  "domain": "http://localhost:90",
+  "domain": "http://localhost:8080",
   "authDomain": "http://staging.interactivelife.me",
   "dbname": {
     "tilist_core": "tilist-core",

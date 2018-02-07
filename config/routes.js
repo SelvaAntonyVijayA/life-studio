@@ -48,7 +48,7 @@ module.exports = function (app) {
   router.post('/procedure/save', $procedure.save);
   router.get("/procedure/remove/:procedureId", $procedure.remove);
   router.all('/image/upload', $image.upload);
-  router.get('/image/list/:orgId', $image.list);
+  router.get('/image/list/:orgId/:folder*?', $image.list);
   router.all('/image/crop', $image.crop);
   router.get('/image/folder/list/:orgId', $image.folder);
   router.post('/image/folder/save', $image.saveFolder);
@@ -60,7 +60,7 @@ module.exports = function (app) {
   router.get('/image/listbggroup/', $image.bgGroupList);
   router.all('/image/emoticonsupload/', $image.emoticonsUpload);
   router.get('/image/emoticonslist/:orgId', $image.emoticonsList);
-  router.all('/image/emoticons/delete/:orgId*', $image.emoticonsDelete);
+  router.all('/image/emoticons/delete/:orgId*?', $image.emoticonsDelete);
   router.all('/image/profileupload', $image.profiePictureUpload);
   router.all('/image/profileEncodeupload', $image.profieEncodeUpload);
   router.all('/image/streamupload', $image.streamUpload);
@@ -69,12 +69,12 @@ module.exports = function (app) {
   router.all('/image/streamslist/:orgId', $image.streamList);
   router.all('/image/formphotoupload/', $image.formPhotoUpload);
   router.all('/exclusive/file/upload', $image.exclusiveFileUpload);
-  router.get('/img/orgs/:orgId/:folder*/:name*', $image.resize);
-  router.get('/img/apps/:appId/:pageId*/:name*', $image.resize);
-  router.get('/img/emoticons/:orgId/:name*', $image.resize);
-  router.get('/img/groups/:type/:id*/:name*', $image.resize);
-  router.get('/img/streams/:streamId/:name*', $image.resize);
-  router.get('/img/profile/:memberId/:name*', $image.resize);
+  router.get('/img/orgs/:orgId/:folder*?/:name*?', $image.resize);
+  router.get('/img/apps/:appId/:pageId*?/:name*?', $image.resize);
+  router.get('/img/emoticons/:orgId/:name*?', $image.resize);
+  router.get('/img/groups/:type/:id*?/:name*?', $image.resize);
+  router.get('/img/streams/:streamId/:name*?', $image.resize);
+  router.get('/img/profile/:memberId/:name*?', $image.resize);
 
   router.all('/files/delete/:orgId*', $image.fileDelete);
   router.get('/files/url/:orgId', $image.urlList);
