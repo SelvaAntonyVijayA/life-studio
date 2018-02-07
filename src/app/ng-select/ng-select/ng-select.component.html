@@ -1,0 +1,91 @@
+<div (click)="searchable ? open() : toggle()" class="ng-control">
+    <div class="ng-value-container">
+        <div class="ng-placeholder" [hidden]="!showPlaceholder()">{{placeholder}}</div>
+        
+        <div class="ng-value" *ngFor="let item of selectedItems">
+            
+            <ng-template #defaultLabelTemplate>
+                <div class="ng-value-wrapper default" [class.disabled]="item.disabled">
+                    <span class="ng-value-icon left" (click)="unselect(item); $event.stopPropagation()" aria-hidden="true">×</span>
+                    <span class="ng-value-label" [innerHTML]="item.label"></span>
+                </div>
+            </ng-template>
+
+            <ng-template
+                [ngTemplateOutlet]="labelTemplate || defaultLabelTemplate"
+                [ngTemplateOutletContext]="{ item: item.value, clear: clearItem }">
+            </ng-template>
+        </div>
+
+        <div *ngIf="showFilter()" class="ng-input">
+            <input #filterInput
+                   type="text"
+                   [readOnly]="!searchable"
+                   [value]="filterValue"
+                   (input)="onFilter(filterInput.value)"
+                   (focus)="onInputFocus($event)"
+                   (blur)="onInputBlur($event)"
+                   (change)="onSelectChangeEvent($event, filterInput.value)"
+                   role="combobox">
+        </div>
+    </div>
+
+    <spinner class="ng-spinner-zone" *ngIf="isLoading"></spinner>
+
+    <span *ngIf="showClear()" (click)="handleClearClick($event)" class="ng-clear-zone" title="{{clearAllText}}">
+        <span class="ng-clear" aria-hidden="true">×</span>
+    </span>
+
+    <span (click)="handleArrowClick($event)" class="ng-arrow-zone">
+        <span class="ng-arrow"></span>
+    </span>
+</div>
+
+<div class="ng-select-dropdown-outer" [class.top]="dropdownPosition === 'top'" [class.bottom]="dropdownPosition === 'bottom'" [ngStyle]="{'visibility': isOpen ? 'visible': 'hidden'}" #dropdownPanel>
+    <div *ngIf="headerTemplate" class="ng-dropdown-header">
+        <ng-container [ngTemplateOutlet]="headerTemplate"></ng-container>
+    </div>
+    <ng-select-virtual-scroll class="ng-select-dropdown" [disabled]="disableVirtualScroll" [bufferAmount]="4" [items]="itemsList.filteredItems" (update)="viewPortItems = $event">
+        <div class="ng-option" role="option" (click)="toggleItem(item)" (mousedown)="$event.preventDefault()" (mouseover)="onItemHover(item)"
+             *ngFor="let item of viewPortItems"
+             [class.disabled]="item.disabled"
+             [class.selected]="item.selected"
+             [class.marked]="item === itemsList.markedItem">
+
+            <ng-template #defaultOptionTemplate>
+                <span class="ng-option-label" [innerHTML]="item.label"  [ngOptionHighlight]="filterValue"></span>
+            </ng-template>
+
+            <ng-template
+                [ngTemplateOutlet]="optionTemplate || defaultOptionTemplate"
+                [ngTemplateOutletContext]="{ item: item.value, index: item.index, searchTerm: filterValue }">
+            </ng-template>
+        </div>
+
+        <div class="ng-option" [class.marked]="!itemsList.markedItem" (mouseover)="itemsList.unmarkItem()" role="option" (click)="selectTag()" *ngIf="showAddTag()">
+            <span><span class="ng-tag-label">{{addTagText}}</span>"{{filterValue}}"</span>
+        </div>
+    </ng-select-virtual-scroll>
+
+    <div class="ng-select-dropdown" *ngIf="showNoItemsFound() && !showAddTag()">
+        <div class="ng-option disabled">
+            {{notFoundText}}
+        </div>
+    </div>
+
+    <div class="ng-select-dropdown" *ngIf="showTypeToSearch()">
+        <div class="ng-option disabled">
+            {{typeToSearchText}}
+        </div>
+    </div>
+
+    <div class="ng-select-dropdown" *ngIf="isLoading && itemsList.filteredItems.length === 0">
+        <div class="ng-option disabled">
+            {{loadingText}}
+        </div>
+    </div>
+
+    <div *ngIf="footerTemplate" class="ng-dropdown-footer">
+        <ng-container [ngTemplateOutlet]="footerTemplate"></ng-container>
+    </div>
+</div>
