@@ -21,6 +21,7 @@ import { PagesComponent } from '../../components/pages/pages.component';
 import { DemoComponent } from '../../components/demo/demo.component';
 import { NotificationsComponent } from '../../components/notifications/notifications.component';
 import { SmartComponent } from '../../components/smart/smart.component';
+import { ImagelibraryComponent } from '../../components/imagelibrary/imagelibrary.component';
 
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { HeaderService } from '../../services/header.service';
@@ -34,6 +35,8 @@ import { CategoryService } from '../../services/category.service';
 import { ProcedureService } from '../../services/procedure.service';
 import { ThemeService } from '../../services/theme.service';
 import { AlertService } from '../../services/alert.service';
+import { ImageService } from '../../services/image.service';
+
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 //import { DragDropDirectiveModule} from "angular4-drag-drop";
@@ -51,20 +54,21 @@ import { DateTimePickerDirective } from '../../helpers/date-time-picker.directiv
 import 'hammerjs';
 import 'mousetrap';
 import { GalleryModule } from '../../module/gallery.module';
+import { NgSelectModule } from '../../ng-select';
 
 @NgModule({
   imports: [
     CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule,
-    ColorPickerModule, CKEditorModule, GalleryModule.forRoot()
+    ColorPickerModule, CKEditorModule, GalleryModule.forRoot(), NgSelectModule
   ],
-  entryComponents: [TileBlocksComponents],
+  entryComponents: [TileBlocksComponents, ImagelibraryComponent],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
-    ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent],
+    ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
-    FolderService, AccountService, CategoryService, ProcedureService, ThemeService]
+    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService]
 })
 
 export class HomeModule { }

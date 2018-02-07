@@ -17,7 +17,7 @@ var list = function (req, res, next) {
   var rootFolder = __appPath + imageConf.imgfolderpath.replace('{0}', query.organizationId);
   var imageUrl = appConf.domain + imageConf.imgurlpath.replace('{0}', query.organizationId);
 
-  if (req.params.length == 2) {
+  if (!__util.isNullOrEmpty(req.params.folder)) {
     query.folder = req.params.folder;
     rootFolder = __appPath + imageConf.imgfolderpath.replace('{0}', query.organizationId) + query.folder + "/";
     imageUrl = appConf.domain + imageConf.imgurlpath.replace('{0}', query.organizationId) + query.folder + "/";
@@ -59,7 +59,7 @@ var upload = function (req, res, next) {
 };
 
 var uploadImage = function (req, res, next) {
-  var postData = JSON.parse(req.data.jsonPayload);
+  var postData = req.data.jsonPayload;
   var type = postData.type;
   var isEncoded = typeof req.data.isEncoded == 'undefined' || req.data.isEncoded == "false" ? false : true;
   var context = { "req": req, "res": res, "next": next };
@@ -145,12 +145,11 @@ var resize = function (req, res, next) {
 
 var crop = function (req, res, next) {
   var dstFileName = '';
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   var context = { "req": req, "res": res, "next": next };
-
   var fileName = obj.src.split('/').pop();
-
   var imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', req.cookie.oid);
+
   imagePath = !__util.isNullOrEmpty(obj.folder) ? imagePath + obj.folder + "/" : imagePath;
 
   if (!__util.isNullOrEmpty(obj.folder) && obj.folder == "stream") {
@@ -228,8 +227,11 @@ var folder = function (req, res, next) {
 };
 
 var saveFolder = function (req, res, next) {
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   var fileName = __appPath + imageConf.imgfolderpath.replace('{0}', obj.organizationId) + obj.name;
+
+  console.dir(obj)
+  console.dir(fileName)
 
   fs.exists(fileName, function (exists) {
     if (exists) {
@@ -249,7 +251,7 @@ var saveFolder = function (req, res, next) {
 };
 
 var remove = function (req, res, next) {
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   var isArray = obj.hasOwnProperty("src") && util.isArray(obj.src) ? true : false;
 
   if (isArray) {
@@ -437,7 +439,7 @@ var backgroundPatternUpload = function (req, res, next) {
 };
 
 var backgroundPatternRemove = function (req, res, next) {
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   var pageFrom = obj.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(obj.pagefrom) ? obj.pagefrom : "";
 
   var imagePath = __appPath + imageConf.imgAppFolderPath.replace('{0}', obj.appId);
@@ -471,7 +473,7 @@ var backgroundPatternRemove = function (req, res, next) {
 
 var backgroundPatternList = function (req, res, next) {
   var images = [];
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   var pageFrom = obj.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(obj.pagefrom) ? obj.pagefrom : "";
 
   var rootFolderPath = __appPath + imageConf.imgAppFolderPath.replace('{0}', obj.appId);
@@ -513,7 +515,7 @@ var backgroundPatternList = function (req, res, next) {
 };
 
 var bgGroupRemove = function (req, res, next) {
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   var isGroupIcon = false;
 
   if (obj && obj.hasOwnProperty("groupIcon")) {
@@ -557,7 +559,7 @@ var bgGroupRemove = function (req, res, next) {
 
 var bgGroupList = function (req, res, next) {
   var images = [];
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   var isGroupIcon = false;
 
   if (obj && obj.hasOwnProperty("groupIcon")) {
@@ -689,7 +691,7 @@ var emoticonsList = function (req, res, next) {
 };
 
 var emoticonsDelete = function (req, res, next) {
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   var imagePath = __appPath + imageConf.imgEmoticonsFolderPath.replace('{0}', req.params.orgId);
   imagePath = imagePath + obj.name;
 
@@ -870,7 +872,7 @@ var streamCrownUpload = function (req, res, next) {
 
 var streamList = function (req, res, next) {
   query = {};
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   query.organizationId = req.params.orgId;
 
   var rootFolder = __appPath + imageConf.imgStreamFolerPath.replace('{0}', obj._id);
@@ -986,7 +988,7 @@ var exclusiveFileUpload = function (req, res, next) {
 };
 
 var fileDelete = function (req, res, next) {
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   var imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', req.params.orgId);
   imagePath = imagePath + "url/" + obj.name;
 
@@ -1241,7 +1243,7 @@ var _uploadTileImage = function (context, isEncoded) {
 var _photoUpload = function (context, isEncoded) {
   var req = context["req"];
   var res = context["res"];
-  var obj = JSON.parse(req.data.jsonPayload);
+  var obj = req.data.jsonPayload;
 
   $async.waterfall([
     function (callback) {
@@ -1425,7 +1427,7 @@ var _decodeBase64Image = function (dataString) {
 var _drawImageUpload = function (context, isEncoded) {
   var req = context["req"];
   var res = context["res"];
-  var obj = JSON.parse(req.data.jsonPayload);
+  var obj = req.data.jsonPayload;
 
   $async.waterfall([
     function (callback) {
@@ -1553,7 +1555,7 @@ var _blankFormImageUpload = function (context, isEncoded) {
   var req = context["req"];
   var res = context["res"];
 
-  var obj = JSON.parse(req.data.jsonPayload);
+  var obj = req.data.jsonPayload;
 
   $async.waterfall([
     function (callback) {
@@ -1690,7 +1692,7 @@ var _resizeUploadedImage = function (context, path, fileName, retrn, categories)
   var urlRtrn = {};
   var curHeight;
   var curWidth;
-  var obj = !__util.isEmptyObject(req.body.form_data) ? JSON.parse(req.body.form_data) : {};
+  var obj = !__util.isEmptyObject(req.body.form_data) ? req.body.form_data : {};
   obj.folder = !__util.isEmptyObject(req.data) && !__util.isEmptyObject(req.data.folder) ? req.data.folder : !__util.isNullOrEmpty(obj.folder) ? obj.folder : '';
 
   easyImg.info(path, function (err, stdout, stderr) {
@@ -1832,7 +1834,7 @@ var _resizeOptions = function (context) {
 };
 
 var streamCrownImageRemove = function (req, res, next) {
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   var imagePath = __appPath + imageConf.imgStreamFolerPath.replace('{0}', obj.id);
   imagePath = imagePath + "crown/" + obj.fileName;
 
