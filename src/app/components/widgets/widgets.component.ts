@@ -106,199 +106,199 @@ export class WidgetsComponent implements OnInit {
     var blkLength = blocks.length;
 
     if (type === "text") {
-      blocks.push(new BlockItem(TextBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(TextBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "textView";
     }
 
     if (type === "video") {
-      blocks.push(new BlockItem(VideoBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(VideoBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "videoView";
     }
 
     if (type === "picture") {
-      blocks.push(new BlockItem(PictureBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(PictureBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "pictureView";
     }
 
     if (type === "disqus") {
-      blocks.push(new BlockItem(DisqusBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(DisqusBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "disqusView";
     }
 
     if (type === "feed") {
-      blocks.push(new BlockItem(SocialFeedBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(SocialFeedBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "feedView";
     }
 
     if (type === "calendar") {
-      blocks.push(new BlockItem(CalendarBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(CalendarBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "calendarView";
     }
 
     if (type === "share") {
-      blocks.push(new BlockItem(ShareBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(ShareBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "shareView";
     }
 
     if (type === "patients") {
-      blocks.push(new BlockItem(PatientsBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(PatientsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "patientsView";
     }
 
     if (type === "inquiry") {
-      blocks.push(new BlockItem(InquiryBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(InquiryBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "inquiryView";
     }
 
     if (type === "survey") {
-      blocks.push(new BlockItem(SurveyBlockComponent, new BlockOrganizer(blockData, type, [], this.widgetCategories, this.utils)));
+      blocks.push(new BlockItem(SurveyBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], this.widgetCategories, this.utils)));
       viewName = "surveyView";
     }
 
     if (type === "questionnaire") {
-      blocks.push(new BlockItem(QuestionnaireBlockComponent, new BlockOrganizer(blockData, type, [], this.widgetCategories, this.utils)));
+      blocks.push(new BlockItem(QuestionnaireBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], this.widgetCategories, this.utils)));
       viewName = "questionnaireView";
     }
 
     if (type === "startwrapper") {
-      blocks.push(new BlockItem(StartWrapperBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(StartWrapperBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "startWrapperView";
     }
 
     if (type === "title") {
-      blocks.push(new BlockItem(FormTitleBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(FormTitleBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "formTitleView";
     }
 
     if (type === "questions") {
-      blocks.push(new BlockItem(QuestionsBlockComponent, new BlockOrganizer(blockData, type, [], this.widgetCategories, this.utils)));
+      blocks.push(new BlockItem(QuestionsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], this.widgetCategories, this.utils)));
       viewName = "questionsView";
     }
 
     if (type === "attendance") {
-      blocks.push(new BlockItem(AttendanceBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(AttendanceBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "attendanceView";
     }
 
     if (type === "confirmation") {
-      blocks.push(new BlockItem(ConfirmationBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(ConfirmationBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "confirmationView";
     }
 
     if (type === "password") {
-      blocks.push(new BlockItem(PasswordBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(PasswordBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "passwordView";
     }
 
     if (type === "next") {
-      blocks.push(new BlockItem(NextBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(NextBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
 
       viewName = "nextView";
     }
 
     if (type === "formphoto") {
-      blocks.push(new BlockItem(FormPhotoComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(FormPhotoComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "formPhotoView";
     }
 
     if (type === "painlevel") {
-      blocks.push(new BlockItem(PainLevelComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(PainLevelComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "painLevelView";
     }
 
     if (type === "drawtool") {
-      blocks.push(new BlockItem(DrawToolBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(DrawToolBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "drawToolView";
     }
 
     if (type === "physician") {
-      blocks.push(new BlockItem(PhysicianBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(PhysicianBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "physicianView";
     }
 
     if (type === "endwrapper") {
-      blocks.push(new BlockItem(EndWrapperBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(EndWrapperBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "endWrapperView";
     }
 
     if (type === "fill") {
-      blocks.push(new BlockItem(FillBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      blocks.push(new BlockItem(FillBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "fillView";
     }
 
     if (type === "notes") {
-      this.blocks.push(new BlockItem(NotesBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      this.blocks.push(new BlockItem(NotesBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "notesView";
     }
 
     if (type === "buttons") {
-      this.blocks.push(new BlockItem(ButtonsBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      this.blocks.push(new BlockItem(ButtonsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "buttonsView";
     }
 
     if (type === "contactus") {
-      this.blocks.push(new BlockItem(ContactUsBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      this.blocks.push(new BlockItem(ContactUsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "contactusView";
     }
 
     if (type === "placefull") {
-      this.blocks.push(new BlockItem(PlacefullBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      this.blocks.push(new BlockItem(PlacefullBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
 
       viewName = "placefullView";
     }
 
     if (type === "addtocart") {
-      this.blocks.push(new BlockItem(AddToCartBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      this.blocks.push(new BlockItem(AddToCartBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "addToCartView";
     }
 
     if (type === "cart") {
-      this.blocks.push(new BlockItem(CartBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      this.blocks.push(new BlockItem(CartBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "cartView";
     }
 
     if (type === "blanksform") {
-      this.blocks.push(new BlockItem(BlanksFormBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      this.blocks.push(new BlockItem(BlanksFormBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "blanksFormView";
     }
 
     if (type === "exclusiveurl") {
-      this.blocks.push(new BlockItem(ExclusiveUrlBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      this.blocks.push(new BlockItem(ExclusiveUrlBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "exclusiveUrlView";
     }
 
     if (type === "fileupload") {
-      this.blocks.push(new BlockItem(FileUploadBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      this.blocks.push(new BlockItem(FileUploadBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "fileUploadView";
     }
 
     if (type === "pushpay") {
-      this.blocks.push(new BlockItem(PushpayBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      this.blocks.push(new BlockItem(PushpayBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "pushPayView";
     }
 
     if (type === "threedcart") {
-      this.blocks.push(new BlockItem(ThreedCartBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      this.blocks.push(new BlockItem(ThreedCartBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "threedCartView";
     }
 
     if (type === "blogs") {
-      this.blocks.push(new BlockItem(BlogsBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      this.blocks.push(new BlockItem(BlogsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "blogsView";
     }
 
     if (type === "chat") {
-      this.blocks.push(new BlockItem(ChatBlockComponent, new BlockOrganizer(blockData, type, [], [], this.utils)));
+      this.blocks.push(new BlockItem(ChatBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
       viewName = "chatView";
     }
 
     if (type === "account") {
-      this.blocks.push(new BlockItem(AccountBlockComponent, new BlockOrganizer(blockData, type, this.profileDatas, [], this.utils)));
+      this.blocks.push(new BlockItem(AccountBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, this.profileDatas, [], this.utils)));
       viewName = "accountView";
     }
 
     if (type === "profile") {
-      this.blocks.push(new BlockItem(ProfileBlockComponent, new BlockOrganizer(blockData, type, this.profileDatas, [], this.utils)));
+      this.blocks.push(new BlockItem(ProfileBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, this.profileDatas, [], this.utils)));
       viewName = "profileView";
     }
 
@@ -307,9 +307,10 @@ export class WidgetsComponent implements OnInit {
     }
   };
 
-  /*languageChange(langCode: string) {
+  languageChange(langCode: string) {
     this.selectedLanguage = langCode;
-  };*/
+    this.resetTile("", true);
+  };
 
   getViewBlock(view: any, opt: string) {
     let index = this.blockSelected.viewContainerRef.indexOf(view);
@@ -334,7 +335,7 @@ export class WidgetsComponent implements OnInit {
     }
   };
 
-  resetTile(e: any) {
+  resetTile(e: any, langChange?: boolean) {
     if (this.blocks.length > 0) {
       let viewContainerRef = this.blockSelected.viewContainerRef;
       viewContainerRef.clear();
@@ -342,7 +343,9 @@ export class WidgetsComponent implements OnInit {
       this.currentAddIndex = -1;
     }
 
-    this.selectedTile = {};
+    if (!langChange) {
+      this.selectedTile = {};
+    }
 
     if (!this.utils.isNullOrEmpty(e)) {
       this.widgetTileReset(true);
@@ -738,7 +741,7 @@ export class WidgetsComponent implements OnInit {
       delete obj2['serializeFunctions'];
       delete obj2['blocksData'];
       delete obj2['isWeight'];
-    
+
       delete obj2['isNotification'];
       delete obj2['isSmart'];
       delete obj2['isProcedure'];

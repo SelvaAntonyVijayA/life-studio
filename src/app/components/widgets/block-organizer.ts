@@ -13,8 +13,9 @@ export class BlockItem {
 };
 
 export class BlockOrganizer {
-  constructor(blk: any, type: string, orgConnectDatas?: any[], widgetCategories?: any[], utils?: any) {
+  constructor(blk: any, type: string, lang?: string, orgConnectDatas?: any[], widgetCategories?: any[], utils?: any) {
     this.block = {};
+    this.lang = lang;
     this.utils = utils;
     this.getType(blk, type, orgConnectDatas, widgetCategories);
     return this.block;
@@ -22,6 +23,7 @@ export class BlockOrganizer {
 
   utils: any;
   block: any = {};
+  lang: string = "en";
 
   /* Get Block Types */
   getType(blk: any, type: string, orgConnectDatas: any, widgetCategories?: any[]) {
@@ -229,9 +231,10 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
-    this.block["data"] = {};
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
 
-    this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
+    this.block["data"] = {};
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
   };
 
   videoBlock(blockData: any, type: string) {
@@ -242,11 +245,12 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
-    this.block["data"] = {};
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
 
-    this.block["data"]["caption"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["caption"]) ? blockData["data"]["caption"] : "";
-    this.block["data"]["url"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["url"]) ? blockData["data"]["url"] : "";
-    this.block["data"]["videoid"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["videoid"]) ? blockData["data"]["videoid"] : "";
+    this.block["data"] = {};
+    this.block["data"]["caption"] = !this.utils.isNullOrEmpty(data["caption"]) ? data["caption"] : "";
+    this.block["data"]["url"] = !this.utils.isNullOrEmpty(data["url"]) ? data["url"] : "";
+    this.block["data"]["videoid"] = !this.utils.isNullOrEmpty(data["videoid"]) ? data["videoid"] : "";
   };
 
   pictureBlock(blockData: any, type: string) {
@@ -257,9 +261,10 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
     //this.block["data"]["moderated"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["moderated"]) ? blockData["data"]["moderated"].toString() : "false";
     //this.block["data"]["rate"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["rate"]) ? blockData["data"]["rate"].toString() : "false";
     //this.block["data"]["vote"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["vote"]) ? blockData["data"]["vote"].toString() : "false";
@@ -273,9 +278,10 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["disqus"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["disqus"]) ? this.utils.convertToBoolean(blockData["data"]["disqus"]) : false;
+    this.block["data"]["disqus"] = !this.utils.isNullOrEmpty(data["disqus"]) ? this.utils.convertToBoolean(data["disqus"]) : false;
   };
 
   feedBlock(blockData: any, type: string) {
@@ -286,15 +292,16 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["facebook"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["facebook"]) ? this.utils.convertToBoolean(blockData["data"]["facebook"]) : false;
-    this.block["data"]["facebookurl"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["facebookurl"]) ? blockData["data"]["facebookurl"] : "";
-    this.block["data"]["twitter"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["twitter"]) ? this.utils.convertToBoolean(blockData["data"]["twitter"]) : false;
-    this.block["data"]["twitterurl"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["twitterurl"]) ? blockData["data"]["twitterurl"] : "";
-    this.block["data"]["instagram"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["instagram"]) ? this.utils.convertToBoolean(blockData["data"]["instagram"]) : false;
-    this.block["data"]["instaUserId"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["instaUserId"]) ? blockData["data"]["instaUserId"] : "";
-    this.block["data"]["instaAccessToken"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["instaAccessToken"]) ? blockData["data"]["instaAccessToken"] : "";
+    this.block["data"]["facebook"] = !this.utils.isNullOrEmpty(data["facebook"]) ? this.utils.convertToBoolean(data["facebook"]) : false;
+    this.block["data"]["facebookurl"] = !this.utils.isNullOrEmpty(data["facebookurl"]) ? data["facebookurl"] : "";
+    this.block["data"]["twitter"] = !this.utils.isNullOrEmpty(data["twitter"]) ? this.utils.convertToBoolean(data["twitter"]) : false;
+    this.block["data"]["twitterurl"] = !this.utils.isNullOrEmpty(data["twitterurl"]) ? data["twitterurl"] : "";
+    this.block["data"]["instagram"] = !this.utils.isNullOrEmpty(data["instagram"]) ? this.utils.convertToBoolean(data["instagram"]) : false;
+    this.block["data"]["instaUserId"] = !this.utils.isNullOrEmpty(data["instaUserId"]) ? data["instaUserId"] : "";
+    this.block["data"]["instaAccessToken"] = !this.utils.isNullOrEmpty(data["instaAccessToken"]) ? data["instaAccessToken"] : "";
   };
 
   calendarBlock(blockData: any, type: string) {
@@ -305,9 +312,10 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
   };
 
   shareBlock(blockData: any, type: string) {
@@ -318,11 +326,12 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["facebook"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["facebook"]) ? this.utils.convertToBoolean(blockData["data"]["facebook"]) : false;
-    this.block["data"]["twitter"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["twitter"]) ? this.utils.convertToBoolean(blockData["data"]["twitter"]) : false;
-    this.block["data"]["email"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["email"]) ? this.utils.convertToBoolean(blockData["data"]["email"]) : false;
+    this.block["data"]["facebook"] = !this.utils.isNullOrEmpty(data["facebook"]) ? this.utils.convertToBoolean(data["facebook"]) : false;
+    this.block["data"]["twitter"] = !this.utils.isNullOrEmpty(data["twitter"]) ? this.utils.convertToBoolean(data["twitter"]) : false;
+    this.block["data"]["email"] = !this.utils.isNullOrEmpty(data["email"]) ? this.utils.convertToBoolean(data["email"]) : false;
   };
 
   patientsBlock(blockData: any, type: string) {
@@ -333,10 +342,11 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["patients"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["patients"]) ? this.utils.convertToBoolean(blockData["data"]["patients"]) : false;
-    this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : "Patients";
+    this.block["data"]["patients"] = !this.utils.isNullOrEmpty(data["patients"]) ? this.utils.convertToBoolean(data["patients"]) : false;
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : "Patients";
   };
 
   inquiryBlock(blockData: any, type: string) {
@@ -347,11 +357,12 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["email"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["email"]) ? blockData["data"]["email"] : "";
-    this.block["data"]["inquiryText"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["inquiryText"]) ? blockData["data"]["inquiryText"] : "";
-    this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
+    this.block["data"]["email"] = !this.utils.isNullOrEmpty(data["email"]) ? data["email"] : "";
+    this.block["data"]["inquiryText"] = !this.utils.isNullOrEmpty(data["inquiryText"]) ? data["inquiryText"] : "";
+    this.block["data"]["redirectApp"] = !this.utils.isNullOrEmpty(data["redirectApp"]) ? this.utils.convertToBoolean(data["redirectApp"]) : false;
   };
 
   surveyBlock(blockData: any, type: string, widgetCategories: any[]) {
@@ -363,21 +374,22 @@ export class BlockOrganizer {
     this.block["isForm"] = "true";
     this.block["widgetCategories"] = widgetCategories;
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["mandatory"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("mandatory") && !this.utils.isNullOrEmpty(blockData["data"]["mandatory"]) ? this.utils.convertToBoolean(blockData["data"]["mandatory"]) : false;
-    this.block["data"]["questionText"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("questionText") && !this.utils.isNullOrEmpty(blockData["data"]["questionText"]) ? blockData["data"]["questionText"] : "";
-    this.block["data"]["controls"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["controls"]) ? blockData["data"]["controls"] : "radio";
-    this.block["data"]["multiple"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["multiple"]) ? blockData["data"]["multiple"].toString() : "false";
-    this.block["data"]["showInApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["showInApp"]) ? this.utils.convertToBoolean(blockData["data"]["showInApp"]) : false;
-    this.block["data"]["isNote"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["isNote"]) ? this.utils.convertToBoolean(blockData["data"]["isNote"]) : false;
-    this.block["data"]["questions"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["questions"]) ? blockData["data"]["questions"] : [""];
-    this.block["data"]["popup"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["popup"]) ? blockData["data"]["popup"] : [];
-    this.block["data"]["alerts"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["alerts"]) ? blockData["data"]["alerts"] : [];
-    this.block["data"]["confirmation"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["confirmation"]) ? blockData["data"]["confirmation"] : [];
-    this.block["data"]["category"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("category") && !this.utils.isNullOrEmpty(blockData["data"]["category"]) ? blockData["data"]["category"] : "-1";
-    this.block["data"]["categoryName"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(blockData["data"]["categoryName"]) ? blockData["data"]["categoryName"] : "";
-    this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
+    this.block["data"]["mandatory"] = data.hasOwnProperty("mandatory") && !this.utils.isNullOrEmpty(data["mandatory"]) ? this.utils.convertToBoolean(data["mandatory"]) : false;
+    this.block["data"]["questionText"] = data.hasOwnProperty("questionText") && !this.utils.isNullOrEmpty(data["questionText"]) ? data["questionText"] : "";
+    this.block["data"]["controls"] = !this.utils.isNullOrEmpty(data["controls"]) ? data["controls"] : "radio";
+    this.block["data"]["multiple"] = !this.utils.isNullOrEmpty(data["multiple"]) ? data["multiple"].toString() : "false";
+    this.block["data"]["showInApp"] = !this.utils.isNullOrEmpty(data["showInApp"]) ? this.utils.convertToBoolean(data["showInApp"]) : false;
+    this.block["data"]["isNote"] = !this.utils.isNullOrEmpty(data["isNote"]) ? this.utils.convertToBoolean(data["isNote"]) : false;
+    this.block["data"]["questions"] = !this.utils.isNullOrEmpty(data["questions"]) ? data["questions"] : [""];
+    this.block["data"]["popup"] = !this.utils.isNullOrEmpty(data["popup"]) ? data["popup"] : [];
+    this.block["data"]["alerts"] = !this.utils.isNullOrEmpty(data["alerts"]) ? data["alerts"] : [];
+    this.block["data"]["confirmation"] = !this.utils.isNullOrEmpty(data["confirmation"]) ? data["confirmation"] : [];
+    this.block["data"]["category"] = data.hasOwnProperty("category") && !this.utils.isNullOrEmpty(data["category"]) ? data["category"] : "-1";
+    this.block["data"]["categoryName"] = data.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(data["categoryName"]) ? data["categoryName"] : "";
+    this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(data["redirectApp"]) ? this.utils.convertToBoolean(data["redirectApp"]) : false;
   };
 
   questionnaireBlock(blockData: any, type: string, widgetCategories: any[]) {
@@ -389,25 +401,26 @@ export class BlockOrganizer {
     this.block["isForm"] = "true";
     this.block["widgetCategories"] = widgetCategories;
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["mandatory"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("mandatory") && !this.utils.isNullOrEmpty(blockData["data"]["mandatory"]) ? this.utils.convertToBoolean(blockData["data"]["mandatory"]) : false;
-    this.block["data"]["questionText"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("questionText") && !this.utils.isNullOrEmpty(blockData["data"]["questionText"]) ? blockData["data"]["questionText"] : "";
-    this.block["data"]["inputControlType"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("inputControlType") && !this.utils.isNullOrEmpty(blockData["data"]["inputControlType"]) ? blockData["data"]["inputControlType"] : "radio";
-    this.block["data"]["questionType"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("questionType") && !this.utils.isNullOrEmpty(blockData["data"]["questionType"]) ? blockData["data"]["questionType"] : "single";
-    this.block["data"]["isNote"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("isNote") && !this.utils.isNullOrEmpty(blockData["data"]["isNote"]) ? this.utils.convertToBoolean(blockData["data"]["isNote"]) : false;
-    this.block["data"]["showInApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["showInApp"]) ? this.utils.convertToBoolean(blockData["data"]["showInApp"]) : false;
-    this.block["data"]["category"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("category") && !this.utils.isNullOrEmpty(blockData["data"]["category"]) ? blockData["data"]["category"] : "-1";
-    this.block["data"]["categoryName"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(blockData["data"]["categoryName"]) ? blockData["data"]["categoryName"] : "";
-    this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
+    this.block["data"]["mandatory"] = data.hasOwnProperty("mandatory") && !this.utils.isNullOrEmpty(data["mandatory"]) ? this.utils.convertToBoolean(data["mandatory"]) : false;
+    this.block["data"]["questionText"] = data.hasOwnProperty("questionText") && !this.utils.isNullOrEmpty(data["questionText"]) ? data["questionText"] : "";
+    this.block["data"]["inputControlType"] = data.hasOwnProperty("inputControlType") && !this.utils.isNullOrEmpty(data["inputControlType"]) ? data["inputControlType"] : "radio";
+    this.block["data"]["questionType"] = data.hasOwnProperty("questionType") && !this.utils.isNullOrEmpty(data["questionType"]) ? data["questionType"] : "single";
+    this.block["data"]["isNote"] = data.hasOwnProperty("isNote") && !this.utils.isNullOrEmpty(data["isNote"]) ? this.utils.convertToBoolean(data["isNote"]) : false;
+    this.block["data"]["showInApp"] = !this.utils.isNullOrEmpty(data["showInApp"]) ? this.utils.convertToBoolean(data["showInApp"]) : false;
+    this.block["data"]["category"] = data.hasOwnProperty("category") && !this.utils.isNullOrEmpty(data["category"]) ? data["category"] : "-1";
+    this.block["data"]["categoryName"] = data.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(data["categoryName"]) ? data["categoryName"] : "";
+    this.block["data"]["redirectApp"] = !this.utils.isNullOrEmpty(data["redirectApp"]) ? this.utils.convertToBoolean(data["redirectApp"]) : false;
 
     var options = [];
     var alerts = [];
     var confirmation = [];
     var popup = [];
 
-    if (this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("options") && blockData["data"]["options"].length > 0) {
-      var quesOpts = blockData["data"]["options"];
+    if (data.hasOwnProperty("options") && data["options"].length > 0) {
+      var quesOpts = data["options"];
 
       for (let i = 0; i < quesOpts.length; i++) {
         var quesOpt = quesOpts[i];
@@ -499,8 +512,8 @@ export class BlockOrganizer {
         subQuesObj["options"] = this.utils.isArray(currSubQues["options"]) && currSubQues["options"].length > 0 ? this.questionnaireOptions(currSubQues["options"]) : [{ "option": "" }, { "option": "" }];
         subQuestions.push(subQuesObj);
       } else if (currSubQues.hasOwnProperty("type") && currSubQues["type"] === "description") {
-        subQuesObj["type"] = "description",
-          subQuesObj["controlType"] = currSubQues.hasOwnProperty("controlType") && !this.utils.isNullOrEmpty(currSubQues["controlType"]) ? currSubQues["controlType"] : "text";
+        subQuesObj["type"] = "description";
+        subQuesObj["controlType"] = currSubQues.hasOwnProperty("controlType") && !this.utils.isNullOrEmpty(currSubQues["controlType"]) ? currSubQues["controlType"] : "text";
         subQuesObj["questionText"] = currSubQues.hasOwnProperty("questionText") && !this.utils.isNullOrEmpty(currSubQues["questionText"]) ? currSubQues["questionText"] : "";
         subQuestions.push(subQuesObj);
       }
@@ -517,11 +530,12 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["refresh"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["refresh"]) ? this.utils.convertToBoolean(blockData["data"]["refresh"]) : false;
-    this.block["data"]["close"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["close"]) ? this.utils.convertToBoolean(blockData["data"]["close"]) : false;
-    this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
+    this.block["data"]["refresh"] = !this.utils.isNullOrEmpty(data["refresh"]) ? this.utils.convertToBoolean(data["refresh"]) : false;
+    this.block["data"]["close"] = !this.utils.isNullOrEmpty(data["close"]) ? this.utils.convertToBoolean(data["close"]) : false;
+    this.block["data"]["redirectApp"] = !this.utils.isNullOrEmpty(data["redirectApp"]) ? this.utils.convertToBoolean(data["redirectApp"]) : false;
   };
 
   titleBlock(blockData: any, type: string) {
@@ -532,10 +546,11 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["titletext"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["titletext"]) ? blockData["data"]["titletext"] : "";
-    this.block["data"]["title"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["title"]) ? this.utils.convertToBoolean(blockData["data"]["title"]) : false;
+    this.block["data"]["titletext"] = !this.utils.isNullOrEmpty(data["titletext"]) ? data["titletext"] : "";
+    this.block["data"]["title"] = !this.utils.isNullOrEmpty(data["title"]) ? this.utils.convertToBoolean(data["title"]) : false;
   };
 
   questionsBlock(blockData: any, type: string, widgetCategories: any[]) {
@@ -547,15 +562,16 @@ export class BlockOrganizer {
     this.block["isForm"] = "true";
     this.block["widgetCategories"] = widgetCategories;
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["questions"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["questions"]) ? blockData["data"]["questions"] : [""];
-    this.block["data"]["mandatory"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["mandatory"]) ? blockData["data"]["mandatory"] : [false];
-    this.block["data"]["answerTypes"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["answerTypes"]) ? blockData["data"]["answerTypes"] : ["text"];
-    this.block["data"]["notes"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["notes"]) ? blockData["data"]["notes"] : [false];
-    this.block["data"]["category"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["category"]) ? blockData["data"]["category"] : "";
-    this.block["data"]["categoryName"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["categoryName"]) ? blockData["data"]["categoryName"] : "";
-    this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
+    this.block["data"]["questions"] = !this.utils.isNullOrEmpty(data["questions"]) ? data["questions"] : [""];
+    this.block["data"]["mandatory"] = !this.utils.isNullOrEmpty(data["mandatory"]) ? data["mandatory"] : [false];
+    this.block["data"]["answerTypes"] = !this.utils.isNullOrEmpty(data["answerTypes"]) ? data["answerTypes"] : ["text"];
+    this.block["data"]["notes"] = !this.utils.isNullOrEmpty(data["notes"]) ? data["notes"] : [false];
+    this.block["data"]["category"] = !this.utils.isNullOrEmpty(data["category"]) ? data["category"] : "";
+    this.block["data"]["categoryName"] = !this.utils.isNullOrEmpty(data["categoryName"]) ? data["categoryName"] : "";
+    this.block["data"]["redirectApp"] = !this.utils.isNullOrEmpty(data["redirectApp"]) ? this.utils.convertToBoolean(data["redirectApp"]) : false;
     //this.block["data"]["category"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("category") && !this.utils.isNullOrEmpty(blockData["data"]["category"]) ? blockData["data"]["category"] : "-1";
   };
 
@@ -567,15 +583,16 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["title"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["title"]) ? blockData["data"]["title"] : "";
-    this.block["data"]["person"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["person"]) ? this.utils.convertToBoolean(blockData["data"]["person"]) : false;
-    this.block["data"]["online"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["online"]) ? this.utils.convertToBoolean(blockData["data"]["online"]) : false;
-    this.block["data"]["addMember"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["addMember"]) ? this.utils.convertToBoolean(blockData["data"]["addMember"]) : false;
-    this.block["data"]["addQuestion"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["addQuestion"]) ? blockData["data"]["addQuestion"] : "Additional Family members attending (not added from another app)";
-    this.block["data"]["options"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["options"]) ? blockData["data"]["options"] : [];
-    this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
+    this.block["data"]["title"] = !this.utils.isNullOrEmpty(data["title"]) ? data["title"] : "";
+    this.block["data"]["person"] = !this.utils.isNullOrEmpty(data["person"]) ? this.utils.convertToBoolean(data["person"]) : false;
+    this.block["data"]["online"] = !this.utils.isNullOrEmpty(data["online"]) ? this.utils.convertToBoolean(data["online"]) : false;
+    this.block["data"]["addMember"] = !this.utils.isNullOrEmpty(data["addMember"]) ? this.utils.convertToBoolean(data["addMember"]) : false;
+    this.block["data"]["addQuestion"] = !this.utils.isNullOrEmpty(data["addQuestion"]) ? data["addQuestion"] : "Additional Family members attending (not added from another app)";
+    this.block["data"]["options"] = !this.utils.isNullOrEmpty(data["options"]) ? data["options"] : [];
+    this.block["data"]["redirectApp"] = !this.utils.isNullOrEmpty(data["redirectApp"]) ? this.utils.convertToBoolean(data["redirectApp"]) : false;
   };
 
   confirmationBlock(blockData: any, type: string) {
@@ -586,10 +603,11 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
-    this.block["data"]["submittext"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["submittext"]) ? blockData["data"]["submittext"] : "";
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
+    this.block["data"]["submittext"] = !this.utils.isNullOrEmpty(data["submittext"]) ? data["submittext"] : "";
   };
 
   passwordBlock(blockData: any, type: string) {
@@ -600,9 +618,10 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["password"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["password"]) ? this.utils.convertToBoolean(blockData["data"]["password"]) : false;
+    this.block["data"]["password"] = !this.utils.isNullOrEmpty(data["password"]) ? this.utils.convertToBoolean(data["password"]) : false;
   };
 
   nextBlock(blockData: any, type: string) {
@@ -613,12 +632,13 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : "";
-    this.block["data"]["tileId"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["tileId"]) ? blockData["data"]["tileId"] : "";
-    this.block["data"]["tileTile"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["tileTile"]) ? blockData["data"]["tileTile"] : "";
-    this.block["data"]["type"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["type"]) ? blockData["data"]["type"] : "";
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : "";
+    this.block["data"]["tileId"] = !this.utils.isNullOrEmpty(data["tileId"]) ? data["tileId"] : "";
+    this.block["data"]["tileTile"] = !this.utils.isNullOrEmpty(data["tileTile"]) ? data["tileTile"] : "";
+    this.block["data"]["type"] = !this.utils.isNullOrEmpty(data["type"]) ? data["type"] : "";
   };
 
   formPhotoBlock(blockData: any, type: string) {
@@ -629,10 +649,11 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
-    this.block["data"]["isVideo"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["isVideo"]) ? this.utils.convertToBoolean(blockData["data"]["isVideo"]) : false;
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
+    this.block["data"]["isVideo"] = !this.utils.isNullOrEmpty(data["isVideo"]) ? this.utils.convertToBoolean(data["isVideo"]) : false;
   };
 
   painLevelBlock(blockData: any, type: string) {
@@ -643,12 +664,13 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["painlevel"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["painlevel"]) ? this.utils.convertToBoolean(blockData["data"]["painlevel"]) : false;
-    this.block["data"]["question"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["question"]) ? blockData["data"]["question"] : "";
-    this.block["data"]["mandatory"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["mandatory"]) ? this.utils.convertToBoolean(blockData["data"]["mandatory"]) : false;
-    this.block["data"]["level"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["level"]) ? blockData["data"]["level"] : "image";
+    this.block["data"]["painlevel"] = !this.utils.isNullOrEmpty(data["painlevel"]) ? this.utils.convertToBoolean(data["painlevel"]) : false;
+    this.block["data"]["question"] = !this.utils.isNullOrEmpty(data["question"]) ? data["question"] : "";
+    this.block["data"]["mandatory"] = !this.utils.isNullOrEmpty(data["mandatory"]) ? this.utils.convertToBoolean(data["mandatory"]) : false;
+    this.block["data"]["level"] = !this.utils.isNullOrEmpty(data["level"]) ? data["level"] : "image";
   };
 
   drawToolBlock(blockData: any, type: string) {
@@ -659,10 +681,11 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["drawtool"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["drawtool"]) ? this.utils.convertToBoolean(blockData["data"]["drawtool"]) : true;
-    this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : "";
+    this.block["data"]["drawtool"] = !this.utils.isNullOrEmpty(data["drawtool"]) ? this.utils.convertToBoolean(data["drawtool"]) : true;
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : "";
   };
 
   physicianBlock(blockData: any, type: string) {
@@ -673,11 +696,12 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["isPhysician"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["isPhysician"]) ? this.utils.convertToBoolean(blockData["data"]["isPhysician"]) : true;
-    this.block["data"]["mandatory"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["mandatory"]) ? this.utils.convertToBoolean(blockData["data"]["mandatory"]) : false;
-    this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : "";
+    this.block["data"]["isPhysician"] = !this.utils.isNullOrEmpty(data["isPhysician"]) ? this.utils.convertToBoolean(data["isPhysician"]) : true;
+    this.block["data"]["mandatory"] = !this.utils.isNullOrEmpty(data["mandatory"]) ? this.utils.convertToBoolean(data["mandatory"]) : false;
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : "";
   };
 
   endWrapperBlock(blockData: any, type: string) {
@@ -688,10 +712,11 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : "";
-    this.block["data"]["submitConfirmation"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["submitConfirmation"]) ? this.utils.convertToBoolean(blockData["data"]["submitConfirmation"]) : false;
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : "";
+    this.block["data"]["submitConfirmation"] = !this.utils.isNullOrEmpty(data["submitConfirmation"]) ? this.utils.convertToBoolean(data["submitConfirmation"]) : false;
   };
 
   fillBlock(blockData: any, type: string) {
@@ -702,9 +727,10 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
   };
 
   notesBlock(blockData: any, type: string) {
@@ -715,11 +741,12 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["notes"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["notes"]) ? this.utils.convertToBoolean(blockData["data"]["notes"]) : true;
-    this.block["data"]["allNotes"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["allNotes"]) ? this.utils.convertToBoolean(blockData["data"]["allNotes"]) : false;
-    this.block["data"]["journal"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["journal"]) ? this.utils.convertToBoolean(blockData["data"]["journal"]) : false;
+    this.block["data"]["notes"] = !this.utils.isNullOrEmpty(data["notes"]) ? this.utils.convertToBoolean(data["notes"]) : true;
+    this.block["data"]["allNotes"] = !this.utils.isNullOrEmpty(data["allNotes"]) ? this.utils.convertToBoolean(data["allNotes"]) : false;
+    this.block["data"]["journal"] = !this.utils.isNullOrEmpty(data["journal"]) ? this.utils.convertToBoolean(data["journal"]) : false;
   };
 
   buttonsBlock(blockData: any, type: string) {
@@ -730,10 +757,17 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
+    var alerts = this.lang === "en" && !this.utils.isEmptyObject(blockData) && blockData.hasOwnProperty["alerts"] && blockData["alerts"].length > 0 ? blockData["alerts"] : [];
+
+    if (this.lang !== "en" && !this.utils.isEmptyObject(blockData) && blockData.hasOwnProperty(this.lang)) {
+      alerts = blockData[this.lang].hasOwnProperty("alerts") && blockData[this.lang]["alerts"].length > 0 ? blockData[this.lang]["alerts"] : [];
+    }
+
     this.block["data"] = {};
 
-    this.block["data"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]) ? blockData["data"] : [{ "beforeText": "", "afterText": "" }];
-    this.block["alerts"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["alerts"]) ? blockData["alerts"] : [];
+    this.block["data"] = data.length > 0 ? data : [{ "beforeText": "", "afterText": "" }];
+    this.block["alerts"] = alerts;
   };
 
   contactUsBlock(blockData: any, type: string) {
@@ -744,9 +778,10 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
-    this.block["data"]["email"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["email"]) ? blockData["data"]["email"] : "";
+    this.block["data"]["email"] = !this.utils.isNullOrEmpty(data["email"]) ? data["email"] : "";
   };
 
   placefullBlock(blockData: any, type: string) {
@@ -757,9 +792,10 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
-    this.block["data"]["text"] = !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : "";
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : "";
   };
 
   addToCartBlock(blockData: any, type: string) {
@@ -770,20 +806,21 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
-    this.block["data"]["productName"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["productName"]) ? blockData["data"]["productName"] : "";
-    this.block["data"]["description"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["description"]) ? blockData["data"]["description"] : "";
-    this.block["data"]["price"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["price"]) ? blockData["data"]["price"] : "";
-    this.block["data"]["currency"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["currency"]) ? blockData["data"]["currency"] : "";
-    this.block["data"]["textCartButton"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["textCartButton"]) ? blockData["data"]["textCartButton"] : "";
-    this.block["data"]["confirmationMessage"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["confirmationMessage"]) ? blockData["data"]["confirmationMessage"] : "";
-    this.block["data"]["productImage"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["productImage"]) ? blockData["data"]["productImage"] : "";
+    this.block["data"]["productName"] = !this.utils.isNullOrEmpty(data["productName"]) ? data["productName"] : "";
+    this.block["data"]["description"] = !this.utils.isNullOrEmpty(data["description"]) ? data["description"] : "";
+    this.block["data"]["price"] = !this.utils.isNullOrEmpty(data["price"]) ? data["price"] : "";
+    this.block["data"]["currency"] = !this.utils.isNullOrEmpty(data["currency"]) ? data["currency"] : "";
+    this.block["data"]["textCartButton"] = !this.utils.isNullOrEmpty(data["textCartButton"]) ? data["textCartButton"] : "";
+    this.block["data"]["confirmationMessage"] = !this.utils.isNullOrEmpty(data["confirmationMessage"]) ? data["confirmationMessage"] : "";
+    this.block["data"]["productImage"] = !this.utils.isNullOrEmpty(data["productImage"]) ? data["productImage"] : "";
 
-    this.block["data"]["isProductName"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["isProductName"]) ? this.utils.convertToBoolean(blockData["data"]["isProductName"]) : true;
-    this.block["data"]["isProductDescription"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["isProductDescription"]) ? this.utils.convertToBoolean(blockData["data"]["isProductDescription"]) : true;
-    this.block["data"]["isProductImage"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["isProductImage"]) ? this.utils.convertToBoolean(blockData["data"]["isProductImage"]) : true;
-    this.block["data"]["isProductPrice"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["isProductPrice"]) ? this.utils.convertToBoolean(blockData["data"]["isProductPrice"]) : true;
+    this.block["data"]["isProductName"] = !this.utils.isNullOrEmpty(data["isProductName"]) ? this.utils.convertToBoolean(data["isProductName"]) : true;
+    this.block["data"]["isProductDescription"] = !this.utils.isNullOrEmpty(data["isProductDescription"]) ? this.utils.convertToBoolean(data["isProductDescription"]) : true;
+    this.block["data"]["isProductImage"] = !this.utils.isNullOrEmpty(data["isProductImage"]) ? this.utils.convertToBoolean(data["isProductImage"]) : true;
+    this.block["data"]["isProductPrice"] = !this.utils.isNullOrEmpty(data["isProductPrice"]) ? this.utils.convertToBoolean(data["isProductPrice"]) : true;
   };
 
   cartBlock(blockData: any, type: string) {
@@ -794,12 +831,13 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
-    this.block["data"]["productTitle"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["productTitle"]) ? blockData["data"]["productTitle"] : "";
-    this.block["data"]["notificationEmail"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["notificationEmail"]) ? blockData["data"]["notificationEmail"] : "";
-    this.block["data"]["textConfirmButton"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["textConfirmButton"]) ? blockData["data"]["textConfirmButton"] : "";
-    this.block["data"]["confirmationMessage"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["confirmationMessage"]) ? blockData["data"]["confirmationMessage"] : "";
+    this.block["data"]["productTitle"] = !this.utils.isNullOrEmpty(data["productTitle"]) ? data["productTitle"] : "";
+    this.block["data"]["notificationEmail"] = !this.utils.isNullOrEmpty(data["notificationEmail"]) ? data["notificationEmail"] : "";
+    this.block["data"]["textConfirmButton"] = !this.utils.isNullOrEmpty(data["textConfirmButton"]) ? data["textConfirmButton"] : "";
+    this.block["data"]["confirmationMessage"] = !this.utils.isNullOrEmpty(data["confirmationMessage"]) ? data["confirmationMessage"] : "";
   };
 
   blanksFormBlock(blockData: any, type: string) {
@@ -810,12 +848,13 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
-    this.block["data"]["email"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["email"]) ? blockData["data"]["email"] : "";
-    this.block["data"]["text"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["text"]) ? blockData["data"]["text"] : new String("");
-    this.block["data"]["imageLimit"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["imageLimit"]) ? blockData["data"]["imageLimit"] : "";
-    this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
+    this.block["data"]["email"] = !this.utils.isNullOrEmpty(data["email"]) ? data["email"] : "";
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
+    this.block["data"]["imageLimit"] = !this.utils.isNullOrEmpty(data["imageLimit"]) ? data["imageLimit"] : "";
+    this.block["data"]["redirectApp"] = !this.utils.isNullOrEmpty(data["redirectApp"]) ? this.utils.convertToBoolean(data["redirectApp"]) : false;
   };
 
   exclusiveUrlBlock(blockData: any, type: string) {
@@ -826,11 +865,12 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
-    this.block["data"]["url"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["url"]) ? blockData["data"]["url"] : "";
-    this.block["data"]["window"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["window"]) ? this.utils.convertToBoolean(blockData["data"]["window"]) : false;
-    this.block["data"]["iphonewindow"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["iphonewindow"]) ? this.utils.convertToBoolean(blockData["data"]["iphonewindow"]) : false;
+    this.block["data"]["url"] = !this.utils.isNullOrEmpty(data["url"]) ? data["url"] : "";
+    this.block["data"]["window"] = !this.utils.isNullOrEmpty(data["window"]) ? this.utils.convertToBoolean(data["window"]) : false;
+    this.block["data"]["iphonewindow"] = !this.utils.isNullOrEmpty(data["iphonewindow"]) ? this.utils.convertToBoolean(data["iphonewindow"]) : false;
   };
 
   fileUploadBlock(blockData: any, type: string) {
@@ -841,9 +881,10 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
-    this.block["data"]["url"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["url"]) ? blockData["data"]["url"] : "";
+    this.block["data"]["url"] = !this.utils.isNullOrEmpty(data["url"]) ? data["url"] : "";
   };
 
   pushPayBlock(blockData: any, type: string) {
@@ -854,12 +895,13 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
-    this.block["data"]["pushpay"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["pushpay"]) ? this.utils.convertToBoolean(blockData["data"]["pushpay"]) : false;
-    this.block["data"]["url"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["url"]) ? blockData["data"]["url"] : "";
-    this.block["data"]["window"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["window"]) ? this.utils.convertToBoolean(blockData["data"]["window"]) : false;
-    this.block["data"]["iphonewindow"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["iphonewindow"]) ? this.utils.convertToBoolean(blockData["data"]["iphonewindow"]) : false;
+    this.block["data"]["pushpay"] = !this.utils.isNullOrEmpty(data["pushpay"]) ? this.utils.convertToBoolean(data["pushpay"]) : false;
+    this.block["data"]["url"] = !this.utils.isNullOrEmpty(data["url"]) ? data["url"] : "";
+    this.block["data"]["window"] = !this.utils.isNullOrEmpty(data["window"]) ? this.utils.convertToBoolean(data["window"]) : false;
+    this.block["data"]["iphonewindow"] = !this.utils.isNullOrEmpty(data["iphonewindow"]) ? this.utils.convertToBoolean(data["iphonewindow"]) : false;
   };
 
   threeDCartBlock(blockData: any, type: string) {
@@ -870,12 +912,13 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
-    this.block["data"]["cart"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["cart"]) ? this.utils.convertToBoolean(blockData["data"]["cart"]) : false;
-    this.block["data"]["url"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["url"]) ? blockData["data"]["url"] : "";
-    this.block["data"]["window"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["window"]) ? this.utils.convertToBoolean(blockData["data"]["window"]) : false;
-    this.block["data"]["iphonewindow"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["iphonewindow"]) ? this.utils.convertToBoolean(blockData["data"]["iphonewindow"]) : false;
+    this.block["data"]["cart"] = !this.utils.isNullOrEmpty(data["cart"]) ? this.utils.convertToBoolean(data["cart"]) : false;
+    this.block["data"]["url"] = !this.utils.isNullOrEmpty(data["url"]) ? data["url"] : "";
+    this.block["data"]["window"] = !this.utils.isNullOrEmpty(data["window"]) ? this.utils.convertToBoolean(data["window"]) : false;
+    this.block["data"]["iphonewindow"] = !this.utils.isNullOrEmpty(data["iphonewindow"]) ? this.utils.convertToBoolean(data["iphonewindow"]) : false;
   };
 
   blogsBlock(blockData: any, type: string) {
@@ -886,12 +929,13 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
-    this.block["data"]["wordPress"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["wordPress"]) ? this.utils.convertToBoolean(blockData["data"]["wordPress"]) : false;
-    this.block["data"]["wordPressUrl"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["wordPressUrl"]) ? blockData["data"]["wordPressUrl"] : "";
-    this.block["data"]["wordPressTitle"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["wordPressTitle"]) ? blockData["data"]["wordPressTitle"] : "";
-    this.block["data"]["wordPressContent"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["wordPressContent"]) ? blockData["data"]["wordPressContent"] : new String("");
+    this.block["data"]["wordPress"] = !this.utils.isNullOrEmpty(data["wordPress"]) ? this.utils.convertToBoolean(data["wordPress"]) : false;
+    this.block["data"]["wordPressUrl"] = !this.utils.isNullOrEmpty(data["wordPressUrl"]) ? data["wordPressUrl"] : "";
+    this.block["data"]["wordPressTitle"] = !this.utils.isNullOrEmpty(data["wordPressTitle"]) ? data["wordPressTitle"] : "";
+    this.block["data"]["wordPressContent"] = !this.utils.isNullOrEmpty(data["wordPressContent"]) ? data["wordPressContent"] : new String("");
   };
 
   chatBlock(blockData: any, type: string) {
@@ -902,10 +946,11 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
-    this.block["data"]["chat"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["chat"]) ? this.utils.convertToBoolean(blockData["data"]["chat"]) : true;
-    this.block["data"]["isPrivate"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["isPrivate"]) ? this.utils.convertToBoolean(blockData["data"]["isPrivate"]) : false;
+    this.block["data"]["chat"] = !this.utils.isNullOrEmpty(data["chat"]) ? this.utils.convertToBoolean(data["chat"]) : true;
+    this.block["data"]["isPrivate"] = !this.utils.isNullOrEmpty(data["isPrivate"]) ? this.utils.convertToBoolean(data["isPrivate"]) : false;
   };
 
   accountBlock(blockData: any, type: string, orgConnectDatas: any) {
@@ -916,13 +961,14 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["profileData"] = orgConnectDatas;
     this.block["data"] = {};
 
-    var connectDatas = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["connectionCard"]) ? this.mapOrgProfileData(orgConnectDatas, blockData["data"]["connectionCard"], "account") : this.mapOrgProfileData(orgConnectDatas, [], "account");
+    var connectDatas = !this.utils.isNullOrEmpty(data["connectionCard"]) ? this.mapOrgProfileData(orgConnectDatas, data["connectionCard"], "account") : this.mapOrgProfileData(orgConnectDatas, [], "account");
     this.block["data"]["connectionCard"] = connectDatas;
-    this.block["data"]["submember"] = this.checkBlockExists(blockData) && blockData["data"].hasOwnProperty("submember") && blockData["data"]["submember"].length > 0 && !this.utils.isNullOrEmpty(blockData["data"]["connectionCard"]) ? this.getAccountSubmember(orgConnectDatas, blockData["data"]["submember"]) : [];
-    this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
+    this.block["data"]["submember"] = data.hasOwnProperty("submember") && data["submember"].length > 0 && !this.utils.isNullOrEmpty(data["connectionCard"]) ? this.getAccountSubmember(orgConnectDatas, data["submember"]) : [];
+    this.block["data"]["redirectApp"] = !this.utils.isNullOrEmpty(data["redirectApp"]) ? this.utils.convertToBoolean(data["redirectApp"]) : false;
   };
 
   profileBlock(blockData: any, type: string, orgConnectDatas: any) {
@@ -934,11 +980,12 @@ export class BlockOrganizer {
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
     this.block["profileData"] = orgConnectDatas;
+    var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
-    var profileDatas = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["profile"]) ? this.mapOrgProfileData(orgConnectDatas, blockData["data"]["profile"], "profile") : this.mapOrgProfileData(orgConnectDatas, [], "profile");
+    var profileDatas = !this.utils.isNullOrEmpty(data["profile"]) ? this.mapOrgProfileData(orgConnectDatas, data["profile"], "profile") : this.mapOrgProfileData(orgConnectDatas, [], "profile");
     this.block["data"]["profile"] = profileDatas;
-    this.block["data"]["redirectApp"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["redirectApp"]) ? this.utils.convertToBoolean(blockData["data"]["redirectApp"]) : false;
+    this.block["data"]["redirectApp"] = !this.utils.isNullOrEmpty(data["redirectApp"]) ? this.utils.convertToBoolean(data["redirectApp"]) : false;
   };
 
   getAccountSubmember(mainConnectDatas: any[], blockConnectSubData: any) {
@@ -1009,6 +1056,10 @@ export class BlockOrganizer {
 
   assignExists(blockData: any) {
     return !this.utils.isEmptyObject(blockData) ? blockData : {};
+  };
+
+  checkLanguage(blockData: Object) {
+    return !this.utils.isEmptyObject(blockData) && blockData.hasOwnProperty(this.lang) && blockData[this.lang].hasOwnProperty("data") ? true : false;
   };
 };
 
