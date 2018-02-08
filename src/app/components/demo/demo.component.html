@@ -1,21 +1,12 @@
-<div class="container page_container">
-  <div class="page_block events_head">
-    <section>
-      <h3>B3 - Simple demo - only current image (side previews, buttons, previews and dots are hidden)</h3>
-      <br>
-      <g-modal-gallery [modalImages]="images" [slideConfig]="{infinite: false, sidePreviews: {show: false}}" [buttonsConfig]="{visible: false, strategy: 1}"
-        [previewConfig]="{visible: false}" [dotsConfig]="{visible: false}"></g-modal-gallery>
-    </section>
-    <section>
-      <h3>B8 - Simple demo - infinite sliding but NO side previews</h3>
-      <br>
-      <g-modal-gallery [modalImages]="images" [slideConfig]="{infinite: true, sidePreviews: {show: false}}"></g-modal-gallery>
-    </section>
-    <section>
-      <h3>B4 - Simple demo - disable closeOutside</h3>
-      <br>
-      <g-modal-gallery [modalImages]="images" [enableCloseOutside]="false"></g-modal-gallery>
-    </section>
+<div class="container procedures_container">
+  <div class="page_block procedures_head">
+    <ng-select class="custom" placeholder="Select/Add Folder" [items]="folders" [(ngModel)]="selectedFolders" [multiple]="false"
+      [addTag]="false" (open)="onOpen()" (close)="onClose()" (focus)="onFocus($event)" (blur)="onBlur($event)" (clear)="onClear()"
+      (inputchange)="onSelectChange($event)" (add)="onAdd($event)" (remove)="onRemove($event)" (selectchange)="onChange($event)">
+    </ng-select>
+
+    <p>
+      Selected value: {{selectedFolders | json}}
+    </p>
   </div>
-  <!--  </div> -->
 </div>
