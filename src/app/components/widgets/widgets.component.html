@@ -78,7 +78,7 @@
 
           <div id='widgetEditor' block='Text' data-placement='top' title='Add any description in multiple paragraphs.' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("text")' src='/img/text_32.png' />
+              <img (click)='loadWidgets($event, "text")' src='/img/text_32.png' />
             </div>
             <div>
               <label>Editor</label>
@@ -87,7 +87,7 @@
 
           <div id='widgetUploadVideo' block='Video' data-toggle='tooltip' title='Upload a video file' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("video")' src='/img/video_32.png' />
+              <img (click)='loadWidgets($event,"video")' src='/img/video_32.png' />
             </div>
             <div>
               <label>Upload Video</label>
@@ -97,7 +97,7 @@
           <div id='widgetPicture' block='picture' data-toggle='tooltip' title='Allow users to upload their own pictures.  Select Moderate if you want pictures to be moderated before being published.'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("picture")' src='/img/camara.png' />
+              <img (click)='loadWidgets($event, "picture")' src='/img/camara.png' />
             </div>
             <div>
               <label>Event Media</label>
@@ -107,7 +107,7 @@
           <div id='widgetDisqus' block='disqus' data-toggle='tooltip' title='Disqus allows to create a discussion room amongst users. It helps you build a community of active readers and commenters.'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("disqus")' src='/img/disqus.png' />
+              <img (click)='loadWidgets($event, "disqus")' src='/img/disqus.png' />
             </div>
             <div>
               <label>Disqus</label>
@@ -116,7 +116,7 @@
 
           <div id='widgetSocialFeed' block='feed' data-toggle='tooltip' title='Integrate FB and Twitter' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("feed")' src='/img/icon-feed.png' />
+              <img (click)='loadWidgets($event, "feed")' src='/img/icon-feed.png' />
             </div>
             <div>
               <label>Social Feed</label>
@@ -125,7 +125,7 @@
 
           <div id='widgetCalendar' block='calendar' data-toggle='tooltip' title='This Widget allows to create calendar' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("calendar")' src='/img/calendar.png' />
+              <img (click)='loadWidgets($event, "calendar")' src='/img/calendar.png' />
             </div>
             <div>
               <label>Calendar</label>
@@ -134,7 +134,7 @@
 
           <div id='widgetShare' block='share' data-toggle='tooltip' title='Share this Tile as a URL.' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("share")' src='/img/share_this.png' />
+              <img (click)='loadWidgets($event, "share")' src='/img/share_this.png' />
             </div>
             <div>
               <label>Share</label>
@@ -143,7 +143,7 @@
 
           <div id='widgetPatient' block='patients' data-toggle='tooltip' title='Show the list of patients by clinic' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("patients")' src='/img/patient.png' />
+              <img (click)='loadWidgets($event, "patients")' src='/img/patient.png' />
             </div>
             <div>
               <label>Patients</label>
@@ -164,7 +164,7 @@
           <div id='widgetStartWrapper' block='StartWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("startwrapper")' src='/img/start_wrapper.png' />
+              <img (click)='loadWidgets($event, "startwrapper")' src='/img/start_wrapper.png' />
             </div>
             <div>
               <label>Start Wrapper</label>
@@ -173,7 +173,7 @@
 
           <div id='widgetTitle' block='title' data-toggle='tooltip' title='Title that will appear over any form you create' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("title")' src='/img/form.png' />
+              <img (click)='loadWidgets($event, "title")' src='/img/form.png' />
             </div>
             <div>
               <label>Form Title</label>
@@ -183,7 +183,7 @@
           <div id='widgetAccount' block='Account' data-toggle='tooltip' title='Name, DOB, Gender, Phone, email etc. Select the fields you want to appear in the app.'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("account")' src='/img/profile.png' />
+              <img (click)='loadWidgets($event, "account")' src='/img/profile.png' />
             </div>
             <div>
               <label>Connection&nbsp;Card</label>
@@ -193,7 +193,7 @@
           <div id='widgetAttendance' block='Attendance' data-toggle='tooltip' title='Users can select if they are attending In-Person or Online'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("attendance")' src='/img/clock.png' />
+              <img (click)='loadWidgets($event, "attendance")' src='/img/clock.png' />
             </div>
             <div>
               <label>Attendance</label>
@@ -203,7 +203,7 @@
           <div id='widgetSurvey' block='Survey' data-toggle='tooltip' data-toggle='tooltip' title='Multiple questions where users can select only One or Multiple answers.  Percentages can be shown in-app.'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("survey")' src='/img/survey1.png' />
+              <img (click)='loadWidgets($event, "survey")' src='/img/survey1.png' />
             </div>
             <div>
               <label>Simple Questionnaire</label>
@@ -213,7 +213,7 @@
           <div id='widgetQuestionnaire' block='questionnaire' data-toggle='tooltip' data-toggle='tooltip' title='Multiple questions where users can select only One or Multiple answers.  Percentages can be shown in-app.'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("questionnaire")' src='/img/survey.png' />
+              <img (click)='loadWidgets($event, "questionnaire")' src='/img/survey.png' />
             </div>
             <div>
               <label>Cascading Questionnaire</label>
@@ -223,7 +223,7 @@
           <div id='widgetQuestions' block='questions' data-toggle='tooltip' title='One or more questions requiring users to type their answers.'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("questions")' src='/img/QA.png' />
+              <img (click)='loadWidgets($event, "questions")' src='/img/QA.png' />
             </div>
             <div>
               <label>Q & A</label>
@@ -233,7 +233,7 @@
           <div id='widgetInquiry' block='inquiry' data-toggle='tooltip' title='Add Inquiry at the bottom of a Tile to allow users to send inquiries about the subject discussed in that Tile. Inquiries are directed to the email entered in the Tile.'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("inquiry")' src='/img/inquery.png' />
+              <img (click)='loadWidgets($event, "inquiry")' src='/img/inquery.png' />
             </div>
             <div>
               <label>Inquiry</label>
@@ -242,7 +242,7 @@
 
           <div id='widgetProfile' block='Profile' data-toggle='tooltip' title='Add profile to update user information' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("profile")' src='/img/my-account.png' />
+              <img (click)='loadWidgets($event, "profile")' src='/img/my-account.png' />
             </div>
             <div>
               <label>Profile</label>
@@ -252,7 +252,7 @@
           <div id='widgetConfirmation' block='confirmation' data-toggle='tooltip' title='Confirmation page after user submits a form. In case there is no confirmation page, a default message is shown in the app. If you use a confirmation, then your own message appears.'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("confirmation")' src='/img/confirm.png' />
+              <img (click)='loadWidgets($event, "confirmation")' src='/img/confirm.png' />
             </div>
             <div>
               <label>Confirmation</label>
@@ -262,7 +262,7 @@
           <div id='widgetPassword' block='password' data-toggle='tooltip' title='Password allows us to change the password for the registered users'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("password")' src='/img/icon_password.png' />
+              <img (click)='loadWidgets($event, "password")' src='/img/icon_password.png' />
             </div>
             <div>
               <label>Password</label>
@@ -271,7 +271,7 @@
 
           <div id='widgetNext' block='next' data-toggle='tooltip' title='Next tile page shows after user submits a form.' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("next")' src='/img/arrow_next_icon.png' />
+              <img (click)='loadWidgets($event, "next")' src='/img/arrow_next_icon.png' />
             </div>
             <div>
               <label>Next</label>
@@ -283,7 +283,7 @@
               </div> -->
           <div id='widgetFormPhoto' block='FormPhoto' data-toggle='tooltip' title='Attach Photos to the form' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("formphoto")' src='/img/form_photo_widget.png' />
+              <img (click)='loadWidgets($event, "formphoto")' src='/img/form_photo_widget.png' />
             </div>
             <div>
               <label>Form Media</label>
@@ -292,7 +292,7 @@
 
           <div id='widgetPainLevel' block='PainLevel' data-toggle='tooltip' title='Denotes pain level' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("painlevel")' src='/img/pain_level.png' />
+              <img (click)='loadWidgets($event, "painlevel")' src='/img/pain_level.png' />
             </div>
             <div>
               <label>Pain Level</label>
@@ -302,7 +302,7 @@
           <div id='widgetDrawTool' block='DrawTool' data-toggle='tooltip' title='You can draw on a picture or just on a blank screen to draw angles and pictures of a angle iron for instance'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("drawtool")' src='/img/draw_tool.png' />
+              <img (click)='loadWidgets($event, "drawtool")' src='/img/draw_tool.png' />
             </div>
             <div>
               <label>Draw Tool</label>
@@ -311,7 +311,7 @@
 
           <div id='widgetPhysician' block='Physician' data-toggle='tooltip' title='Assign a physician to the patient' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("physician")' src='/img/physician.png' />
+              <img (click)='loadWidgets($event, "physician")' src='/img/physician.png' />
             </div>
             <div>
               <label>Physician</label>
@@ -323,7 +323,7 @@
               </div>-->
           <div id='widgetEndWrapper' block='EndWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("endwrapper")' src='/img/stop_wrapper.png' />
+              <img (click)='loadWidgets($event, "endwrapper")' src='/img/stop_wrapper.png' />
             </div>
             <div>
               <label>End Wrapper</label>
@@ -344,7 +344,7 @@
           <div id='widgetFill' block='fill' data-toggle='tooltip' title='Fill-in the blanks. Type the text and let users fill-in the blanks. Enter 3 underscores ___ for the blank words.  You may use multiple 3 underscores in a row, but add a space after the 3rd.'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("fill")' src='/img/fill.png' />
+              <img (click)='loadWidgets($event, "fill")' src='/img/fill.png' />
             </div>
             <div>
               <label>Fill-In</label>
@@ -353,7 +353,7 @@
 
           <div id='widgetNotes' block='notes' data-toggle='tooltip' title='Users can take their own notes.' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("notes")' src='/img/notes.png' />
+              <img (click)='loadWidgets($event, "notes")' src='/img/notes.png' />
             </div>
             <div>
               <label>Notes</label>
@@ -363,7 +363,7 @@
           <div id='widgetButtons' block='buttons' data-toggle='tooltip' title='Multiple buttons can be added, with before click and after click values. User can toggle between buttons, only the last value is taken into account.'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("buttons")' src='/img/buttons.png' />
+              <img (click)='loadWidgets($event, "buttons")' src='/img/buttons.png' />
             </div>
             <div>
               <label>Buttons</label>
@@ -373,7 +373,7 @@
           <div id='widgetContactUs' block='contactus' data-toggle='tooltip' title='Users enter their information requesting you to contact them.  You will receive an email with their contact info.'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("contactus")' src='/img/icon-email.png' />
+              <img (click)='loadWidgets($event, "contactus")' src='/img/icon-email.png' />
             </div>
             <div>
               <label>Contact Us</label>
@@ -382,7 +382,7 @@
 
           <div id='widgetPlacefull' block='placefull' data-toggle='tooltip' title='PlaceFull event booking and ticketing' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("placefull")' src='/img/pf_logo.png' />
+              <img (click)='loadWidgets($event, "placefull")' src='/img/pf_logo.png' />
             </div>
             <div>
               <label>PlaceFull</label>
@@ -391,7 +391,7 @@
 
           <div id='widgetAddToCart' block='AddToCart' data-toggle='tooltip' title='You can cart your order' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("addtocart")' src='/img/icon_add_to_cart.png' />
+              <img (click)='loadWidgets($event, "addtocart")' src='/img/icon_add_to_cart.png' />
             </div>
             <div>
               <label>Add to Cart</label>
@@ -400,7 +400,7 @@
 
           <div id='widgetCart' block='Cart' data-toggle='tooltip' title='You can view all your carts' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("cart")' src='/img/icon_cart.png' />
+              <img (click)='loadWidgets($event, "cart")' src='/img/icon_cart.png' />
             </div>
             <div>
               <label>Cart</label>
@@ -410,7 +410,7 @@
           <div id='widgetBlanksForm' block='blanksform' data-toggle='tooltip' title='In-app form fill with picture upload and email alert'
             class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("blanksform")' src='/img/blank_form.png' />
+              <img (click)='loadWidgets($event, "blanksform")' src='/img/blank_form.png' />
             </div>
             <div>
               <label>Blank Form</label>
@@ -430,7 +430,7 @@
 
           <div id='widgetExclusiveUrl' block='exclusiveUrl' data-toggle='tooltip' title='Integrate URL' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("exclusiveurl")' src='/img/icon_url.png' />
+              <img (click)='loadWidgets($event, "exclusiveurl")' src='/img/icon_url.png' />
             </div>
             <div>
               <label>URL</label>
@@ -439,7 +439,7 @@
 
           <div id='widgetFileUpload' block='fileupload' data-toggle='tooltip' title='Upload PDF or other format files' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("fileupload")' src='/img/uploads-icon.png' />
+              <img (click)='loadWidgets($event, "fileupload")' src='/img/uploads-icon.png' />
             </div>
             <div>
               <label>File Upload</label>
@@ -448,7 +448,7 @@
 
           <div id='widgetPushpay' block='pushpay' data-toggle='tooltip' title='Integrate PushPay' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("pushpay")' src='/img/pushpay.png' />
+              <img (click)='loadWidgets($event, "pushpay")' src='/img/pushpay.png' />
             </div>
             <div>
               <label>PushPay</label>
@@ -456,7 +456,7 @@
           </div>
           <div block='threedcart' data-toggle='tooltip' title='Integrate 3dcart' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("threedcart")' src='/img/3d-cart.png' />
+              <img (click)='loadWidgets($event, "threedcart")' src='/img/3d-cart.png' />
             </div>
             <div>
               <label>3dcart</label>
@@ -465,7 +465,7 @@
 
           <div id='widgetBlogs' block='blogs' data-toggle='tooltip' title='Integrate Blogs' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("blogs")' src='/img/icon-blogs.png' />
+              <img (click)='loadWidgets($event, "blogs")' src='/img/icon-blogs.png' />
             </div>
             <div>
               <label>Blogs</label>
@@ -474,7 +474,7 @@
 
           <div id='widgetChat' block='chat' data-toggle='tooltip' title='Enable chat within the app.' class='widget_btn'>
             <div>
-              <img (click)='loadWidgets("chat")' src='/img/chat.png' />
+              <img (click)='loadWidgets($event, "chat")' src='/img/chat.png' />
             </div>
             <div>
               <label>Chat</label>

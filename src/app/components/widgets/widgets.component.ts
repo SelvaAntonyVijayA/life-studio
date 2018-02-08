@@ -100,7 +100,12 @@ export class WidgetsComponent implements OnInit {
   };*/
 
   /* Checking the block by block type */
-  loadWidgets(type: any, blockData: any) {
+  loadWidgets(e: any, type: any, blockData: any) {
+    if (!this.utils.isNullOrEmpty(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     var blocks = this.blocks;
     var viewName = "";
     var blkLength = blocks.length;
@@ -307,9 +312,36 @@ export class WidgetsComponent implements OnInit {
     }
   };
 
-  languageChange(langCode: string) {
+  languageChange(langCode: string, saved?: boolean) {
+    if (!saved) {
+      this.newTile('Would you like to save your previous work?', 'Save', 'Discard', (isChanged, auto) => {
+        if (isChanged) {
+          this.tileSave("", false, false, false, {}, true, langCode);
+        } else {
+          this.langReset(langCode);
+        }
+      });
+    } else {
+      this.langReset(langCode);
+    }
+  };
+
+  langReset(langCode: string) {
     this.selectedLanguage = langCode;
     this.resetTile("", true);
+
+    if (this.tileBlocks.length > 0) {
+      for (let i = 0; i < this.tileBlocks.length; i++) {
+        var currentBlock = this.tileBlocks[i];
+        var type = this.tileBlocks[i].hasOwnProperty("type") ? this.tileBlocks[i].type : "";
+        this.loadWidgets("", type, currentBlock);
+      }
+    }
+
+    var currLangObj = !this.utils.isEmptyObject(this.selectedTile) && this.selectedLanguage !== "en" && this.selectedTile.hasOwnProperty(this.selectedLanguage) ? this.selectedTile[langCode] : this.selectedLanguage === "en" ? this.selectedTile : {};
+    this.tileTitle = currLangObj.hasOwnProperty("title") && !this.utils.isNullOrEmpty(currLangObj["title"]) ? currLangObj["title"] : "";
+    this.tileNotes = currLangObj.hasOwnProperty("notes") && !this.utils.isNullOrEmpty(currLangObj["notes"]) ? currLangObj["notes"] : "";
+    this.rtl = currLangObj.hasOwnProperty("rtl") && !this.utils.isNullOrEmpty(currLangObj["rtl"]) ? this.utils.convertToBoolean(currLangObj["rtl"]) : false;
   };
 
   getViewBlock(view: any, opt: string) {
@@ -317,7 +349,7 @@ export class WidgetsComponent implements OnInit {
 
     if (opt === "delete") {
       this.blockSelected.viewContainerRef.remove(index);
-      this.blocks.splice(0, 1);
+      this.blocks.splice(index, 1);
       this.currentAddIndex = this.currentAddIndex - 1;
 
     } else if (opt === "up") {
@@ -352,12 +384,12 @@ export class WidgetsComponent implements OnInit {
     }
   };
 
-  saveTile(tileObj: Object, deleteId?: string, savedBlocks?: any[], isUpdate?: boolean, isDuplicate?: boolean, updatedId?: string, newTileObj?: Object) {
+  saveTile(tileObj: Object, deleteId?: string, savedBlocks?: any[], isUpdate?: boolean, isDuplicate?: boolean, updatedId?: string, newTileObj?: Object, langSave?: boolean, langCode?: string) {
     if (!this.utils.isEmptyObject(tileObj)) {
       this.tileService.saveTile(tileObj)
         .then(resTile => {
           if (!this.utils.isEmptyObject(resTile) && resTile.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(resTile["_id"])) {
-            if (!isUpdate && !isDuplicate) {
+            if (!isUpdate && !isDuplicate && !langSave) {
               var isNew = tileObj.hasOwnProperty("_id") ? false : true;
               this.tileIdsUpdate = {};
               this.tileIdsDelete = [];
@@ -387,9 +419,18 @@ export class WidgetsComponent implements OnInit {
               this.tileSave("", false, true, true);
             } else if (isUpdate && !isDuplicate) {
               var isNew = tileObj.hasOwnProperty("_id") ? false : true;
+              this.tileIdsUpdate = {};
               this.tileIdsUpdate = { "noEmit": true };
               this.tileIdsUpdate[resTile["_id"]] = isNew;
               this.setTileContent(newTileObj, true);
+            } else if (langSave) {
+              var isNew = tileObj.hasOwnProperty("_id") ? false : true;
+              this.tileIdsUpdate = {};
+              this.tileIdsUpdate = { "isLang": true };
+              this.tileIdsUpdate[resTile["_id"]] = isNew;
+              this.assignBlockData(savedBlocks);
+
+              this.languageChange(langCode, true);
             }
           }
         });
@@ -412,13 +453,26 @@ export class WidgetsComponent implements OnInit {
 
   assignBlockData(savedBlocks: any[]) {
     var currentBlocks = this.blocks;
+    this.tileBlocks = [];
 
     for (let i = 0; i < savedBlocks.length; i++) {
       var currSavedBlock = savedBlocks[i];
 
       if (!this.utils.isEmptyObject(currentBlocks[i]) && currentBlocks[i].hasOwnProperty("block")) {
         currentBlocks[i]["block"]["existingData"] = currSavedBlock;
+        this.tileBlocks.push(currSavedBlock);
       }
+    }
+  };
+
+  assignExistsLanguage(langCode?: string) {
+    if (langCode) {
+      var currLang = this.selectedLanguage;
+      this.selectedLanguage = langCode;
+
+      setTimeout(() => {
+        this.selectedLanguage = currLang;
+      });
     }
   };
 
@@ -467,13 +521,13 @@ export class WidgetsComponent implements OnInit {
 
     tile["requiresLogin"] = this.requiresLogin;
     tile["enableZoom"] = this.enableZoom;
-    tile["language"] = this.selectedLanguage;
+    tile["language"] = "en";
     tile["rtl"] = this.rtl;
 
     return tile;
   };
 
-  tileSave(e: any, isUpdate: boolean, isDuplicate: boolean, updated?: boolean, newTileObj?: Object) {
+  tileSave(e: any, isUpdate: boolean, isDuplicate: boolean, updated?: boolean, newTileObj?: Object, langSave?: boolean, langCode?: string) {
     if (!this.utils.isNullOrEmpty(e)) {
       e.preventDefault();
       e.stopPropagation();
@@ -493,11 +547,13 @@ export class WidgetsComponent implements OnInit {
 
     if (this.utils.isNullOrEmpty(tileObj["title"])) {
       this.utils.iAlert('error', 'Information', 'You must at least enter a Tile title');
+      this.assignExistsLanguage(langCode);
       return false;
     }
 
     if (tileObj["category"] === "-1") {
       this.utils.iAlert('error', 'Information', 'Please select a category for the Tile');
+      this.assignExistsLanguage(langCode);
       return false;
     }
 
@@ -510,17 +566,20 @@ export class WidgetsComponent implements OnInit {
 
         var selectedLanguage = this.selectedLanguage;
 
-        if (currTileObj.hasOwnProperty("_id") && selectedLanguage !== "en") {
+        if (selectedLanguage !== "en") {
           currTileObj[selectedLanguage] = {};
           currTileObj[selectedLanguage]["title"] = this.tileTitle;
           currTileObj[selectedLanguage]["notes"] = this.tileNotes;
           currTileObj[selectedLanguage]["rtl"] = this.rtl;
-          delete currTileObj["title"];
-          delete currTileObj["notes"];
-          delete currTileObj["rtl"];
+
+          if (currTileObj.hasOwnProperty("_id")) {
+            delete currTileObj["title"];
+            delete currTileObj["notes"];
+            delete currTileObj["rtl"];
+          }
         }
 
-        this.saveTile(currTileObj, deleteId, blks, isUpdate, isDuplicate, updateId, newTileObj);
+        this.saveTile(currTileObj, deleteId, blks, isUpdate, isDuplicate, updateId, newTileObj, langSave, langCode);
       });
     });
   };
@@ -989,7 +1048,7 @@ export class WidgetsComponent implements OnInit {
         for (let i = 0; i < this.tileBlocks.length; i++) {
           var currentBlock = this.tileBlocks[i];
           var type = this.tileBlocks[i].hasOwnProperty("type") ? this.tileBlocks[i].type : "";
-          this.loadWidgets(type, currentBlock);
+          this.loadWidgets("", type, currentBlock);
         }
       }
     }

@@ -459,7 +459,10 @@ export class TilesListComponent {
       var resEmitted = false;
       let tileToSend: Tile;
       var isEmit = currTiles.hasOwnProperty("noEmit") ? false : true;
+      var isLang = currTiles.hasOwnProperty("isLang") ? true : false;
       delete currTiles["noEmit"];
+      delete currTiles["isLang"];
+      
       var currTileIds = Object.keys(currTiles);
 
       for (let i = 0; i < currTileIds.length; i++) {
@@ -491,7 +494,12 @@ export class TilesListComponent {
               resEmitted = true;
               this.selectedTile = currTileIds.length == 1 ? tileObj : tileToSend;
 
-              var emitKey = isNew ? "assignBlocks" : "savedUpdated";
+              var emitKey =  isNew ? "assignBlocks" : "savedUpdated";
+
+              if (isLang) {
+                emitKey = "savedUpdated";
+              }
+
               var emitData = {};
               emitData[emitKey] = true;
 

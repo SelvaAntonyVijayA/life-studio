@@ -234,7 +234,7 @@ export class BlockOrganizer {
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
 
     this.block["data"] = {};
-    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : "";
   };
 
   videoBlock(blockData: any, type: string) {
@@ -264,7 +264,7 @@ export class BlockOrganizer {
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : "";
     //this.block["data"]["moderated"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["moderated"]) ? blockData["data"]["moderated"].toString() : "false";
     //this.block["data"]["rate"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["rate"]) ? blockData["data"]["rate"].toString() : "false";
     //this.block["data"]["vote"] = this.checkBlockExists(blockData) && !this.utils.isNullOrEmpty(blockData["data"]["vote"]) ? blockData["data"]["vote"].toString() : "false";
@@ -315,7 +315,7 @@ export class BlockOrganizer {
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : "";
   };
 
   shareBlock(blockData: any, type: string) {
@@ -606,7 +606,7 @@ export class BlockOrganizer {
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : "";
     this.block["data"]["submittext"] = !this.utils.isNullOrEmpty(data["submittext"]) ? data["submittext"] : "";
   };
 
@@ -652,7 +652,7 @@ export class BlockOrganizer {
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : "";
     this.block["data"]["isVideo"] = !this.utils.isNullOrEmpty(data["isVideo"]) ? this.utils.convertToBoolean(data["isVideo"]) : false;
   };
 
@@ -730,7 +730,7 @@ export class BlockOrganizer {
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
-    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : "";
   };
 
   notesBlock(blockData: any, type: string) {
@@ -852,7 +852,7 @@ export class BlockOrganizer {
     this.block["data"] = {};
 
     this.block["data"]["email"] = !this.utils.isNullOrEmpty(data["email"]) ? data["email"] : "";
-    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : new String("");
+    this.block["data"]["text"] = !this.utils.isNullOrEmpty(data["text"]) ? data["text"] : "";
     this.block["data"]["imageLimit"] = !this.utils.isNullOrEmpty(data["imageLimit"]) ? data["imageLimit"] : "";
     this.block["data"]["redirectApp"] = !this.utils.isNullOrEmpty(data["redirectApp"]) ? this.utils.convertToBoolean(data["redirectApp"]) : false;
   };
@@ -935,7 +935,7 @@ export class BlockOrganizer {
     this.block["data"]["wordPress"] = !this.utils.isNullOrEmpty(data["wordPress"]) ? this.utils.convertToBoolean(data["wordPress"]) : false;
     this.block["data"]["wordPressUrl"] = !this.utils.isNullOrEmpty(data["wordPressUrl"]) ? data["wordPressUrl"] : "";
     this.block["data"]["wordPressTitle"] = !this.utils.isNullOrEmpty(data["wordPressTitle"]) ? data["wordPressTitle"] : "";
-    this.block["data"]["wordPressContent"] = !this.utils.isNullOrEmpty(data["wordPressContent"]) ? data["wordPressContent"] : new String("");
+    this.block["data"]["wordPressContent"] = !this.utils.isNullOrEmpty(data["wordPressContent"]) ? data["wordPressContent"] : "";
   };
 
   chatBlock(blockData: any, type: string) {
@@ -1274,7 +1274,9 @@ export class GetBlocks {
 
             lang["data"] = blockData["data"];
             blkData[this.langCode] = lang;
-          } else {
+          }
+
+          if ((this.langCode === "en") || (this.langCode !== "en" && !blkData.hasOwnProperty("_id"))) {
             /*if (blockData.hasOwnProperty("isChat")) {
               blkData["isChat"] = blockData["isChat"];
             }*/
@@ -1428,7 +1430,7 @@ export class GetBlocks {
     data["multiple"] = blk["data"]["multiple"];
     data["showInApp"] = blk["data"]["showInApp"];
     data["isNote"] = blk["data"]["isNote"];
-    data["questionText"] = !this.utils.isNullOrEmpty(data["questionText"]) ? this.utils.escapingQuotes(data["questionText"]) : "";
+    data["questionText"] = !this.utils.isNullOrEmpty(blk["data"]["questionText"]) ? this.utils.escapingQuotes(blk["data"]["questionText"]) : "";
     data["controls"] = blk["data"]["controls"];
     data["questions"] = blk["data"]["questions"];
     data["alerts"] = blk["data"]["alerts"];

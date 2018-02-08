@@ -21,7 +21,7 @@ import { PagesComponent } from '../../components/pages/pages.component';
 import { DemoComponent } from '../../components/demo/demo.component';
 import { NotificationsComponent } from '../../components/notifications/notifications.component';
 import { SmartComponent } from '../../components/smart/smart.component';
-import { ImagelibraryComponent } from '../../components/imagelibrary/imagelibrary.component';
+//import { ImagelibraryComponent } from '../../components/imagelibrary/imagelibrary.component';
 
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { HeaderService } from '../../services/header.service';
@@ -61,12 +61,12 @@ import { NgSelectModule } from '../../ng-select';
     CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule,
     ColorPickerModule, CKEditorModule, GalleryModule.forRoot(), NgSelectModule
   ],
-  entryComponents: [TileBlocksComponents, ImagelibraryComponent],
+  entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
-    ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent],
+    ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService]
 })
