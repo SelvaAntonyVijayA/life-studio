@@ -15,3 +15,7 @@ Step 5: After build the angular server run the express by below mentioned comman
         set DEBUG=ili:* & npm start
 
 Note: In node_modules/malihu-custom-scrollbar-plugin replace css with our custom worked css jquery.mCustomScrollbar.css....
+
+Image upload
+-------------
+Download and install GraphicsMagick or ImageMagick for GM module which is used to resize and crop the image upload.

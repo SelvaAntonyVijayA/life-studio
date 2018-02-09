@@ -1,8 +1,9 @@
 var imageConf, appConf, __appPath;
 const fs = require('fs');
 const path = require('path');
-const easyImg = require('easyimage');
+const gm = require('gm');
 const util = require('util');
+const formidable = require('formidable')
 
 var init = function (app) {
   appConf = app.get('settings');
@@ -52,45 +53,55 @@ var list = function (req, res, next) {
 
 var upload = function (req, res, next) {
   var context = { "req": req, "res": res, "next": next };
-  var type = req.data.type;
-  var isEncoded = typeof req.data.isEncoded == 'undefined' || req.data.isEncoded == "false" ? false : true;
 
-  _uploadImage(context, type, isEncoded);
+  _formParse(req, function (data, files) {
+    var isEncoded = typeof data.isEncoded == 'undefined' || data.isEncoded == "false" ? false : true;
+
+    _uploadImage(context, data, files, isEncoded);
+  });
 };
 
 var uploadImage = function (req, res, next) {
-  var postData = req.data.jsonPayload;
-  var type = postData.type;
-  var isEncoded = typeof req.data.isEncoded == 'undefined' || req.data.isEncoded == "false" ? false : true;
   var context = { "req": req, "res": res, "next": next };
 
-  if (type == "tilephoto") {
-    _uploadTileImage(context, isEncoded);
-  } else if (type == "formphoto" || type == "eventphoto") {
-    _photoUpload(context, isEncoded);
-  } else if (type == "categoryphoto") {
-    _uploadImage(context, type, isEncoded);
-  } else if (type == "profilephoto") {
-    _profilePictureUpload(context, isEncoded);
-  } else if (type == "drawtool") {
-    _drawImageUpload(context, isEncoded);
-  } else if (type == "blanksform") {
-    _blankFormImageUpload(context, isEncoded);
-  } else {
-    _uploadImage(context, type, isEncoded);
-  }
+  _formParse(req, function (data, files) {
+    var postData = data.jsonPayload;
+    var type = postData.type;
+    var isEncoded = typeof data.isEncoded == 'undefined' || data.isEncoded == "false" ? false : true;
+
+    if (type == "tilephoto") {
+      _uploadTileImage(context, data, files, isEncoded);
+    } else if (type == "formphoto" || type == "eventphoto") {
+      _photoUpload(context, data, files, isEncoded);
+    } else if (type == "categoryphoto") {
+      _uploadImage(context, data, files, isEncoded);
+    } else if (type == "profilephoto") {
+      _profilePictureUpload(context, data, files, isEncoded);
+    } else if (type == "drawtool") {
+      _drawImageUpload(context, data, files, isEncoded);
+    } else if (type == "blanksform") {
+      _blankFormImageUpload(context, data, files, isEncoded);
+    } else {
+      _uploadImage(context, data, files, isEncoded);
+    }
+
+  });
 };
 
 var uploadTileImage = function (req, res, next) {
   var context = { "req": req, "res": res, "next": next };
 
-  _uploadTileImage(context, false);
+  _formParse(req, function (data, files) {
+    _uploadTileImage(context, data, files, false);
+  });
 };
 
 var uploadDecodedTileImage = function (req, res, next) {
   var context = { "req": req, "res": res, "next": next };
 
-  _uploadTileImage(context, true);
+  _formParse(req, function (data, files) {
+    _uploadTileImage(context, data, files, true);
+  });
 };
 
 var resize = function (req, res, next) {
@@ -99,20 +110,25 @@ var resize = function (req, res, next) {
   $async.waterfall([
     function (callback) {
       var options = _resizeOptions(context);
+      console.dir(options)
 
       if (options.height === 0 && __util.isValidFile(options.src)) {
-        easyImg.info(options.src, function (err, stdout, stderr) {
-          if (err) {
-            $log.error('URL resize image info: ' + err);
 
-            callback(null, options, true);
-          } else {
-            options.height = parseInt((stdout.height / stdout.width) * options.width);
-            var returnOriginalImage = (stdout.width < options.width);
+        gm(options.src)
+          .size(function (err, size) {
+            if (err) {
+              $log.error('URL resize image info: ' + err);
+              callback(null, options, true);
+            } else {
+              console.log('width = ' + size.width);
+              console.log('height = ' + size.height);
 
-            callback(null, options, returnOriginalImage);
-          }
-        });
+              options.height = parseInt((size.height / size.width) * options.width);
+              var returnOriginalImage = (size.width < options.width);
+
+              callback(null, options, returnOriginalImage);
+            }
+          });
       } else {
         callback(null, options, false);
       }
@@ -121,7 +137,7 @@ var resize = function (req, res, next) {
         if (!returnOriginalImage) {
           options.height = options.height.toString() + "!";
 
-          easyImg.resize(options, function (err, image) {
+          _resizer(options.src, options.dst, options.width, options.height, function (err, image) {
             if (err) {
               $log.error('image resize: ' + err);
 
@@ -131,10 +147,10 @@ var resize = function (req, res, next) {
 
             options.dst = options.dst.replace(/"/gi, "");
 
-            $view.static(context, options.dst);
+            res.send(options.dst);
           });
         } else {
-          $view.static(context, options.src);
+          res.send(options.src);
         }
       } else {
         res.send({ "status": "Not Found" });
@@ -145,10 +161,10 @@ var resize = function (req, res, next) {
 
 var crop = function (req, res, next) {
   var dstFileName = '';
-  var obj = req.body.form_data;
+  var obj = data.form_data;
   var context = { "req": req, "res": res, "next": next };
   var fileName = obj.src.split('/').pop();
-  var imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', req.cookie.oid);
+  var imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', req.cookies.oid);
 
   imagePath = !__util.isNullOrEmpty(obj.folder) ? imagePath + obj.folder + "/" : imagePath;
 
@@ -227,11 +243,8 @@ var folder = function (req, res, next) {
 };
 
 var saveFolder = function (req, res, next) {
-  var obj = req.body.form_data;
+  var obj = data.form_data;
   var fileName = __appPath + imageConf.imgfolderpath.replace('{0}', obj.organizationId) + obj.name;
-
-  console.dir(obj)
-  console.dir(fileName)
 
   fs.exists(fileName, function (exists) {
     if (exists) {
@@ -251,7 +264,7 @@ var saveFolder = function (req, res, next) {
 };
 
 var remove = function (req, res, next) {
-  var obj = req.body.form_data;
+  var obj = data.form_data;
   var isArray = obj.hasOwnProperty("src") && util.isArray(obj.src) ? true : false;
 
   if (isArray) {
@@ -259,7 +272,7 @@ var remove = function (req, res, next) {
 
     $async.each(obj.src, function (file, loop) {
       var fileName = file.split('/').pop();
-      var imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', req.cookie.oid);
+      var imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', req.cookies.oid);
 
       imagePath = !__util.isNullOrEmpty(obj.folder) ? imagePath + obj.folder + "/" : imagePath;
       var src = imagePath + fileName;
@@ -274,12 +287,11 @@ var remove = function (req, res, next) {
         "statusList": resultArray
       }
 
-
       res.send(finalResult);
     });
   } else {
     var fileName = obj.src.split('/').pop();
-    var imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', req.cookie.oid);
+    var imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', req.cookies.oid);
 
     imagePath = !__util.isNullOrEmpty(obj.folder) ? imagePath + obj.folder + "/" : imagePath;
     var src = imagePath + fileName;
@@ -295,151 +307,157 @@ var uploadBackgroundGroup = function (req, res, next) {
   var retrn = {};
   var fileName;
 
-  try {
-    if (req.files) {
-      for (var prop in req.files) {
-        var file = req.files[prop];
+  _formParse(req, function (data, files) {
+    try {
+      if (files) {
+        for (var prop in files) {
+          var file = files[prop];
 
-        if (!__util.isNullOrEmpty(file.name)) {
-          var pathCount = 0;
-          var id = req.data._id;
-          var group = req.data.group;
-          var type = req.data.type;
-          var pageFrom = req.data.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(req.data.pagefrom) ? req.data.pagefrom : "";
+          if (!__util.isNullOrEmpty(file.name)) {
+            var pathCount = 0;
+            var id = data._id;
+            var group = data.group;
+            var type = data.type;
+            var pageFrom = data.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(data.pagefrom) ? data.pagefrom : "";
 
-          var fileArray = file.name.split('.');
-          var fileName = fileArray[0] + Date.parse(new Date());
-          fileName = fileName.split("_");
-          fileName = fileName[0].replace(/\s/g, "");
-          fileName = !__util.isNullOrEmpty(pageFrom) && pageFrom == "web" ? fileName + "_" + "web" + "_" + type + "." + fileArray[1] : fileName + "_" + type + "." + fileArray[1];
+            var fileArray = file.name.split('.');
+            var fileName = fileArray[0] + Date.parse(new Date());
+            fileName = fileName.split("_");
+            fileName = fileName[0].replace(/\s/g, "");
+            fileName = !__util.isNullOrEmpty(pageFrom) && pageFrom == "web" ? fileName + "_" + "web" + "_" + type + "." + fileArray[1] : fileName + "_" + type + "." + fileArray[1];
 
-          var imagePath = __appPath + imageConf.imgGroupFolderPath.replace('{0}', group);
+            var imagePath = __appPath + imageConf.imgGroupFolderPath.replace('{0}', group);
 
-          if (group == "groupdefault") {
-            var groupFolder = imagePath.replace("{1}/", "");
-            __util.createDir(groupFolder);
-          }
-
-          imagePath = imagePath.replace("{1}", id);
-
-          var pathCreateLen = !__util.isNullOrEmpty(type) && type == "icon" ? 2 : 1;
-          var i;
-
-          for (i = 0; i < pathCreateLen; i++) {
-            if (i === 1) {
-              imagePath = imagePath + "icon" + "/";
+            if (group == "groupdefault") {
+              var groupFolder = imagePath.replace("{1}/", "");
+              __util.createDir(groupFolder);
             }
 
-            __util.createDir(imagePath);
-          }
+            imagePath = imagePath.replace("{1}", id);
 
-          fileName = fileName.replace(/(\s)+/g, '_');
+            var pathCreateLen = !__util.isNullOrEmpty(type) && type == "icon" ? 2 : 1;
+            var i;
 
-          __util.fileUpload(file, imagePath, fileName, function (error) {
-            if (error) {
-              $log.error('Original image : ' + imagePath + ' Error: ' + error);
+            for (i = 0; i < pathCreateLen; i++) {
+              if (i === 1) {
+                imagePath = imagePath + "icon" + "/";
+              }
+
+              __util.createDir(imagePath);
             }
-          });
 
-          var imagePathAssigned = appConf.domain + imageConf.imgGroupUrlPath.replace('{0}', group);
-          imagePathAssigned = imagePathAssigned.replace("{1}", id);
+            fileName = fileName.replace(/(\s)+/g, '_');
 
-          if (type === "icon") {
-            imagePathAssigned = imagePathAssigned + "icon" + "/";
+            __util.fileUpload(file, imagePath, fileName, function (error) {
+              if (error) {
+                $log.error('Original image : ' + imagePath + ' Error: ' + error);
+              }
+            });
+
+            var imagePathAssigned = appConf.domain + imageConf.imgGroupUrlPath.replace('{0}', group);
+            imagePathAssigned = imagePathAssigned.replace("{1}", id);
+
+            if (type === "icon") {
+              imagePathAssigned = imagePathAssigned + "icon" + "/";
+            }
+
+            imagePathAssigned = imagePathAssigned + fileName;
+
+            var urlRtrn = {};
+            urlRtrn.imageUrl = imagePathAssigned;
+
+            res.send(urlRtrn);
           }
-
-          imagePathAssigned = imagePathAssigned + fileName;
-
-          var urlRtrn = {};
-          urlRtrn.imageUrl = imagePathAssigned;
-
-          res.send(urlRtrn);
         }
+      } else {
+
+        res.send(urlRtrn);
       }
-    } else {
+    } catch (err) {
+      $log.error('upload : ' + err);
+      $log.error('upload stack: ' + err.stack);
 
-      res.send(urlRtrn);
+      res.send({});
     }
-  } catch (err) {
-    $log.error('upload : ' + err);
-    $log.error('upload stack: ' + err.stack);
 
-    res.send({});
-  }
+  });
 };
 
 var backgroundPatternUpload = function (req, res, next) {
   var retrn = {};
   var fileName;
 
-  try {
-    if (req.files) {
-      for (var prop in req.files) {
-        var file = req.files[prop];
+  _formParse(req, function (data, files) {
 
-        if (!__util.isNullOrEmpty(file.name)) {
-          var pathCount = 0;
-          var appId = req.data.appId;
-          var pageId = req.data.pageId;
-          var type = req.data.type;
-          var pageFrom = req.data.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(req.data.pagefrom) ? req.data.pagefrom : "";
-          var fileArray = file.name.split('.');
-          var fileName = fileArray[0] + Date.parse(new Date());
-          fileName = fileName.split("_");
-          fileName = fileName[0].replace(/\s/g, "");
-          fileName = !__util.isNullOrEmpty(pageFrom) && pageFrom == "web" ? fileName + "_" + "web" + "_" + type + "." + fileArray[1] : fileName + "_" + type + "." + fileArray[1];
-          var imagePath = __appPath + imageConf.imgBgFolderPath.replace('{0}', appId);
-          var pathCreateLen = !__util.isNullOrEmpty(pageFrom) && pageFrom == "web" ? 3 : 2;
+    try {
+      if (files) {
+        for (var prop in files) {
+          var file = files[prop];
 
-          for (var i = 0; i < pathCreateLen; i++) {
-            if (i == 1) {
-              imagePath = imagePath + pageId + "/";
+          if (!__util.isNullOrEmpty(file.name)) {
+            var pathCount = 0;
+            var appId = data.appId;
+            var pageId = data.pageId;
+            var type = data.type;
+            var pageFrom = data.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(data.pagefrom) ? data.pagefrom : "";
+            var fileArray = file.name.split('.');
+            var fileName = fileArray[0] + Date.parse(new Date());
+            fileName = fileName.split("_");
+            fileName = fileName[0].replace(/\s/g, "");
+            fileName = !__util.isNullOrEmpty(pageFrom) && pageFrom == "web" ? fileName + "_" + "web" + "_" + type + "." + fileArray[1] : fileName + "_" + type + "." + fileArray[1];
+            var imagePath = __appPath + imageConf.imgBgFolderPath.replace('{0}', appId);
+            var pathCreateLen = !__util.isNullOrEmpty(pageFrom) && pageFrom == "web" ? 3 : 2;
+
+            for (var i = 0; i < pathCreateLen; i++) {
+              if (i == 1) {
+                imagePath = imagePath + pageId + "/";
+              }
+
+              if (i == 2) {
+                imagePath = imagePath + "web" + "/";
+              }
+
+              __util.createDir(imagePath);
             }
 
-            if (i == 2) {
-              imagePath = imagePath + "web" + "/";
+            fileName = fileName.replace(/(\s)+/g, '_');
+
+            __util.fileUpload(file, imagePath, fileName, function (error) {
+              if (error) {
+                $log.error('Original image : ' + imagePath + ' Error: ' + error);
+              }
+            });
+
+            var imagePathAssigned = appConf.domain + imageConf.imgAppUrlPath.replace('{0}', appId);
+            imagePathAssigned = imagePathAssigned.replace("{1}", pageId);
+
+            if (!__util.isNullOrEmpty(pageFrom) && pageFrom == "web") {
+              imagePathAssigned = imagePathAssigned + "web" + "/" + fileName;
+            } else {
+              imagePathAssigned = imagePathAssigned + fileName;
             }
 
-            __util.createDir(imagePath);
+
+            var urlRtrn = {};
+            urlRtrn.imageUrl = imagePathAssigned;
+
+            res.send(urlRtrn);
           }
-
-          fileName = fileName.replace(/(\s)+/g, '_');
-
-          __util.fileUpload(file, imagePath, fileName, function (error) {
-            if (error) {
-              $log.error('Original image : ' + imagePath + ' Error: ' + error);
-            }
-          });
-
-          var imagePathAssigned = appConf.domain + imageConf.imgAppUrlPath.replace('{0}', appId);
-          imagePathAssigned = imagePathAssigned.replace("{1}", pageId);
-
-          if (!__util.isNullOrEmpty(pageFrom) && pageFrom == "web") {
-            imagePathAssigned = imagePathAssigned + "web" + "/" + fileName;
-          } else {
-            imagePathAssigned = imagePathAssigned + fileName;
-          }
-
-
-          var urlRtrn = {};
-          urlRtrn.imageUrl = imagePathAssigned;
-
-          res.send(urlRtrn);
         }
+      } else {
+        res.send(retrn);
       }
-    } else {
-      res.send(retrn);
-    }
-  } catch (err) {
-    $log.error('upload : ' + err);
-    $log.error('upload stack: ' + err.stack);
+    } catch (err) {
+      $log.error('upload : ' + err);
+      $log.error('upload stack: ' + err.stack);
 
-    res.send({});
-  }
+      res.send({});
+    }
+  });
 };
 
 var backgroundPatternRemove = function (req, res, next) {
-  var obj = req.body.form_data;
+  var obj = data.form_data;
   var pageFrom = obj.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(obj.pagefrom) ? obj.pagefrom : "";
 
   var imagePath = __appPath + imageConf.imgAppFolderPath.replace('{0}', obj.appId);
@@ -473,7 +491,7 @@ var backgroundPatternRemove = function (req, res, next) {
 
 var backgroundPatternList = function (req, res, next) {
   var images = [];
-  var obj = req.body.form_data;
+  var obj = data.form_data;
   var pageFrom = obj.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(obj.pagefrom) ? obj.pagefrom : "";
 
   var rootFolderPath = __appPath + imageConf.imgAppFolderPath.replace('{0}', obj.appId);
@@ -515,7 +533,7 @@ var backgroundPatternList = function (req, res, next) {
 };
 
 var bgGroupRemove = function (req, res, next) {
-  var obj = req.body.form_data;
+  var obj = data.form_data;
   var isGroupIcon = false;
 
   if (obj && obj.hasOwnProperty("groupIcon")) {
@@ -559,7 +577,7 @@ var bgGroupRemove = function (req, res, next) {
 
 var bgGroupList = function (req, res, next) {
   var images = [];
-  var obj = req.body.form_data;
+  var obj = data.form_data;
   var isGroupIcon = false;
 
   if (obj && obj.hasOwnProperty("groupIcon")) {
@@ -606,62 +624,65 @@ var emoticonsUpload = function (req, res, next) {
   var fileName;
   var id;
 
-  try {
-    if (req.files) {
-      for (var prop in req.files) {
-        var file = req.files[prop];
+  _formParse(req, function (data, files) {
 
-        if (!__util.isNullOrEmpty(file.name)) {
-          var imagePath = __appPath + imageConf.imgEmoticonsFolderPath.replace('{0}', req.cookie.oid);
+    try {
+      if (files) {
+        for (var prop in files) {
+          var file = files[prop];
 
-          if (req.data.fileName) {
-            fileName = __util.replaceEmpty(req.data.fileName);
-          } else {
-            fileName = __util.replaceEmpty(file.name);
-          }
+          if (!__util.isNullOrEmpty(file.name)) {
+            var imagePath = __appPath + imageConf.imgEmoticonsFolderPath.replace('{0}', req.cookies.oid);
 
-          if (req.data.id) {
-            id = __util.replaceEmpty(req.data.id);
-          }
-
-          __util.createDir(imagePath);
-
-          fileName = fileName.replace(/(\s)+/g, '_');
-          var extension = "." + fileName.split('.').pop();
-
-          var splitedName = fileName.split('.');
-          fileName = (!__util.isNullOrEmpty(id) ? id : splitedName[0]) + Date.parse(new Date()) + extension;
-
-          __util.fileUpload(file, imagePath, fileName, function (error) {
-            if (error) {
-              $log.error('Original image : ' + imagePath + ' Error: ' + error);
+            if (data.fileName) {
+              fileName = __util.replaceEmpty(data.fileName);
+            } else {
+              fileName = __util.replaceEmpty(file.name);
             }
-          });
 
-          var pathUploaded = appConf.domain + imageConf.imgEmoticonsUrlPath.replace('{0}', req.cookie.oid) + fileName;
+            if (data.id) {
+              id = __util.replaceEmpty(data.id);
+            }
 
-          var urlRtrn = {};
-          urlRtrn.imageUrl = pathUploaded;
+            __util.createDir(imagePath);
 
-          res.send(urlRtrn);
+            fileName = fileName.replace(/(\s)+/g, '_');
+            var extension = "." + fileName.split('.').pop();
+
+            var splitedName = fileName.split('.');
+            fileName = (!__util.isNullOrEmpty(id) ? id : splitedName[0]) + Date.parse(new Date()) + extension;
+
+            __util.fileUpload(file, imagePath, fileName, function (error) {
+              if (error) {
+                $log.error('Original image : ' + imagePath + ' Error: ' + error);
+              }
+            });
+
+            var pathUploaded = appConf.domain + imageConf.imgEmoticonsUrlPath.replace('{0}', req.cookies.oid) + fileName;
+
+            var urlRtrn = {};
+            urlRtrn.imageUrl = pathUploaded;
+
+            res.send(urlRtrn);
+          }
         }
+      } else {
+        res.send(retrn);
       }
-    } else {
-      res.send(retrn);
+    } catch (err) {
+      $log.error('upload : ' + err);
+      $log.error('upload stack: ' + err.stack);
+      res.send({});
     }
-  } catch (err) {
-    $log.error('upload : ' + err);
-    $log.error('upload stack: ' + err.stack);
-    res.send({});
-  }
+  });
 };
 
 var emoticonsList = function (req, res, next) {
   query = {};
   query.organizationId = req.params.orgId;
 
-  var rootFolder = __appPath + imageConf.imgEmoticonsFolderPath.replace('{0}', req.cookie.oid);
-  var imageUrl = appConf.domain + imageConf.imgEmoticonsUrlPath.replace('{0}', req.cookie.oid);
+  var rootFolder = __appPath + imageConf.imgEmoticonsFolderPath.replace('{0}', req.cookies.oid);
+  var imageUrl = appConf.domain + imageConf.imgEmoticonsUrlPath.replace('{0}', req.cookies.oid);
 
   if (__util.isValidPath(rootFolder) && !__util.isNullOrEmpty(query.organizationId)) {
     fs.readdir(rootFolder, function (err, files) {
@@ -691,7 +712,7 @@ var emoticonsList = function (req, res, next) {
 };
 
 var emoticonsDelete = function (req, res, next) {
-  var obj = req.body.form_data;
+  var obj = data.form_data;
   var imagePath = __appPath + imageConf.imgEmoticonsFolderPath.replace('{0}', req.params.orgId);
   imagePath = imagePath + obj.name;
 
@@ -740,19 +761,27 @@ var emoticonsDelete = function (req, res, next) {
 var profieEncodeUpload = function (req, res, next) {
   var context = { "req": req, "res": res, "next": next };
 
-  _profilePictureUpload(context, true);
+  _formParse(req, function (data, files) {
+    _profilePictureUpload(context, data, files, true);
+  });
 };
 
 var profiePictureUpload = function (req, res, next) {
   var context = { "req": req, "res": res, "next": next };
 
-  _profilePictureUpload(context, false);
+  _formParse(req, function (data, files) {
+    _profilePictureUpload(context, data, files, false);
+  });
 };
 
 var formPhotoUpload = function (req, res, next) {
   var context = { "req": req, "res": res, "next": next };
 
-  _photoUpload(context, false);
+  _formParse(req, function (data, files) {
+    var isEncoded = typeof data.isEncoded == 'undefined' || data.isEncoded == "false" ? false : true;
+
+    _photoUpload(context, data, files, isEncoded);
+  });
 };
 
 var streamUpload = function (req, res, next) {
@@ -760,55 +789,57 @@ var streamUpload = function (req, res, next) {
   var fileName;
   var id;
 
-  try {
-    if (req.files) {
-      for (var prop in req.files) {
-        var file = req.files[prop];
+  _formParse(req, function (data, files) {
+    try {
+      if (files) {
+        for (var prop in files) {
+          var file = files[prop];
 
-        if (req.data.id) {
-          id = __util.replaceEmpty(req.data.id);
-        }
-
-        if (!__util.isNullOrEmpty(file.name)) {
-          var imagePath = __appPath + imageConf.imgStreamFolerPath.replace('{0}', id);
-
-          if (req.data.fileName) {
-            fileName = __util.replaceEmpty(req.data.fileName);
-          } else {
-            fileName = __util.replaceEmpty(file.name);
+          if (data.id) {
+            id = __util.replaceEmpty(data.id);
           }
 
-          __util.createDir(imagePath);
+          if (!__util.isNullOrEmpty(file.name)) {
+            var imagePath = __appPath + imageConf.imgStreamFolerPath.replace('{0}', id);
 
-          fileName = fileName.replace(/(\s)+/g, '_');
-          var extension = "." + fileName.split('.').pop();
-
-          var splitedName = fileName.split('.');
-          fileName = (!__util.isNullOrEmpty(id) ? id : splitedName[0]) + Date.parse(new Date()) + extension;
-
-          __util.fileUpload(file, imagePath, fileName, function (error) {
-            if (error) {
-              $log.error('Original image : ' + imagePath + ' Error: ' + error);
+            if (data.fileName) {
+              fileName = __util.replaceEmpty(data.fileName);
+            } else {
+              fileName = __util.replaceEmpty(file.name);
             }
-          });
 
-          var pathUploaded = appConf.domain + imageConf.imgStreamUrlPath.replace('{0}', id) + fileName;
+            __util.createDir(imagePath);
 
-          var urlRtrn = {};
-          urlRtrn.imageUrl = pathUploaded;
+            fileName = fileName.replace(/(\s)+/g, '_');
+            var extension = "." + fileName.split('.').pop();
 
-          res.send(urlRtrn);
+            var splitedName = fileName.split('.');
+            fileName = (!__util.isNullOrEmpty(id) ? id : splitedName[0]) + Date.parse(new Date()) + extension;
+
+            __util.fileUpload(file, imagePath, fileName, function (error) {
+              if (error) {
+                $log.error('Original image : ' + imagePath + ' Error: ' + error);
+              }
+            });
+
+            var pathUploaded = appConf.domain + imageConf.imgStreamUrlPath.replace('{0}', id) + fileName;
+
+            var urlRtrn = {};
+            urlRtrn.imageUrl = pathUploaded;
+
+            res.send(urlRtrn);
+          }
         }
+      } else {
+        res.send(retrn);
       }
-    } else {
-      res.send(retrn);
-    }
-  } catch (err) {
-    $log.error('upload : ' + err);
-    $log.error('upload stack: ' + err.stack);
+    } catch (err) {
+      $log.error('upload : ' + err);
+      $log.error('upload stack: ' + err.stack);
 
-    res.send({});
-  }
+      res.send({});
+    }
+  });
 };
 
 var streamCrownUpload = function (req, res, next) {
@@ -816,58 +847,60 @@ var streamCrownUpload = function (req, res, next) {
   var fileName;
   var id;
 
-  try {
-    if (req.files) {
-      for (var prop in req.files) {
-        var file = req.files[prop];
+  _formParse(req, function (data, files) {
+    try {
+      if (files) {
+        for (var prop in files) {
+          var file = files[prop];
 
-        if (req.data.id) {
-          id = __util.replaceEmpty(req.data.id);
-        }
-
-        if (!__util.isNullOrEmpty(file.name)) {
-          var imagePath = __appPath + imageConf.imgStreamFolerPath.replace('{0}', id);
-
-          __util.createDir(imagePath);
-
-          imagePath = imagePath + "crown/";
-
-          if (req.data.fileName) {
-            fileName = __util.replaceEmpty(req.data.fileName);
-          } else {
-            fileName = __util.replaceEmpty(file.name);
+          if (data.id) {
+            id = __util.replaceEmpty(data.id);
           }
 
-          __util.createDir(imagePath);
+          if (!__util.isNullOrEmpty(file.name)) {
+            var imagePath = __appPath + imageConf.imgStreamFolerPath.replace('{0}', id);
 
-          fileName = fileName.replace(/(\s)+/g, '_');
-          var extension = "." + fileName.split('.').pop();
+            __util.createDir(imagePath);
 
-          var splitedName = fileName.split('.');
-          fileName = (!__util.isNullOrEmpty(id) ? id : splitedName[0]) + Date.parse(new Date()) + extension;
+            imagePath = imagePath + "crown/";
 
-          __util.fileUpload(file, imagePath, fileName, function (error) {
-            if (error) {
-              $log.error('Original image : ' + imagePath + ' Error: ' + error);
+            if (data.fileName) {
+              fileName = __util.replaceEmpty(data.fileName);
+            } else {
+              fileName = __util.replaceEmpty(file.name);
             }
-          });
 
-          var pathUploaded = appConf.domain + imageConf.imgStreamCrownUrlPath.replace('{0}', id).replace('{1}', 'crown') + fileName;
+            __util.createDir(imagePath);
 
-          var urlRtrn = {};
-          urlRtrn.imageUrl = pathUploaded;
+            fileName = fileName.replace(/(\s)+/g, '_');
+            var extension = "." + fileName.split('.').pop();
 
-          res.send(urlRtrn);
+            var splitedName = fileName.split('.');
+            fileName = (!__util.isNullOrEmpty(id) ? id : splitedName[0]) + Date.parse(new Date()) + extension;
+
+            __util.fileUpload(file, imagePath, fileName, function (error) {
+              if (error) {
+                $log.error('Original image : ' + imagePath + ' Error: ' + error);
+              }
+            });
+
+            var pathUploaded = appConf.domain + imageConf.imgStreamCrownUrlPath.replace('{0}', id).replace('{1}', 'crown') + fileName;
+
+            var urlRtrn = {};
+            urlRtrn.imageUrl = pathUploaded;
+
+            res.send(urlRtrn);
+          }
         }
+      } else {
+        res.send(retrn);
       }
-    } else {
-      res.send(retrn);
+    } catch (err) {
+      $log.error('upload : ' + err);
+      $log.error('upload stack: ' + err.stack);
+      res.send({});
     }
-  } catch (err) {
-    $log.error('upload : ' + err);
-    $log.error('upload stack: ' + err.stack);
-    res.send({});
-  }
+  });
 };
 
 var streamList = function (req, res, next) {
@@ -940,51 +973,55 @@ var urlList = function (req, res, next) {
 };
 
 var exclusiveFileUpload = function (req, res, next) {
-  var folder = req.data.folder;
 
-  try {
-    if (req.files) {
-      for (var prop in req.files) {
-        var file = req.files[prop];
-        var imagePath = "";
-        var fileName = "";
+  _formParse(req, function (data, files) {
+    var folder = typeof data.folder == 'undefined' ? "" : data.folder;
+    var isEncoded = typeof data.isEncoded == 'undefined' || data.isEncoded == "false" ? false : true;
 
-        if (req.data.fileName) {
-          fileName = __util.replaceEmpty(req.data.fileName);
-        } else {
-          fileName = __util.replaceEmpty(file.name);
+    try {
+      if (files) {
+        for (var prop in files) {
+          var file = files[prop];
+          var imagePath = "";
+          var fileName = "";
+
+          if (data.fileName) {
+            fileName = __util.replaceEmpty(data.fileName);
+          } else {
+            fileName = __util.replaceEmpty(file.name);
+          }
+
+          if (!__util.isNullOrEmpty(file.name)) {
+            var extension = "." + fileName.split('.').pop();
+            imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', folder);
+            __util.createDir(imagePath);
+
+            imagePath += 'url/';
+            fileName = fileName.replace(extension, '') + Date.parse(new Date()) + extension;
+
+            __util.createDir(imagePath);
+
+            _upload(isEncoded, file, imagePath, fileName, function (error) {
+              if (error) {
+                $log.error('Original file : ' + imagePath + ' Error: ' + error);
+              }
+            });
+
+            var urlRtrn = {};
+            urlRtrn.imageUrl = appConf.domain + imageConf.imgurlpath.replace('{0}', folder) + 'url/' + fileName;
+
+            res.send(urlRtrn);
+          }
         }
-
-        if (!__util.isNullOrEmpty(file.name)) {
-          var extension = "." + fileName.split('.').pop();
-          imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', folder);
-          __util.createDir(imagePath);
-
-          imagePath += 'url/';
-          fileName = fileName.replace(extension, '') + Date.parse(new Date()) + extension;
-
-          __util.createDir(imagePath);
-
-          __util.fileUpload(file, imagePath, fileName, function (error) {
-            if (error) {
-              $log.error('Original file : ' + imagePath + ' Error: ' + error);
-            }
-          });
-
-          var urlRtrn = {};
-          urlRtrn.imageUrl = appConf.domain + imageConf.imgurlpath.replace('{0}', folder) + 'url/' + fileName;
-
-          res.send(urlRtrn);
-        }
+      } else {
+        res.send({});
       }
-    } else {
+    } catch (err) {
+      $log.error('upload : ' + err);
+      $log.error('upload stack: ' + err.stack);
       res.send({});
     }
-  } catch (err) {
-    $log.error('upload : ' + err);
-    $log.error('upload stack: ' + err.stack);
-    res.send({});
-  }
+  });
 };
 
 var fileDelete = function (req, res, next) {
@@ -1013,23 +1050,25 @@ var fileDelete = function (req, res, next) {
   }
 };
 
-var _uploadImage = function (context, type, isEncoded) {
+var _uploadImage = function (context, data, files, isEncoded) {
   var req = context["req"];
   var res = context["res"];
+  var type = data.type;
+  var folder = typeof data.folder == 'undefined' ? "" : data.folder;
 
   try {
-    if (req.files) {
-      for (var prop in req.files) {
-        var file = req.files[prop];
+    if (files) {
+      for (var prop in files) {
+        var file = files[prop];
         var isCategory = false;
         var imagePath = "";
 
         if (!__util.isNullOrEmpty(file.name)) {
-          imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', req.cookie.oid);
-          imagePath = !__util.isEmptyObject(req.data) && !__util.isEmptyObject(req.data.folder) ? imagePath + req.data.folder + "/" : imagePath;
+          imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', req.cookies.oid);
+          imagePath = !__util.isEmptyObject(folder) ? imagePath + folder + "/" : imagePath;
 
           if (type == "categoryphoto") {
-            fileName = __util.replaceEmpty(req.data.fileName + '.png');
+            fileName = __util.replaceEmpty(data.fileName + '.png');
             imagePath += 'categories/';
             isCategory = true;
           } else {
@@ -1038,27 +1077,19 @@ var _uploadImage = function (context, type, isEncoded) {
 
           fileName = Date.parse(new Date()) + fileName;
 
-          if (isEncoded) {
-            __util.fileUploadEncode(file, imagePath, fileName, function (error) {
-              if (error) {
-                $log.error('Original decoded image : ' + imagePath + ' Error: ' + error);
-              }
-            });
+          _upload(isEncoded, file, imagePath, fileName, function (error) {
+            if (error) {
+              $log.error('Original decoded image : ' + imagePath + ' Error: ' + error);
+            }
 
-          } else {
-            __util.fileUpload(file, imagePath, fileName, function (error) {
-              if (error) {
-                $log.error('Original image : ' + imagePath + ' Error: ' + error);
-              }
-            });
-          }
+            var pathUploaded = imagePath + fileName;
 
-          var pathUploaded = imagePath + fileName;
-          _resizeUploadedImage(context, pathUploaded, fileName, 'upload', isCategory);
+            _resizeUploadedImage(context, data, pathUploaded, fileName, 'upload', isCategory);
+          });
         }
       }
     } else {
-      res.send(retrn);
+      res.send({});
     }
   } catch (err) {
     $log.error('upload : ' + err);
@@ -1067,51 +1098,66 @@ var _uploadImage = function (context, type, isEncoded) {
   }
 };
 
-var _uploadPictureBlock = function (context, isEncoded) {
+var _upload = function (isEncoded, file, imagePath, fileName, callback) {
+  if (isEncoded) {
+    __util.fileUploadEncode(file, imagePath, fileName, function (error) {
+      if (error) {
+
+        callback(error);
+      }
+      else {
+        callback();
+      }
+    });
+
+  } else {
+    __util.fileUpload(file, imagePath, fileName, function (error) {
+      if (error) {
+        $log.error('Original image : ' + imagePath + ' Error: ' + error);
+      }
+
+      callback();
+    });
+  }
+}
+
+var _uploadPictureBlock = function (context, data, files, isEncoded) {
   var retrn = {};
   var req = context["req"];
   var res = context["res"];
+  var type = data.type;
+  var folder = typeof data.folder == 'undefined' ? "" : data.folder;
 
-  if (req.files) {
+  if (files) {
     var fileName;
 
-    for (var prop in req.files) {
-      var file = req.files[prop];
+    for (var prop in files) {
+      var file = files[prop];
 
       if (!__util.isNullOrEmpty(file.name)) {
-        var imagePath = __appPath + imageConf.tileImagefolder.replace('{0}', req.data.appId);
+        var imagePath = __appPath + imageConf.tileImagefolder.replace('{0}', data.appId);
         __util.createDir(imagePath);
 
-        imagePath = imagePath + req.data.tileId + '/';
+        imagePath = imagePath + data.tileId + '/';
 
-        if (req.data.fileName) {
-          fileName = Date.parse((new Date)) + __util.replaceEmpty(req.data.fileName + '.png');
+        if (data.fileName) {
+          fileName = Date.parse((new Date)) + __util.replaceEmpty(data.fileName + '.png');
         } else {
           fileName = Date.parse((new Date)) + __util.replaceEmpty(file.name);
         }
 
         $async.waterfall([
           function (callback) {
-            if (isEncoded) {
-              __util.fileUploadEncode(file, imagePath, fileName, function (error) {
-                if (error) {
-                  $log.error('picture block decoded image : ' + imagePath + ' Error: ' + error);
-                  callback(error);
-                }
+            _upload(isEncoded, file, imagePath, fileName, function (error) {
+              if (error) {
+                $log.error('picture block decoded image : ' + imagePath + ' Error: ' + error);
+                callback(error);
+              }
 
-                callback(null, imagePath, fileName);
-              });
+              var pathUploaded = imagePath + fileName;
 
-            } else {
-              __util.fileUpload(file, imagePath, fileName, function (error) {
-                if (error) {
-                  $log.error('picture block image : ' + imagePath + ' Error: ' + error);
-                  callback(error);
-                }
-
-                callback(null, imagePath, fileName);
-              });
-            }
+              callback(null, imagePath, fileName);
+            });
           }], function (err, imagePath, fileName) {
             if (err) {
               $log.error("uploadPictureBlock: " + err);
@@ -1124,10 +1170,10 @@ var _uploadPictureBlock = function (context, isEncoded) {
             }
 
             var pathUploaded = imagePath + fileName;
-            _resizeUploadedImage(context, pathUploaded, fileName);
-            retrn.imageUrl = appConf.domain + imageConf.tileImageUrl.replace('{0}', req.data.appId).replace('{1}', req.data.tileId) + fileName;
+            _resizeUploadedImage(context, data, pathUploaded, fileName);
+            retrn.imageUrl = appConf.domain + imageConf.tileImageUrl.replace('{0}', data.appId).replace('{1}', data.tileId) + fileName;
 
-            $tile.pushImageBlock(req.data.appId, req.data.tileId, retrn.imageUrl, req.data.caption, req.data.moderated, function (result) {
+            $tile.pushImageBlock(data.appId, data.tileId, retrn.imageUrl, data.caption, data.moderated, function (result) {
               res.send({
                 "status": "success"
               });
@@ -1140,27 +1186,23 @@ var _uploadPictureBlock = function (context, isEncoded) {
   }
 };
 
-var _profilePictureUpload = function (context, isEncoded) {
+var _profilePictureUpload = function (context, data, files, isEncoded) {
   query = {};
   var req = context["req"];
   var res = context["res"];
-
-  var returnStatus = {
-    "status": false
-  };
-
+  var returnStatus = { "status": false };
   var fileName;
 
   try {
-    if (!__util.isEmptyObject(req.files) && !__util.isNullOrEmpty(req.data.memberId)) {
-      for (var prop in req.files) {
-        var file = req.files[prop];
+    if (!__util.isEmptyObject(files) && !__util.isNullOrEmpty(data.memberId)) {
+      for (var prop in files) {
+        var file = files[prop];
 
         if (!__util.isNullOrEmpty(file.name)) {
-          var imagePath = __appPath + imageConf.imgProfileFolderPath.replace('{0}', req.data.memberId);
+          var imagePath = __appPath + imageConf.imgProfileFolderPath.replace('{0}', data.memberId);
 
-          if (req.data.fileName) {
-            fileName = __util.replaceEmpty(req.data.fileName);
+          if (data.fileName) {
+            fileName = __util.replaceEmpty(data.fileName);
           } else {
             fileName = __util.replaceEmpty(file.name);
           }
@@ -1173,28 +1215,20 @@ var _profilePictureUpload = function (context, isEncoded) {
           var splitedName = fileName.split('.');
           fileName = splitedName[0] + "_" + Date.parse(new Date()) + extension;
 
-          if (isEncoded) {
-            __util.fileUploadEncode(file, imagePath, fileName, function (error) {
-              if (error) {
+          _upload(isEncoded, file, imagePath, fileName, function (error) {
+            if (error) {
+              if (isEncoded) {
+                $log.error('Original image : ' + imagePath + ' Error: ' + error);
+              } else {
                 $log.error('Original decoded image : ' + imagePath + ' Error: ' + error);
               }
-            });
+            }
+          });
 
-          } else {
-            __util.fileUpload(file, imagePath, fileName, function (error) {
-              if (error) {
-                $log.error('Original image : ' + imagePath + ' Error: ' + error);
-              }
-            });
-          }
-
-          var pathUploaded = appConf.domain + imageConf.imgProfileUrlPath.replace('{0}', req.data.memberId) + fileName;
-
-          var dataToUpdate = {
-            "image": pathUploaded
-          };
-
-          query._id = req.data.memberId;
+          var pathUploaded = appConf.domain + imageConf.imgProfileUrlPath.replace('{0}', data.memberId) + fileName;
+          var dataToUpdate = { "image": pathUploaded };
+          query = {};
+          query._id = data.memberId;
 
           $member.appMemberUpdate(query, dataToUpdate, {}, function (result) {
             returnStatus.status = true;
@@ -1211,12 +1245,11 @@ var _profilePictureUpload = function (context, isEncoded) {
   }
 };
 
-var _uploadTileImage = function (context, isEncoded) {
+var _uploadTileImage = function (context, data, files, isEncoded) {
   var req = context["req"];
   var res = context["res"];
-
   query = {};
-  query._id = req.data.tileId;
+  query._id = data.tileId;
 
   $tile._getTiles(query, function (tiles) {
     if (tiles.length > 0) {
@@ -1226,10 +1259,9 @@ var _uploadTileImage = function (context, isEncoded) {
         var pictureBlock = _.findWhere(blocks, {
           type: "picture"
         });
-        var data = {};
 
         if (pictureBlock) {
-          _uploadPictureBlock(context, isEncoded);
+          _uploadPictureBlock(context, data, files);
         } else {
           res.send({});
         }
@@ -1240,18 +1272,19 @@ var _uploadTileImage = function (context, isEncoded) {
   });
 };
 
-var _photoUpload = function (context, isEncoded) {
+var _photoUpload = function (context, data, files, isEncoded) {
   var req = context["req"];
   var res = context["res"];
-  var obj = req.data.jsonPayload;
+  var fileName;
+  var obj = data.jsonPayload;
 
   $async.waterfall([
     function (callback) {
       try {
 
-        if (!__util.isEmptyObject(req.files) && !__util.isNullOrEmpty(obj.tileId) && !__util.isNullOrEmpty(obj.tileBlockId) && !__util.isNullOrEmpty(obj.memberId) && !__util.isNullOrEmpty(obj.appId)) {
-          for (var prop in req.files) {
-            var file = req.files[prop];
+        if (!__util.isEmptyObject(files) && !__util.isNullOrEmpty(obj.tileId) && !__util.isNullOrEmpty(obj.tileBlockId) && !__util.isNullOrEmpty(obj.memberId) && !__util.isNullOrEmpty(obj.appId)) {
+          for (var prop in files) {
+            var file = files[prop];
             var imagePath = "";
 
             if (!__util.isNullOrEmpty(file.name)) {
@@ -1265,8 +1298,8 @@ var _photoUpload = function (context, isEncoded) {
                 imagePath = imagePath + obj.tileId + '/';
               }
 
-              if (req.data.fileName) {
-                fileName = __util.replaceEmpty(req.data.fileName);
+              if (data.fileName) {
+                fileName = __util.replaceEmpty(data.fileName);
 
               } else {
                 fileName = __util.replaceEmpty(file.name);
@@ -1289,20 +1322,16 @@ var _photoUpload = function (context, isEncoded) {
                 fileName = currFileName + "_" + Date.parse(new Date()) + extension;
               }
 
-              if (isEncoded) {
-                __util.fileUploadEncode(file, imagePath, fileName, function (error) {
-                  if (error) {
+              _upload(isEncoded, file, imagePath, fileName, function (error) {
+                if (error) {
+                  if (isEncoded) {
+                    $log.error('Original image : ' + imagePath + ' Error: ' + error);
+                  } else {
                     $log.error('Original decoded image : ' + imagePath + ' Error: ' + error);
                   }
-                });
+                }
+              });
 
-              } else {
-                __util.fileUpload(file, imagePath, fileName, function (error) {
-                  if (error) {
-                    $log.error('Original image : ' + imagePath + ' Error: ' + error);
-                  }
-                });
-              }
               var returnUrl = "";
 
               if (obj.type == "formphoto") {
@@ -1424,10 +1453,11 @@ var _decodeBase64Image = function (dataString) {
   return response;
 };
 
-var _drawImageUpload = function (context, isEncoded) {
+var _drawImageUpload = function (context, data, files, isEncoded) {
   var req = context["req"];
   var res = context["res"];
-  var obj = req.data.jsonPayload;
+  var fileName;
+  var obj = data.jsonPayload;
 
   $async.waterfall([
     function (callback) {
@@ -1447,7 +1477,7 @@ var _drawImageUpload = function (context, isEncoded) {
 
         var splitedName = fileName.split('.');
         fileName = splitedName[0] + "_" + Date.parse(new Date()) + extension;
-        var imageBuffer = _decodeBase64Image(req.data.imageData);
+        var imageBuffer = _decodeBase64Image(data.imageData);
 
         fs.writeFile(imagePath + fileName, imageBuffer.data, function (err) {
           if (err) {
@@ -1551,11 +1581,10 @@ var _drawImageUpload = function (context, isEncoded) {
     });
 };
 
-var _blankFormImageUpload = function (context, isEncoded) {
+var _blankFormImageUpload = function (context, data, files, isEncoded) {
   var req = context["req"];
   var res = context["res"];
-
-  var obj = req.data.jsonPayload;
+  var obj = data.jsonPayload;
 
   $async.waterfall([
     function (callback) {
@@ -1575,7 +1604,7 @@ var _blankFormImageUpload = function (context, isEncoded) {
 
         var splitedName = fileName.split('.');
         fileName = splitedName[0] + "_" + Date.parse(new Date()) + extension;
-        var imageBuffer = _decodeBase64Image(req.data.imageData);
+        var imageBuffer = _decodeBase64Image(data.imageData);
 
         fs.writeFile(imagePath + fileName, imageBuffer.data, function (err) {
           if (err) {
@@ -1685,82 +1714,88 @@ var _blankFormImageUpload = function (context, isEncoded) {
     });
 };
 
-var _resizeUploadedImage = function (context, path, fileName, retrn, categories) {
+var _resizeUploadedImage = function (context, data, path, fileName, retrn, categories) {
   var req = context["req"];
   var res = context["res"];
-
   var urlRtrn = {};
   var curHeight;
   var curWidth;
-  var obj = !__util.isEmptyObject(req.body.form_data) ? req.body.form_data : {};
-  obj.folder = !__util.isEmptyObject(req.data) && !__util.isEmptyObject(req.data.folder) ? req.data.folder : !__util.isNullOrEmpty(obj.folder) ? obj.folder : '';
+  var obj = !__util.isEmptyObject(data.form_data) ? data.form_data : {};
+  obj.folder = typeof data.folder == 'undefined' || __util.isEmptyObject(data.folder) ? "" : data.folder;
 
-  easyImg.info(path, function (err, stdout, stderr) {
-    if (err) {
-      $log.error('Image info: ' + err);
-      res.send({ "status": "Not Found" });
-      return;
-    }
-
-    if (stdout.width <= 960) {
-      curWidth = stdout.width;
-    } else {
-      curWidth = 960;
-    }
-
-    if (stdout.height <= 450) {
-      curHeight = stdout.height;
-    } else {
-      curHeight = 450;
-    }
-
-    if (!__util.isEmptyObject(req.data) && req.data.popupFrom == 'tileart' && curWidth > 640) {
-      curWidth = 640;
-    }
-
-    easyImg.resize({
-      src: path,
-      dst: path,
-      width: curWidth,
-      height: curHeight,
-      quality: 50
-    }, function (err, image) {
+  gm(path)
+    .size(function (err, size) {
       if (err) {
-        $log.error('image resizing: ' + err);
+        $log.error('Image info: ' + err);
         res.send({ "status": "Not Found" });
         return;
       }
 
-      if (categories) {
-        urlRtrn.imageUrl = appConf.domain + imageConf.imgurlpath.replace('{0}', req.cookie.oid) + 'categories/' + fileName;
-      } else if (obj.folder == "stream") {
-        var imgUrl = appConf.domain + imageConf.imgStreamUrlPath.replace('{0}', obj._id);
-        imgUrl = imgUrl.replace("{1}", obj._id);
-        imgUrl = imgUrl + fileName;
+      console.log('width = ' + size.width);
+      console.log('height = ' + size.height);
 
-        urlRtrn.imageUrl = imgUrl;
+      if (size.width <= 960) {
+        curWidth = size.width;
       } else {
-        var imgUrl = appConf.domain + imageConf.imgurlpath.replace('{0}', req.cookie.oid);
-        imgUrl = !__util.isNullOrEmpty(obj.folder) ? imgUrl + obj.folder + "/" + fileName : imgUrl + fileName;
-        urlRtrn.imageUrl = imgUrl;
+        curWidth = 960;
       }
 
-      switch (retrn) {
-        case "upload":
-          res.send(urlRtrn);
-          break;
-        case "crop":
-          res.send(urlRtrn.imageUrl);
-          break;
+      if (size.height <= 450) {
+        curHeight = size.height;
+      } else {
+        curHeight = 450;
       }
+
+      if (!__util.isEmptyObject(data) && data.popupFrom == 'tileart' && curWidth > 640) {
+        curWidth = 640;
+      }
+
+      _resizer(path, path, curWidth, curHeight, function (err) {
+        if (err) {
+          $log.error('image resizing: ' + err);
+          res.send({ "status": "Not Found" });
+          return;
+        }
+
+        if (categories) {
+          urlRtrn.imageUrl = appConf.domain + imageConf.imgurlpath.replace('{0}', req.cookies.oid) + 'categories/' + fileName;
+        } else if (obj.folder == "stream") {
+          var imgUrl = appConf.domain + imageConf.imgStreamUrlPath.replace('{0}', obj._id);
+          imgUrl = imgUrl.replace("{1}", obj._id);
+          imgUrl = imgUrl + fileName;
+
+          urlRtrn.imageUrl = imgUrl;
+        } else {
+          var imgUrl = appConf.domain + imageConf.imgurlpath.replace('{0}', req.cookies.oid);
+          imgUrl = !__util.isNullOrEmpty(obj.folder) ? imgUrl + obj.folder + "/" + fileName : imgUrl + fileName;
+          urlRtrn.imageUrl = imgUrl;
+        }
+
+        switch (retrn) {
+          case "upload":
+            res.send(urlRtrn);
+            break;
+          case "crop":
+            res.send(urlRtrn.imageUrl);
+            break;
+        }
+
+      })
     });
-  });
+};
+
+var _resizer = function (src, dest, width, height, callback) {
+  gm(path)
+    .resize(width, height)
+    .quality(50)
+    .write(dest, callback);
 };
 
 var _resizeOptions = function (context) {
   var filePath = "";
   var destFileName = "";
-  var url = context.req.url;
+  var request = context["req"];
+  var url = request.url;
 
   if (url.indexOf('/img/groups/') > -1) {
     var groupType = request.params.type;
@@ -1834,7 +1869,7 @@ var _resizeOptions = function (context) {
 };
 
 var streamCrownImageRemove = function (req, res, next) {
-  var obj = req.body.form_data;
+  var obj = data.form_data;
   var imagePath = __appPath + imageConf.imgStreamFolerPath.replace('{0}', obj.id);
   imagePath = imagePath + "crown/" + obj.fileName;
 
@@ -1880,6 +1915,16 @@ var _remove = function (src, cb) {
   }
 };
 
+var _formParse = function (req, cb) {
+  var form = new formidable.IncomingForm();
+  form.multiples = true;
+  form.keepExtensions = true;
+
+  form.parse(req, function (err, data, files) {
+    cb(data, files);
+  })
+};
+
 module.exports = {
   "init": init,
   "upload": upload,
@@ -1895,7 +1940,6 @@ module.exports = {
   "backgroundPatternUpload": backgroundPatternUpload,
   "bgGroupRemove": bgGroupRemove,
   "backgroundPatternList": backgroundPatternList,
-  "uploadBackgroundGroup": uploadBackgroundGroup,
   "bgGroupList": bgGroupList,
   "emoticonsUpload": emoticonsUpload,
   "emoticonsList": emoticonsList,
