@@ -21,7 +21,7 @@ import { PagesComponent } from '../../components/pages/pages.component';
 import { DemoComponent } from '../../components/demo/demo.component';
 import { NotificationsComponent } from '../../components/notifications/notifications.component';
 import { SmartComponent } from '../../components/smart/smart.component';
-//import { ImagelibraryComponent } from '../../components/imagelibrary/imagelibrary.component';
+import { ImagelibraryComponent } from '../../components/imagelibrary/imagelibrary.component';
 
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { HeaderService } from '../../services/header.service';
@@ -55,18 +55,20 @@ import 'hammerjs';
 import 'mousetrap';
 import { GalleryModule } from '../../module/gallery.module';
 import { NgSelectModule } from '../../ng-select';
+import { ProgressHttpModule, HTTP_FACTORY } from 'angular-progress-http';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   imports: [
     CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule,
-    ColorPickerModule, CKEditorModule, GalleryModule.forRoot(), NgSelectModule
+    ColorPickerModule, CKEditorModule, GalleryModule.forRoot(), NgSelectModule, MatIconModule, ProgressHttpModule
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
     TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe,
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
-    ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent],
+    ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService]
 })

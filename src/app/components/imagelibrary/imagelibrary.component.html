@@ -1,0 +1,80 @@
+<div class="container procedures_container">
+  <div class="page_block procedures_head">
+    <div id="imageLibrary" style="width: 435px; height: 560px;">
+      <ng-select class="custom" placeholder="Select/Add Folder" [items]="folders" [(ngModel)]="selectedFolders" [multiple]="false"
+        [addTag]="false" (blur)="onBlur($event)" (inputchange)="onSelectChange($event)" (add)="onAdd($event)" (selectchange)="onChange($event)">
+      </ng-select>
+
+      <p>
+        Selected value: {{selectedFolders | json}}
+      </p>
+      <hr>
+      <div class="tile_image_list">
+        <ol id="selectable">
+          <div *ngFor="let image of images">
+            <li (dblclick)="imageDoubleClick($event, image,'doubleclick')" [style.cursor]="cursor" [class.selected]="image === selectedimage"
+              (click)="selectImage($event, image, 'click')" class="ui-state-default">
+              <img src="{{image}}">
+              <div></div>
+            </li>
+          </div>
+        </ol>
+      </div>
+      <hr>
+      <div class="tile_image_upload">
+        <div class="file-wrapper">
+          <input name="imageUpload" id="imageUpload" (change)="onFileSelected($event.target.files[0])" type="file">
+          <span class="button">Browse files</span>
+          <span id="fileName">or select an image from library</span>
+        </div>
+        <div *ngIf="fileD" [class.uploaded]="fileD.uploaded">
+          <table class="table">
+            <thead>
+              <tr>
+                <th width="50%">Name</th>
+                <th>Size</th>
+                <th>Progress</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <strong>{{fileD.name}}</strong>
+                </td>
+                <td nowrap>{{ fileD?.size/1024/1024 | number:'.2' }} MB</td>
+                <td>
+                  <div *ngIf="fileD.percentage !== null">
+                    <div class="progress" style="margin-bottom: 0;">
+                      <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': fileD.percentage + '%' }"></div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="img-buttons">
+        <div *ngIf="isImageSelect">
+          <button type="button" (click)="crop()" class="btn btn-primary btn-xs">
+            <i class="material-icons" style="font-size:12px">crop</i>Crop
+          </button>
+          <button type="button" (click)="withOutCrop()" class="btn btn-primary btn-xs">
+            <i class="material-icons" style="font-size:12px">photo_size_select_actual</i> Select without Crop
+          </button>
+        </div>
+        <div *ngIf="fileD" [class.uploaded]="fileD.uploaded">
+          <button type="button" (click)="cancel()" class="btn btn-warning btn-xs">
+            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+          </button>
+          <button type="button" (click)="remove()" class="btn btn-danger btn-xs">
+            <span class="glyphicon glyphicon-trash"></span> Delete
+          </button>
+          <button type="button" (click)=upload($event) class="btn btn-success btn-xs">
+            <span class="glyphicon glyphicon-upload"></span> Upload
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

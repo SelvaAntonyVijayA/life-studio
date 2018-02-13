@@ -1,0 +1,158 @@
+.tile_image_list {
+    position: relative;
+    height: 350px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.tile_image_upload {
+    margin-top: 10px;
+}
+
+.image_upload_btn {
+    float: right;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+#selectable .selected {
+    background: #F39814;
+    color: white;
+}
+
+#selectable {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 400px;
+}
+
+#selectable li {
+    margin: 3px;
+    padding: 1px;
+    float: left;
+    width: 120px;
+    height: 117px;
+    text-align: center;
+}
+
+#selectable li img {
+    max-width: 115px;
+    max-height: 95px;
+    padding-top: 2px;
+}
+
+.crop_btn {
+    float: right;
+    margin-top: 10px;
+    margin-right: 0px;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.dialog-class {
+    top: 40%;
+    left: 50%;
+}
+
+.done-cropping {
+    float: right;
+    margin-top: 10px;
+    margin-right: 20px;
+}
+
+div.jcrop-holder {
+    margin-top: 2%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ui-dialog-buttonpane>.radio-inline>label {
+    font-weight: normal;
+    margin-top: 15px;
+    margin-left: 8px;
+}
+
+.select_nocrop_btn {
+    margin-top: 10px;
+    display: none;
+    float: right;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.image_delete_btn {
+    float: right;
+    margin-top: 10px;
+    display: none;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.img-buttons {
+    width: 100%;
+    font-size: 14px;
+}
+
+.img_folder {
+    width: 200px
+}
+
+.img-v-align {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.file-wrapper {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.file-wrapper input {
+    height: 35px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    filter: alpha(opacity=1);
+    opacity: 0.01;
+    -moz-opacity: 0.01;
+    cursor: pointer;
+}
+
+.file-wrapper .button {
+    border: 1px solid #D3D3D3;
+    color: #030303;
+    background: #E2E2E2;
+    padding: 4px 18px;
+    margin-right: 4px;
+    border-radius: 0px;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.ng-select.custom {
+    border: 0px;
+    min-height: 0px;
+    border-radius: 0;
+}
+
+.ng-select.custom>.ng-control {
+    min-height: 0px;
+    border-radius: 0;
+}
+
+.uploaded {
+    color: green;
+}
+
+.table {
+    margin-bottom: 2px;
+}

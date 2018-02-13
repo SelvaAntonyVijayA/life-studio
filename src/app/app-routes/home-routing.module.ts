@@ -14,6 +14,7 @@ import { PagesComponent } from '../components/pages/pages.component';
 import { DemoComponent } from '../components/demo/demo.component';
 import { NotificationsComponent } from '../components/notifications/notifications.component';
 import { SmartComponent } from '../components/smart/smart.component';
+import { ImagelibraryComponent } from '../components/imagelibrary/imagelibrary.component';
 
 const homeRoutes: Routes = [
   {
@@ -67,6 +68,10 @@ const homeRoutes: Routes = [
       {
         path: 'demo',
         component: DemoComponent
+      },
+      {
+        path: 'image',
+        component: ImagelibraryComponent
       }
     ]
   }

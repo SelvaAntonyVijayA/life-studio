@@ -60,7 +60,7 @@ export class ThemeService {
       } else {
         query["organizationId"] = orgId;
       }
-    }else{
+    } else {
       query["createdOrg"] = createdOrg;
     }
 

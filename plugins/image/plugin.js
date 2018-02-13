@@ -110,7 +110,6 @@ var resize = function (req, res, next) {
   $async.waterfall([
     function (callback) {
       var options = _resizeOptions(context);
-      console.dir(options)
 
       if (options.height === 0 && __util.isValidFile(options.src)) {
 
@@ -118,11 +117,9 @@ var resize = function (req, res, next) {
           .size(function (err, size) {
             if (err) {
               $log.error('URL resize image info: ' + err);
+
               callback(null, options, true);
             } else {
-              console.log('width = ' + size.width);
-              console.log('height = ' + size.height);
-
               options.height = parseInt((size.height / size.width) * options.width);
               var returnOriginalImage = (size.width < options.width);
 
@@ -189,24 +186,18 @@ var crop = function (req, res, next) {
 
   var dst = imagePath + dstFileName;
 
-  easyImg.crop({
-    src: src,
-    dst: dst,
-    cropwidth: obj.w,
-    cropheight: obj.h,
-    x: obj.x,
-    y: obj.y,
-    gravity: 'NorthWest',
-    quality: 100
-  }, function (err, image) {
-    if (err) {
-      $log.error('image copping: ' + err);
-      res.send({ "status": "Not Found" });
-      return;
-    }
+  gm(src).crop(obj.w, obj.h, obj.x, obj.y)
+    .gravity('NorthWest')
+    .quality(100)
+    .write(dst, function (err) {
+      if (err) {
+        $log.error('image copping: ' + err);
+        res.send({ "status": "Not Found" });
+        return;
+      }
 
-    _resizeUploadedImage(context, dst, dstFileName, 'crop');
-  });
+      _resizeUploadedImage(context, dst, dstFileName, 'crop');
+    });
 };
 
 var folder = function (req, res, next) {
@@ -1731,9 +1722,6 @@ var _resizeUploadedImage = function (context, data, path, fileName, retrn, categ
         return;
       }
 
-      console.log('width = ' + size.width);
-      console.log('height = ' + size.height);
-
       if (size.width <= 960) {
         curWidth = size.width;
       } else {
@@ -1749,8 +1737,9 @@ var _resizeUploadedImage = function (context, data, path, fileName, retrn, categ
       if (!__util.isEmptyObject(data) && data.popupFrom == 'tileart' && curWidth > 640) {
         curWidth = 640;
       }
+      var dst = path;
 
-      _resizer(path, path, curWidth, curHeight, function (err) {
+      _resizer(path, dst, curWidth, curHeight, function (err) {
         if (err) {
           $log.error('image resizing: ' + err);
           res.send({ "status": "Not Found" });
@@ -1785,7 +1774,7 @@ var _resizeUploadedImage = function (context, data, path, fileName, retrn, categ
 };
 
 var _resizer = function (src, dest, width, height, callback) {
-  gm(path)
+  gm(src)
     .resize(width, height)
     .quality(50)
     .write(dest, callback);
@@ -1809,11 +1798,11 @@ var _resizeOptions = function (context) {
     var orgId = request.params.id;
     filePath = __appPath + imageConf.imgfolderpath.replace('{0}', orgId);
 
-    if (!__util.isNullOrEmpty(obj.folder)) {
+    if (!__util.isNullOrEmpty(request.params.folder)) {
       destFileName = request.params.folder;
     }
 
-    if (!__util.isNullOrEmpty(obj.name)) {
+    if (!__util.isNullOrEmpty(request.params.name)) {
       destFileName = request.params.name;
       filePath = filePath + request.params.name + '/';
     }
