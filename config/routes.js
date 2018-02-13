@@ -75,6 +75,7 @@ module.exports = function (app) {
   router.get('/img/groups/:type/:id*?/:name*?', $image.resize);
   router.get('/img/streams/:streamId/:name*?', $image.resize);
   router.get('/img/profile/:memberId/:name*?', $image.resize);
+  router.get('/organization/getorgpackage/:orgId',  $organization.getOrgPackage);
 
   router.all('/files/delete/:orgId*', $image.fileDelete);
   router.get('/files/url/:orgId', $image.urlList);

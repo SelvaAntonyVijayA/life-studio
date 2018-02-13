@@ -22,6 +22,7 @@ var plugins = {
   "memberblockdata": "memberblockdata",
   "db": "database",
   "image": "image",
+  "package": "package",
   "log": "log"
 };
 

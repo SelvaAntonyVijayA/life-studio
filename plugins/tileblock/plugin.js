@@ -21,26 +21,54 @@ var init = function (app) {
 };*/
 
 var save = function (req, res, next) {
-  var obj = req.body.form_data;
+  var blkObj = req.body.form_data;
+  var isObjArray = __util.isArray(blkObj) ? true : false;
+  var blockObjs = isObjArray ? blkObj : [blkObj];
+  var savedUpdatedBlocks = [];
 
-  if (__util.isNullOrEmpty(obj._id)) {
-    saveBlock(obj, function (result) {
-      var resObj = { "_id": result };
-      res.send(resObj);
-    });
-  } else {
-    options = {};
-    query = {};
-    query._id = obj._id;
-    delete obj["_id"];
+  $async.each(blockObjs, function (obj, loop) {
+    var idx = -1;
 
-    $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.tileBlocks, query, options, obj, function (result) {
-      var resObj = { "_id": query._id };
-      res.send(resObj);
-    });
-  }
+    if (isObjArray) {
+      idx = obj["index"];
+      delete obj["index"];
+    }
+
+    if (__util.isNullOrEmpty(obj._id)) {
+      saveBlock(obj, function (result) {
+        obj["_id"] = result.toString();
+
+        if (isObjArray) {
+          obj["index"] = idx;
+        }
+
+        savedUpdatedBlocks.push(obj);
+        loop();
+      });
+
+    } else {
+      options = {};
+      let updateQuery = {};
+      var updateObj = obj
+      updateQuery._id = updateObj._id;
+      delete updateObj["_id"];
+
+      $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.tileBlocks, updateQuery, options, obj, function (result) {
+        obj["_id"] = updateQuery._id;
+
+        if (isObjArray) {
+          obj["index"] = idx;
+        }
+
+        savedUpdatedBlocks.push(obj);
+        loop();
+      });
+    }
+  }, function () {
+    var result = isObjArray ? savedUpdatedBlocks : { "_id": savedUpdatedBlocks[0]["_id"] };
+    res.send(result);
+  });
 };
-
 
 /* Fetching TileBlocks */
 var getBlocks = function (req, res, next) {

@@ -100,15 +100,20 @@ export class TileService {
       .catch(this.handleError);
   };
 
-  saveTileBlocks(block: Object, idx: number) {
+  saveTileBlocks(blocks: any[], blk?: Object) {
+    var blkData = blocks.length > 0 ? blocks : blk;
+
     return this.http
-      .post("/tileblock/save", JSON.stringify({ "form_data": block }), { headers: this.headers })
+      .post("/tileblock/save", JSON.stringify({ "form_data": blkData }), { headers: this.headers })
       .toPromise()
       .then(response => {
         var blockRes = response.json();
-        block["_id"] = blockRes["_id"];
-        block["idx"] = idx;
-        return block;
+
+        if (blocks.length === 0) {
+          blk["_id"] = blockRes["_id"];
+        }
+
+        return blocks.length > 0 ? blockRes : blk;
       }).catch(this.handleError);
   };
 
@@ -123,6 +128,14 @@ export class TileService {
   tileRemove(tileId: string) {
     return this.http
       .get("/tile/remove/" + tileId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  getWidgetRights(orgId: string) {
+    return this.http
+      .get("/organization/getorgpackage/" + orgId)
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);

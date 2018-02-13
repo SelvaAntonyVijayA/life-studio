@@ -64,7 +64,9 @@ export class WidgetsComponent implements OnInit {
   tileThemes: any[] = [];
   defaultThemeId: string = "-1";
   orgTileCategory: string = "-1";
+  widgetRights: any[] = [];
   private orgChangeDetect: any;
+  startWrapper: boolean = false;
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
@@ -100,215 +102,219 @@ export class WidgetsComponent implements OnInit {
   };*/
 
   /* Checking the block by block type */
-  loadWidgets(e: any, type: any, blockData: any) {
+  loadWidgets(e: any, type: any, blockData: any, blkName?: string) {
     if (!this.utils.isNullOrEmpty(e)) {
       e.preventDefault();
       e.stopPropagation();
     }
 
-    var blocks = this.blocks;
-    var viewName = "";
-    var blkLength = blocks.length;
+    var result = !this.utils.isNullOrEmpty(blkName) && this.blocks.length > 0 ? this.manageWidgets(type, blkName) : true;
 
-    if (type === "text") {
-      blocks.push(new BlockItem(TextBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "textView";
-    }
+    if (result) {
+      var blocks = this.blocks;
+      var viewName = "";
+      var blkLength = blocks.length;
 
-    if (type === "video") {
-      blocks.push(new BlockItem(VideoBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "videoView";
-    }
+      if (type === "text") {
+        blocks.push(new BlockItem(TextBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "textView";
+      }
 
-    if (type === "picture") {
-      blocks.push(new BlockItem(PictureBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "pictureView";
-    }
+      if (type === "video") {
+        blocks.push(new BlockItem(VideoBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "videoView";
+      }
 
-    if (type === "disqus") {
-      blocks.push(new BlockItem(DisqusBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "disqusView";
-    }
+      if (type === "picture") {
+        blocks.push(new BlockItem(PictureBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "pictureView";
+      }
 
-    if (type === "feed") {
-      blocks.push(new BlockItem(SocialFeedBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "feedView";
-    }
+      if (type === "disqus") {
+        blocks.push(new BlockItem(DisqusBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "disqusView";
+      }
 
-    if (type === "calendar") {
-      blocks.push(new BlockItem(CalendarBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "calendarView";
-    }
+      if (type === "feed") {
+        blocks.push(new BlockItem(SocialFeedBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "feedView";
+      }
 
-    if (type === "share") {
-      blocks.push(new BlockItem(ShareBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "shareView";
-    }
+      if (type === "calendar") {
+        blocks.push(new BlockItem(CalendarBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "calendarView";
+      }
 
-    if (type === "patients") {
-      blocks.push(new BlockItem(PatientsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "patientsView";
-    }
+      if (type === "share") {
+        blocks.push(new BlockItem(ShareBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "shareView";
+      }
 
-    if (type === "inquiry") {
-      blocks.push(new BlockItem(InquiryBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "inquiryView";
-    }
+      if (type === "patients") {
+        blocks.push(new BlockItem(PatientsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "patientsView";
+      }
 
-    if (type === "survey") {
-      blocks.push(new BlockItem(SurveyBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], this.widgetCategories, this.utils)));
-      viewName = "surveyView";
-    }
+      if (type === "inquiry") {
+        blocks.push(new BlockItem(InquiryBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "inquiryView";
+      }
 
-    if (type === "questionnaire") {
-      blocks.push(new BlockItem(QuestionnaireBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], this.widgetCategories, this.utils)));
-      viewName = "questionnaireView";
-    }
+      if (type === "survey") {
+        blocks.push(new BlockItem(SurveyBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], this.widgetCategories, this.utils)));
+        viewName = "surveyView";
+      }
 
-    if (type === "startwrapper") {
-      blocks.push(new BlockItem(StartWrapperBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "startWrapperView";
-    }
+      if (type === "questionnaire") {
+        blocks.push(new BlockItem(QuestionnaireBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], this.widgetCategories, this.utils)));
+        viewName = "questionnaireView";
+      }
 
-    if (type === "title") {
-      blocks.push(new BlockItem(FormTitleBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "formTitleView";
-    }
+      if (type === "startwrapper") {
+        blocks.push(new BlockItem(StartWrapperBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "startWrapperView";
+      }
 
-    if (type === "questions") {
-      blocks.push(new BlockItem(QuestionsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], this.widgetCategories, this.utils)));
-      viewName = "questionsView";
-    }
+      if (type === "title") {
+        blocks.push(new BlockItem(FormTitleBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "formTitleView";
+      }
 
-    if (type === "attendance") {
-      blocks.push(new BlockItem(AttendanceBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "attendanceView";
-    }
+      if (type === "questions") {
+        blocks.push(new BlockItem(QuestionsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], this.widgetCategories, this.utils)));
+        viewName = "questionsView";
+      }
 
-    if (type === "confirmation") {
-      blocks.push(new BlockItem(ConfirmationBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "confirmationView";
-    }
+      if (type === "attendance") {
+        blocks.push(new BlockItem(AttendanceBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "attendanceView";
+      }
 
-    if (type === "password") {
-      blocks.push(new BlockItem(PasswordBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "passwordView";
-    }
+      if (type === "confirmation") {
+        blocks.push(new BlockItem(ConfirmationBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "confirmationView";
+      }
 
-    if (type === "next") {
-      blocks.push(new BlockItem(NextBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+      if (type === "password") {
+        blocks.push(new BlockItem(PasswordBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "passwordView";
+      }
 
-      viewName = "nextView";
-    }
+      if (type === "next") {
+        blocks.push(new BlockItem(NextBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
 
-    if (type === "formphoto") {
-      blocks.push(new BlockItem(FormPhotoComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "formPhotoView";
-    }
+        viewName = "nextView";
+      }
 
-    if (type === "painlevel") {
-      blocks.push(new BlockItem(PainLevelComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "painLevelView";
-    }
+      if (type === "formphoto") {
+        blocks.push(new BlockItem(FormPhotoComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "formPhotoView";
+      }
 
-    if (type === "drawtool") {
-      blocks.push(new BlockItem(DrawToolBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "drawToolView";
-    }
+      if (type === "painlevel") {
+        blocks.push(new BlockItem(PainLevelComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "painLevelView";
+      }
 
-    if (type === "physician") {
-      blocks.push(new BlockItem(PhysicianBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "physicianView";
-    }
+      if (type === "drawtool") {
+        blocks.push(new BlockItem(DrawToolBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "drawToolView";
+      }
 
-    if (type === "endwrapper") {
-      blocks.push(new BlockItem(EndWrapperBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "endWrapperView";
-    }
+      if (type === "physician") {
+        blocks.push(new BlockItem(PhysicianBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "physicianView";
+      }
 
-    if (type === "fill") {
-      blocks.push(new BlockItem(FillBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "fillView";
-    }
+      if (type === "endwrapper") {
+        blocks.push(new BlockItem(EndWrapperBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "endWrapperView";
+      }
 
-    if (type === "notes") {
-      this.blocks.push(new BlockItem(NotesBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "notesView";
-    }
+      if (type === "fill") {
+        blocks.push(new BlockItem(FillBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "fillView";
+      }
 
-    if (type === "buttons") {
-      this.blocks.push(new BlockItem(ButtonsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "buttonsView";
-    }
+      if (type === "notes") {
+        this.blocks.push(new BlockItem(NotesBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "notesView";
+      }
 
-    if (type === "contactus") {
-      this.blocks.push(new BlockItem(ContactUsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "contactusView";
-    }
+      if (type === "buttons") {
+        this.blocks.push(new BlockItem(ButtonsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "buttonsView";
+      }
 
-    if (type === "placefull") {
-      this.blocks.push(new BlockItem(PlacefullBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+      if (type === "contactus") {
+        this.blocks.push(new BlockItem(ContactUsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "contactusView";
+      }
 
-      viewName = "placefullView";
-    }
+      if (type === "placefull") {
+        this.blocks.push(new BlockItem(PlacefullBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
 
-    if (type === "addtocart") {
-      this.blocks.push(new BlockItem(AddToCartBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "addToCartView";
-    }
+        viewName = "placefullView";
+      }
 
-    if (type === "cart") {
-      this.blocks.push(new BlockItem(CartBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "cartView";
-    }
+      if (type === "addtocart") {
+        this.blocks.push(new BlockItem(AddToCartBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "addToCartView";
+      }
 
-    if (type === "blanksform") {
-      this.blocks.push(new BlockItem(BlanksFormBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "blanksFormView";
-    }
+      if (type === "cart") {
+        this.blocks.push(new BlockItem(CartBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "cartView";
+      }
 
-    if (type === "exclusiveurl") {
-      this.blocks.push(new BlockItem(ExclusiveUrlBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "exclusiveUrlView";
-    }
+      if (type === "blanksform") {
+        this.blocks.push(new BlockItem(BlanksFormBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "blanksFormView";
+      }
 
-    if (type === "fileupload") {
-      this.blocks.push(new BlockItem(FileUploadBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "fileUploadView";
-    }
+      if (type === "exclusiveurl") {
+        this.blocks.push(new BlockItem(ExclusiveUrlBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "exclusiveUrlView";
+      }
 
-    if (type === "pushpay") {
-      this.blocks.push(new BlockItem(PushpayBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "pushPayView";
-    }
+      if (type === "fileupload") {
+        this.blocks.push(new BlockItem(FileUploadBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "fileUploadView";
+      }
 
-    if (type === "threedcart") {
-      this.blocks.push(new BlockItem(ThreedCartBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "threedCartView";
-    }
+      if (type === "pushpay") {
+        this.blocks.push(new BlockItem(PushpayBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "pushPayView";
+      }
 
-    if (type === "blogs") {
-      this.blocks.push(new BlockItem(BlogsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "blogsView";
-    }
+      if (type === "threedcart") {
+        this.blocks.push(new BlockItem(ThreedCartBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "threedCartView";
+      }
 
-    if (type === "chat") {
-      this.blocks.push(new BlockItem(ChatBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
-      viewName = "chatView";
-    }
+      if (type === "blogs") {
+        this.blocks.push(new BlockItem(BlogsBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "blogsView";
+      }
 
-    if (type === "account") {
-      this.blocks.push(new BlockItem(AccountBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, this.profileDatas, [], this.utils)));
-      viewName = "accountView";
-    }
+      if (type === "chat") {
+        this.blocks.push(new BlockItem(ChatBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, [], [], this.utils)));
+        viewName = "chatView";
+      }
 
-    if (type === "profile") {
-      this.blocks.push(new BlockItem(ProfileBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, this.profileDatas, [], this.utils)));
-      viewName = "profileView";
-    }
+      if (type === "account") {
+        this.blocks.push(new BlockItem(AccountBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, this.profileDatas, [], this.utils)));
+        viewName = "accountView";
+      }
 
-    if (blkLength < blocks.length) {
-      this.loadComponent(viewName);
+      if (type === "profile") {
+        this.blocks.push(new BlockItem(ProfileBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, this.profileDatas, [], this.utils)));
+        viewName = "profileView";
+      }
+
+      if (blkLength < blocks.length) {
+        this.loadComponent(viewName);
+      }
     }
   };
 
@@ -478,10 +484,10 @@ export class WidgetsComponent implements OnInit {
 
   /* Arranging the saved tileblocks in order */
   arrangeBlocks(currBlks: any[]) {
-    var arrangedBlocks = this.utils.sortArray(currBlks, true, "idx");
+    var arrangedBlocks = this.utils.sortArray(currBlks, true, "index");
 
     for (let i = 0; i < arrangedBlocks.length; i++) {
-      delete arrangedBlocks[i]["idx"];
+      delete arrangedBlocks[i]["index"];
     }
 
     return arrangedBlocks;
@@ -959,28 +965,29 @@ export class WidgetsComponent implements OnInit {
     return objResult;
   };
 
+  assignIndexes(blks: any[]) {
+    for (let i = 0; i < blks.length; i++) {
+      blks[i]["index"] = i;
+    }
+
+    return blks;
+  };
+
   saveBlocks(isNewBlock: boolean, cb) {
     var currentBlocks = this.blocks;
     var blckObj = new GetBlocks(currentBlocks, this.selectedLanguage, isNewBlock, this.utils);
     var blkDataObjs = blckObj.getBlockDatas();
+    blkDataObjs["blocks"] = this.assignIndexes(blkDataObjs["blocks"]);
     var savedBlocks = [];
 
     if (blkDataObjs["blocks"].length > 0) {
-      for (let i = 0; i < blkDataObjs["blocks"].length; i++) {
-        var currBlock = blkDataObjs["blocks"][i];
-
-        this.tileService.saveTileBlocks(currBlock, i)
-          .then(resBlk => {
-            if (!this.utils.isEmptyObject(resBlk) && resBlk.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(resBlk["_id"])) {
-              savedBlocks.push(resBlk);
-
-              if (savedBlocks.length === blkDataObjs["blocks"].length) {
-                var savedBlks = this.arrangeBlocks(savedBlocks);
-                cb(savedBlks, blkDataObjs["isChat"]);
-              }
-            }
-          });
-      }
+      this.tileService.saveTileBlocks(blkDataObjs["blocks"])
+        .then(resBlks => {
+          if (this.utils.isArray(resBlks) && resBlks.length > 0) {
+            resBlks = this.arrangeBlocks(resBlks);
+            cb(resBlks, blkDataObjs["isChat"]);
+          }
+        });
     } else {
       cb([], false);
     }
@@ -1095,6 +1102,7 @@ export class WidgetsComponent implements OnInit {
     }
 
     this.profileDatas = [];
+    this.widgetRights = [];
     this.tileCategories = [];
     //this.selectedTileCategory = {};
     this.languageList = [];
@@ -1122,6 +1130,7 @@ export class WidgetsComponent implements OnInit {
     this.enableZoom = false;
     this.rtl = false;
     this.orgTileCategory = "-1";
+    this.startWrapper = false;
 
     if (!isUpdate) {
       this.tileIdsUpdate = {};
@@ -1259,6 +1268,350 @@ export class WidgetsComponent implements OnInit {
     }
   };
 
+  setWidgetRights() {
+    this.tileService.getWidgetRights(this.oid)
+      .then(packageObj => {
+        if (packageObj && packageObj.length > 0) {
+          var packageRights = packageObj[0].hasOwnProperty('rights') && packageObj[0].rights.length > 0 ? packageObj[0].rights : [];
+
+          if (this.utils.isArray(packageRights) && packageRights.length > 0) {
+            for (let i = 0; i < packageRights.length; i++) {
+              this.widgetRights.push(packageRights[i].toLowerCase().replace(/ /g, ''))
+            }
+          }
+        }
+      });
+  };
+
+  manageWidgets(currentWidget: string, widgetName: string) {
+    if (this.widgetRights.length > 0) {
+      var widgetBlockName = widgetName.toLowerCase().replace(/\s+/g, '');
+      var rightIndex = this.widgetRights.indexOf(widgetBlockName);
+
+      if (rightIndex == -1) {
+        var orgIndex = this.organizations.map(function (b) {
+          return b['_id'];
+        }).indexOf(this.oid);
+
+        var orgName = orgIndex !== -1 ? this.organizations[orgIndex]["name"] : "";
+        this.utils.iAlert('info', 'Information', orgName + ' does not have access to this widget');
+        return false;
+      }
+    }
+
+    var formGroupCheck = 0;
+    var formOneCheck = 0;
+    var exclusiveCheck = 0;
+    var displayCheck = 0;
+    var forms = ['title', 'account', 'attendance', 'survey', 'questionnaire', 'questions', 'confirmation', 'inquiry', 'profile', 'password', 'next', 'user', 'formphoto', 'mobilevideo', 'physician'];
+    var formsOne = ['fill', 'notes', 'buttons', 'contactus', 'placefull', 'addtocart', 'cart', 'blanksform'];
+    var displayWigets = ['text', 'video', 'image', 'url', 'picture', 'disqus', 'feed', 'calendar'];
+    var exclusiveWidgets = ['exclusiveurl', 'fileupload', 'pushpay', 'threedcart', 'blogs', 'chat'];
+    var formIndex = forms.indexOf(currentWidget);
+    var formsOneIndex = formsOne.indexOf(currentWidget);
+    var displayIndex = displayWigets.indexOf(currentWidget);
+    var exclusiveIndex = exclusiveWidgets.indexOf(currentWidget);
+    var blogsChk = false;
+
+    if (currentWidget == 'startwrapper') {
+      if (!this.startWrapper) {
+        this.startWrapper = true
+
+        return true;
+      } else {
+        this.utils.iAlert("info", "Information", "Start wrapper already added");
+      }
+
+      return false;
+    }
+
+    var currentBlock = this.blocks[this.blocks.length - 1];
+    var lastBlock = currentBlock["block"];
+    var lastType = lastBlock["type"];
+
+    if (!this.startWrapper && currentWidget === "confirmation") {
+      if (lastType === "survey" || lastType === "questionnaire") {
+        var isSingle = false;
+
+        if (lastType === "survey") {
+          isSingle = !lastBlock["data"]["multiple"] ? true : false;
+        }
+
+        if (lastType === "questionnaire") {
+          isSingle = lastBlock["data"]["questionType"] === "single" ? true : false;
+        }
+
+        if (isSingle) {
+          if (lastType === "survey") {
+            for (let i = 0; i < lastBlock["data"]["questions"].length; i++) {
+              lastBlock["data"]["confirmation"].push("");
+            }
+          }
+
+          if (lastType === "questionnaire") {
+            for (let i = 0; i < lastBlock["data"]["options"].length; i++) {
+              lastBlock["data"]["confirmation"].push("");
+            }
+          }
+        }
+
+        return false;
+      }
+    }
+
+    if (currentWidget == "endwrapper" && lastType == "startwrapper") {
+      this.utils.iAlert("info", "Information", "No forms inside this group. Add form to close this group");
+
+      return false;
+    }
+
+    if (currentWidget == "confirmation" && lastType == "next") {
+      this.utils.iAlert("info", "Information", "Next Tile already added in this group!!!");
+      return false;
+    }
+
+    if (currentWidget == "next" && lastType == "confirmation") {
+      this.utils.iAlert("info", "Information", "Confirmation already added in this group!!!");
+      return false;
+    }
+
+    var linkForm = this.blocks.filter(function (b) {
+      return b["block"]["type"] === "title";
+    });
+
+    if (currentWidget === "next" && this.startWrapper && linkForm.length > 0) {
+      var linkBlock = linkForm[0];
+
+      if (linkBlock[0]["data"]["title"]) {
+        this.utils.iAlert("info", "Information", "Next Widget cannot combine with linkable forms!!!");
+        return false;
+      }
+    }
+
+    if (currentWidget == 'endwrapper') {
+      if (this.startWrapper) {
+        this.startWrapper = false
+
+        return true;
+      } else {
+        this.utils.iAlert("info", "Information", "No Start wrapper added!! Click start to end wrapper !!");
+      }
+
+      return false;
+    }
+
+    if (lastType === "next" && currentWidget == 'next') {
+      this.utils.iAlert("info", "Information", "You cannot add Next widget after Next widget");
+
+      return false;
+    }
+
+    if (lastType === "next" && lastBlock["data"]["type"] === "tile") {
+      this.utils.iAlert("info", "Information", "You cannot add widget after Next widget");
+      return false;
+    }
+
+    if (this.startWrapper && (currentWidget === "title" || currentWidget === "confirmation" || currentWidget === "next")) {
+      var grpIdx = -1;
+      var confirmIndex = -1;
+      var nextIndex = -1;
+      var nextWidgetIndex = -1;
+      var titleIndex = -1;
+
+      for (let i = this.blocks.length - 1; 0 <= i; i--) {
+        if (this.blocks[i]["block"]["type"] === "title") {
+          titleIndex = i;
+        }
+
+        if (this.blocks[i]["block"]["type"] === "confirmation") {
+          confirmIndex = i;
+        }
+
+        if (this.blocks[i]["block"]["type"] === "next") {
+          nextIndex = i;
+        }
+
+        if (this.blocks[i]["block"]["type"] === "startwrapper") {
+          grpIdx = i;
+          break;
+        }
+      }
+
+      nextWidgetIndex = this.blocks.length - 1 > grpIdx ? grpIdx + 1 : -1;
+
+      if (currentWidget == "next" && nextIndex !== -1) {
+        this.utils.iAlert("info", "Information", "Next Tile already added in this group. Please end wrapper to close this group");
+        return false;
+      }
+
+      if (currentWidget == "confirmation" && nextIndex !== -1) {
+        this.utils.iAlert("info", "Information", "Confirmation already added in this group. Please end wrapper to close this group");
+        return false;
+      }
+
+      if (lastType === "confirmation" || lastType === "next") {
+        this.utils.iAlert("info", "Information", "Please end wrapper to close this group for adding this widget");
+
+        return false;
+      }
+
+      if (nextWidgetIndex !== -1 && (currentWidget != "confirmation" && currentWidget != "next") && lastType != "startwrapper") {
+        var nextType = this.blocks[nextWidgetIndex]["block"]["type"];
+
+        if (nextType == "title" && titleIndex !== -1) {
+          this.utils.iAlert("info", "Information", "One title is allowed inside the group");
+        } else {
+          this.utils.iAlert("info", "Information", "Title will be in the top inside the group");
+        }
+
+        return false;
+      }
+    }
+
+    if (formsOneIndex !== -1 && this.startWrapper) {
+      this.utils.iAlert("info", "Information", "A restricted widget cannot be combined with a form widget");
+      return false;
+    }
+
+    if (displayIndex !== -1 && this.startWrapper) {
+      this.utils.iAlert("info", "Information", "This widget cannot be used inside of a Form Wrapper");
+      return false;
+    }
+
+    for (let i = 0; i < forms.length; i++) {
+      var formIndx = this.blocks.map(function (b) {
+        return b["block"]['type'];
+      }).indexOf(forms[i]);
+
+      if (formIndx !== -1) {
+        formGroupCheck++;
+      }
+    }
+
+    for (let i = 0; i < formsOne.length; i++) {
+      var formOneIndx = this.blocks.map(function (b) {
+        return b["block"]['type'];
+      }).indexOf(formsOne[i]);
+
+      if (formOneIndx !== -1) {
+        formOneCheck++;
+      }
+    }
+
+    for (let i = 0; i < exclusiveWidgets.length; i++) {
+      var exclusiveWidgetsIndx = this.blocks.map(function (b) {
+        return b["block"]['type'];
+      }).indexOf(exclusiveWidgets[i]);
+
+      if (exclusiveWidgetsIndx !== -1) {
+        exclusiveCheck++;
+      }
+    }
+
+    for (let i = 0; i < displayWigets.length; i++) {
+      var displayWigetsIndx = this.blocks.map(function (b) {
+        return b["block"]['type'];
+      }).indexOf(displayWigets[i]);
+
+      if (displayWigetsIndx !== -1) {
+        displayCheck++;
+
+        if (displayWigets[i] === "blogs") {
+          blogsChk = true;
+        }
+      }
+    }
+
+    if ((formGroupCheck > 0 && formsOneIndex !== -1) || (formsOneIndex !== -1 && formOneCheck > 0) || (formOneCheck > 0 && formIndex !== -1)) {
+      if ((formGroupCheck > 0 && formsOneIndex !== -1)) {
+        this.utils.iAlert("info", "Information", "A Restricted widget cannot be combined with a Form widget");
+        return false;
+      }
+
+      if (formOneCheck > 0 && formIndex !== -1) {
+        this.utils.iAlert("info", "Information", "A Form widget cannot be added in the same Tile with Restricted widgets");
+        return false;
+      }
+    }
+
+    if (exclusiveIndex !== -1 || exclusiveCheck > 0) {
+      if ((formGroupCheck > 0 || formOneCheck > 0 || displayCheck > 0) || (formIndex !== -1 || formsOneIndex !== -1 || displayIndex !== -1)) {
+        this.utils.iAlert("info", "Information", "An exclusive widget cannot be combined with other widgets");
+        return false;
+      }
+
+      if (exclusiveCheck > 0) {
+        this.utils.iAlert("info", "Information", "An exclusive widget cannot be added with same exclusive widgets");
+        return false;
+      }
+    }
+
+    if (blogsChk && currentWidget === "blogs") {
+      this.utils.iAlert("info", "Information", "Blog already exists");
+      return false;
+    }
+
+    if (this.startWrapper && currentWidget === 'profile') {
+      var startIdx = -1;
+
+      for (let i = this.blocks.length - 1; 0 <= i; i--) {
+        if (this.blocks[i]["block"]["type"] === "startwrapper") {
+          startIdx = i;
+          break;
+        }
+      }
+
+      if (startIdx !== -1) {
+        var clearEnabled = this.blocks[startIdx]["block"]["data"]["refresh"];
+
+        if (clearEnabled) {
+          this.utils.iAlert("info", "Information", "Unable to add profile widget with clear fields");
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
+  startEndWrapperCheck() {
+    var currentBlocks = this.blocks;
+    var wrapper = {
+      "startWrapper": 0,
+      "endWrapper": 0,
+      "passed": 0,
+      "failed": 0
+    }
+
+    for (let i = 0; i < currentBlocks.length; i++) {
+      if (currentBlocks[i].hasOwnProperty("block") && currentBlocks[i]["block"].hasOwnProperty("type")) {
+        var type = currentBlocks[i]["block"]["type"];
+
+        if (type === "startwrapper") {
+          wrapper["startWrapper"] = wrapper["startWrapper"] + 1;
+        } else if (type === "endwrapper") {
+          wrapper["endWrapper"] = wrapper["endWrapper"] + 1;
+        }
+
+        if (wrapper["startWrapper"] === 1 && wrapper["endWrapper"] == 1 && type === "endwrapper") {
+          wrapper["startWrapper"] = 0;
+          wrapper["endWrapper"] = 0;
+
+          wrapper["passed"] = wrapper["passed"] + 1;
+        }
+
+
+        if ((wrapper["startWrapper"] > 1 || wrapper["endWrapper"] > 1) || (wrapper["startWrapper"] === 1 && wrapper["endWrapper"] == 1 && type === "startWrapper") || (i === currentBlocks.length - 1 && (wrapper["startWrapper"] === 1 || wrapper["endWrapper"] === 1))) {
+          wrapper["failed"] = 1;
+          break;
+        }
+      }
+    }
+
+
+    return wrapper["failed"] === 1 ? false : true;
+  };
+
   ngOnInit() {
     //this.setScrollOptions();
 
@@ -1274,6 +1627,7 @@ export class WidgetsComponent implements OnInit {
       this.resetWidgetDatas(false);
       this.getLanguages();
       this.getThemes(this.selectedOrganization);
+      this.setWidgetRights();
 
       if (this.organizations.length > 0) {
         this.setWidgetDatas();
