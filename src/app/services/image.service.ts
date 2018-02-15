@@ -42,6 +42,14 @@ export class ImageService {
       .catch(this.handleError);
   };
 
+  deleteImage(obj: any) {
+    return this.http
+      .post('/image/remove', JSON.stringify({ "form_data": obj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
   folderList(orgId: string) {
     var url = '/image/folder/list/' + orgId;
 

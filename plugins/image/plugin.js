@@ -158,7 +158,7 @@ var resize = function (req, res, next) {
 
 var crop = function (req, res, next) {
   var dstFileName = '';
-  var obj = data.form_data;
+  var obj = req.body.form_data;
   var context = { "req": req, "res": res, "next": next };
   var fileName = obj.src.split('/').pop();
   var imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', req.cookies.oid);
@@ -196,7 +196,7 @@ var crop = function (req, res, next) {
         return;
       }
 
-      _resizeUploadedImage(context, dst, dstFileName, 'crop');
+      _resizeUploadedImage(context, req.body, dst, dstFileName, 'crop');
     });
 };
 
@@ -234,7 +234,7 @@ var folder = function (req, res, next) {
 };
 
 var saveFolder = function (req, res, next) {
-  var obj = data.form_data;
+  var obj = req.body.form_data;
   var fileName = __appPath + imageConf.imgfolderpath.replace('{0}', obj.organizationId) + obj.name;
 
   fs.exists(fileName, function (exists) {
@@ -255,7 +255,7 @@ var saveFolder = function (req, res, next) {
 };
 
 var remove = function (req, res, next) {
-  var obj = data.form_data;
+  var obj = req.body.form_data;
   var isArray = obj.hasOwnProperty("src") && util.isArray(obj.src) ? true : false;
 
   if (isArray) {
@@ -448,7 +448,7 @@ var backgroundPatternUpload = function (req, res, next) {
 };
 
 var backgroundPatternRemove = function (req, res, next) {
-  var obj = data.form_data;
+  var obj = req.body.form_data;
   var pageFrom = obj.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(obj.pagefrom) ? obj.pagefrom : "";
 
   var imagePath = __appPath + imageConf.imgAppFolderPath.replace('{0}', obj.appId);
@@ -482,7 +482,7 @@ var backgroundPatternRemove = function (req, res, next) {
 
 var backgroundPatternList = function (req, res, next) {
   var images = [];
-  var obj = data.form_data;
+  var obj = req.body.form_data;
   var pageFrom = obj.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(obj.pagefrom) ? obj.pagefrom : "";
 
   var rootFolderPath = __appPath + imageConf.imgAppFolderPath.replace('{0}', obj.appId);
@@ -524,7 +524,7 @@ var backgroundPatternList = function (req, res, next) {
 };
 
 var bgGroupRemove = function (req, res, next) {
-  var obj = data.form_data;
+  var obj = req.body.form_data;
   var isGroupIcon = false;
 
   if (obj && obj.hasOwnProperty("groupIcon")) {
@@ -568,7 +568,7 @@ var bgGroupRemove = function (req, res, next) {
 
 var bgGroupList = function (req, res, next) {
   var images = [];
-  var obj = data.form_data;
+  var obj = req.body.form_data;
   var isGroupIcon = false;
 
   if (obj && obj.hasOwnProperty("groupIcon")) {
@@ -703,7 +703,7 @@ var emoticonsList = function (req, res, next) {
 };
 
 var emoticonsDelete = function (req, res, next) {
-  var obj = data.form_data;
+  var obj = req.body.form_data;
   var imagePath = __appPath + imageConf.imgEmoticonsFolderPath.replace('{0}', req.params.orgId);
   imagePath = imagePath + obj.name;
 
@@ -1858,7 +1858,7 @@ var _resizeOptions = function (context) {
 };
 
 var streamCrownImageRemove = function (req, res, next) {
-  var obj = data.form_data;
+  var obj = req.body.form_data;
   var imagePath = __appPath + imageConf.imgStreamFolerPath.replace('{0}', obj.id);
   imagePath = imagePath + "crown/" + obj.fileName;
 

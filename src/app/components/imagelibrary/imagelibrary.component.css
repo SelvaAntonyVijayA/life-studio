@@ -3,6 +3,7 @@
     height: 350px;
     overflow-x: hidden;
     overflow-y: auto;
+    width: 100%;
 }
 
 .tile_image_upload {
@@ -28,7 +29,7 @@
 }
 
 #selectable li {
-    margin: 3px;
+    margin: 0px 5px 5px 0px;
     padding: 1px;
     float: left;
     width: 120px;
@@ -155,4 +156,54 @@ div.jcrop-holder {
 
 .table {
     margin-bottom: 2px;
+}
+
+.btn-home {
+    line-height: 1.75;
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc
+}
+
+.btn-home.focus, .btn-home:focus {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #8c8c8c
+}
+
+.btn-home:hover {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad
+}
+
+.btn-home.active, .btn-home:active, .open>.dropdown-toggle.btn-home {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad
+}
+
+.btn-home.active.focus, .btn-home.active:focus, .btn-homeactive:hover, .btn-home:active.focus, .btn-home:active:focus, .btn-home:active:hover, .open>.dropdown-toggle.btn-home.focus, .open>.dropdown-toggle.btn-home:focus, .open>.dropdown-toggle.btn-home:hover {
+    color: #333;
+    background-color: #d4d4d4;
+    border-color: #8c8c8c
+}
+
+.btn-home.active, .btn-home:active, .open>.dropdown-toggle.btn-home {
+    background-image: none
+}
+
+.btn-home.disabled.focus, .btn-home.disabled:focus, .btn-home.disabled:hover, .btn-home[disabled].focus, .btn-home[disabled]:focus, .btn-home[disabled]:hover, fieldset[disabled] .btn-home.focus, fieldset[disabled] .btn-home:focus, fieldset[disabled] .btn-home:hover {
+    background-color: #fff;
+    border-color: #ccc
+}
+
+.btn-home .badge {
+    color: #fff;
+    background-color: #333
+}
+
+.list-divider {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }

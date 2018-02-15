@@ -49,6 +49,7 @@ module.exports = function (app) {
   router.post('/procedure/save', $procedure.save);
   router.get("/procedure/remove/:procedureId", $procedure.remove);
   router.all('/image/upload', $image.upload);
+  router.post('/image/remove', $image.remove);
   router.get('/image/list/:orgId/:folder*?', $image.list);
   router.all('/image/crop', $image.crop);
   router.get('/image/folder/list/:orgId', $image.folder);

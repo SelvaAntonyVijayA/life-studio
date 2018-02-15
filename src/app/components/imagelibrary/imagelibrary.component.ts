@@ -5,7 +5,6 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { CommonService } from '../../services/common.service';
 import { Utils } from '../../helpers/utils';
 import { ImageService } from '../../services/image.service';
-import { Http } from '@angular/http';
 const URL = 'http://localhost:8080/image/upload';
 import { ProgressHttp, HTTP_FACTORY } from 'angular-progress-http';
 import { LoggingHttpFactory } from './logging-http/logging-http-factory';
@@ -17,8 +16,6 @@ interface FileDescriptor {
   percentage?: number;
   size?: any;
 }
-
-
 
 @Component({
   selector: 'app-imagelibrary',
@@ -52,19 +49,21 @@ export class ImagelibraryComponent implements OnInit {
   selectedimage: string = "";
   selectedimages: any[] = [];
   isSingleClick: boolean = false;
+  httpRequest: any = null;
+  fileName: string = "or select an image from library";
 
   constructor(private route: ActivatedRoute,
     private cms: CommonService,
     private imageService: ImageService,
     private e1: ElementRef,
     private renderer: Renderer2,
-    private http: Http,
     public utils: Utils,
-
     private progressHttp: ProgressHttp) { }
 
-  public onFileSelected(f: File) {
-    console.log(f)
+  onFileSelected(f: File) {
+    this.fileName = f.name;
+    this.isUploading = true;
+
     this.fileD = {
       name: f.name,
       file: f,
@@ -73,7 +72,6 @@ export class ImagelibraryComponent implements OnInit {
       percentage: null
     };
   }
-
 
   upload() {
     const f = this.fileD;
@@ -86,19 +84,77 @@ export class ImagelibraryComponent implements OnInit {
     formData.append("type", "art");
     formData.append("file[]", f.file);
 
-    this.progressHttp
-      .withUploadProgressListener(progress => { f.percentage = progress.percentage; })
+    this.httpRequest = this.progressHttp
+      .withUploadProgressListener(progress => {
+        console.dir(progress)
+        f.percentage = progress.percentage;
+      })
       .post(URL, formData)
       .subscribe((r) => {
-        console.dir(r)
-        f.uploaded = true;
+        if (r.ok) {
+          var result = JSON.parse(r["_body"]);
+          this.selectedimage = result["imageUrl"];
+
+          console.dir(result)
+          f.uploaded = true;
+          this.resetFile();
+          this.loadImages();
+        } else {
+          this.utils.iAlert('error', 'Error', 'Error Occurs. Please try again!!!');
+        }
       })
   }
 
+  resetFile() {
+    this.fileName = "or select an image from library";
+    this.isUploading = false;
+    this.fileD = {
+      name: null,
+      file: null,
+      size: null,
+      uploaded: null,
+      percentage: null
+    };
+  }
+
   public cancel(e: any) {
+    this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to abort the request?", "Yes", "No", (res) => {
+      if (res.hasOwnProperty("resolved") && res["resolved"] == true) {
+        if (this.httpRequest) {
+          this.httpRequest.unsubscribe();
+        }
+        
+        this.resetFile();
+      }
+    })
   }
 
   public remove(e: any) {
+    if (this.selectedimages.length > 0) {
+      this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this images?", "Yes", "No", (res) => {
+        if (res.hasOwnProperty("resolved") && res["resolved"] == true) {
+
+          var obj = {};
+          obj["src"] = this.selectedimages;
+          obj["folder"] = this.selectedFolders;
+
+          this.imageService.deleteImage(obj)
+            .then(res => {
+              if (res.status) {
+                this.utils.iAlert('success', '', 'Image are deleted successfully');
+                this.loadImages();
+              }
+            });
+        }
+      })
+    } else {
+      this.utils.iAlert('error', 'Error', 'Please select a images to delete');
+    }
+  }
+
+  home() {
+    this.selectedFolders = undefined;
+    this.loadImages();
   }
 
   selectImage(e: any, url: string, click: string) {
@@ -107,22 +163,17 @@ export class ImagelibraryComponent implements OnInit {
 
     setTimeout(function () {
       if (this.isSingleClick) {
-        console.log("It's a single click");
         return;
       }
     }, 500);
 
-    console.log(click)
-
     this.removeImage(url)
-    console.log(url)
   }
 
   imageDoubleClick(e: any, url: string) {
     e.preventDefault();
     e.stopPropagation();
 
-    console.log("It's a double click");
     this.isSingleClick = false;
     setTimeout(function () {
       this.isSingleClick = true;
@@ -130,14 +181,41 @@ export class ImagelibraryComponent implements OnInit {
     }, 500);
 
     this.selectedimage = url;
-    //console.log(url)
   }
+
+  crop() {
+    if (this.selectedimages.length > 0) {
+      var url = this.selectedimages[this.selectedimages.length - 1];
+    } else {
+      this.utils.iAlert('error', 'Error', 'Please select a image');
+    }
+  }
+
+  withOutCrop() {
+    if (this.selectedimages.length > 0) {
+      var url = this.selectedimages[this.selectedimages.length - 1];
+    } else {
+      this.utils.iAlert('error', 'Error', 'Please select a image');
+    }
+  }
+
   removeImage(element: string) {
     const index = this.selectedimages.indexOf(element);
+
     if (index != -1) {
       this.selectedimages.splice(index, 1);
     } else {
       this.selectedimages.push(element);
+    }
+  }
+
+  isImageExists(element: string) {
+    const index = this.selectedimages.indexOf(element);
+
+    if (index != -1) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -173,6 +251,7 @@ export class ImagelibraryComponent implements OnInit {
   };
 
   onBlur(e: any) {
+
   }
 
   onAdd(e: any) {
@@ -181,7 +260,6 @@ export class ImagelibraryComponent implements OnInit {
 
   onChange(e: any) {
     this.loadImages();
-    console.dir('change' + e)
   }
 
   onSelectChange(e: any) {
