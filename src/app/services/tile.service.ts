@@ -141,6 +141,17 @@ export class TileService {
       .catch(this.handleError);
   };
 
+  widgetCategorySave(wdgtObj: Object) {
+    return this.http
+      .post("/tileblock/category/save", JSON.stringify({ "form_data": wdgtObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => {
+        var wdgtCatRes = response.json();
+        wdgtObj["_id"] = wdgtCatRes["_id"];
+        return wdgtObj;
+      }).catch(this.handleError);
+  };
+
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);

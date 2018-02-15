@@ -3,6 +3,7 @@ import { BlockComponent } from './block-organizer';
 import { WidgetsComponent } from './widgets.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Utils } from '../../helpers/utils';
+import { TileService } from '../../services/tile.service';
 
 @Component({
   selector: 'block-controls',
@@ -13,18 +14,20 @@ import { Utils } from '../../helpers/utils';
              <div class="tigger_btn" (click)="getBlock($event, block.view, 'down')" title="MoveDown"><span class="glyphicon glyphicon-arrow-down"></span></div>
              <div class="tigger_btn" (click)="getBlock($event, block.view, 'up')" title="MoveUp"><span style="margin-top:-1px;" class="glyphicon glyphicon-arrow-up"></span></div>
              <div *ngIf="checkCategory()" class="main-widget-category">
-             <select [(ngModel)]="block['data']['category']" class="form-control input-sm widget_category_box" placeholder="Select / Add Category">
+             <!--<select [(ngModel)]="block['data']['category']" class="form-control input-sm widget_category_box" placeholder="Select / Add Category">
              <option disabled [value]="'-1'">Select / Add Category</option>
              <option *ngFor="let wdgtCat of (block['widgetCategories'] | orderBy: true : 'name'); let i = index" [value]="wdgtCat?._id">{{wdgtCat?.name}}</option>
-             </select>
+             </select> -->
+             <ng-select class="custom" placeholder="Select / Add Category" [items]="block['widgetCategories']" [(ngModel)]="block['data']['category']"
+             [multiple]="false" [addTag]="false" bindLabel="name" bindValue="_id" (inputchange)="widgetCategoryChange($event)">
+             </ng-select>
              </div>
              <!-- <div style="display:none" id="divRedirectBackToApp" class="redirect-app-submit"><span class="redirect-back-app">Redirect back to app </span></div> -->`,
   styleUrls: ['./tileblocks.component.css']
 })
 
 export class BlockControls {
-  constructor(public utils: Utils) {
-    
+  constructor(public utils: Utils, private tileService: TileService) {
   }
 
   view: any;
@@ -39,7 +42,28 @@ export class BlockControls {
   };
 
   checkCategory() {
-    return !this.utils.isEmptyObject(this.block) && this.block.hasOwnProperty('data') && !this.utils.isNullOrEmpty(this.block['data']['category']) ? true : false;
+    return !this.utils.isEmptyObject(this.block) && this.block.hasOwnProperty('data') && this.block['data'].hasOwnProperty("category") ? true : false;
+  };
+
+  widgetCategoryChange(e: any) {
+    if (!this.utils.isNullOrEmpty(e.isNotFound) && e.isNotFound && !this.utils.isNullOrEmpty(e.term)) {
+      this.utils.iAlertConfirm("confirm", "Confirm", "The entered category didn\'t match with existing, would you like to add press OK.", "Ok", "Cancel", (r) => {
+        if (r["resolved"]) {
+          var category = {};
+          category["name"] = e.term;
+          category["organizationId"] = this.block.selectedOrg;
+
+          this.tileService.widgetCategorySave(category)
+            .then(resWdgtCat => {
+              if (!this.utils.isEmptyObject(resWdgtCat) && resWdgtCat.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(resWdgtCat["_id"])) {
+                this.block['data']['category'] = resWdgtCat["_id"];
+                var blk = { "view": category, "opt": "widgetCat"};
+                this.blockView.emit(blk)
+              }
+            });
+        }
+      });
+    }
   };
 
   activateDeactivate(e: any) {
@@ -91,7 +115,7 @@ export class TextBlockComponent implements BlockComponent {
 
 export class VideoBlockComponent implements BlockComponent {
   @Input() block: any;
-  
+
   constructor(public sanitizer: DomSanitizer, public utils: Utils) {
   }
 
@@ -821,7 +845,7 @@ export class DescriptionSubOptionComponent {
 
   getLevelIndex() {
     var idx = "i";
-    
+
     return this.levelIndex == 2 ? idx = idx + "i" : idx;
   };
 
@@ -1289,7 +1313,7 @@ export class NotesBlockComponent implements BlockComponent {
   notesView = new EventEmitter<any>();
   isNotes: boolean = true;
   isAllnotes: boolean = false;
-  isJournal : boolean = false;
+  isJournal: boolean = false;
 
   getNotes(view: any) {
     this.notesView.emit(view);
@@ -1306,11 +1330,11 @@ export class NotesBlockComponent implements BlockComponent {
       this.block.data.journal = false;
     }
 
-    if(type === "journal"){
+    if (type === "journal") {
       this.block.data.notes = false;
       this.block.data.journal = false;
     }
-    
+
     this.isNotes = this.block.data.notes;
     this.isAllnotes = this.block.data.allNotes;
     this.isJournal = this.block.data.journal;
@@ -1347,7 +1371,7 @@ export class NotesBlockComponent implements BlockComponent {
 
 export class ButtonsBlockComponent implements BlockComponent {
   constructor(public utils: Utils) {
-    
+
   }
 
   @Input() block: any;

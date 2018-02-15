@@ -17,6 +17,7 @@ module.exports = function (app) {
   router.all('/tileblock/tile/:tileId*?', $tileblock.getBlocks);
   router.get('/tileblock/getprofile/:orgId/:language*?', $tileblock.getProfile);
   router.get('/tileblock/category/list/:orgId', $tileblock.widgetCategoryList);
+  router.post('/tileblock/category/save', $tileblock.widgetCategorySave);
   router.get('/tilecategory/list/:orgId', $tilecategory.get);
   router.post('/tilecategory/save', $tilecategory.save);
   router.post('/event/save', $event.save);
@@ -75,7 +76,7 @@ module.exports = function (app) {
   router.get('/img/groups/:type/:id*?/:name*?', $image.resize);
   router.get('/img/streams/:streamId/:name*?', $image.resize);
   router.get('/img/profile/:memberId/:name*?', $image.resize);
-  router.get('/organization/getorgpackage/:orgId',  $organization.getOrgPackage);
+  router.get('/organization/getorgpackage/:orgId', $organization.getOrgPackage);
 
   router.all('/files/delete/:orgId*', $image.fileDelete);
   router.get('/files/url/:orgId', $image.urlList);

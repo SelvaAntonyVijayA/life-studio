@@ -90,8 +90,7 @@ export class TilesListComponent {
     if (data.hasOwnProperty("dropped")) {
       this.releaseDrop(data["dropped"]);
     } else {
-
-      if (this.page === "tiles") {
+      if (this.page === "tiles" && !data.hasOwnProperty("widgetCat")) {
         data["isNew"] = true;
 
         if (data.hasOwnProperty("tile")) {
@@ -462,7 +461,7 @@ export class TilesListComponent {
       var isLang = currTiles.hasOwnProperty("isLang") ? true : false;
       delete currTiles["noEmit"];
       delete currTiles["isLang"];
-      
+
       var currTileIds = Object.keys(currTiles);
 
       for (let i = 0; i < currTileIds.length; i++) {
@@ -494,7 +493,7 @@ export class TilesListComponent {
               resEmitted = true;
               this.selectedTile = currTileIds.length == 1 ? tileObj : tileToSend;
 
-              var emitKey =  isNew ? "assignBlocks" : "savedUpdated";
+              var emitKey = isNew ? "assignBlocks" : "savedUpdated";
 
               if (isLang) {
                 emitKey = "savedUpdated";

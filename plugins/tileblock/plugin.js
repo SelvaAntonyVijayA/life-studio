@@ -198,6 +198,23 @@ var _remove = function (blockQuery, options, cb) {
   });
 };
 
+
+var widgetCategorySave = function (req, res, next) {
+  var category = req.body.form_data;
+
+  _saveWidgetCategory(category, function (result) {
+    var resObj = { "_id": result };
+    res.send(resObj);
+  });
+};
+
+var _saveWidgetCategory = function (tQuery, cb) {
+  $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.widgetCategory, tQuery, function (result) {
+    cb(result);
+  });
+};
+
+
 module.exports = {
   "init": init,
   "save": save,
@@ -208,5 +225,7 @@ module.exports = {
   "widgetCategoryList": widgetCategoryList,
   "updateBlock": updateBlock,
   "block": block,
-  "_remove": _remove
+  "_remove": _remove,
+  "widgetCategorySave": widgetCategorySave,
+  "_saveWidgetCategory": _saveWidgetCategory
 };

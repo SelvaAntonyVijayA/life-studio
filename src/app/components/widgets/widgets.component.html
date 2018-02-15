@@ -12,10 +12,15 @@
       <select [(ngModel)]="template" class="ili-form template_box" placeholder="Select Template">
         <option *ngFor="let theme of tileThemes; let i = index" [value]="theme?._id">{{theme?.name}}</option>
       </select>
-      <select [(ngModel)]="seletedTileCategory" class="ili-form tile_cat_box" placeholder="Select / Add Category">
+      <!---  <select [(ngModel)]="seletedTileCategory" class="ili-form tile_cat_box" placeholder="Select / Add Category">
         <option [value]="'-1'" disabled>All Categories</option>
         <option *ngFor="let tileCat of tileCategories; let i = index" [ngValue]="tileCat['_id']">{{tileCat?.name}}</option>
-      </select>
+      </select> -->
+      <div class="tile_cat_box">
+        <ng-select class="custom" placeholder="Select / Add Category" [items]="tileCategories" [(ngModel)]="seletedTileCategory"
+          [multiple]="false" [addTag]="false" bindLabel="name" bindValue="_id" (inputchange)="onCategoryChange($event)">
+        </ng-select>
+      </div>
     </div>
     <div class='tile_prime'>
       <div style="margin-top: 4px; padding-left: 0px; margin-bottom: 2px;" class="checkbox">

@@ -13,10 +13,11 @@ export class BlockItem {
 };
 
 export class BlockOrganizer {
-  constructor(blk: any, type: string, lang?: string, orgConnectDatas?: any[], widgetCategories?: any[], utils?: any) {
+  constructor(blk: any, type: string, lang?: string, orgConnectDatas?: any[], widgetCategories?: any[], utils?: any, selectedOrg?: string) {
     this.block = {};
     this.lang = lang;
     this.utils = utils;
+    this.selectedOrg = selectedOrg;
     this.getType(blk, type, orgConnectDatas, widgetCategories);
     return this.block;
   }
@@ -24,6 +25,7 @@ export class BlockOrganizer {
   utils: any;
   block: any = {};
   lang: string = "en";
+  selectedOrg: string = "";
 
   /* Get Block Types */
   getType(blk: any, type: string, orgConnectDatas: any, widgetCategories?: any[]) {
@@ -231,6 +233,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
 
     this.block["data"] = {};
@@ -245,6 +248,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
 
     this.block["data"] = {};
@@ -261,6 +265,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -278,6 +283,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -292,6 +298,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -312,6 +319,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -326,6 +334,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -342,6 +351,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -357,6 +367,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -374,6 +385,7 @@ export class BlockOrganizer {
     this.block["isForm"] = "true";
     this.block["widgetCategories"] = widgetCategories;
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -401,6 +413,7 @@ export class BlockOrganizer {
     this.block["isForm"] = "true";
     this.block["widgetCategories"] = widgetCategories;
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -530,6 +543,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -546,6 +560,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -562,6 +577,7 @@ export class BlockOrganizer {
     this.block["isForm"] = "true";
     this.block["widgetCategories"] = widgetCategories;
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -583,6 +599,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -603,6 +620,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -618,6 +636,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -632,6 +651,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -649,6 +669,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -664,6 +685,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -681,6 +703,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -696,6 +719,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -712,6 +736,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -727,6 +752,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -741,6 +767,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : {};
     this.block["data"] = {};
 
@@ -757,6 +784,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     var alerts = this.lang === "en" && !this.utils.isEmptyObject(blockData) && blockData.hasOwnProperty["alerts"] && blockData["alerts"].length > 0 ? blockData["alerts"] : [];
 
@@ -778,6 +806,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
@@ -792,6 +821,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
@@ -806,6 +836,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
@@ -831,6 +862,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
@@ -848,6 +880,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
@@ -865,6 +898,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
@@ -881,6 +915,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
@@ -895,6 +930,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
@@ -912,6 +948,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
@@ -929,6 +966,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
@@ -946,6 +984,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "false";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
 
@@ -961,6 +1000,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["profileData"] = orgConnectDatas;
     this.block["data"] = {};
@@ -979,6 +1019,7 @@ export class BlockOrganizer {
     this.block["version"] = this.assignVersion(blockData);
     this.block["isForm"] = "true";
     this.block["existingData"] = this.assignExists(blockData);
+    this.block["selectedOrg"] = this.selectedOrg;
     this.block["profileData"] = orgConnectDatas;
     var data = this.lang === "en" && this.checkBlockExists(blockData) ? blockData["data"] : this.lang !== "en" && this.checkLanguage(blockData) ? blockData[this.lang]["data"] : [];
     this.block["data"] = {};
