@@ -1,0 +1,111 @@
+<div class="container events_container">
+  <div class="page_block pages_head">
+    <div class="page_inputs">
+      <div class="page_field_inputs">
+        <select [ngModel]="selectedLanguage" (ngModelChange)="languageChange($event)" class="form-control input-sm tile_language" placeholder="Select Language">
+          <option *ngFor="let lang of languageList; let i = index" [value]="lang?.code">{{lang?.name}}</option>
+        </select>
+        <input class="form-control input-sm app_page_title_box" type="text" placeholder="Page Title">
+        <select [ngModel]="selectedApp" (ngModelChange)="appChange($event)" class="form-control input-sm app_box">
+          <option *ngFor="let app of appList; let i = index" [value]="app?._id">{{app?.name}}</option>
+        </select>
+        <select  [(ngModel)]="selectedLocation" class="form-control input-sm location_box">
+          <option *ngFor="let loc of locationList; let i = index" [value]="loc?._id">{{loc?.name}}</option>
+        </select>
+      </div>
+      <div class="page_checks">
+        <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 3px; min-height: 18px;" class="checkbox">
+          <label>
+            <input value="true" style="margin-top: 2px;" type="checkbox" value="">Navigation tab disabled</label>
+        </div>
+        <div style="float:left; margin-top: 5px; padding-left: 5px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
+          <label>
+            <input value="true" style="margin-top: 2px;" type="checkbox" value="">Random Order</label>
+        </div>
+        <div style="float:left; margin-top: 5px; padding-left: 5px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
+          <label>
+            <input value="true" style="margin-top: 2px;" type="checkbox" value="">Open straight to content</label>
+        </div>
+        <div style="float:left; margin-top: 5px; padding-left: 5px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
+          <label>
+            <input value="true" style="margin-top: 2px;" type="checkbox" value="">Alphabetical Order</label>
+        </div>
+        <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 13px; min-height: 18px;" class="checkbox">
+          <label>
+            <input value="true" style="margin-top: 2px;" type="checkbox" value="">Hide from main menu</label>
+        </div>
+        <div style="float:left; margin-top: 5px; padding-left: 5px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
+          <label>
+            <input value="true" style="margin-top: 2px;" type="checkbox" value="">Live Stream On Top</label>
+        </div>
+      </div>
+    </div>
+    <div class="app_form_btns">
+      <button class="ili-btn page_new">
+        New
+      </button>
+      <button class="ili-btn page_save">
+        Save
+      </button>
+      <button class="ili-btn page_delete">
+        Delete
+      </button>
+      <button class="ili-btn page_setup">
+        Page Setup
+      </button>
+      <button class="ili-btn default_page_setup">
+        Default Page Setup
+      </button>
+    </div>
+  </div>
+  <div class="pages_main_content">
+    <div class="page_block pages_block">
+      <div class="pages_text">
+        <span> Pages </span>
+      </div>
+      <input class="form-control input-sm search_box_pages" type="text" placeholder="Search Pages">
+      <div id="main-container-pages" class="pages_list_show">
+
+      </div>
+    </div>
+    <div id="dragged-groups" class="page_block main_page_container">
+    </div>
+
+    <div class="page_block groups_block">
+      <div class="groups_text">
+        <span> Groups </span>
+      </div>
+      <input class="form-control input-sm search_box_tilist" type="text" placeholder="Search Groups">
+      <select class="form-control input-sm tilist_type">
+        <option [value]="'all'">Show All Groups</option>
+        <option [value]="'event'">Events</option>
+        <option [value]="'tilist'">Folders</option>
+        <option [value]="'catilist'">Categories</option>
+        <option [value]="'livestream'">Live Stream</option>
+        <option [value]="'procedure'">Procedure</option>
+        <option [value]="'process'">Process</option>
+      </select>
+
+      <select class="form-control input-sm sort_group">
+        <option [value]="'date_desc'">Latest on top</option>
+        <option [value]="'date_asc'">Oldest on top</option>
+        <option [value]="'name_asc'">Name - A on top</option>
+        <option [value]="'name_desc'">Name - Z on top</option>
+      </select>
+
+      <div class="group-view-change">
+        <img class="img-event-view-group" *ngIf="groupType === 'list'" (click)="changeGroupView()" src="/img/details.png" alt=""
+          title="Details" />
+        <img class="img-event-view-group group-list-view" *ngIf="groupType === 'details'" (click)="changeGroupView()" src="/img/list.png"
+          alt="" title="List" />
+      </div>
+
+      <div id="main-container-groups" class="groups_list_show">
+
+      </div>
+    </div>
+
+    <tiles-list class="dragItem" (tileContent)="getTileContent($event)" [tilesToUpdate]="tilesToUpdate" [isMerge]="isMerge" [draggedTiles]="draggedTiles"
+      [droppedTile]="droppedTile" [organizations]="organizations" [page]="'events'"></tiles-list>
+  </div>
+</div>

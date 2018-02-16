@@ -23,6 +23,8 @@ var plugins = {
   "db": "database",
   "image": "image",
   "package": "package",
+  "apps": "apps",
+  "location": "location",
   "log": "log"
 };
 

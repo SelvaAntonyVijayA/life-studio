@@ -19,7 +19,6 @@ declare var editableSelect: any;
   styleUrls: ['./events.component.css']
 })
 export class EventsComponent implements OnInit {
-
   constructor(private route: ActivatedRoute,
     private cms: CommonService,
     private eventService: EventService,
@@ -30,7 +29,6 @@ export class EventsComponent implements OnInit {
     public utils: Utils
   ) {
   }
-
 
   /* Variables Intialization */
   organizations: any[] = [];

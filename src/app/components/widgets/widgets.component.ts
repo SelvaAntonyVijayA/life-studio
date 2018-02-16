@@ -1744,10 +1744,8 @@ export class WidgetsComponent implements OnInit {
     }
   };
 
-
   ngOnInit() {
     //this.setScrollOptions();
-
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       if (!this.utils.isArray(this.blocks)) {
         this.blocks = [];

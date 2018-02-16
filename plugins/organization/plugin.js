@@ -22,7 +22,6 @@ var getList = function (query, cb) {
 var getOrgPackage = function (req, res, next) {
   query = {};
   options = {};
-
   query["_id"] = req.params.orgId;
 
   getOrgs(query, options, function (orgResult) {

@@ -1,107 +1,213 @@
-.page_container {
-    height: 920px;
-    position: relative;
-    color: white;
+/* Pages Container*/
+.pages_container {
+  height: 920px;
+  position: relative;
 }
 
-.my-app-custom-plain-container-row {
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
+/* Pages head */
+.pages_head {
+  width: 99.97%;
+  height: 75px;
+  float: left;
+  margin-bottom: 1px;
+  margin-left: 1px;
+  position: relative;
 }
 
-.my-app-custom-plain-container-row .my-app-custom-image-row {
-    cursor: pointer;
-    height: auto;
-    margin-right: 2px;
-    width: 50px;
+.page_inputs {
+  float: left;
+  width: 70%
 }
 
-.my-app-custom-plain-container-row .my-app-custom-image-row.after {
-    border-top: 2px;
-    cursor: pointer;
-    display: none;
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
+.tile_language {
+  float: left;
+  width: 231px;
+  margin-left: 10px;
 }
 
-.my-app-custom-plain-container-column {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+.app_page_title_box {
+  float: left;
+  margin-left: 3px;
+  width: 212px;
+  display: inline;
 }
 
-.my-app-custom-plain-container-column .my-app-custom-image-column {
-    cursor: pointer;
-    height: auto;
-    margin-right: 2px;
-    width: 50px;
+.app_box {
+  float: left;
+  margin-left: 10px;
+  width: 231px;
+  display: inline;
+  margin-top: 7px;
 }
 
-.my-app-custom-plain-container-column .my-app-custom-image-column.after {
-    border-top: 2px;
-    cursor: pointer;
-    display: none;
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
+.location_box {
+  float: left;
+  width: 212px;
+  display: inline;
+  margin-left: 3px;
+  margin-top: 7px;
 }
 
-.my-app-custom-plain-container-with-desc {
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
+.page_field_inputs {
+  float: left;
+  width: 56%;
+  margin-top: 8px;
 }
 
-.my-app-custom-plain-container-with-desc figure {
-    margin: 0;
-    position: relative;
+.page_checks {
+  float: left;
+  width: 41%;
+  margin-left: 4px;
 }
 
-.my-app-custom-plain-container-with-desc figure img {
-    max-width: 100%;
-    height: auto;
-    cursor: pointer;
+.app_form_btns{
+  float: right;
+  width: 23%;
+  margin-top: 11px;
 }
 
-.my-app-custom-plain-container-with-desc figure figcaption {
-    background: rgba(0, 0, 0, .5);
-    color: #fff;
-    font-size: 85%;
-    padding: 5px;
-    position: absolute;
-    bottom: 3px;
-    left: 0;
-    right: 0;
+ /* Page Buttons */
+.page_new {
+  border-bottom-color: #228B22;
+  border-bottom-width: 3px;
+  float: left;
+  margin-right: 4px;
+  margin-left: 27px;
 }
 
-.my-app-custom-plain-container-with-desc .description {
-    font-weight: bold;
-    text-align: center;
+.page_save {
+  border-bottom-color: #1E90FF;
+  border-bottom-width: 3px;
+  float: left;
+  margin-right: 4px;
 }
 
-.my-app-custom-plain-container-with-desc .my-app-custom-image-with-desc {
-    height: auto;
-    margin-right: 2px;
-    width: 200px;
-    align-self: start;
+.page_delete {
+  border-bottom-color: #FF0000;
+  border-bottom-width: 3px;
 }
 
-.more {
-    background: rgba(0, 0, 0, .7);
-    cursor: pointer;
-    color: #fff;
-    padding-top: 4px;
-    height: 46px;
-    position: absolute;
-    text-align: center;
-    width: 50px;
+.page_setup {
+  border-bottom-color: #FFA500;
+  border-bottom-width: 3px;
+  float: left;
+  width: 91px;
+  margin-top: 7px;
+  margin-left: 27px;
+}
+
+.default_page_setup {
+  border-bottom-color: #FFA500;
+  border-bottom-width: 3px;
+  float: left;
+  width: 137px;
+  margin-top: 7px;
+  margin-left: 5px;
+}
+
+/* Pages Content Layout */
+.pages_main_content {
+  position: relative;
+  width: 100%;
+  height: 833px;
+  float: left;
+  margin-left: 1px;
+}
+
+/* Page Main */
+.pages_text{
+  font-size: 16px;
+  position: relative;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  text-align: center;
+  float: left;
+  width: 170px;
+}
+
+.search_box_pages {
+  width: 92%;
+  display: inline;
+}
+
+.filter_page {
+  margin-top: 5px;
+  width: 84%;
+  display: inline;
+}
+
+/* Pages Layout area */
+.pages_block {
+  width: 161px;
+  height: 880px;
+  text-align: center;
+  position: relative;
+  float: left;
+}
+
+/* Groups Contents */
+.groups_text {
+  font-size: 16px;
+  position: relative;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  text-align: center;
+  float: left;
+  width: 168px; 
+}
+
+.search_box_tilist {
+  width: 84%;
+  display: inline;
+  margin-left: 2px;
+}
+
+.tilist_type {
+  margin-top: 5px;
+  width: 84%;
+  margin-left: 2px;
+  display: inline;
+}
+
+.sort_group {
+  margin-top: 5px;
+  width: 84%;
+  margin-left: 2px;
+  display: inline;
+}
+
+.group-view-change {
+  float: right;
+  width: 100%;
+}
+
+.img-event-view-group {
+  float: right;
+  margin-top: 7px;
+  margin-right: 13px;
+  cursor: pointer;
+}
+
+.img-event-view-group.group-list-view {
+  margin-right: 14px;
+}
+
+/* Dragged groups pages Layout */
+.main_page_container {
+  position: relative;
+  width: 558px;
+  height: 880px;
+  float: left;
+  margin-left: 1px;
+  overflow: hidden;
+}
+
+/* Groups Layout */
+.groups_block {
+  width: 168px;
+  height: 880px;
+  text-align: center;
+  position: relative;
+  float: left;
+  margin-left: 1px;
 }
