@@ -42,6 +42,15 @@ export class ImageService {
       .catch(this.handleError);
   };
 
+
+  crop(obj: any) {
+    return this.http
+      .post("/image/crop", JSON.stringify({ "form_data": obj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response)
+      .catch(this.handleError);
+  };
+
   deleteImage(obj: any) {
     return this.http
       .post('/image/remove', JSON.stringify({ "form_data": obj }), { headers: this.headers })

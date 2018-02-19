@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Directive, ChangeDetectionStrategy, Input, Output, ElementRef, Renderer2, ViewChild, EventEmitter, ContentChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, Directive, ChangeDetectionStrategy, Input, Output, ElementRef, Renderer2, ViewChild, EventEmitter, ContentChild, ViewEncapsulation, AfterViewInit } from '@angular/core';
 import { NgOption, NG_SELECT_DEFAULT_CONFIG } from '../../ng-select';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
@@ -8,6 +8,7 @@ import { ImageService } from '../../services/image.service';
 const URL = 'http://localhost:8080/image/upload';
 import { ProgressHttp, HTTP_FACTORY } from 'angular-progress-http';
 import { LoggingHttpFactory } from './logging-http/logging-http-factory';
+import * as Cropper from 'cropperjs';
 
 interface FileDescriptor {
   name: string;
@@ -37,7 +38,7 @@ interface FileDescriptor {
   ]
 })
 
-export class ImagelibraryComponent implements OnInit {
+export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   public fileD: FileDescriptor;
   public isReady: boolean = false;
   public isUploading: boolean = false;
@@ -51,6 +52,12 @@ export class ImagelibraryComponent implements OnInit {
   isSingleClick: boolean = false;
   httpRequest: any = null;
   fileName: string = "or select an image from library";
+  public isShow: boolean = false;
+  private dom: HTMLInputElement;
+  private cropper: Cropper;
+  aspectRatio: any = NaN;
+
+  @ViewChild('cropperImage') cropperImage: ElementRef;
 
   constructor(private route: ActivatedRoute,
     private cms: CommonService,
@@ -58,7 +65,9 @@ export class ImagelibraryComponent implements OnInit {
     private e1: ElementRef,
     private renderer: Renderer2,
     public utils: Utils,
-    private progressHttp: ProgressHttp) { }
+    private progressHttp: ProgressHttp) {
+    this.renderer = renderer;
+  }
 
   onFileSelected(f: File) {
     this.fileName = f.name;
@@ -86,7 +95,6 @@ export class ImagelibraryComponent implements OnInit {
 
     this.httpRequest = this.progressHttp
       .withUploadProgressListener(progress => {
-        console.dir(progress)
         f.percentage = progress.percentage;
       })
       .post(URL, formData)
@@ -95,10 +103,17 @@ export class ImagelibraryComponent implements OnInit {
           var result = JSON.parse(r["_body"]);
           this.selectedimage = result["imageUrl"];
 
-          console.dir(result)
           f.uploaded = true;
+          this.isShow = true;
+          this.isUploaded = true;
           this.resetFile();
           this.loadImages();
+
+          setTimeout(() => {
+            this.initCropper(this.selectedimage);
+            this.cropper.replace(this.selectedimage);
+          }, 0);
+
         } else {
           this.utils.iAlert('error', 'Error', 'Error Occurs. Please try again!!!');
         }
@@ -123,7 +138,7 @@ export class ImagelibraryComponent implements OnInit {
         if (this.httpRequest) {
           this.httpRequest.unsubscribe();
         }
-        
+
         this.resetFile();
       }
     })
@@ -136,7 +151,7 @@ export class ImagelibraryComponent implements OnInit {
 
           var obj = {};
           obj["src"] = this.selectedimages;
-          obj["folder"] = this.selectedFolders;
+          obj["folder"] = this.utils.isNullOrEmpty(this.selectedFolders) ? "" : this.selectedFolders
 
           this.imageService.deleteImage(obj)
             .then(res => {
@@ -186,9 +201,37 @@ export class ImagelibraryComponent implements OnInit {
   crop() {
     if (this.selectedimages.length > 0) {
       var url = this.selectedimages[this.selectedimages.length - 1];
+      this.selectedimage = url;
+      this.isShow = true;
+
+      setTimeout(() => {
+        this.initCropper(this.selectedimage);
+        this.cropper.replace(this.selectedimage);
+      }, 0);
     } else {
       this.utils.iAlert('error', 'Error', 'Please select a image');
     }
+  }
+
+  uploadCroppedimage(data: object) {
+    var cropData = {};
+    cropData["x"] = data["x"];
+    cropData["y"] = data["y"];
+    cropData["w"] = data["width"];
+    cropData["h"] = data["height"];
+    cropData["src"] = this.selectedimage;
+    cropData["folder"] = this.utils.isNullOrEmpty(this.selectedFolders) ? "" : this.selectedFolders
+    cropData["uploadedImage"] = this.isUploaded;
+
+    this.imageService.crop(cropData)
+      .then(res => {
+        if (res.status) {
+          this.selectedimage = res["imageUrl"];
+          this.isUploaded = false;
+          this.isShow = false;
+          this.loadImages();
+        }
+      });
   }
 
   withOutCrop() {
@@ -292,6 +335,69 @@ export class ImagelibraryComponent implements OnInit {
     }
   }
 
+  /**
+   * Cropper modal
+   *
+   * @memberof cropper
+   */
+  public onCropCancel() {
+    this.isShow = false;
+    let url = this.selectedimage;
+  }
+
+  public cropRatio(ratio: any) {
+    if (ratio == '1:0.4') {
+      this.cropper.setAspectRatio(1 / 0.4);
+    } else if (ratio == '1') {
+      this.cropper.setAspectRatio(1);
+    } else {
+      this.cropper.setAspectRatio(NaN);
+    }
+  }
+
+  /**
+ * click apply event
+ *
+ * @returns
+ * @memberof cropper
+ */
+  public onCropApply() {
+    let data = this.cropper.getData();
+    this.uploadCroppedimage(data);
+  }
+
+  /**
+   * init cropper plugin
+   *
+   * @private
+   * @memberof cropper
+   */
+  private initCropper(src: string): void {
+    var e2 = this.cropperImage.nativeElement;
+    let ar = NaN;
+
+    if (this.aspectRatio == '1:0.4') {
+      ar = 1 / 0.4;
+    } else if (this.aspectRatio == '1') {
+      ar = 1;
+    } else {
+      ar = NaN;
+    }
+
+    this.cropper = new Cropper(e2, {
+      aspectRatio: ar,
+      autoCrop: true,
+      viewMode: 0,
+      rotatable: false,
+      zoomable: false,
+      dragMode: 'move',
+      guides: true,
+      movable: true,
+      cropBoxMovable: true,
+      cropBoxResizable: true
+    });
+  }
+
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       this.oid = Cookie.get('oid');
@@ -299,6 +405,10 @@ export class ImagelibraryComponent implements OnInit {
       this.loadFolders();
       this.loadImages();
     });
+  }
+
+  public ngAfterViewInit() {
+
   }
 
   ngOnDestroy() {

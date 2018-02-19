@@ -29,7 +29,8 @@
         "../src/css/ili_theme.css",
         "../node_modules/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css",
         "styles.css",
-        "../src/css/bootstrap-datetimepicker.css"
+        "../src/css/bootstrap-datetimepicker.css",
+        "../node_modules/cropperjs/dist/cropper.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",

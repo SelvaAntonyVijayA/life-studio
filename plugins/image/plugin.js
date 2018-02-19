@@ -138,7 +138,7 @@ var resize = function (req, res, next) {
             if (err) {
               $log.error('image resize: ' + err);
 
-              res.send({ "status": "Not Found" });
+              res.status(404).send('404 Page Not Found.');
               return;
             }
 
@@ -150,7 +150,7 @@ var resize = function (req, res, next) {
           res.send(options.src);
         }
       } else {
-        res.send({ "status": "Not Found" });
+        res.status(404).send('404 Page Not Found.');
         return;
       }
     });
@@ -158,8 +158,8 @@ var resize = function (req, res, next) {
 
 var crop = function (req, res, next) {
   var dstFileName = '';
-  var obj = req.body.form_data;
   var context = { "req": req, "res": res, "next": next };
+  var obj = req.body.form_data;
   var fileName = obj.src.split('/').pop();
   var imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', req.cookies.oid);
 
@@ -192,7 +192,7 @@ var crop = function (req, res, next) {
     .write(dst, function (err) {
       if (err) {
         $log.error('image copping: ' + err);
-        res.send({ "status": "Not Found" });
+        res.status(404).send('404 Page Not Found.');
         return;
       }
 
@@ -475,7 +475,7 @@ var backgroundPatternRemove = function (req, res, next) {
       });
     });
   } else {
-    res.send({ "status": "Not Found" });
+    res.status(404).send('404 Page Not Found.');
     return;
   }
 };
@@ -561,7 +561,7 @@ var bgGroupRemove = function (req, res, next) {
       });
     });
   } else {
-    res.send({ "status": "Not Found" });
+    res.status(404).send('404 Page Not Found.');
     return;
   }
 };
@@ -743,7 +743,7 @@ var emoticonsDelete = function (req, res, next) {
           });
         });
       } else {
-        res.send({ "status": "Not Found" });
+        res.status(404).send('404 Page Not Found.');
         return;
       }
     });
@@ -1036,7 +1036,7 @@ var fileDelete = function (req, res, next) {
       });
     });
   } else {
-    res.send({ "status": "Not Found" });
+    res.status(404).send('404 Page Not Found.');
     return;
   }
 };
@@ -1718,7 +1718,7 @@ var _resizeUploadedImage = function (context, data, path, fileName, retrn, categ
     .size(function (err, size) {
       if (err) {
         $log.error('Image info: ' + err);
-        res.send({ "status": "Not Found" });
+        res.status(404).send('404 Page Not Found.');
         return;
       }
 
@@ -1742,7 +1742,7 @@ var _resizeUploadedImage = function (context, data, path, fileName, retrn, categ
       _resizer(path, dst, curWidth, curHeight, function (err) {
         if (err) {
           $log.error('image resizing: ' + err);
-          res.send({ "status": "Not Found" });
+          res.status(404).send('404 Page Not Found.');
           return;
         }
 
@@ -1762,10 +1762,12 @@ var _resizeUploadedImage = function (context, data, path, fileName, retrn, categ
 
         switch (retrn) {
           case "upload":
+            urlRtrn.status = true;
             res.send(urlRtrn);
             break;
           case "crop":
-            res.send(urlRtrn.imageUrl);
+            urlRtrn.status = true;
+            res.send(urlRtrn);
             break;
         }
 
