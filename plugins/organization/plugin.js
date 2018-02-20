@@ -65,7 +65,7 @@ var list = function (req, res, next) {
   let query = {};
 
   if (!__util.isEmptyObject(req.body.form_data)) {
-    query = JSON.parse(req.body.form_data);
+    query = req.body.form_data;
   }
 
   let options = {};
@@ -135,7 +135,7 @@ var update = function (req, res, next) {
   var publishing = false;
 
   if (!__util.isEmptyObject(req.body.form_data)) {
-    orgToUpdate = JSON.parse(req.body.form_data);
+    orgToUpdate = req.body.form_data;
     appIds = orgToUpdate.appIds;
     publishing = orgToUpdate.publishing;
     delete orgToUpdate["appIds"];
@@ -169,7 +169,7 @@ var getList = function (query, cb) {
   let options = {};
   options.sort = [['name', 'asc']];
 
-  $db.select(settingsConf.dbname.tilist_core.tilist_core, settingsConf.collections.organization, query, options, function (result) {
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.organization, query, options, function (result) {
     cb(result);
   });
 };

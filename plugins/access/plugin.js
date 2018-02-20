@@ -1,7 +1,7 @@
 'use strict';
 var settingsConf;
 
-var init = function () {
+var init = function (app) {
   settingsConf = app.get('settings');
 };
 
