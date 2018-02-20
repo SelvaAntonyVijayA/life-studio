@@ -23,7 +23,7 @@ import { Utils } from './helpers/utils';
     LoginComponent,
     NotFoundComponent,
     AlertComponent,
-    AlertsComponent
+    AlertsComponent       
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule, HttpClientModule, AppRoutesModule, FormsModule, HttpModule

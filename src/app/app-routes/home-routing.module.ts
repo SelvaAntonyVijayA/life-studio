@@ -15,6 +15,8 @@ import { DemoComponent } from '../components/demo/demo.component';
 import { NotificationsComponent } from '../components/notifications/notifications.component';
 import { SmartComponent } from '../components/smart/smart.component';
 import { ImagelibraryComponent } from '../components/imagelibrary/imagelibrary.component';
+import { OrganizationsComponent } from '../components/organizations/organizations.component';
+import { StudiousersComponent } from '../components/studiousers/studiousers.component';
 
 const homeRoutes: Routes = [
   {
@@ -70,8 +72,12 @@ const homeRoutes: Routes = [
         component: DemoComponent
       },
       {
-        path: 'image',
-        component: ImagelibraryComponent
+        path: 'organizations',
+        component: OrganizationsComponent
+      },
+      {
+        path: 'studiousers',
+        component: StudiousersComponent
       }
     ]
   }
