@@ -234,6 +234,12 @@ var _getOrgMembers = function (queryGet, cb) {
   });
 };
 
+var _updateOrgsMembers = function (queryId, dataToUpdate, cb) {
+  $db.update(settingsConf.dbname.tilist_users, settingsConf.collections.orgmembers, queryId, options, dataToUpdate, function (result) {
+    cb(result);
+  });
+};
+
 var _update = function (req, res, next) {
   query = {};
   user = {};
@@ -270,5 +276,6 @@ module.exports = {
   "getsession": getsession,
   "getList": getList,
   "update": _update,
+  "_updateOrgsMembers": _updateOrgsMembers,
   "_getOrgMembers": _getOrgMembers
 };

@@ -2,6 +2,8 @@ var plugins = {
   "user": "user",
   "general": "general",
   "organization": "organization",
+  "organizationtype": "organizationtype",
+  "access":"access",
   "role": "role",
   "authtoken": "authtoken",
   "domains": "domains",

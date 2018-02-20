@@ -174,6 +174,7 @@ module.exports = {
     "port": 8080
   },
   "path": "C://ili/angular/src/",
+  "folderPath": "C:/ili/angular/src/img/orgs/",
   "image": {
     "imgfolderpath": "img/orgs/{0}/",
     "imgurlpath": "/img/orgs/{0}/",

@@ -1,17 +1,14 @@
 'use strict';
 
 var config;
-var query = {};
-var options = {};
-
 var init = function (app) {
   config = app.get('settings');
 };
 
 var save = function (req, res, next) {
-  var obj = req.body.form_data;
-  query = {};
-  options = {};
+  let obj = req.body.form_data;
+  let query = {};
+  let options = {};
   var tokenObj = $authtoken.get(req.cookies.token);
 
   if (__util.isNullOrEmpty(obj._id)) {
@@ -48,7 +45,7 @@ var themeUpdate = function (query, options, obj, cb) {
 };
 
 var get = function (req, res, next) {
-  query = {};
+  let query = {};
 
   if (!__util.isNullOrEmpty(req.params.id)) {
     query._id = req.params.id;
@@ -81,8 +78,8 @@ var get = function (req, res, next) {
 };
 
 var list = function (req, res, next) {
-  var query = {};
-  var obj = {};
+  let query = {};
+  let obj = {};
 
   if (!__util.isNullOrEmpty(req.params.userId)) {
     query._id = req.params.id;
@@ -111,11 +108,11 @@ var list = function (req, res, next) {
 };
 
 var remove = function (req, res, next) {
-  var obj = {};
+  let obj = {};
   
   $async.waterfall([
     function (callback) {
-      var tileQuery = {};
+      let tileQuery = {};
       tileQuery.template = req.params.id;
 
       $tile._getTiles(tileQuery, function (tiles) {
@@ -130,8 +127,8 @@ var remove = function (req, res, next) {
         res.send(obj);
 
       } else {
-        query = {};
-        options = {};
+        let query = {};
+        let options = {};
         query._id = req.params.id;
 
         $db.remove(config.dbname.tilist_core, config.collections.tiletheme, query, options, function (result) {
@@ -145,7 +142,7 @@ var remove = function (req, res, next) {
 };
 
 var getTheme = function (query, cb) {
-  options = {};
+  let options = {};
 
   $db.select(config.dbname.tilist_core, config.collections.tiletheme, query, options, function (result) {
     cb(result);
@@ -153,17 +150,18 @@ var getTheme = function (query, cb) {
 };
 
 var tilePreviewUpdate = function (req, res, next) {
-  var obj = req.body.form_data;
-  var curDateTime = new Date();
-  var currentDate = new Date(curDateTime).toUTCString();
-  var dateTime = new Date(currentDate);
+  let obj = req.body.form_data;
+  let curDateTime = new Date();
+  let currentDate = new Date(curDateTime).toUTCString();
+  let dateTime = new Date(currentDate);
 
   obj.lastUpdatedOn = dateTime;
-  options = {};
+  let options = {};
+  let query = {};
   query._id = req.params.id;
 
   $tile.tileUpdate(query, options, obj, function (result) {
-    var tile = {};
+    let tile = {};
     tile._id = query._id;
 
     res.send(tile);

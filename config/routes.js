@@ -77,11 +77,23 @@ module.exports = function (app) {
   router.get('/img/groups/:type/:id*?/:name*?', $image.resize);
   router.get('/img/streams/:streamId/:name*?', $image.resize);
   router.get('/img/profile/:memberId/:name*?', $image.resize);
+  router.all('/access/save', $access.save);
+  router.get('/access/list/:type*?', $access.list);
+  router.get('/access/remove:id', $access.remove);
+  router.all('/access/update/:id', $access.update);
+  router.all('/access/userAccesses', $access.userAccesses);
   router.get('/organization/getorgpackage/:orgId', $organization.getOrgPackage);
+  router.post('/organization/save/:name*?', $organization.save);
+  router.all('/organization/list', $organization.list);
+  router.all('/organization/remove/', $organization.remove);
+  router.all('/organization/update/:id', $organization.update);
+  router.all('/organization/packageupdate/:id', $organization.packageUpdate);
+  router.post('/organizationtype/save', $organizationtype.save);
+  router.post('/organizationtype/list', $organizationtype.list);
+  router.get('/organizationtype/remove/:id', $organizationtype.remove);
   router.all("/cms/apps/list/:orgId/:isAdmin*?", $apps.list);
   router.all('/location/list/:appId', $location.list);
   router.all('/pages/list/:orgId/:appId/:locationId*?/:language*?', $page.list);
-
   router.all('/files/delete/:orgId*', $image.fileDelete);
   router.get('/files/url/:orgId', $image.urlList);
   app.use('/', router);
