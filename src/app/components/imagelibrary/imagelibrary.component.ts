@@ -39,6 +39,8 @@ interface FileDescriptor {
 })
 
 export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('cropperImage') cropperImage: ElementRef;
+
   public fileD: FileDescriptor;
   public isReady: boolean = false;
   public isUploading: boolean = false;
@@ -67,9 +69,7 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   folders: any[] = [];
   selectedFolders: any;
   selectedOrganization: string = "-1";
-
-
-  @ViewChild('cropperImage') cropperImage: ElementRef;
+  isUploadedCrop: boolean = false;
 
   constructor(private route: ActivatedRoute,
     private cms: CommonService,
@@ -127,6 +127,7 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
           f.uploaded = true;
           this.isShow = true;
           this.isUploaded = true;
+          this.isUploadedCrop = true;
           this.resetFile();
           this.loadImages();
 
@@ -257,6 +258,7 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
           this.isShow = false;
           this.loadImages();
           this.isOpen = "none";
+          this.isUploadedCrop = false;
           this.doneEvent.emit(this.selectedimage);
         }
       });
@@ -364,8 +366,12 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
    */
   public onCropCancel() {
     this.isShow = false;
-    this.isOpen = "none";
-    this.doneEvent.emit(this.selectedimage);
+
+    if (this.isUploadedCrop) {
+      this.isOpen = "none";
+      this.isUploadedCrop = false;
+      this.doneEvent.emit(this.selectedimage);
+    }
   }
 
   public cropRatio(ratio: any) {
