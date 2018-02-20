@@ -1,117 +1,132 @@
-<div class="container procedures_container">
-  <div class="page_block procedures_head">
-    <div id="imageLibrary" style="width: 400px; height: 560px;">
-      <div style="float:right;width:280px;margin-bottom: 5px;" class="library-title">
-        <div style="float:left; width:250px;">
-          <ng-select class="custom" placeholder="Select/Add Folder" [items]="folders" [(ngModel)]="selectedFolders" [multiple]="false"
-            [addTag]="false" (blur)="onBlur($event)" (inputchange)="onSelectChange($event)" (add)="onAdd($event)" (selectchange)="onChange($event)">
-          </ng-select>
-        </div>
-        <button (click)="home()" style="float:right" type="button" class="btn btn-xs btn-home">
-          <span class="glyphicon glyphicon-home home-icon"></span>
-        </button>
-      </div>
-      <div class="tile_image_list">
-        <ol id="selectable">
-          <div *ngFor="let image of images">
-            <li (dblclick)="imageDoubleClick($event, image,'doubleclick')" [style.cursor]="cursor" [ngClass]="selectedimages.indexOf(image) !== -1 ? 'selected' : 'nt-selected'"
-              (click)="selectImage($event, image, 'click')" class="ui-state-default">
-              <img src="{{image}}">
-              <div></div>
-            </li>
-          </div>
-        </ol>
-      </div>
-      <hr class="list-divider">
-      <div class="tile_image_upload">
-        <div class="file-wrapper">
-          <input name="imageUpload" #imageUpload id="imageUpload" (change)="onFileSelected($event.target.files[0])" type="file">
-          <span class="button">Browse files</span>
-          <span id="fileName">{{fileName}}</span>
-        </div>
-        <div *ngIf="isUploading" [class.uploaded]="fileD.uploaded">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Size</th>
-                <th>Progress</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td nowrap>{{ fileD?.size/1024/1024 | number:'.2' }} MB</td>
-                <td>
-                  <div *ngIf="fileD.percentage !== null">
-                    <div class="progress" style="margin-bottom: 0;">
-                      <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': fileD.percentage + '%' }"></div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="img-buttons">
-        <div style="float: right; margin-left: 5px;" *ngIf="isUploading">
-          <button type="button" (click)="cancel()" class="btn btn-warning btn-xs">
-            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-          </button>
-          <button type="button" (click)=upload($event) class="btn btn-success btn-xs">
-            <span class="glyphicon glyphicon-upload"></span> Upload
-          </button>
-        </div>
-        <div style="float: right;" *ngIf="selectedimages?.length > 0">
-          <button type="button" (click)="crop()" class="btn btn-primary btn-xs">
-            <span class="glyphicon glyphicon-picture"></span> Crop
-          </button>
-          <button type="button" (click)="withOutCrop()" class="btn btn-primary btn-xs">
-            <span class="glyphicon glyphicon-ok-circle"></span> Select without Crop
-          </button>
-          <button type="button" (click)="remove()" class="btn btn-danger btn-xs">
-            <span class="glyphicon glyphicon-trash"></span> Delete
-          </button>
-        </div>
-      </div>
-      <section class="crop-container" *ngIf="isShow === true">
-        <div class="crop-box">
-          <div class="crop-box-header">
-            <h3>Image Crop</h3>
-            <button type="button" class="crop-box-close" (click)="onCropCancel()">
-              <span></span>
-            </button>
-          </div>
-          <div class="crop-box-body">
-            <figure>
-              <img #cropperImage id="cropperImage" src="{{selectedimage}}" class="cropper-image full-width">
-            </figure>
-          </div>
-          <div class="crop-box-footer">
-            <div class="radio-inline">
-              <label>Crop for Tile
-                <input name="cropsize" checked="checked" value="1:0.4" (click)="cropRatio('1:0.4');" type="radio">
-              </label>
-            </div>
-            <div class="radio-inline">
-              <label>Square Crop
-                <input name="cropsize" value="1" (click)="cropRatio('1');" type="radio">
-              </label>
-            </div>
-            <div class="radio-inline">
-              <label>Free crop
-                <input name="cropsize" value="0" (click)="cropRatio('0');" type="radio">
-              </label>
-            </div>
-
-            <button type="button" style="margin-left:20px;" (click)="onCropApply()" class="btn btn-success btn-xs">
-              <span class="glyphicon glyphicon-upload"></span>Done Croping
-            </button>
-            <button type="button" (click)="onCropCancel()" class="btn btn-warning btn-xs">
-              <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-            </button>
-          </div>
-        </div>
-      </section>
-    </div>
-  </div>
+<div class="backdrop" [ngStyle]="{'display':isOpen}">
 </div>
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':isOpen}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Image Library</h4>
+        <div style="float:right;width:280px;margin-bottom: 5px;" class="library-title">
+          <div style="float:left; width:222px;">
+            <ng-select class="custom" placeholder="Select/Add Folder" [items]="folders" [(ngModel)]="selectedFolders" [multiple]="false"
+              [addTag]="false" (blur)="onBlur($event)" (inputchange)="onSelectChange($event)" (add)="onAdd($event)" (selectchange)="onChange($event)">
+            </ng-select>
+          </div>
+          <button aria-label="Close" (click)="onCloseHandled()" style="float:right;margin-left:5px;" type="button" class="btn btn-xs btn-home">
+            <span class="glyphicon glyphicon-remove close-icon"></span>
+          </button>
+          <button (click)="home()" style="float:right" type="button" class="btn btn-xs btn-home">
+            <span class="glyphicon glyphicon-home home-icon"></span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div id="imageLibrary" style="width: 400px;">
+          <div class="tile_image_list">
+            <ol id="selectable">
+              <div *ngFor="let image of images">
+                <li (dblclick)="imageDoubleClick($event, image,'doubleclick')" [style.cursor]="cursor" [ngClass]="selectedimages.indexOf(image) !== -1 ? 'selected' : 'nt-selected'"
+                  (click)="selectImage($event, image, 'click')" class="ui-state-default">
+                  <img src="{{image}}">
+                  <div></div>
+                </li>
+              </div>
+            </ol>
+          </div>
+          <hr class="list-divider">
+          <div class="tile_image_upload">
+            <div class="file-wrapper">
+              <input name="imageUpload" #imageUpload id="imageUpload" (change)="onFileSelected($event.target.files[0])" type="file">
+              <span class="button">Browse files</span>
+              <span id="fileName">{{fileName}}</span>
+            </div>
+            <div *ngIf="isUploading" [class.uploaded]="fileD.uploaded">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Size</th>
+                    <th>Progress</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td nowrap>{{ fileD?.size/1024/1024 | number:'.2' }} MB</td>
+                    <td>
+                      <div *ngIf="fileD.percentage !== null">
+                        <div class="progress" style="margin-bottom: 0;">
+                          <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': fileD.percentage + '%' }"></div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="img-buttons">
+            <div style="float: right; margin-left: 5px;" *ngIf="isUploading">
+              <button type="button" (click)="cancel()" class="btn btn-warning btn-xs">
+                <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+              </button>
+              <button type="button" (click)=upload($event) class="btn btn-success btn-xs">
+                <span class="glyphicon glyphicon-upload"></span> Upload
+              </button>
+            </div>
+            <div style="float: right;" *ngIf="selectedimages?.length > 0">
+              <button type="button" (click)="crop()" class="btn btn-primary btn-xs">
+                <span class="glyphicon glyphicon-picture"></span> Crop
+              </button>
+              <button type="button" (click)="withOutCrop()" class="btn btn-primary btn-xs">
+                <span class="glyphicon glyphicon-ok-circle"></span> Select without Crop
+              </button>
+              <button type="button" (click)="remove()" class="btn btn-danger btn-xs">
+                <span class="glyphicon glyphicon-trash"></span> Delete
+              </button>
+            </div>
+          </div>
+          <section class="crop-container" *ngIf="isShow === true">
+            <div class="crop-box">
+              <div class="crop-box-header">
+                <h3>Image Crop</h3>
+                <button type="button" class="crop-box-close" (click)="onCropCancel()">
+                  <span></span>
+                </button>
+              </div>
+              <div class="crop-box-body">
+                <figure>
+                  <img #cropperImage id="cropperImage" src="{{selectedimage}}" class="cropper-image full-width">
+                </figure>
+              </div>
+              <div class="crop-box-footer">
+                <div class="radio-inline">
+                  <label>Crop for Tile
+                    <input name="cropsize" checked="checked" value="1:0.4" (click)="cropRatio('1:0.4');" type="radio">
+                  </label>
+                </div>
+                <div class="radio-inline">
+                  <label>Square Crop
+                    <input name="cropsize" value="1" (click)="cropRatio('1');" type="radio">
+                  </label>
+                </div>
+                <div class="radio-inline">
+                  <label>Free crop
+                    <input name="cropsize" value="0" (click)="cropRatio('0');" type="radio">
+                  </label>
+                </div>
+
+                <button type="button" style="margin-left:20px;" (click)="onCropApply()" class="btn btn-success btn-xs">
+                  <span class="glyphicon glyphicon-upload"></span>Done Croping
+                </button>
+                <button type="button" (click)="onCropCancel()" class="btn btn-warning btn-xs">
+                  <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal !-->

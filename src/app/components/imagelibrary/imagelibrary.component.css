@@ -8,6 +8,7 @@
 
 .tile_image_upload {
     margin-top: 10px;
+    color: #000000;
 }
 
 .image_upload_btn {
@@ -87,6 +88,7 @@ div.jcrop-holder {
 .img-buttons {
     width: 100%;
     font-size: 14px;
+    height: 20px;
 }
 
 .img_folder {
@@ -295,4 +297,38 @@ div.jcrop-holder {
 
 .inline-block {
     display: inline-block;
+}
+
+.backdrop {
+    background-color: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+}
+
+.modal-title {
+    float: left;
+    width: 135px;
+}
+
+.modal-dialog {
+    width: 440px;
+}
+
+.modal-content {
+    width: 440px;
+}
+
+.modal-header {
+    padding: 10px;
+}
+
+.modal-footer {
+    padding: 10px;
+}
+
+.close-icon {
+    top: 2px;
 }

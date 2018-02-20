@@ -19,7 +19,7 @@ interface FileDescriptor {
 }
 
 @Component({
-  selector: 'app-imagelibrary',
+  selector: 'image-library',
   templateUrl: './imagelibrary.component.html',
   styleUrls: ['./imagelibrary.component.css'],
   providers: [
@@ -56,6 +56,18 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   private dom: HTMLInputElement;
   private cropper: Cropper;
   aspectRatio: any = NaN;
+  @Input() isOpen = 'none';
+  @Input() page: string;
+  @Input() popFrom: string;
+  @Output('onDone') doneEvent = new EventEmitter();
+  @Output('onClose') closeEvent = new EventEmitter();
+  private orgChangeDetect: any;
+  oid: string = "";
+  images: any[] = [];
+  folders: any[] = [];
+  selectedFolders: any;
+  selectedOrganization: string = "-1";
+
 
   @ViewChild('cropperImage') cropperImage: ElementRef;
 
@@ -80,6 +92,15 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
       uploaded: false,
       percentage: null
     };
+  }
+
+  openModal() {
+    this.isOpen = 'block';
+  }
+
+  onCloseHandled() {
+    this.isOpen = 'none';
+    this.closeEvent.emit(this.selectedimage);
   }
 
   upload() {
@@ -140,6 +161,9 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
         }
 
         this.resetFile();
+
+        //this.display = "none";
+        //this.doneEvent.emit(this.selectedimage);
       }
     })
   }
@@ -196,6 +220,8 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
     }, 500);
 
     this.selectedimage = url;
+    this.isOpen = "none";
+    this.doneEvent.emit(this.selectedimage);
   }
 
   crop() {
@@ -230,6 +256,8 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
           this.isUploaded = false;
           this.isShow = false;
           this.loadImages();
+          this.isOpen = "none";
+          this.doneEvent.emit(this.selectedimage);
         }
       });
   }
@@ -237,6 +265,9 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   withOutCrop() {
     if (this.selectedimages.length > 0) {
       var url = this.selectedimages[this.selectedimages.length - 1];
+
+      this.isOpen = "none";
+      this.doneEvent.emit(url);
     } else {
       this.utils.iAlert('error', 'Error', 'Please select a image');
     }
@@ -261,15 +292,6 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
       return false;
     }
   }
-
-  private orgChangeDetect: any;
-  oid: string = "";
-  page: string = "tile";
-  popFrom: string = "tileart";
-  images: any[] = [];
-  folders: any[] = [];
-  selectedFolders: any;
-  selectedOrganization: string = "-1";
 
   loadFolders() {
     this.imageService.folderList(this.oid)
@@ -342,7 +364,8 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
    */
   public onCropCancel() {
     this.isShow = false;
-    let url = this.selectedimage;
+    this.isOpen = "none";
+    this.doneEvent.emit(this.selectedimage);
   }
 
   public cropRatio(ratio: any) {

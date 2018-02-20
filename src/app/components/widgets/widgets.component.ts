@@ -67,6 +67,7 @@ export class WidgetsComponent implements OnInit {
   widgetRights: any[] = [];
   private orgChangeDetect: any;
   startWrapper: boolean = false;
+  isImageLibrary: string = "none";
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
@@ -726,6 +727,21 @@ export class WidgetsComponent implements OnInit {
       });
     }
   };
+
+  openImageLibrary(e: any) {
+    e.preventDefault();
+    this.isImageLibrary = 'block';
+  };
+
+  onImageLibraryClose(tileArt: string) {
+    this.isImageLibrary = 'none';
+    this.art = tileArt;
+  }
+
+  onImageLibraryResult(tileArt: string) {
+    this.isImageLibrary = 'none';
+    this.art = tileArt;
+  }
 
   deleteTile(e: any) {
     e.preventDefault();

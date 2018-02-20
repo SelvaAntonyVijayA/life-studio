@@ -60,7 +60,7 @@
       <button class="ili-btn preview_tile_btn">
         Preview
       </button>
-      <button class="ili-btn icon_tile_btn">
+      <button (click)="openImageLibrary($event)" class="ili-btn  icon_tile_btn">
         Icon
       </button>
     </div>
@@ -510,3 +510,5 @@
   </div>
   <!-- </div> -->
 </div>
+
+<image-library [popFrom]="'tileart'" [isOpen]="isImageLibrary" [page]="'tile'" (onClose)="onImageLibraryClose($event)" (onDone)="onImageLibraryResult($event)"></image-library>
