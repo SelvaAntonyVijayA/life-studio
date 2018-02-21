@@ -2,14 +2,15 @@
   <div class="page_block pages_head">
     <div class="page_inputs">
       <div class="page_field_inputs">
-        <select [ngModel]="selectedLanguage" (ngModelChange)="languageChange($event)" class="form-control input-sm tile_language" placeholder="Select Language">
+        <select [ngModel]="selectedLanguage" (ngModelChange)="languageChange($event)" class="form-control input-sm tile_language"
+          placeholder="Select Language">
           <option *ngFor="let lang of languageList; let i = index" [value]="lang?.code">{{lang?.name}}</option>
         </select>
         <input class="form-control input-sm app_page_title_box" type="text" placeholder="Page Title">
         <select [ngModel]="selectedApp" (ngModelChange)="appChange($event)" class="form-control input-sm app_box">
           <option *ngFor="let app of appList; let i = index" [value]="app?._id">{{app?.name}}</option>
         </select>
-        <select  [(ngModel)]="selectedLocation" class="form-control input-sm location_box">
+        <select [(ngModel)]="selectedLocation" class="form-control input-sm location_box">
           <option *ngFor="let loc of locationList; let i = index" [value]="loc?._id">{{loc?.name}}</option>
         </select>
       </div>
@@ -63,21 +64,37 @@
       <div class="pages_text">
         <span> Pages </span>
       </div>
-      <input class="form-control input-sm search_box_pages" type="text" placeholder="Search Pages">
+      <input [(ngModel)]="pageSearchText" class="form-control input-sm search_box_pages" type="text" placeholder="Search Pages">
       <div id="main-container-pages" class="pages_list_show">
-
+        <div class="page_list_single" *ngFor="let pg of (pageList | filterByText:'pageTitle': pageSearchText | orderBy: true: 'position'); let i = index; trackBy: trackByIndex;">
+          <div [title]="pg['pageTitle']" class="new_app_menu_page_label">
+            {{ setPageTitle(pg) }}</div>
+          <span *ngIf="pg['isNotification']" [title]="pg['tileNotifications']" class="step noteicon" aria-hidden="true">
+            <i class="icon ion-android-notifications-none"></i>
+          </span>
+          <span *ngIf="pg['isSmart']" title="pg['tileSmart']" class='step smarticon' aria-hidden='true'>
+            <i class='icon ion-lightbulb'></i>
+          </span>
+          <span *ngIf="pg['isRole']" title="pg['tileApps']" class="step smart smarticon">
+            <i class="icon ion-android-person"></i>
+          </span>
+          <div class="app_page_up_down">
+            <span (click)="moveUpDown(pg, 'up', i)" class="glyphicon btn_page_up glyphicon-arrow-up"></span>
+            <span (click)="moveUpDown(pg, 'down', i)" class="glyphicon btn_page_down glyphicon-arrow-down"></span>
+          </div>
+        </div>
       </div>
     </div>
-    <div id="dragged-groups" class="page_block main_page_container">
+    <div id="dragged-pages-groups-tiles" class="page_block main_page_container">
     </div>
 
     <div class="page_block groups_block">
       <div class="groups_text">
         <span> Groups </span>
       </div>
-      <input class="form-control input-sm search_box_tilist" type="text" placeholder="Search Groups">
-      <select class="form-control input-sm tilist_type">
-        <option [value]="'all'">Show All Groups</option>
+      <input [(ngModel)]="groupFilter['groupSearch']" class="form-control input-sm search_box_tilist" type="text" placeholder="Search Groups" />
+      <select [ngModel]="groupFilter['groupType']" (ngModelChange)="filterChange($event, 'groupType')" class="form-control input-sm tilist_type">
+        <option [value]="'-1'">Show All Groups</option>
         <option [value]="'event'">Events</option>
         <option [value]="'tilist'">Folders</option>
         <option [value]="'catilist'">Categories</option>
@@ -86,7 +103,7 @@
         <option [value]="'process'">Process</option>
       </select>
 
-      <select class="form-control input-sm sort_group">
+      <select [ngModel]="groupFilter['sort']['selected']" (ngModelChange)="filterChange($event, 'sort')" class="form-control input-sm sort_group">
         <option [value]="'date_desc'">Latest on top</option>
         <option [value]="'date_asc'">Oldest on top</option>
         <option [value]="'name_asc'">Name - A on top</option>
@@ -100,8 +117,26 @@
           alt="" title="List" />
       </div>
 
-      <div id="main-container-groups" class="groups_list_show">
-
+      <div id="main-container-groups" class="groups_list_show ">
+        <div class="group_list_single" *ngFor="let grp of (groups | filterByText:'name': groupFilter['groupSearch'] | filterByText:'type': groupFilter['groupType'] | orderBy:groupFilter['sort']['isAsc']: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][0]: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
+          <div *ngIf="((grp.hasOwnProperty('art') && !utils.isNullOrEmpty(grp['art'])) && (grp['art'].indexOf('tile_default.jpg') || grp['art'].indexOf('tilist_art.jpg')))"
+            [ngClass]="groupType === 'list'? 'group-art' : 'group-art details'">
+            <img [ngClass]="groupType === 'list'? 'group_list_art' : 'group_list_art group-detail-content'" [src]="grp['art'] | safe">
+          </div>
+          <div [title]="grp?.name" class="group_list_title">{{getGroupName(grp?.name)}}</div>
+          <div class="group-notify-icons">
+            <span *ngIf="grp['isNotification']" [title]="grp['tileNotifications']" class='step smart noteicon smarticon-groups'
+              aria-hidden="true">
+              <i class='icon ion-android-notifications-none'></i>
+            </span>
+            <span *ngIf="grp['isSmart']" title="grp['tileSmart']" class="step smart smarticon smarticon-groups">
+              <i class="icon ion-lightbulb"></i>
+            </span>
+            <span *ngIf="grp['isRole']" title="grp['tileApps']" class="step smart smarticon smarticon-groups">
+              <i class="icon ion-android-person"></i>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
 

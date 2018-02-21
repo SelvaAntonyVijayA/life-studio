@@ -6,6 +6,14 @@ import { TileService } from '../../services/tile.service';
 import { PageService } from '../../services/page.service';
 import { Utils } from '../../helpers/utils';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
+import { EventService } from '../../services/event.service';
+import { FolderService } from '../../services/folder.service';
+import { CategoryService } from '../../services/category.service';
+import { ProcedureService } from '../../services/procedure.service';
+import { LivestreamService } from '../../services/livestream.service';
+import { Observable } from 'rxjs';
+import 'rxjs/add/observable/forkJoin';
+
 
 declare var $: any;
 
@@ -13,7 +21,7 @@ declare var $: any;
   selector: 'app-pages',
   templateUrl: './pages.component.html',
   styleUrls: ['./pages.component.css'],
-  providers: [PageService]
+  providers: [PageService, LivestreamService]
 })
 export class PagesComponent implements OnInit {
 
@@ -21,6 +29,11 @@ export class PagesComponent implements OnInit {
     private cms: CommonService,
     private tileService: TileService,
     private pageService: PageService,
+    private eventService: EventService,
+    private folderService: FolderService,
+    private categoryService: CategoryService,
+    private procedureService: ProcedureService,
+    private liveStreamService: LivestreamService,
     private mScrollbarService: MalihuScrollbarService,
     private e1: ElementRef,
     private renderer: Renderer,
@@ -43,6 +56,20 @@ export class PagesComponent implements OnInit {
   selectedApp: string = "";
   locationList: any[] = [];
   selectedLocation: string = "";
+  pageList: any[] = [];
+  selectedPage: string = "";
+  pageSearchText: string = "";
+  groups: any[] = [];
+  groupFilter: Object = {
+    "groupSearch": "",
+    "groupType": "-1",
+    "sort": {
+      "selected": "date_desc", "isAsc": false, "fieldNames": {
+        "date": ["dateUpdated", "dateCreated"],
+        "name": ["name"]
+      }
+    },
+  };
 
   /* Organizations Intialization */
   setOrganizations() {
@@ -62,6 +89,18 @@ export class PagesComponent implements OnInit {
     this.selectedApp = "";
     this.locationList = [];
     this.selectedLocation = "";
+    this.pageList = [];
+    this.groups = [];
+    this.groupFilter = {
+      "groupSearch": "",
+      "groupType": "-1",
+      "sort": {
+        "selected": "date_desc", "isAsc": false, "fieldNames": {
+          "date": ["dateUpdated", "dateCreated"],
+          "name": ["name"]
+        }
+      }
+    };
   };
 
   /*Refresh current Page data */
@@ -71,6 +110,8 @@ export class PagesComponent implements OnInit {
     this.draggedTiles = [];
     this.droppedTile = {};
     this.selectedLanguage = "en";
+    this.selectedPage = "";
+    this.pageSearchText = "";
 
     if (mergeReset && mergeReset === "reset") {
       this.isMerge = { "status": "merge" };
@@ -80,13 +121,39 @@ export class PagesComponent implements OnInit {
   getTileContent(tileObj: any) {
   };
 
+  /* Getting page title from the current language */
+  getPageTitle(pg: Object) {
+    pg["pageTitle"] = this.selectedLanguage === "en" && !this.utils.isNullOrEmpty(pg["title"]) ? this.utils.htmlEncode(pg["title"]) : this.selectedLanguage !== "en" && pg.hasOwnProperty(this.selectedLanguage) && !this.utils.isNullOrEmpty(pg[this.selectedLanguage]["title"]) ? this.utils.htmlEncode(pg[this.selectedLanguage]["title"]) : "";
+  };
+
+  setPageTitle(pg: object) {
+    return !this.utils.isNullOrEmpty(pg["pageTitle"]) && pg["pageTitle"].length > 10 && (pg["isSmart"] || pg["isRole"] || pg["isNotification"]) ? pg["pageTitle"].slice(0, 10) + "..." : pg["pageTitle"];
+  };
+
+  /* Getting and trimming the group nme */
+  getGroupName(grpName: string) {
+    return !this.utils.isNullOrEmpty(grpName) ? this.utils.htmlEncode(grpName) : "";
+  };
+
   /* Detail and short view change for events */
   changeGroupView() {
     this.groupType = this.groupType === "list" ? "details" : "list";
   };
 
-  showAppNamesAssigned(squareObj: Object) {
-    var resultObj = {};
+  /* Filter Changing */
+  filterChange(val: any, fieldName: string) {
+    if (fieldName === "groupType") {
+      this.groupFilter["groupType"] = val;
+    }
+
+    if (fieldName === "sort") {
+      var sortOpt = val.split("_");
+      this.groupFilter[fieldName]["selected"] = val;
+      this.groupFilter[fieldName]["isAsc"] = sortOpt[1] === "asc" ? true : false;
+    }
+  };
+
+  showAppNamesAssigned(squareObj: Object, type?: string) {
     var tileNotifications = "";
     var tileSmart = "";
     var pageApps = "";
@@ -120,15 +187,17 @@ export class PagesComponent implements OnInit {
       }
     }
 
-    resultObj["tileNotifications"] = tileNotifications;
-    resultObj["tileSmart"] = tileSmart;
-    resultObj["tileApps"] = pageApps;
-    resultObj["tileProcedure"] = tileProcedure;
-    resultObj["isRole"] = !this.utils.isEmptyObject(squareObj) && squareObj.hasOwnProperty("isRoleBased") && squareObj["isRoleBased"]? true : false;
-    resultObj["isSmart"] = !this.utils.isNullOrEmpty(tileSmart)? true: false;
-    resultObj["isNotification"] = !this.utils.isNullOrEmpty(tileNotifications)? true: false;
+    squareObj["tileNotifications"] = tileNotifications;
+    squareObj["tileSmart"] = tileSmart;
+    squareObj["tileApps"] = pageApps;
+    squareObj["tileProcedure"] = tileProcedure;
+    squareObj["isRole"] = !this.utils.isEmptyObject(squareObj) && squareObj.hasOwnProperty("isRoleBased") && squareObj["isRoleBased"] ? true : false;
+    squareObj["isSmart"] = !this.utils.isNullOrEmpty(tileSmart) ? true : false;
+    squareObj["isNotification"] = !this.utils.isNullOrEmpty(tileNotifications) ? true : false;
 
-    return resultObj;
+    if (!this.utils.isNullOrEmpty(type) && type === "page") {
+      this.getPageTitle(squareObj);
+    }
   };
 
   getLanguages() {
@@ -177,14 +246,112 @@ export class PagesComponent implements OnInit {
           this.locationList = locs;
           this.selectedLocation = this.locationList[0]["_id"];
         }
+
+        this.getPages();
       });
+  };
+
+  assignGroups() {
+    this.getListGroups().subscribe(grps => {
+      this.groups = [];
+
+      for (let i = 0; i < grps.length; i++) {
+        this.groups = this.groups.concat(grps[i]);
+      }
+
+      if (this.groups.length > 0) {
+        for (let i = 0; i < this.groups.length; i++) {
+          this.showAppNamesAssigned(this.groups[i], 'groups');
+        }
+      }
+    });
+  };
+
+  getPages(pageId?: string) {
+    if (!this.utils.isNullOrEmpty(this.selectedApp) && !this.utils.isNullOrEmpty(this.selectedLocation)) {
+      this.pageService.getPages(this.oid, this.selectedApp, this.selectedLocation)
+        .then(pgs => {
+          if (this.utils.isArray(pgs) && pgs.length > 0) {
+            this.pageList = pgs;
+            this.selectedPage = this.pageList[0]["_id"];
+            this.pageAssignedValues();
+          } else {
+            this.pageList = [];
+          }
+        });
+    } else if (this.utils.isNullOrEmpty(pageId)) {
+      this.pageList = [];
+    }
+  };
+
+  pageAssignedValues() {
+    for (let i = 0; i < this.pageList.length; i++) {
+      this.showAppNamesAssigned(this.pageList[i], 'page')
+    }
+  };
+
+  splitKey(val: string) {
+    var splittedVal = val.split("_");
+
+    return splittedVal[0];
+  };
+
+  moveUpDown(pg: Object, move: string, idx: number) {
+    var totalIdx = this.pageList.length - 1;
+    var fromStart = idx === 0 ? true : false;
+    var fromEnd = totalIdx === idx ? true : false;
+    var toIdx = fromEnd && move === "up" ? idx - 1 : fromStart && move === "down" ? idx + 1 : -1;
+
+    if (toIdx !== -1 && (fromStart || fromEnd)) {
+      this.pageList[toIdx]["position"] = idx;
+      pg["position"] = toIdx;
+    } else if (toIdx === -1 && !fromStart && !fromEnd) {
+      toIdx = move === "up" ? idx - 1 : idx + 1;
+      this.pageList[toIdx]["position"] = idx;
+      pg["position"] = toIdx
+    }
+  };
+
+  getListGroups() {
+    //var types = ['event', 'tilist', 'catilist', 'livestream', 'procedure', 'process'];
+    var liveStreamPost = { "organizationId": this.oid, "createdApp.id": this.selectedApp };
+    var evtRes = this.eventService.eventList(this.oid);
+    var folRes = this.folderService.folderList(this.oid);
+    var catRes = this.categoryService.categoryList(this.oid);
+    var liveRes = this.liveStreamService.getLiveStream("", "", "", liveStreamPost);
+    var procedureRes = this.procedureService.procedureList(this.oid, "", "procedure");
+    var processRes = this.procedureService.procedureList(this.oid, "", "process");
+
+    return Observable.forkJoin([evtRes, folRes, catRes, liveRes, procedureRes, processRes]);
+  };
+
+  /* Intialize scroll bar for the component elements */
+  setScrollList() {
+    this.mScrollbarService.initScrollbar("#main-container-pages", this.scrollbarOptions);
+    this.mScrollbarService.initScrollbar("#main-container-groups", this.scrollbarOptions);
+    this.mScrollbarService.initScrollbar("#dragged-pages-groups-tiles", this.scrollbarOptions);
+
+    if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
+      this.cms["appDatas"]["scrollList"].push("#main-container-pages");
+      this.cms["appDatas"]["scrollList"].push("#main-container-groups");
+      this.cms["appDatas"]["scrollList"].push("#dragged-pages-groups-tiles");
+    } else {
+      this.cms["appDatas"]["scrollList"] = ["#main-container-pages", "#main-container-groups", "#dragged-pages-groups-tiles"];
+    }
+  };
+
+  /* Destroy Scroll */
+  destroyScroll() {
+    this.cms.destroyScroll(["#main-container-pages", "#main-container-groups", "#dragged-pages-groups-tiles"]);
   };
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       this.pageDataReset();
+      this.setScrollList();
       this.setOrganizations();
       this.oid = Cookie.get('oid');
+      this.assignGroups();
       this.getLanguages();
       this.getApps();
     });
@@ -192,5 +359,6 @@ export class PagesComponent implements OnInit {
 
   ngOnDestroy() {
     this.orgChangeDetect.unsubscribe();
+    this.destroyScroll();
   };
 }

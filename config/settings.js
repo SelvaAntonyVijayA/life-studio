@@ -173,7 +173,7 @@ module.exports = {
     "host": "localhost",
     "port": 8080
   },
-  "path": "C://ili/angular/src/",
+  "path": "C://ili-angular/ili-studio/src/",
   "folderPath": "C:/ili/angular/src/img/orgs/",
   "image": {
     "imgfolderpath": "img/orgs/{0}/",

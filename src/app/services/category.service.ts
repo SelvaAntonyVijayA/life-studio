@@ -25,7 +25,7 @@ export class CategoryService {
       .catch(this.handleError);
   };
 
-  categoryList(orgId: string, catId: string) {
+  categoryList(orgId: string, catId?: string) {
     var catUrl = "/catilist/list/" + orgId;
     catUrl = !this.utils.isNullOrEmpty(catId) ? catUrl + "/" + catId : catUrl;
 

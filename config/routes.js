@@ -94,6 +94,7 @@ module.exports = function (app) {
   router.all("/cms/apps/list/:orgId/:isAdmin*?", $apps.list);
   router.all('/location/list/:appId', $location.list);
   router.all('/pages/list/:orgId/:appId/:locationId*?/:language*?', $page.list);
+  router.all('/livestream/list/:orgId*?/:appId*?/:locationId*?', $livestream.list);
   router.all('/files/delete/:orgId*', $image.fileDelete);
   router.get('/files/url/:orgId', $image.urlList);
   app.use('/', router);

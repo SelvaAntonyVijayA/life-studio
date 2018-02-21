@@ -23,9 +23,19 @@ export class PageService {
       .catch(this.handleError);
   };
 
-  getLocations(appId: string){
+  getLocations(appId: string) {
     return this.http
       .get("/location/list/" + appId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  getPages(orgId: string, appId: string, locId: string) {
+    var pageUrl = "/pages/list/" + orgId + "/" + appId + "/" + locId;
+
+    return this.http
+      .get(pageUrl)
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);

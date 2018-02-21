@@ -1,10 +1,12 @@
 /* Pages Container*/
+
 .pages_container {
   height: 920px;
   position: relative;
 }
 
 /* Pages head */
+
 .pages_head {
   width: 99.97%;
   height: 75px;
@@ -60,13 +62,14 @@
   margin-left: 4px;
 }
 
-.app_form_btns{
+.app_form_btns {
   float: right;
   width: 23%;
   margin-top: 11px;
 }
 
- /* Page Buttons */
+/* Page Buttons */
+
 .page_new {
   border-bottom-color: #228B22;
   border-bottom-width: 3px;
@@ -106,6 +109,7 @@
 }
 
 /* Pages Content Layout */
+
 .pages_main_content {
   position: relative;
   width: 100%;
@@ -115,7 +119,8 @@
 }
 
 /* Page Main */
-.pages_text{
+
+.pages_text {
   font-size: 16px;
   position: relative;
   margin-bottom: 5px;
@@ -137,6 +142,7 @@
 }
 
 /* Pages Layout area */
+
 .pages_block {
   width: 161px;
   height: 880px;
@@ -145,7 +151,69 @@
   float: left;
 }
 
+.pages_list_show {
+  float: left;
+  width: 150px;
+  height: 811px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 10px;
+  margin-left: 4px;
+}
+
+.app_page_up_down {
+  cursor: pointer;
+  right: 0px;
+  position: absolute;
+  display: none;
+}
+
+.page_list_single {
+  border: 1px solid rgb(138, 153, 162);
+  box-shadow: 0px 0px 0px rgb(138, 153, 162);
+  margin-left: 1px;
+  width: 150px;
+  height: 40px;
+  margin-bottom: 4px;
+  margin-top: 1px;
+  background-color: #ffffff;
+  color: #4a4a4a;
+  cursor: pointer;
+}
+
+.page_list_single:hover>.app_page_up_down {
+  display: block;
+}
+
+.new_app_menu_page_label {
+  font-size: 11px;
+  float: left;
+  margin-top: 10px;
+  display: table-cell;
+  vertical-align: middle;
+  padding-left: 4px;
+}
+
+.btn_page_up {
+  font-size: 12px;
+}
+
+.btn_page_down {
+  font-size: 12px;
+}
+
 /* Groups Contents */
+
+.groups_list_show {
+  position: relative;
+  margin-top: 6px;
+  float: left;
+  width: 100%;
+  height: 736px;
+  overflow: hidden;
+  text-align: center;
+}
+
 .groups_text {
   font-size: 16px;
   position: relative;
@@ -153,7 +221,7 @@
   margin-top: 5px;
   text-align: center;
   float: left;
-  width: 168px; 
+  width: 168px;
 }
 
 .search_box_tilist {
@@ -177,8 +245,8 @@
 }
 
 .group-view-change {
-  float: right;
-  width: 100%;
+  float: left;
+  margin-left: 14px;
 }
 
 .img-event-view-group {
@@ -192,7 +260,66 @@
   margin-right: 14px;
 }
 
+.group_list_single {
+  display: inline-block;
+  float: left;
+  position: relative;
+  margin-left: 15px;
+  margin-bottom: 4px;
+  background-color: #FFFFFF;
+  text-align: left;
+  width: 138px;
+  min-height: 42px;
+  color: #000000;
+  cursor: pointer;
+  border: 1px outset #F2F2F2;
+}
+
+.group-art {
+  width: 20%;
+  float: left;
+  text-align: left;
+  margin-left: 2px
+}
+
+.group-art.details {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.group_list_art {
+  float: left;
+  max-width: 30px;
+  max-height: 25px;
+  margin-top: 3px;
+  text-align: center;
+}
+
+.group_list_art.group-detail-content {
+  max-width: 110px;
+  max-height: 110px;
+}
+
+.group_list_title {
+  float: left;
+  margin-top: 3px;
+  margin-left: 8px;
+  width: 98px;
+  font-size: 11px;
+  text-align: left;
+  word-wrap: break-word;
+  text-overflow: ellipsis;
+}
+
+.group-notify-icons {
+  width: 100%;
+  float: right;
+}
+
+
 /* Dragged groups pages Layout */
+
 .main_page_container {
   position: relative;
   width: 558px;
@@ -203,6 +330,7 @@
 }
 
 /* Groups Layout */
+
 .groups_block {
   width: 168px;
   height: 880px;

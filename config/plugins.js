@@ -27,6 +27,7 @@ var plugins = {
   "package": "package",
   "apps": "apps",
   "location": "location",
+  "livestream": "livestream",
   "log": "log"
 };
 

@@ -24,7 +24,7 @@ var list = function (req, res, next) {
           $exists: false
         };
 
-        if (!__util.isNullOrEmpty(req.params.locationId)) {
+        if (!__util.isNullOrEmpty(req.params.locationId) && req.params.locationId !== "-1") {
           query.locationId = req.params.locationId;
         }
 
