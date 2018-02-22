@@ -97,5 +97,30 @@ module.exports = function (app) {
   router.all('/livestream/list/:orgId*?/:appId*?/:locationId*?', $livestream.list);
   router.all('/files/delete/:orgId*', $image.fileDelete);
   router.get('/files/url/:orgId', $image.urlList);
+
+  router.post('/package/save', $package.save);
+  router.all('/package/list', $package.list);
+  router.get('/package/remove:id*?', $package.remove);
+  router.all('/package/update/:id*?', $package.update);
+  router.all('/tcc/save', $package.tccsave);
+  router.all('/tcc/list', $package.tcclist);
+
+  router.post('/integration/save', $integration.save);
+  router.all('/integration/list/:appid*?', $integration.list);
+  router.get('/integration/remove/:id', $integration.remove);
+  router.all('/integration/update/:id', $integration.update);
+  router.all('/integration/getintegrations/:appid*?', $integration.getIntegrationsByApp);
+  router.all('/integration/getccb/', $integration.getCCBData);
+  router.all('/integration/individualsave/', $integration.individualSave);
+  router.all('/integration/updateccb/', $integration.updateCCBIndividual);
+
+  router.all('/integrationtype/save', $integrationtype.save);
+  router.all('/integrationtype/list/:id*?', $integrationtype.list);
+  router.all('/integrationtype/remove/:id*?', $integrationtype.remove);
+
+  router.all('/integrationwidgets/save', $integrationwidgets.save);
+  router.all('/integrationwidgets/list/:id*?', $integrationwidgets.list);
+  router.all('/integrationwidgets/remove/:id*?', $integrationwidgets.remove);
+
   app.use('/', router);
 };

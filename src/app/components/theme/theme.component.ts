@@ -4,7 +4,6 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { CommonService } from '../../services/common.service';
 import { Utils } from '../../helpers/utils';
 import { ThemeService } from '../../services/theme.service';
-
 declare var $: any;
 
 @Component({

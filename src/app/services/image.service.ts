@@ -5,7 +5,6 @@ import 'rxjs/add/observable/forkJoin';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 import { Utils } from '../helpers/utils';
-import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class ImageService {
@@ -14,7 +13,7 @@ export class ImageService {
     'charset': 'UTF-8'
   });
 
-  constructor(private hClient: HttpClient, private http: Http, public utils: Utils) { }
+  constructor(private http: Http, public utils: Utils) { }
 
   imageList(orgId: string, folder?: string, page?: string) {
     if (page == "squareicon" && folder != "home" && this.utils.isNullOrEmpty(folder)) {
