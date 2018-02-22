@@ -6,7 +6,7 @@ import { Utils } from '../helpers/utils';
   pure: false
 })
 export class FilterByTextPipe implements PipeTransform {
-  constructor(public utils: Utils) {
+  constructor(public utils?: Utils) {
   }
 
   transform(reqArray: any[], propName?: string, searchTxt?: string, page?: string): any {
@@ -26,7 +26,7 @@ export class FilterByTextPipe implements PipeTransform {
   pure: false
 })
 export class OrderByPipe implements PipeTransform {
-  constructor(public utils: Utils) {
+  constructor(public utils?: Utils) {
   }
 
   transform(reqArray: any[], isAsc?: boolean, propName?: string, optPropName?: string): any {

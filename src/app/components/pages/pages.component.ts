@@ -60,6 +60,7 @@ export class PagesComponent implements OnInit {
   selectedPage: string = "";
   pageSearchText: string = "";
   groups: any[] = [];
+  page: Object = {};
   groupFilter: Object = {
     "groupSearch": "",
     "groupType": "-1",
@@ -69,6 +70,50 @@ export class PagesComponent implements OnInit {
         "name": ["name"]
       }
     },
+  };
+  draggedGroups: Object = {
+    "event": {},
+    "tilist": {},
+    "catilist": {},
+    "livestream": {},
+    "procedure": {},
+    "process": {},
+    "menu": {}
+  };
+
+  /* Setting dragging Groups, Menus, Tiles */
+  setDragged(currObj: Object, type: string, pageObj?: Object) {
+    var dragged = {
+      "uniqueId": this.getUniqueId(), "type": type, "obj": {},
+    };
+
+    if (type === "tile" && !this.utils.isEmptyObject(currObj)) {
+      var tile = this.tileNotifyIcons(currObj);
+
+      var currTile = {
+        "_id": tile.hasOwnProperty("_id") ? tile["_id"] : "-1",
+        "title": tile.hasOwnProperty("title") && !this.utils.isNullOrEmpty(tile["title"]) ? tile["title"] : "",
+        "art": tile.hasOwnProperty("art") && !this.utils.isNullOrEmpty(tile["art"]) ? tile["art"] : "",
+        "categoryName": tile.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(tile["categoryName"]) ? tile["categoryName"] : "",
+        "tileApps": tile["tileApps"],
+        "isWgt": tile["isWgt"],
+        "tileHealthStatusRules": tile["tileHealthStatusRules"],
+        "isRules": tile["isRules"],
+        "tileProcedure": tile["tileProcedure"],
+        "isProcedure": tile["isProcedure"],
+        "tileSmart": tile["tileSmart"],
+        "isSmart": tile["isSmart"],
+        "tileNotifications": tile["tileNotifications"],
+        "isNotification": tile["isNotification"],
+        "isRole": tile["isRole"]
+      }
+
+      dragged["obj"] = currTile;
+    } else {
+      dragged["obj"] = currObj;
+    }
+
+    return dragged;
   };
 
   /* Organizations Intialization */
@@ -109,9 +154,11 @@ export class PagesComponent implements OnInit {
     this.tilesToUpdate = [];
     this.draggedTiles = [];
     this.droppedTile = {};
+    this.page = {};
     this.selectedLanguage = "en";
     this.selectedPage = "";
     this.pageSearchText = "";
+    this.resetDraggedGroups();
 
     if (mergeReset && mergeReset === "reset") {
       this.isMerge = { "status": "merge" };
@@ -196,7 +243,10 @@ export class PagesComponent implements OnInit {
     squareObj["isNotification"] = !this.utils.isNullOrEmpty(tileNotifications) ? true : false;
 
     if (!this.utils.isNullOrEmpty(type) && type === "page") {
+      squareObj[squareObj["_id"]] = "menu";
       this.getPageTitle(squareObj);
+    } else {
+      squareObj[squareObj["_id"]] = "groups";
     }
   };
 
@@ -343,6 +393,170 @@ export class PagesComponent implements OnInit {
   /* Destroy Scroll */
   destroyScroll() {
     this.cms.destroyScroll(["#main-container-pages", "#main-container-groups", "#dragged-pages-groups-tiles"]);
+  };
+
+  /*Tile Notify Icons */
+  tileNotifyIcons(currTile: Object) {
+    var tileNotifications = "";
+    var tileSmart = "";
+    var pageApps = "";
+    var tileProcedure = "";
+    var tileRules = "";
+
+    if (!currTile.hasOwnProperty("isNotification")) {
+      if (currTile.hasOwnProperty("notification") && currTile["notification"].hasOwnProperty("apps") && currTile["notification"]["apps"].length > 0) {
+        for (let i = 0; i < currTile["notification"]["apps"].length; i++) {
+          var app = currTile["notification"]["apps"][i];
+          tileNotifications += i === 0 ? app.name : ", " + app.name;
+        }
+
+        currTile["isNotification"] = "block";
+      } else {
+        currTile["isNotification"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isSmart")) {
+      if (currTile.hasOwnProperty("smart") && currTile["smart"].hasOwnProperty("apps") && currTile["smart"]["apps"].length > 0) {
+        for (let i = 0; i < currTile["smart"]["apps"].length; i++) {
+          var smartApp = currTile["smart"]["apps"][i];
+          tileSmart += i == 0 ? smartApp.name : ", " + smartApp.name;
+        }
+
+        currTile["isSmart"] = "block";
+      } else {
+        currTile["isSmart"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("tileApps")) {
+      if (currTile.hasOwnProperty("Apps") && currTile["Apps"].length > 0) {
+        for (let i = 0; i < currTile["Apps"].length; i++) {
+          var app = currTile["Apps"][i];
+          pageApps += i === 0 ? app.appName : ", " + app.appName;
+        }
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isProcedure")) {
+      if (currTile.hasOwnProperty("Procedure") && currTile["Procedure"].length > 0) {
+        for (let i = 0; i < currTile["Procedure"].length; i++) {
+          var procedure = currTile["Procedure"][i];
+          tileProcedure += i === 0 ? procedure.name : ", " + procedure.name;
+        }
+
+        currTile["isProcedure"] = "block";
+      } else {
+        currTile["isProcedure"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isRules")) {
+      if (currTile.hasOwnProperty("hsrRuleEngine") && currTile["hsrRuleEngine"].length > 0) {
+        for (let i = 0; i < currTile["hsrRuleEngine"].length; i++) {
+          var hsr = currTile["hsrRuleEngine"][i];
+          tileRules += i === 0 ? hsr.ruleName : ", " + hsr.ruleName;
+        }
+
+        currTile["isRules"] = "block";
+      } else {
+        currTile["isRules"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isWgt")) {
+      currTile["isWgt"] = currTile.hasOwnProperty("isWeight") && currTile["isWeight"] ? "block" : "none";
+    }
+
+    if (!currTile.hasOwnProperty("isRole")) {
+      currTile["isRole"] = currTile.hasOwnProperty("isRoleBased") && currTile["isRoleBased"] ? "block" : "none";
+    }
+
+    if (!currTile.hasOwnProperty("tileNotifications")) {
+      currTile["tileNotifications"] = tileNotifications;
+    }
+
+    if (!currTile.hasOwnProperty("tileSmart")) {
+      currTile["tileSmart"] = tileSmart;
+    }
+
+    if (!currTile.hasOwnProperty("tileApps")) {
+      currTile["tileApps"] = pageApps;
+    }
+
+    if (!currTile.hasOwnProperty("tileProcedure")) {
+      currTile["tileProcedure"] = tileProcedure;
+    }
+
+    if (!currTile.hasOwnProperty("tileHealthStatusRules")) {
+      currTile["tileHealthStatusRules"] = tileRules;
+    }
+
+    return currTile;
+  };
+
+  /* Dragged tile on drop */
+  private onDrop(data: Object, isDynamic: boolean) {
+    if (!this.utils.isNullOrEmpty(data)) {
+      var drgObjType = data.hasOwnProperty(data["_id"]) ? data[data["_id"]] : "tile";
+      var currType = drgObjType === "groups" ? data["type"] : drgObjType;
+      this.draggedGroups[currType][data["_id"]] = data;
+
+      if (currType === "tile") {
+        this.droppedTile = data;
+      } else {
+        if (currType === "menu") {
+          var pgIndex = this.pageList.map(pg => { return pg['_id']; }).indexOf(data["_id"]);
+          this.pageList.splice(pgIndex, 1);
+        } else {
+          var grpIndex = this.groups.map(grp => { return grp['_id']; }).indexOf(data["_id"]);
+          this.groups.splice(grpIndex, 1);
+        }
+      }
+
+      var draggedObj = this.setDragged(data, currType);
+
+      if (this.page.hasOwnProperty("dragged")) {
+        this.page["dragged"].push(draggedObj);
+      } else {
+        this.page["dragged"] = [draggedObj];
+      }
+    }
+  };
+
+  /* Getting unique Id */
+  getUniqueId() {
+    var uniqueId = Date.now() + Math.floor(1000 + Math.random() * 9000);
+
+    return uniqueId;
+  };
+
+  resetDraggedGroups() {
+    for (let curType in this.draggedGroups) {
+      var currObj = this.draggedGroups[curType];
+
+      if (!this.utils.isEmptyObject(currObj)) {
+        for (let id in currObj) {
+          var currData = currObj[id];
+
+          if (curType === "menu") {
+            this.pageList.push(currData);
+          } else {
+            this.groups.push(currData);
+          }
+        }
+      }
+    }
+
+    this.draggedGroups = {
+      "event": {},
+      "tilist": {},
+      "catilist": {},
+      "livestream": {},
+      "procedure": {},
+      "process": {},
+      "menu": {}
+    };
   };
 
   ngOnInit() {

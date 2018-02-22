@@ -66,7 +66,7 @@
       </div>
       <input [(ngModel)]="pageSearchText" class="form-control input-sm search_box_pages" type="text" placeholder="Search Pages">
       <div id="main-container-pages" class="pages_list_show">
-        <div class="page_list_single" *ngFor="let pg of (pageList | filterByText:'pageTitle': pageSearchText | orderBy: true: 'position'); let i = index; trackBy: trackByIndex;">
+        <div class="page_list_single" [iliDraggable]="{data: pg, page: 'page'}" *ngFor="let pg of (pageList | filterByText:'pageTitle': pageSearchText | orderBy: true: 'position'); let i = index; trackBy: trackByIndex;">
           <div [title]="pg['pageTitle']" class="new_app_menu_page_label">
             {{ setPageTitle(pg) }}</div>
           <span *ngIf="pg['isNotification']" [title]="pg['tileNotifications']" class="step noteicon" aria-hidden="true">
@@ -86,13 +86,22 @@
       </div>
     </div>
     <div id="dragged-pages-groups-tiles" class="page_block main_page_container">
+      <div iliDropTarget (myDrop)="onDrop($event, false)" class="ili-panel main_page_drag_content drop_target">
+        <div class="draggable_label">
+          Drag a Tile, an Event or a Page
+          <br>
+          <br> into this space</div>
+      </div>
+
+      
     </div>
 
     <div class="page_block groups_block">
       <div class="groups_text">
         <span> Groups </span>
       </div>
-      <input [(ngModel)]="groupFilter['groupSearch']" class="form-control input-sm search_box_tilist" type="text" placeholder="Search Groups" />
+      <input [(ngModel)]="groupFilter['groupSearch']" class="form-control input-sm search_box_tilist" type="text" placeholder="Search Groups"
+      />
       <select [ngModel]="groupFilter['groupType']" (ngModelChange)="filterChange($event, 'groupType')" class="form-control input-sm tilist_type">
         <option [value]="'-1'">Show All Groups</option>
         <option [value]="'event'">Events</option>
@@ -118,15 +127,14 @@
       </div>
 
       <div id="main-container-groups" class="groups_list_show ">
-        <div class="group_list_single" *ngFor="let grp of (groups | filterByText:'name': groupFilter['groupSearch'] | filterByText:'type': groupFilter['groupType'] | orderBy:groupFilter['sort']['isAsc']: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][0]: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
+        <div class="group_list_single" [iliDraggable]="{data: grp, page: 'page'}" *ngFor="let grp of (groups | filterByText:'name': groupFilter['groupSearch'] | filterByText:'type': groupFilter['groupType'] | orderBy:groupFilter['sort']['isAsc']: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][0]: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
           <div *ngIf="((grp.hasOwnProperty('art') && !utils.isNullOrEmpty(grp['art'])) && (grp['art'].indexOf('tile_default.jpg') || grp['art'].indexOf('tilist_art.jpg')))"
             [ngClass]="groupType === 'list'? 'group-art' : 'group-art details'">
             <img [ngClass]="groupType === 'list'? 'group_list_art' : 'group_list_art group-detail-content'" [src]="grp['art'] | safe">
           </div>
           <div [title]="grp?.name" class="group_list_title">{{getGroupName(grp?.name)}}</div>
           <div class="group-notify-icons">
-            <span *ngIf="grp['isNotification']" [title]="grp['tileNotifications']" class='step smart noteicon smarticon-groups'
-              aria-hidden="true">
+            <span *ngIf="grp['isNotification']" [title]="grp['tileNotifications']" class='step smart noteicon smarticon-groups' aria-hidden="true">
               <i class='icon ion-android-notifications-none'></i>
             </span>
             <span *ngIf="grp['isSmart']" title="grp['tileSmart']" class="step smart smarticon smarticon-groups">

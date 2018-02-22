@@ -202,6 +202,47 @@
   font-size: 12px;
 }
 
+/* Dragged groups pages Layout */
+
+.main_page_container {
+  position: relative;
+  width: 558px;
+  height: 880px;
+  float: left;
+  margin-left: 1px;
+  overflow: hidden;
+}
+
+.main_page_drag_content {
+  position: relative;
+  padding-bottom: 1px;
+  margin-top: 9px;
+  margin-left: 5px;
+  min-height: 150px;
+  width: 547px;
+  padding-top: 10px;
+  margin-bottom: 2px;
+  border-color: #ddd;
+}
+
+.draggable_label {
+  font-size: 11px;
+  margin-top: 40px;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+/* Groups Layout */
+
+.groups_block {
+  width: 168px;
+  height: 880px;
+  text-align: center;
+  position: relative;
+  float: left;
+  margin-left: 1px;
+}
+
 /* Groups Contents */
 
 .groups_list_show {
@@ -315,27 +356,4 @@
 .group-notify-icons {
   width: 100%;
   float: right;
-}
-
-
-/* Dragged groups pages Layout */
-
-.main_page_container {
-  position: relative;
-  width: 558px;
-  height: 880px;
-  float: left;
-  margin-left: 1px;
-  overflow: hidden;
-}
-
-/* Groups Layout */
-
-.groups_block {
-  width: 168px;
-  height: 880px;
-  text-align: center;
-  position: relative;
-  float: left;
-  margin-left: 1px;
 }

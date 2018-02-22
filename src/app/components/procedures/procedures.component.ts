@@ -60,6 +60,7 @@ export class ProceduresComponent implements OnInit {
   procedureName: string = "";
   procedureCategory: string = "-1";
   isSquare: boolean = false;
+  page: Object = {};
 
   /* Setting for default dragged tile */
   setDraggedTile(tile: any, procObj?: Object) {
