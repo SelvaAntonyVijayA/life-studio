@@ -29,7 +29,6 @@ module.exports = function (app) {
   router.get('/event/tile/activate/:eventId/:tileId/:position', $event.activate);
   router.post('/eventcategory/save', $eventcategory.save);
   router.get('/eventcategory/list/:orgId', $eventcategory.list);
-  router.get('/language/list', $languages.list);
   router.post('/tilist/save', $tilist.save);
   router.get('/tilist/remove/:tilistId', $tilist.remove);
   router.get('/tilist/list/:orgId/:tilistId*?', $tilist.list);
@@ -121,6 +120,11 @@ module.exports = function (app) {
   router.all('/integrationwidgets/save', $integrationwidgets.save);
   router.all('/integrationwidgets/list/:id*?', $integrationwidgets.list);
   router.all('/integrationwidgets/remove/:id*?', $integrationwidgets.remove);
+
+  router.all('/language/save', $language.save);
+  router.all('/language/update/:id*?', $language.list);
+  router.all('/language/remove/:id*?', $language.remove);
+  router.get('/language/list', $languages.list);
 
   app.use('/', router);
 };
