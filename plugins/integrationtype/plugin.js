@@ -1,7 +1,7 @@
-const settingsConf;
+var settingsConf;
 
-var init = function () {
-  settingsConf = __conf.get("integration");
+var init = function (app) {
+  settingsConf = app.get("integration");
 };
 
 var save = function (req, res, next) {

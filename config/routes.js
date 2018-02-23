@@ -121,9 +121,9 @@ module.exports = function (app) {
   router.all('/integrationwidgets/list/:id*?', $integrationwidgets.list);
   router.all('/integrationwidgets/remove/:id*?', $integrationwidgets.remove);
 
-  router.all('/language/save', $language.save);
-  router.all('/language/update/:id*?', $language.list);
-  router.all('/language/remove/:id*?', $language.remove);
+  router.all('/language/save', $languages.save);
+  router.all('/language/update/:id*?', $languages.list);
+  router.all('/language/remove/:id*?', $languages.remove);
   router.get('/language/list', $languages.list);
 
   app.use('/', router);

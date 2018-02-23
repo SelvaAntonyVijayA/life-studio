@@ -3,7 +3,7 @@ var plugins = {
   "general": "general",
   "organization": "organization",
   "organizationtype": "organizationtype",
-  "access":"access",
+  "access": "access",
   "role": "role",
   "authtoken": "authtoken",
   "domains": "domains",
@@ -27,6 +27,12 @@ var plugins = {
   "package": "package",
   "apps": "apps",
   "location": "location",
+  "integration": "integration",
+  "integrationtype": "integrationtype",
+  "integrationwidgets": "integrationwidgets",
+  "languages": "languages",
+  "organization": "organization",
+  "organizationtype": "organizationtype",
   "livestream": "livestream",
   "log": "log"
 };

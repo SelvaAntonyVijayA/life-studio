@@ -1,7 +1,7 @@
 const request = require('request');
-const settingsConf;
+var settingsConf;
 
-var init = function () {
+var init = function (app) {
   settingsConf = app.get('settings');
 };
 

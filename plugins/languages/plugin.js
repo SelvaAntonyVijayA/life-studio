@@ -1,4 +1,4 @@
-const settingsConf;
+var settingsConf;
 
 var init = function (app) {
   settingsConf = app.get('settings');
