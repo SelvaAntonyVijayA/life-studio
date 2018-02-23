@@ -79,8 +79,8 @@
             <i class="icon ion-android-person"></i>
           </span>
           <div class="app_page_up_down">
-            <span (click)="moveUpDown(pg, 'up', i)" class="glyphicon btn_page_up glyphicon-arrow-up"></span>
-            <span (click)="moveUpDown(pg, 'down', i)" class="glyphicon btn_page_down glyphicon-arrow-down"></span>
+            <span (click)="pgMoveUpDown(pg, 'up', i)" class="glyphicon btn_page_up glyphicon-arrow-up"></span>
+            <span (click)="pgMoveUpDown(pg, 'down', i)" class="glyphicon btn_page_down glyphicon-arrow-down"></span>
           </div>
         </div>
       </div>
@@ -93,7 +93,103 @@
           <br> into this space</div>
       </div>
 
-      
+      <div *ngFor="let dragObj of page!.dragged | reverse; let i = index; trackBy: trackByUniqueId" class="ili-panel page_content">
+        <div *ngIf="!dragObj.hasOwnProperty('pageDragContainer')" class="page_main_panel">
+          <div class="page_content_right">
+            <div class="drag_buttons">
+              <button class="trigger_btn" title="Add Icon and recommended size 200x200">
+                <span class="glyphicon glyphicon-upload"></span>
+              </button>
+              <button (click)="addDraggable(i)" class="trigger_btn" title="Add Space">
+                <span class="glyphicon glyphicon-plus"></span>
+              </button>
+              <button (click)="replicateDragged(dragObj)" class="trigger_btn" title="Replicate">
+                <span class="glyphicon glyphicon-retweet"></span>
+              </button>
+              <button (click)="moveUpDown('up', i)" class="trigger_btn" title="MoveUp">
+                <span class="glyphicon glyphicon-arrow-up"></span>
+              </button>
+              <button (click)="moveUpDown('down', i)" class="trigger_btn" title="MoveDown">
+                <span class="glyphicon glyphicon-arrow-down"></span>
+              </button>
+              <button (click)="deleteDragged(dragObj, i)" class="trigger_btn" title="Remove">
+                <span class="glyphicon glyphicon-remove"></span>
+              </button>
+            </div>
+            <div class="page_menu_item_dragged">
+              <div *ngIf="dragObj['type'] === 'menu'" style="float: right; margin-right: 12px;" class="page_list_single">
+                <div [title]="dragObj['obj']['pageTitle']" class="new_app_menu_page_label">
+                  {{ setPageTitle(dragObj['obj']) }}</div>
+                <span *ngIf="dragObj['obj']['isNotification']" [title]="dragObj['obj']['tileNotifications']" class="step noteicon" aria-hidden="true">
+                  <i class="icon ion-android-notifications-none"></i>
+                </span>
+                <span *ngIf="dragObj['obj']['isSmart']" title="dragObj['obj']['tileSmart']" class='step smarticon' aria-hidden='true'>
+                  <i class='icon ion-lightbulb'></i>
+                </span>
+                <span *ngIf="dragObj['obj']['isRole']" title="dragObj['obj']['tileApps']" class="step smart smarticon">
+                  <i class="icon ion-android-person"></i>
+                </span>
+              </div>
+
+              <div *ngIf="dragObj['type'] !== 'menu' && dragObj['type'] !== 'tile'" style="float: right; margin-right: 12px;" class="group_list_single">
+                <div *ngIf="((dragObj['obj'].hasOwnProperty('art') && !utils.isNullOrEmpty(dragObj['obj']['art'])) && (dragObj['obj']['art'].indexOf('tile_default.jpg') || dragObj['obj']['art'].indexOf('tilist_art.jpg')))"
+                  [ngClass]="groupType === 'list'? 'group-art' : 'group-art details'">
+                  <img [ngClass]="groupType === 'list'? 'group_list_art' : 'group_list_art group-detail-content'" [src]="dragObj['obj']['art'] | safe">
+                </div>
+                <div [title]="dragObj['obj']?.name" class="group_list_title">{{getGroupName(dragObj['obj']?.name)}}</div>
+                <div class="group-notify-icons">
+                  <span *ngIf="dragObj['obj']['isNotification']" [title]="dragObj['obj']['tileNotifications']" class='step smart noteicon smarticon-groups' aria-hidden="true">
+                    <i class='icon ion-android-notifications-none'></i>
+                  </span>
+                  <span *ngIf="dragObj['obj']['isSmart']" title="dragObj['obj']['tileSmart']" class="step smart smarticon smarticon-groups">
+                    <i class="icon ion-lightbulb"></i>
+                  </span>
+                  <span *ngIf="dragObj['obj']['isRole']" title="dragObj['obj']['tileApps']" class="step smart smarticon smarticon-groups">
+                    <i class="icon ion-android-person"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="page_content_left">
+            <div class="menu_art">
+              <label class="lbl-drg-menu"> {{setDragObjectName(dragObj)}} </label>
+            </div>
+            <div class="icon-img">
+              <img class="menu_item_art img-v-align" [src]="dragObj['art'] | safe">
+            </div>
+            <div class="dragged-item-inputs">
+              <div style="float:left; margin-top: 1px; padding-left: 5px; margin-bottom:0px; margin-right: 3px; min-height: 18px;" class="checkbox">
+                <label>
+                  <input value="true" style="margin-top: 2px;" type="checkbox" value="">Show Title</label>
+              </div>
+              <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 3px; min-height: 18px;" class="checkbox">
+                <label>
+                  <input value="true" style="margin-top: 2px;" type="checkbox" value="">Double Width</label>
+              </div>
+              <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 3px; min-height: 18px;" class="checkbox">
+                <label>
+                  <input value="true" style="margin-top: 2px;" type="checkbox" value="">Top of Page</label>
+              </div>
+              <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 3px; min-height: 18px;" class="checkbox">
+                <label>
+                  <input value="true" style="margin-top: 2px;" type="checkbox" value="">Requires Permission</label>
+              </div>
+              <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 3px; min-height: 18px;" class="checkbox">
+                <label>
+                  <input value="true" style="margin-top: 2px;" type="checkbox" value="">Role Based</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div iliDropTarget (myDrop)="onDrop($event, true)" *ngIf="dragObj.hasOwnProperty('pageDragContainer')" class="main_page_drag_content drop_target">
+          <div class="draggable_label">
+            Drag a Tile, an Event or a Page
+            <br>
+            <br> into this space</div>
+        </div>
+      </div>
+
     </div>
 
     <div class="page_block groups_block">

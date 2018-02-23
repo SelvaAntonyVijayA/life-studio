@@ -232,6 +232,105 @@
   text-align: center;
 }
 
+.page_content {
+  position: relative;
+  padding-bottom: 1px;
+  margin-top: 9px;
+  margin-left: 5px;
+  min-height: 150px;
+  width: 547px;
+  padding-top: 10px;
+  margin-bottom: 2px;
+  border-color: #ddd;
+  float: left;
+}
+
+.page_content_right {
+  width: 50%;
+  float: right;
+  height: 150px;
+}
+
+.page_content_left {
+  width: 50%;
+  float: right;
+  height: 150px;
+}
+
+.trigger_btn {
+  margin-right: 5px;
+  color: #000000;
+  border: 1px solid #A9A9A9;
+}
+
+.drag_buttons {
+  position: relative;
+  width: 100%;
+  margin-bottom: 15px;
+  text-align: right;
+  float: right;
+  padding-right: 7px;
+}
+
+.menu_art {
+  float: left;
+  width: 100%;
+}
+
+.tile_menu_name {
+  width: 250px;
+  border: 0;
+  outline: none;
+  outline-offset: 0;
+}
+
+.icon-img {
+  float: left;
+  height: 98px;
+  width: 98px;
+  text-align: center;
+  border: 1px solid #D0CBCB;
+  margin-top: 2px;
+  margin-left: 6px;
+}
+
+.menu_item_art {
+  max-width: 96px;
+  max-height: 96px;
+}
+
+.img-v-align {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.lbl-drg-menu {
+  float: left;
+  margin-left: 8px;
+  text-overflow: ellipsis;
+}
+
+.dragged-item-inputs {
+  float: left;
+  width: 155px;
+  height: 129px;
+  margin-left: 12px;
+}
+
+.page_main_panel {
+  position: relative;
+  float: left;
+  width: 100%;
+}
+
+.page_menu_item_dragged {
+  float: right;
+  width: 100%;
+}
+
 /* Groups Layout */
 
 .groups_block {

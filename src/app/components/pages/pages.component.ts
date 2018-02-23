@@ -61,6 +61,7 @@ export class PagesComponent implements OnInit {
   pageSearchText: string = "";
   groups: any[] = [];
   page: Object = {};
+  dragIndex: number = -1;
   groupFilter: Object = {
     "groupSearch": "",
     "groupType": "-1",
@@ -82,33 +83,40 @@ export class PagesComponent implements OnInit {
   };
 
   /* Setting dragging Groups, Menus, Tiles */
-  setDragged(currObj: Object, type: string, pageObj?: Object) {
+  setDragged(currObj: Object, type: string, pageObj?: Object, drgExits?: boolean) {
     var dragged = {
-      "uniqueId": this.getUniqueId(), "type": type, "obj": {},
+      "uniqueId": this.getUniqueId(),
+      "art": "/img/tile_default.jpg",
+      "type": type,
+      "obj": {},
     };
 
     if (type === "tile" && !this.utils.isEmptyObject(currObj)) {
-      var tile = this.tileNotifyIcons(currObj);
+      var currTile = {};
 
-      var currTile = {
-        "_id": tile.hasOwnProperty("_id") ? tile["_id"] : "-1",
-        "title": tile.hasOwnProperty("title") && !this.utils.isNullOrEmpty(tile["title"]) ? tile["title"] : "",
-        "art": tile.hasOwnProperty("art") && !this.utils.isNullOrEmpty(tile["art"]) ? tile["art"] : "",
-        "categoryName": tile.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(tile["categoryName"]) ? tile["categoryName"] : "",
-        "tileApps": tile["tileApps"],
-        "isWgt": tile["isWgt"],
-        "tileHealthStatusRules": tile["tileHealthStatusRules"],
-        "isRules": tile["isRules"],
-        "tileProcedure": tile["tileProcedure"],
-        "isProcedure": tile["isProcedure"],
-        "tileSmart": tile["tileSmart"],
-        "isSmart": tile["isSmart"],
-        "tileNotifications": tile["tileNotifications"],
-        "isNotification": tile["isNotification"],
-        "isRole": tile["isRole"]
+      if (!drgExits) {
+        var tile = this.tileNotifyIcons(currObj);
+
+        currTile = {
+          "_id": tile.hasOwnProperty("_id") ? tile["_id"] : "-1",
+          "title": tile.hasOwnProperty("title") && !this.utils.isNullOrEmpty(tile["title"]) ? tile["title"] : "",
+          "art": tile.hasOwnProperty("art") && !this.utils.isNullOrEmpty(tile["art"]) ? tile["art"] : "",
+          "categoryName": tile.hasOwnProperty("categoryName") && !this.utils.isNullOrEmpty(tile["categoryName"]) ? tile["categoryName"] : "",
+          "tileApps": tile["tileApps"],
+          "isWgt": tile["isWgt"],
+          "tileHealthStatusRules": tile["tileHealthStatusRules"],
+          "isRules": tile["isRules"],
+          "tileProcedure": tile["tileProcedure"],
+          "isProcedure": tile["isProcedure"],
+          "tileSmart": tile["tileSmart"],
+          "isSmart": tile["isSmart"],
+          "tileNotifications": tile["tileNotifications"],
+          "isNotification": tile["isNotification"],
+          "isRole": tile["isRole"]
+        }
       }
 
-      dragged["obj"] = currTile;
+      dragged["obj"] = !drgExits ? currTile : currObj;
     } else {
       dragged["obj"] = currObj;
     }
@@ -159,6 +167,7 @@ export class PagesComponent implements OnInit {
     this.selectedPage = "";
     this.pageSearchText = "";
     this.resetDraggedGroups();
+    this.dragIndex = -1;
 
     if (mergeReset && mergeReset === "reset") {
       this.isMerge = { "status": "merge" };
@@ -200,7 +209,7 @@ export class PagesComponent implements OnInit {
     }
   };
 
-  showAppNamesAssigned(squareObj: Object, type?: string) {
+  showAppNamesAssigned(squareObj: Object, type?: string, groupName?: string) {
     var tileNotifications = "";
     var tileSmart = "";
     var pageApps = "";
@@ -247,6 +256,7 @@ export class PagesComponent implements OnInit {
       this.getPageTitle(squareObj);
     } else {
       squareObj[squareObj["_id"]] = "groups";
+      squareObj["type"] = groupName;
     }
   };
 
@@ -302,17 +312,19 @@ export class PagesComponent implements OnInit {
   };
 
   assignGroups() {
+    var types = ['event', 'tilist', 'catilist', 'livestream', 'procedure', 'process'];
+
     this.getListGroups().subscribe(grps => {
       this.groups = [];
 
       for (let i = 0; i < grps.length; i++) {
-        this.groups = this.groups.concat(grps[i]);
-      }
+        var currGrp = grps[i];
 
-      if (this.groups.length > 0) {
-        for (let i = 0; i < this.groups.length; i++) {
-          this.showAppNamesAssigned(this.groups[i], 'groups');
+        for (let j = 0; j < currGrp.length; j++) {
+          this.showAppNamesAssigned(currGrp[j], 'groups', types[i]);
         }
+
+        this.groups = this.groups.concat(currGrp);
       }
     });
   };
@@ -346,7 +358,7 @@ export class PagesComponent implements OnInit {
     return splittedVal[0];
   };
 
-  moveUpDown(pg: Object, move: string, idx: number) {
+  pgMoveUpDown(pg: Object, move: string, idx: number) {
     var totalIdx = this.pageList.length - 1;
     var fromStart = idx === 0 ? true : false;
     var fromEnd = totalIdx === idx ? true : false;
@@ -500,7 +512,10 @@ export class PagesComponent implements OnInit {
     if (!this.utils.isNullOrEmpty(data)) {
       var drgObjType = data.hasOwnProperty(data["_id"]) ? data[data["_id"]] : "tile";
       var currType = drgObjType === "groups" ? data["type"] : drgObjType;
-      this.draggedGroups[currType][data["_id"]] = data;
+
+      if (currType !== "tile") {
+        this.draggedGroups[currType][data["_id"]] = data;
+      }
 
       if (currType === "tile") {
         this.droppedTile = data;
@@ -517,7 +532,20 @@ export class PagesComponent implements OnInit {
       var draggedObj = this.setDragged(data, currType);
 
       if (this.page.hasOwnProperty("dragged")) {
-        this.page["dragged"].push(draggedObj);
+
+        if (this.dragIndex === -1) {
+          this.page["dragged"].push(draggedObj);
+        } else {
+          var currIdx = this.dragIndex;
+
+          if (!isDynamic) {
+            this.page["dragged"].splice(currIdx, 1);
+          } else {
+            this.page["dragged"][currIdx] = draggedObj;
+          }
+
+          this.dragIndex = -1;
+        }
       } else {
         this.page["dragged"] = [draggedObj];
       }
@@ -557,6 +585,77 @@ export class PagesComponent implements OnInit {
       "process": {},
       "menu": {}
     };
+  };
+
+  /* Adding Dynamic draggable */
+  addDraggable(idx: number) {
+    var dragged = { "uniqueId": this.getUniqueId(), "pageDragContainer": true };
+    var totalIdx = this.page["dragged"].length - 1;
+
+    if (this.dragIndex === -1) {
+      this.dragIndex = totalIdx === idx ? 0 : idx === 0 ? totalIdx : totalIdx - idx;
+      this.page["dragged"].splice(this.dragIndex, 0, dragged);
+    } else if (this.dragIndex > -1) {
+      var fromIdx = this.dragIndex;
+      var toIdx = totalIdx === idx ? 0 : idx === 0 ? totalIdx - 1 : (totalIdx - idx) - 1 === this.dragIndex ? this.dragIndex : this.dragIndex > totalIdx - idx ? totalIdx - idx : (totalIdx - idx) - 1;
+
+      if (fromIdx !== toIdx) {
+        this.utils.arrayMove(this.page["dragged"], fromIdx, toIdx);
+        var move = this.page["draggedTiles"];
+        //this.dragIndex = toIdx;
+      }
+    }
+  };
+
+  /* Replicate Dragged */
+  replicateDragged(drg: any) {
+    var replicatedDragged = !this.utils.isEmptyObject(drg) && drg.hasOwnProperty("obj") ? drg["obj"] : {};
+    var replicatedObj = this.setDragged(replicatedDragged, drg["type"], {}, true);
+    this.page["dragged"].push(replicatedObj);
+  };
+
+  /* Move dragged up and down */
+  moveUpDown(move: string, idx: number) {
+    var totalIdx = this.page["dragged"].length - 1;
+    var fromIdx = totalIdx === idx ? 0 : idx === 0 ? totalIdx : totalIdx - idx;
+    var toIdx = totalIdx === 0 ? 0 : move === "up" ? fromIdx + 1 : fromIdx - 1;
+
+    this.utils.arrayMove(this.page["dragged"], fromIdx, toIdx);
+  };
+
+  /* Delete dragged object */
+  deleteDragged(drgObj: Object, idx: number) {
+
+    var totalIdx = this.page["dragged"].length - 1;
+    var currIdx = totalIdx - idx;
+    var currDrgObj = drgObj["obj"];
+
+    if (drgObj["type"] === "tile") {
+      this.droppedTile = {};
+      this.droppedTile = !this.utils.isEmptyObject(drgObj) ? Object.assign({}, drgObj) : {};
+    } else {
+      if (drgObj["type"] === "menu") {
+        this.pageList.push(currDrgObj);
+      } else {
+        this.groups.push(currDrgObj);
+      }
+    }
+
+    this.page["dragged"].splice(currIdx, 1);
+  };
+
+  setDragObjectName(dragObj: Object) {
+    var dragName = "";
+
+    if (!this.utils.isEmptyObject(dragObj)) {
+      dragName = dragObj["type"] === "menu" ? dragObj["obj"]["pageTitle"] : dragObj["type"] === "tile" ? dragObj["obj"]["title"] : dragObj["obj"]["name"];
+
+      if (!this.utils.isNullOrEmpty(dragName)) {
+        dragName = this.utils.htmlEncode(dragName);
+      }
+    }
+
+    return dragName;
   };
 
   ngOnInit() {
