@@ -131,9 +131,33 @@ var _setPageObj = function (pages) {
   return pages;
 };
 
+var getPageTiles = function (req, res, next) {
+  var tQuery = { "_id": req.body.tileIds };
+  options = {};
+
+  var tileFields = {
+    "_id": 1, "title": 1, "art": 1, "notification": 1,
+    "smart": 1,
+    "Apps": 1,
+    "Procedure": 1,
+    "hsrRuleEngine": 1,
+    "isWeight": 1,
+    "isRoleBased": 1
+  };
+
+  if (req.body.tileIds.length > 0) {
+    $tile.getSpecificFields(tileFields, tQuery, options, function (tiles) {
+      res.send(tiles);
+    });
+  } else {
+    res.send([]);
+  }
+};
+
 module.exports = {
   "init": init,
   "list": list,
   "isRoleGroup": isRoleGroup,
+  "getPageTiles": getPageTiles,
   "_update": _update
 };

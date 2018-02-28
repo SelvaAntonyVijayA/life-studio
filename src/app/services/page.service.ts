@@ -41,6 +41,14 @@ export class PageService {
       .catch(this.handleError);
   };
 
+  getPageTiles(tileIds: any[]) {
+    return this.http
+      .post("/pages/getpagetiles/", JSON.stringify({ "tileIds": tileIds }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);

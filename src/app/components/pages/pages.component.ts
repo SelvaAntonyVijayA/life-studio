@@ -81,15 +81,42 @@ export class PagesComponent implements OnInit {
     "process": {},
     "menu": {}
   };
+  pageTitle: string = "";
 
   /* Setting dragging Groups, Menus, Tiles */
-  setDragged(currObj: Object, type: string, pageObj?: Object, drgExits?: boolean) {
+  setDragged(currObj: Object, type: string, menuItem?: Object, drgExits?: boolean, procedure?: Object) {
     var dragged = {
       "uniqueId": this.getUniqueId(),
-      "art": "/img/tile_default.jpg",
-      "type": type,
-      "obj": {},
+      "menuName": !this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("name") && !this.utils.isNullOrEmpty(menuItem["name"]) ? menuItem["name"] : this.setDragObjectName(currObj, type),
+      "art": !this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("imageUrl") && !this.utils.isNullOrEmpty(menuItem["imageUrl"]) ? menuItem["imageUrl"] : "/img/tile_default.jpg",
+      "activate": !this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("activate") && !this.utils.isNullOrEmpty(menuItem["activate"]) ? menuItem["activate"] : true,
+      "showName": !this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("showName") && !this.utils.isNullOrEmpty(menuItem["showName"]) ? menuItem["showName"] : false,
+      "type": type
     };
+
+    if (type === "event") {
+      dragged["availableDate"] = !this.utils.isEmptyObject(currObj) && currObj.hasOwnProperty("eventStart") && !this.utils.isNullOrEmpty(currObj["eventStart"]) ? this.utils.toLocalDateTime(currObj["eventStart"], "mm/dd/yy") : !this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("availableOn") && !this.utils.isNullOrEmpty(menuItem["availableOn"]) ? this.utils.toLocalDateTime(menuItem["availableOn"], "mm/dd/yy") : "";
+      dragged["availableTime"] = !this.utils.isEmptyObject(currObj) && currObj.hasOwnProperty("eventStart") && !this.utils.isNullOrEmpty(currObj["eventStart"]) ? this.utils.toLocalDateTime(currObj["eventStart"], "g:ii a") : !this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("availableOn") && !this.utils.isNullOrEmpty(menuItem["availableOn"]) ? this.utils.toLocalDateTime(menuItem["availableOn"], "g:ii a") : "";
+      dragged["endDate"] = !this.utils.isEmptyObject(currObj) && currObj.hasOwnProperty("availableEnd") && !this.utils.isNullOrEmpty(currObj["availableEnd"]) ? this.utils.toLocalDateTime(currObj["availableEnd"], "mm/dd/yy") : !this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("endOn") && !this.utils.isNullOrEmpty(menuItem["endOn"]) ? this.utils.toLocalDateTime(menuItem["endOn"], "mm/dd/yy") : "";
+      dragged["endTime"] = !this.utils.isEmptyObject(currObj) && currObj.hasOwnProperty("availableEnd") && !this.utils.isNullOrEmpty(currObj["availableEnd"]) ? this.utils.toLocalDateTime(currObj["availableEnd"], "g:ii a") : !this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("endOn") && !this.utils.isNullOrEmpty(menuItem["endOn"]) ? this.utils.toLocalDateTime(menuItem["endOn"], "g:ii a") : "";
+    }
+
+    if (!this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("wideSquare") && !this.utils.isNullOrEmpty(menuItem["wideSquare"])) {
+      dragged["topSquare"] = menuItem["wideSquare"] ? true : false;
+      dragged["orderFirst"] = !this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("orderFirst") && !this.utils.isNullOrEmpty(menuItem["orderFirst"]) ? menuItem["orderFirst"] : false;
+    } else {
+      dragged["topSquare"] = !this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("topSquare") && !this.utils.isNullOrEmpty(menuItem["topSquare"]) ? menuItem["topSquare"] : false;
+      dragged["orderFirst"] = dragged["topSquare"];
+    }
+
+    dragged["requiresPermission"] = !this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("requiresPermission") && !this.utils.isNullOrEmpty(menuItem["requiresPermission"]) ? menuItem["requiresPermission"] : false;
+    dragged["isPrivate"] = !this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("isPrivate") && !this.utils.isNullOrEmpty(menuItem["isPrivate"]) ? menuItem["isPrivate"] : false;
+
+    if (type === "tile" && !this.utils.isEmptyObject(procedure)) {
+      dragged["procId"] = procedure.hasOwnProperty("procedureId") ? procedure["procedureId"] : "";
+      dragged["procName"] = procedure.hasOwnProperty("procedureName") ? procedure["procedureName"] : "";
+      dragged["isProcedure"] = procedure.hasOwnProperty("isProcedureSquare") ? procedure["isProcedureSquare"] : false;
+    }
 
     if (type === "tile" && !this.utils.isEmptyObject(currObj)) {
       var currTile = {};
@@ -168,6 +195,7 @@ export class PagesComponent implements OnInit {
     this.pageSearchText = "";
     this.resetDraggedGroups();
     this.dragIndex = -1;
+    this.pageTitle = "";
 
     if (mergeReset && mergeReset === "reset") {
       this.isMerge = { "status": "merge" };
@@ -644,11 +672,16 @@ export class PagesComponent implements OnInit {
     this.page["dragged"].splice(currIdx, 1);
   };
 
-  setDragObjectName(dragObj: Object) {
+  draggedActivateDeactivate(e: any, drgObj: Object) {
+    e.preventDefault();
+    drgObj["activate"] = !drgObj["activate"];
+  };
+
+  setDragObjectName(dragObj: Object, type: string) {
     var dragName = "";
 
     if (!this.utils.isEmptyObject(dragObj)) {
-      dragName = dragObj["type"] === "menu" ? dragObj["obj"]["pageTitle"] : dragObj["type"] === "tile" ? dragObj["obj"]["title"] : dragObj["obj"]["name"];
+      dragName = type === "menu" ? dragObj["pageTitle"] : type === "tile" ? dragObj["title"] : dragObj["name"];
 
       if (!this.utils.isNullOrEmpty(dragName)) {
         dragName = this.utils.htmlEncode(dragName);
@@ -656,6 +689,96 @@ export class PagesComponent implements OnInit {
     }
 
     return dragName;
+  };
+
+  selectPage(e: any, pgObj: Object) {
+    e.preventDefault();
+    e.stopPropagation();
+    var self = this;
+
+    var pgExist = false;
+
+    if (!this.utils.isEmptyObject(this.page) && this.page.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.page["obj"])) {
+      if (this.page["obj"].hasOwnProperty("_id") && !this.utils.isNullOrEmpty(this.page["obj"]["_id"])) {
+        pgExist = this.page["obj"]["_id"] === pgObj["_id"] ? true : false;
+      }
+    }
+
+    if (!pgExist) {
+      this.setPageData(true, pgObj);
+    }
+  };
+
+  setPageData(isSelect: boolean, obj: any) {
+    if (isSelect) {
+      this.pageReset();
+
+      if (!this.utils.isEmptyObject(obj) && obj.hasOwnProperty("menuTiles") && obj["menuTiles"].length > 0) {
+        for (let i = 0; i < obj["menuTiles"].length; i++) {
+          var currDrg = obj["menuTiles"][i];
+          if (!this.utils.isEmptyObject(currDrg) && currDrg.hasOwnProperty("linkTo") && !this.utils.isNullOrEmpty(currDrg["linkTo"])) {
+            if (currDrg["linkTo"] === "tile") {
+              this.draggedTiles.push(currDrg["linkId"]);
+            }
+          }
+        }
+      }
+    }
+
+    if (isSelect && this.draggedTiles.length > 0) {
+      this.pageService.getPageTiles(this.draggedTiles)
+        .then(objTiles => {
+          if (this.utils.isArray(objTiles) && objTiles.length > 0) {
+            //this.assignEventDatas(evtObj[0]);
+            //this.updateTileInterval();
+            this.assignEventDatas(objTiles, obj);
+          }
+        });
+    }else{
+      this.assignEventDatas([], obj);
+    }
+  };
+
+  assignEventDatas(currTiles: any[], pgObj: Object) {
+    this.page["obj"] = pgObj;
+
+    if (!this.utils.isEmptyObject(pgObj)) {
+      this.page["dragged"] = [];
+
+      this.pageTitle = pgObj.hasOwnProperty("title") && !this.utils.isNullOrEmpty(pgObj["title"]) ? pgObj["title"] : "";
+
+      for (let i = 0; i < pgObj["menuTiles"].length; i++) {
+        var currDrg = pgObj["menuTiles"][i];
+        var currObj = {};
+
+        if (!this.utils.isEmptyObject(currDrg) && currDrg.hasOwnProperty("linkTo") && !this.utils.isNullOrEmpty(currDrg["linkTo"])) {
+          if (currDrg["linkTo"] === "menu") {
+            var pgIndex = this.pageList.map(function (pg) { return pg['_id']; }).indexOf(currDrg["linkId"]);
+
+            if (pgIndex !== -1) {
+              currObj = this.pageList[pgIndex];
+            }
+          } else if (currDrg["linkTo"] === "tile") {
+            var tileIndex = currTiles.map(function (curTile) { return curTile['_id']; }).indexOf(currDrg["linkId"]);
+
+            if (tileIndex !== -1) {
+              currObj = currTiles[tileIndex];
+            }
+          } else {
+            var grpIndex = this.groups.map(function (grp) { return grp['_id']; }).indexOf(currDrg["linkId"]);
+
+            if (grpIndex !== -1) {
+              currObj = this.groups[grpIndex];
+            }
+          }
+
+          if (!this.utils.isEmptyObject(currObj)) {
+            var drgObj = this.setDragged(currObj, currDrg["linkTo"], currDrg, false);
+            this.page["dragged"].push(drgObj);
+          }
+        }
+      }
+    }
   };
 
   ngOnInit() {

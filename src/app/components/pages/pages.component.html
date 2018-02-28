@@ -6,7 +6,7 @@
           placeholder="Select Language">
           <option *ngFor="let lang of languageList; let i = index" [value]="lang?.code">{{lang?.name}}</option>
         </select>
-        <input class="form-control input-sm app_page_title_box" type="text" placeholder="Page Title">
+        <input [(ngModel)]="pageTitle" class="form-control input-sm app_page_title_box" type="text" placeholder="Page Title">
         <select [ngModel]="selectedApp" (ngModelChange)="appChange($event)" class="form-control input-sm app_box">
           <option *ngFor="let app of appList; let i = index" [value]="app?._id">{{app?.name}}</option>
         </select>
@@ -66,7 +66,7 @@
       </div>
       <input [(ngModel)]="pageSearchText" class="form-control input-sm search_box_pages" type="text" placeholder="Search Pages">
       <div id="main-container-pages" class="pages_list_show">
-        <div class="page_list_single" [iliDraggable]="{data: pg, page: 'page'}" *ngFor="let pg of (pageList | filterByText:'pageTitle': pageSearchText | orderBy: true: 'position'); let i = index; trackBy: trackByIndex;">
+        <div (click)="selectPage($event, pg)" [ngClass]="page.hasOwnProperty('obj') && pg?._id === page.obj?._id ? 'page_list_single selected' : 'page_list_single'" [iliDraggable]="{data: pg, page: 'page'}" *ngFor="let pg of (pageList | filterByText:'pageTitle': pageSearchText | orderBy: true: 'position'); let i = index; trackBy: trackByIndex;">
           <div [title]="pg['pageTitle']" class="new_app_menu_page_label">
             {{ setPageTitle(pg) }}</div>
           <span *ngIf="pg['isNotification']" [title]="pg['tileNotifications']" class="step noteicon" aria-hidden="true">
@@ -115,6 +115,9 @@
               <button (click)="deleteDragged(dragObj, i)" class="trigger_btn" title="Remove">
                 <span class="glyphicon glyphicon-remove"></span>
               </button>
+              <button [ngClass]="dragObj['activate']? 'trigger_btn activate': 'trigger_btn deactivate'" (click)="draggedActivateDeactivate($event, dragObj)" class='trigger_btn' [title]="dragObj['activate']? 'Deactivate': 'Activate'">
+                <span class='glyphicon glyphicon-off'></span>
+              </button>
             </div>
             <div class="page_menu_item_dragged">
               <div *ngIf="dragObj['type'] === 'menu'" style="float: right; margin-right: 12px;" class="page_list_single">
@@ -138,7 +141,8 @@
                 </div>
                 <div [title]="dragObj['obj']?.name" class="group_list_title">{{getGroupName(dragObj['obj']?.name)}}</div>
                 <div class="group-notify-icons">
-                  <span *ngIf="dragObj['obj']['isNotification']" [title]="dragObj['obj']['tileNotifications']" class='step smart noteicon smarticon-groups' aria-hidden="true">
+                  <span *ngIf="dragObj['obj']['isNotification']" [title]="dragObj['obj']['tileNotifications']" class='step smart noteicon smarticon-groups'
+                    aria-hidden="true">
                     <i class='icon ion-android-notifications-none'></i>
                   </span>
                   <span *ngIf="dragObj['obj']['isSmart']" title="dragObj['obj']['tileSmart']" class="step smart smarticon smarticon-groups">
@@ -149,11 +153,40 @@
                   </span>
                 </div>
               </div>
+
+              <div *ngIf="dragObj['type'] === 'tile'" class="page_main_tile_block page_tiles_list_single">
+                <img class="page_tile_list_art page-tile-content-img" [src]="dragObj['obj']?.art | safe">
+                <div class="page_tile_list_title page-tile-content-title">{{dragObj['obj']?.title}}</div>
+                <div *ngIf="!this.utils.isEmptyObject(dragObj['obj'])" class="page_tile_icons">
+                  <span [title]="dragObj['obj']!.tileApps" [style.display]="dragObj['obj']!.isWgt" class="step weight"></span>
+                  <span [title]="dragObj['obj']!.tileHealthStatusRules" [style.display]="dragObj['obj']!.isRules" class="step smart smarticon report-rule-tile">
+                    <i class="icon ion-heart"></i>
+                  </span>
+                  <span [title]="dragObj['obj']!.tileProcedure" [style.display]="dragObj['obj']!.isProcedure" class="step smart smarticon smarticon-tile">
+                    <i class="icon ion-medkit"></i>
+                  </span>
+                  <span [title]="dragObj['obj']!.tileSmart" [style.display]="dragObj['obj']!.isSmart" class="step smart smarticon smarticon-tile">
+                    <i class="icon ion-lightbulb"></i>
+                  </span>
+                  <span [title]="dragObj['obj']!.tileNotifications" [style.display]="dragObj['obj']!.isNotification" class="step smart noteicon smarticon-tile"
+                    aria-hidden="true">
+                    <i class="icon ion-android-notifications-none"></i>
+                  </span>
+                  <span [title]="dragObj['obj']!.tileApps" [style.display]="dragObj['obj']!.isRole" class="step smart smarticon smarticon-tile">
+                    <i class="icon ion-android-person"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="dragObj['type'] === 'event'" class="event_trigger_time">
+              <p *ngIf="!utils.isNullOrEmpty(dragObj['availableDate'])" class="event_date">{{ "Event set to start on " + dragObj["availableDate"] + " at " + dragObj["availableTime"].toLowerCase() }}</p>
+              <p *ngIf="!utils.isNullOrEmpty(dragObj['availableDate']) && !utils.isNullOrEmpty(dragObj['endDate'])" class="availabe_in_app">{{ "In-app " + dragObj["availableDate"] + " " + dragObj["availableTime"].toLowerCase() + " to " + dragObj["endDate"]
+                + " " + dragObj["endTime"].toLowerCase()}}</p>
             </div>
           </div>
           <div class="page_content_left">
             <div class="menu_art">
-              <label class="lbl-drg-menu"> {{setDragObjectName(dragObj)}} </label>
+              <label class="lbl-drg-menu"> {{dragObj?.menuName}} </label>
             </div>
             <div class="icon-img">
               <img class="menu_item_art img-v-align" [src]="dragObj['art'] | safe">
@@ -161,23 +194,23 @@
             <div class="dragged-item-inputs">
               <div style="float:left; margin-top: 1px; padding-left: 5px; margin-bottom:0px; margin-right: 3px; min-height: 18px;" class="checkbox">
                 <label>
-                  <input value="true" style="margin-top: 2px;" type="checkbox" value="">Show Title</label>
+                  <input value="true" [(ngModel)]="dragObj['showName']" style="margin-top: 2px;" type="checkbox" value="">Show Title</label>
               </div>
               <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 3px; min-height: 18px;" class="checkbox">
                 <label>
-                  <input value="true" style="margin-top: 2px;" type="checkbox" value="">Double Width</label>
+                  <input value="true" [(ngModel)]="dragObj['topSquare']" style="margin-top: 2px;" type="checkbox" value="">Double Width</label>
               </div>
               <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 3px; min-height: 18px;" class="checkbox">
                 <label>
-                  <input value="true" style="margin-top: 2px;" type="checkbox" value="">Top of Page</label>
+                  <input value="true" [(ngModel)]="dragObj['orderFirst']" style="margin-top: 2px;" type="checkbox" value="">Top of Page</label>
               </div>
               <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 3px; min-height: 18px;" class="checkbox">
                 <label>
-                  <input value="true" style="margin-top: 2px;" type="checkbox" value="">Requires Permission</label>
+                  <input value="true" [(ngModel)]="dragObj['requiresPermission']" style="margin-top: 2px;" type="checkbox" value="">Requires Permission</label>
               </div>
               <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 3px; min-height: 18px;" class="checkbox">
                 <label>
-                  <input value="true" style="margin-top: 2px;" type="checkbox" value="">Role Based</label>
+                  <input value="true" [(ngModel)]="dragObj['isPrivate']" style="margin-top: 2px;" type="checkbox" value="">Role Based</label>
               </div>
             </div>
           </div>
