@@ -373,7 +373,7 @@
   margin-left: 9px;
   margin-bottom: 4px;
   width: 256px;
-  height: 56px;
+  max-height: 58px;
   padding-bottom: 2px;
   color: #000000;
   border: 2px outset rgba(255, 255, 255, .5);

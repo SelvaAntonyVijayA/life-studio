@@ -17,27 +17,28 @@
       <div class="page_checks">
         <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 3px; min-height: 18px;" class="checkbox">
           <label>
-            <input value="true" style="margin-top: 2px;" type="checkbox" value="">Navigation tab disabled</label>
+            <input value="true" [(ngModel)]="noTabShow" style="margin-top: 2px;" type="checkbox" value="">Navigation tab disabled</label>
         </div>
         <div style="float:left; margin-top: 5px; padding-left: 5px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
           <label>
-            <input value="true" style="margin-top: 2px;" type="checkbox" value="">Random Order</label>
+            <input value="true" [(ngModel)]="randomOrder" style="margin-top: 2px;" type="checkbox" value="">Random Order</label>
         </div>
         <div style="float:left; margin-top: 5px; padding-left: 5px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
           <label>
-            <input value="true" style="margin-top: 2px;" type="checkbox" value="">Open straight to content</label>
+            <input value="true" [disabled]="(page.hasOwnProperty('dragged') && (page['dragged'].length > 1 || (page['dragged'].length === 1 && page['dragged'][0]['type'] === 'menu')))? true : false"
+              [(ngModel)]="pageInDetail" style="margin-top: 2px;" type="checkbox" value="">Open straight to content</label>
         </div>
         <div style="float:left; margin-top: 5px; padding-left: 5px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
           <label>
-            <input value="true" style="margin-top: 2px;" type="checkbox" value="">Alphabetical Order</label>
+            <input value="true" [(ngModel)]="alphabeticalOrder" style="margin-top: 2px;" type="checkbox" value="">Alphabetical Order</label>
         </div>
         <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 13px; min-height: 18px;" class="checkbox">
           <label>
-            <input value="true" style="margin-top: 2px;" type="checkbox" value="">Hide from main menu</label>
+            <input value="true" [(ngModel)]="hidden" style="margin-top: 2px;" type="checkbox" value="">Hide from main menu</label>
         </div>
         <div style="float:left; margin-top: 5px; padding-left: 5px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
           <label>
-            <input value="true" style="margin-top: 2px;" type="checkbox" value="">Live Stream On Top</label>
+            <input value="true" [(ngModel)]="livestreamOnTop" style="margin-top: 2px;" type="checkbox" value="">Live Stream On Top</label>
         </div>
       </div>
     </div>
@@ -45,7 +46,7 @@
       <button class="ili-btn page_new">
         New
       </button>
-      <button class="ili-btn page_save">
+      <button (click)="savePage($event, true)" class="ili-btn page_save">
         Save
       </button>
       <button class="ili-btn page_delete">
@@ -66,7 +67,8 @@
       </div>
       <input [(ngModel)]="pageSearchText" class="form-control input-sm search_box_pages" type="text" placeholder="Search Pages">
       <div id="main-container-pages" class="pages_list_show">
-        <div (click)="selectPage($event, pg)" [ngClass]="page.hasOwnProperty('obj') && pg?._id === page.obj?._id ? 'page_list_single selected' : 'page_list_single'" [iliDraggable]="{data: pg, page: 'page'}" *ngFor="let pg of (pageList | filterByText:'pageTitle': pageSearchText | orderBy: true: 'position'); let i = index; trackBy: trackByIndex;">
+        <div (click)="selectPage($event, pg)" [ngClass]="page.hasOwnProperty('obj') && pg?._id === page.obj?._id ? 'page_list_single selected' : 'page_list_single'"
+          [iliDraggable]="{data: pg, page: 'page'}" *ngFor="let pg of (pageList | filterByText:'pageTitle': pageSearchText | orderBy: true: 'position'); let i = index; trackBy: trackByIndex;">
           <div [title]="pg['pageTitle']" class="new_app_menu_page_label">
             {{ setPageTitle(pg) }}</div>
           <span *ngIf="pg['isNotification']" [title]="pg['tileNotifications']" class="step noteicon" aria-hidden="true">
@@ -115,7 +117,8 @@
               <button (click)="deleteDragged(dragObj, i)" class="trigger_btn" title="Remove">
                 <span class="glyphicon glyphicon-remove"></span>
               </button>
-              <button [ngClass]="dragObj['activate']? 'trigger_btn activate': 'trigger_btn deactivate'" (click)="draggedActivateDeactivate($event, dragObj)" class='trigger_btn' [title]="dragObj['activate']? 'Deactivate': 'Activate'">
+              <button [ngClass]="dragObj['activate']? 'trigger_btn activate': 'trigger_btn deactivate'" (click)="draggedActivateDeactivate($event, dragObj)"
+                class='trigger_btn' [title]="dragObj['activate']? 'Deactivate': 'Activate'">
                 <span class='glyphicon glyphicon-off'></span>
               </button>
             </div>

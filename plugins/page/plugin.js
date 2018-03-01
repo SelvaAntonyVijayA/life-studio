@@ -10,6 +10,59 @@ var init = function (app) {
   settingsConf = app.get('settings');
 };
 
+var save = function (req, res, next) {
+  var pages = req.body.form_data;
+  pages = _setPageObj(pages);
+
+  $async.waterfall([
+    function (callback) {
+      options = {};
+
+      if (__util.isNullOrEmpty(pages._id)) {
+        callback(null, []);
+      } else {
+        query = {};
+        query._id = pages._id;
+
+        getAppMenu(query, options, function (pageObj) {
+          callback(null, pageObj);
+        });
+      }
+    },
+    function (pageObj, callback) {
+      _getAppUpdateSquares(pages, pageObj, function (datasPush, datasPull) {
+        callback(null, datasPush, datasPull);
+      });
+    },
+    function (datasPush, datasPull, callback) {
+      _updateAppsIds(datasPush, datasPull, function () {
+        callback(null);
+      });
+    }], function (err) {
+      if (__util.isNullOrEmpty(pages._id)) {
+        pages["createdBy"] = context.tokenSession.uid;
+
+        $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.page, pages, function (result) {
+          var saveResult = { "_id": result };
+          res.send(saveResult);
+        });
+      } else {
+        options = {};
+        query = {};
+        query._id = pages._id;
+        delete pages["_id"];
+
+        var tokenObj = $authtoken.get(req.cookies.token);
+        pages["updatedBy"] = tokenObj.uid;
+
+        _update(query, options, pages, function (result) {
+          var updateResult = { "_id": query._id };
+          res.send(updateResult);
+        });
+      }
+    });
+};
+
 var list = function (req, res, next) {
   $async.waterfall([
     function (callback) {
@@ -154,10 +207,226 @@ var getPageTiles = function (req, res, next) {
   }
 };
 
+var getAppMenu = function (pQuery, pOptions, cb) {
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.page, pQuery, pOptions, function (result) {
+    cb(result);
+  });
+};
+
+var _getAppUpdateSquares = function (newDatas, oldDatas, cb) {
+  var oldsquares = oldDatas && oldDatas.length > 0 && !__util.isEmptyObject(oldDatas[0].menuTiles) ? oldDatas[0].menuTiles : [];
+  var newSquares = newDatas && !__util.isEmptyObject(newDatas.menuTiles) ? newDatas.menuTiles : [];
+  var pageData = !__util.isEmptyObject(newDatas) ? newDatas : {};
+  var pushDatas = [];
+  var pullDatas = [];
+
+  _.each(newSquares, function (square) {
+    var data = {};
+    data._id = square.linkId;
+    data.type = square.linkTo;
+
+    var app = {};
+    app.appId = pageData.appId;
+    app.appName = pageData.appName;
+
+    data.app = app;
+
+    var squareExists = _.findWhere(pushDatas, {
+      "_id": square.linkId,
+      "type": square.linkTo
+    });
+
+    if (!squareExists) {
+      pushDatas.push(data);
+    }
+  });
+
+  _.each(oldsquares, function (square) {
+    var isSquare = _.findWhere(newSquares, {
+      "linkTo": square.linkTo,
+      "linkId": square.linkId
+    });
+
+    var data = {};
+    data._id = square.linkId;
+    data.type = square.linkTo;
+
+    var app = {};
+    app.appId = pageData.appId;
+    app.appName = pageData.appName;
+
+    data.app = app;
+
+    var squareExists = _.findWhere(pullDatas, {
+      "_id": square.linkId,
+      "type": square.linkTo
+    });
+
+    if (!squareExists && !isSquare) {
+      pullDatas.push(data);
+    }
+  });
+
+  cb(pushDatas, pullDatas);
+};
+
+var _updateAppsIds = function (pushApps, pullApps, cb) {
+  $async.parallel({
+    push: function (callback) {
+      $async.each(pushApps, function (square, cbpush) {
+        var dataToUpdate = {};
+        dataToUpdate.Apps = square.app;
+
+        var data = {
+          $addToSet: dataToUpdate
+        };
+
+        var query = {};
+        query._id = square._id;
+
+        _updateApps(square.type, query, data, function () {
+          cbpush();
+        });
+
+      }, function () {
+        callback(null);
+      });
+    },
+    pull: function (callback) {
+      $async.each(pullApps, function (square, cbpull) {
+        var dataToUpdate = {};
+        dataToUpdate.Apps = square.app;
+
+        var data = {
+          $pull: dataToUpdate
+        };
+
+        var query = {};
+        query._id = square._id;
+
+        _updateApps(square.type, query, data, function () {
+          cbpull();
+        });
+      }, function () {
+        callback(null);
+      });
+    }
+  }, function (err, results) {
+    if (cb) {
+      cb();
+    }
+  });
+};
+
+var _updateApps = function (type, uQuery, data, cb) {
+  switch (type) {
+    case "tile":
+      $tile.tileUpdate(uQuery, {}, data, function (result) {
+        if (cb) {
+          cb();
+        }
+      });
+      break;
+    case "event":
+      $event.updateEvent(uQuery, {}, data, function (result) {
+        if (cb) {
+          cb();
+        }
+      });
+      break;
+    case "catilist":
+      $catilist.updateCatilist(uQuery, {}, data, function (result) {
+        if (cb) {
+          cb();
+        }
+      });
+      break;
+    case "tilist":
+      $tilist.updateTilist(uQuery, {}, data, function (result) {
+        if (cb) {
+          cb();
+        }
+      });
+      break;
+    case "menu":
+      _update(uQuery, {}, data, function (result) {
+        if (cb) {
+          cb();
+        }
+      });
+      break;
+    case "livestream":
+      $livestream.updateLiveStream(uQuery, {}, data, function (result) {
+        if (cb) {
+          cb();
+        }
+      });
+      break;
+    case "procedure":
+      $procedure.updateProcedure(uQuery, {}, data, function (result) {
+        if (cb) {
+          cb();
+        }
+      });
+      break;
+  }
+};
+
+var pageStreamUpdate = function (req, res, next) {
+  var streamObj = req.body.form_data;
+
+  $async.waterfall([
+    function (callback) {
+      var liveStreamQuery = {
+        "_id": streamObj.streamId
+      };
+
+      $livestream.get(liveStreamQuery, function (stream) {
+        if (stream && stream.length > 0) {
+          callback(null, stream);
+
+        } else {
+          callback(null, []);
+        }
+      });
+
+    }], function (err, stream) {
+      if (stream && stream.length > 0) {
+        var streamQuery = {
+          "appId": stream[0].createdApp.id,
+          "menuTiles": {
+            "$elemMatch": {
+              "linkTo": "livestream",
+              "linkId": streamObj.streamId
+            }
+          }
+        };
+
+        var streamToUpdate = {
+          "menuTiles.$.imageUrl": streamObj.url
+        };
+
+        options = {
+          "multi": true
+        };
+
+        _update(streamQuery, options, streamToUpdate, function (result) {
+          res.send(result);
+        });
+
+      } else {
+        res.send({ "update": true });
+      }
+    });
+};
+
 module.exports = {
   "init": init,
+  "save": save,
   "list": list,
   "isRoleGroup": isRoleGroup,
   "getPageTiles": getPageTiles,
-  "_update": _update
+  "getAppMenu": getAppMenu,
+  "_update": _update,
+  "pageStreamUpdate": pageStreamUpdate
 };

@@ -92,9 +92,14 @@ module.exports = function (app) {
   router.get('/organizationtype/remove/:id', $organizationtype.remove);
   router.all("/cms/apps/list/:orgId/:isAdmin*?", $apps.list);
   router.all('/location/list/:appId', $location.list);
+
+  router.all('/page/save', $page.save);
+  router.all('/page/pagestreamupdate/', $page.pageStreamUpdate);
   router.all('/pages/list/:orgId/:appId/:locationId*?/:language*?', $page.list);
   router.all('/pages/getpagetiles/', $page.getPageTiles);
+
   router.all('/livestream/list/:orgId*?/:appId*?/:locationId*?', $livestream.list);
+  router.all('/livestream/update/:livestreamId/:appId*?', $livestream.update);
   router.all('/files/delete/:orgId*', $image.fileDelete);
   router.get('/files/url/:orgId', $image.urlList);
 

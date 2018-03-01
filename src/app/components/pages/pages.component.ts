@@ -81,7 +81,14 @@ export class PagesComponent implements OnInit {
     "process": {},
     "menu": {}
   };
+
   pageTitle: string = "";
+  pageInDetail: boolean = false;
+  noTabShow: boolean = false;
+  hidden: boolean = false;
+  randomOrder: boolean = false;
+  alphabeticalOrder: boolean = false;
+  livestreamOnTop: boolean = false;
 
   /* Setting dragging Groups, Menus, Tiles */
   setDragged(currObj: Object, type: string, menuItem?: Object, drgExits?: boolean, procedure?: Object) {
@@ -113,9 +120,9 @@ export class PagesComponent implements OnInit {
     dragged["isPrivate"] = !this.utils.isEmptyObject(menuItem) && menuItem.hasOwnProperty("isPrivate") && !this.utils.isNullOrEmpty(menuItem["isPrivate"]) ? menuItem["isPrivate"] : false;
 
     if (type === "tile" && !this.utils.isEmptyObject(procedure)) {
-      dragged["procId"] = procedure.hasOwnProperty("procedureId") ? procedure["procedureId"] : "";
-      dragged["procName"] = procedure.hasOwnProperty("procedureName") ? procedure["procedureName"] : "";
-      dragged["isProcedure"] = procedure.hasOwnProperty("isProcedureSquare") ? procedure["isProcedureSquare"] : false;
+      dragged["procedureId"] = procedure.hasOwnProperty("procedureId") ? procedure["procedureId"] : "";
+      dragged["procedureName"] = procedure.hasOwnProperty("procedureName") ? procedure["procedureName"] : "";
+      dragged["isProcedureSquare"] = procedure.hasOwnProperty("isProcedureSquare") ? procedure["isProcedureSquare"] : false;
     }
 
     if (type === "tile" && !this.utils.isEmptyObject(currObj)) {
@@ -196,6 +203,12 @@ export class PagesComponent implements OnInit {
     this.resetDraggedGroups();
     this.dragIndex = -1;
     this.pageTitle = "";
+    this.pageInDetail = false;
+    this.noTabShow = false;
+    this.hidden = false;
+    this.randomOrder = false;
+    this.alphabeticalOrder = false;
+    this.livestreamOnTop = false;
 
     if (mergeReset && mergeReset === "reset") {
       this.isMerge = { "status": "merge" };
@@ -734,7 +747,7 @@ export class PagesComponent implements OnInit {
             this.assignEventDatas(objTiles, obj);
           }
         });
-    }else{
+    } else {
       this.assignEventDatas([], obj);
     }
   };
@@ -744,8 +757,14 @@ export class PagesComponent implements OnInit {
 
     if (!this.utils.isEmptyObject(pgObj)) {
       this.page["dragged"] = [];
-
       this.pageTitle = pgObj.hasOwnProperty("title") && !this.utils.isNullOrEmpty(pgObj["title"]) ? pgObj["title"] : "";
+
+      this.pageInDetail = pgObj.hasOwnProperty("pageInDetail") && !this.utils.isNullOrEmpty(pgObj["pageInDetail"]) ? this.utils.convertToBoolean(pgObj["pageInDetail"]) : false;
+      this.noTabShow = pgObj.hasOwnProperty("noTabShow") && !this.utils.isNullOrEmpty(pgObj["noTabShow"]) ? this.utils.convertToBoolean(pgObj["noTabShow"]) : false;
+      this.hidden = pgObj.hasOwnProperty("hidden") && !this.utils.isNullOrEmpty(pgObj["hidden"]) ? this.utils.convertToBoolean(pgObj["hidden"]) : false;
+      this.randomOrder = pgObj.hasOwnProperty("randomOrder") && !this.utils.isNullOrEmpty(pgObj["randomOrder"]) ? this.utils.convertToBoolean(pgObj["randomOrder"]) : false;
+      this.alphabeticalOrder = pgObj.hasOwnProperty("alphabeticalOrder") && !this.utils.isNullOrEmpty(pgObj["alphabeticalOrder"]) ? this.utils.convertToBoolean(pgObj["alphabeticalOrder"]) : false;
+      this.livestreamOnTop = pgObj.hasOwnProperty("livestreamOnTop") && !this.utils.isNullOrEmpty(pgObj["livestreamOnTop"]) ? this.utils.convertToBoolean(pgObj["livestreamOnTop"]) : false;
 
       for (let i = 0; i < pgObj["menuTiles"].length; i++) {
         var currDrg = pgObj["menuTiles"][i];
@@ -776,6 +795,217 @@ export class PagesComponent implements OnInit {
             var drgObj = this.setDragged(currObj, currDrg["linkTo"], currDrg, false);
             this.page["dragged"].push(drgObj);
           }
+        }
+      }
+    }
+  };
+
+  getPagePostion() {
+    var pgCount = this.pageList.length - 1;
+    var drgMenus = Object.keys(this.draggedGroups["menu"]);
+    var drgMenuCount = drgMenus.length - 1;
+    var totalCount = pgCount + drgMenuCount + 1;
+
+    return totalCount;
+  };
+
+  getDraggedMenuTiles(isSave: boolean) {
+    var items = [];
+    var chatTiles = [];
+    var streamImageToUpdate = {};
+    var obj = {};
+
+
+    if (this.page.hasOwnProperty("dragged") && this.page["dragged"].length > 0) {
+      for (let i = 0; i < this.page["dragged"].length; i++) {
+        var currDrg = this.page["dragged"][i];
+        var drgItem = {};
+
+        drgItem["name"] = currDrg["menuName"];
+        drgItem["linkTo"] = currDrg["type"];
+        drgItem["linkId"] = currDrg["obj"]["_id"];
+        drgItem["imageUrl"] = currDrg["art"];
+        drgItem["activate"] = currDrg["activate"];
+
+        if (drgItem["linkTo"] === "tile") {
+          drgItem["isChat"] = currDrg["obj"].hasOwnProperty("ischat") && !this.utils.isNullOrEmpty(currDrg["obj"]["ischat"]) ? this.utils.convertToBoolean(currDrg["obj"]["ischat"]) : false;
+
+          if (drgItem["isChat"]) {
+            chatTiles.push(drgItem);
+          }
+        }
+
+        if (currDrg.hasOwnProperty("procedureId")) {
+          drgItem["procedureId"] = currDrg["procedureId"];
+        }
+
+        if (currDrg.hasOwnProperty("procedureName")) {
+          drgItem["procedureName"] = currDrg["procedureName"];
+        }
+
+        if (currDrg.hasOwnProperty("isProcedureSquare")) {
+          drgItem["isProcedureSquare"] = currDrg["isProcedureSquare"];
+        }
+
+        if (drgItem["linkTo"] === "event" || drgItem["linkTo"] === "catilist" || drgItem["linkTo"] === 'tilist') {
+          var grpObj = currDrg["obj"];
+
+          var currDateStart = drgItem["linkTo"] === "event" ? grpObj["eventStart"] : grpObj["availableStart"];
+
+          if (currDateStart && !this.utils.isNullOrEmpty(this.utils.trim(currDateStart))) {
+            drgItem["availableOn"] = this.utils.toUTCDateTime(currDateStart);
+            drgItem["endOn"] = this.utils.toUTCDateTime(grpObj["availableEnd"]);
+          }
+        }
+
+        if (drgItem["linkTo"] === "livestream" && isSave) {
+          var lvStrmObj = currDrg["obj"];
+
+          if (lvStrmObj["art"] !== drgItem["imageUrl"]) {
+            if (!streamImageToUpdate.hasOwnProperty(drgItem["linkId"])) {
+              streamImageToUpdate[drgItem["linkId"]] = drgItem["imageUrl"];
+            }
+          }
+        }
+
+        drgItem["showName"] = currDrg["showName"];
+        drgItem["topSquare"] = currDrg["topSquare"];
+        drgItem["wideSquare"] = currDrg["wideSquare"];
+        drgItem["orderFirst"] = currDrg["orderFirst"];
+        drgItem["requiresPermission"] = currDrg["requiresPermission"];
+        drgItem["isPrivate"] = currDrg["isPrivate"];
+
+        if (!this.utils.isNullOrEmpty(drgItem["linkId"])) {
+          items.push(drgItem);
+        }
+      }
+    }
+
+    if (!this.utils.isEmptyObject(streamImageToUpdate)) {
+      var streamUpdate = {};
+      streamUpdate["linkId"] = "streamToUpdate";
+      streamUpdate["streamImageUpdate"] = streamImageToUpdate;
+      items.push(streamUpdate);
+    }
+
+    obj["items"] = items;
+    obj["chatTiles"] = chatTiles;
+
+    return obj;
+  };
+
+  getPageData(isSave: boolean) {
+    var pgobj = {}
+    var pageExists = this.page.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.page["obj"]) ? this.page["obj"] : {};
+
+    if (!this.utils.isEmptyObject(pageExists)) {
+      pgobj["_id"] = pageExists["_id"];
+    }
+
+    pgobj["dateCreated"] = pageExists.hasOwnProperty("dateCreated") && !this.utils.isNullOrEmpty(pageExists["dateCreated"]) ? pageExists["dateCreated"] : (new Date()).toUTCString();
+    pgobj["position"] = pageExists.hasOwnProperty("position") && !this.utils.isNullOrEmpty(pageExists["position"]) ? pageExists["position"] : this.getPagePostion();
+
+    if (pageExists.hasOwnProperty("notification")) {
+      pgobj["notification"] = pageExists["notification"];
+    }
+
+    if (pageExists.hasOwnProperty("smart")) {
+      pgobj["smart"] = pageExists["smart"];
+    }
+
+    pgobj["title"] = this.pageTitle;
+    pgobj["dateUpdated"] = (new Date()).toUTCString();
+
+    var currAppId = !this.utils.isNullOrEmpty(this.selectedApp) ? this.selectedApp : "-1";
+    var appIdx = this.appList.map(app => { return app['_id']; }).indexOf(currAppId);
+    var appObj = appIdx !== -1 ? this.appList[appIdx] : {};
+
+    pgobj["appId"] = currAppId;
+    pgobj["appName"] = appObj.hasOwnProperty("name") ? appObj["name"] : "";
+    pgobj["orgId"] = this.oid;
+    pgobj["locationId"] = !this.utils.isNullOrEmpty(this.selectedLocation) ? this.selectedLocation : "-1";
+    pgobj["isCategory"] = false;
+    pgobj["isHome"] = false;
+
+    var menuTiles = this.getDraggedMenuTiles(isSave);
+
+    pgobj["menuTiles"] = menuTiles["items"];
+
+
+    pgobj["pageInDetail"] = this.pageInDetail;
+    pgobj["noTabShow"] = this.noTabShow;
+    pgobj["hidden"] = this.hidden;
+    pgobj["randomOrder"] = this.randomOrder;
+    pgobj["alphabeticalOrder"] = this.alphabeticalOrder;
+    pgobj["livestreamOnTop"] = this.livestreamOnTop;
+
+    return pgobj;
+  };
+
+  savePage(e: any, showMessage?: boolean) {
+    if (!this.utils.isNullOrEmpty(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    var menuObj = this.getPageData(true);
+
+    if (this.utils.isNullOrEmpty(menuObj["title"])) {
+      this.utils.iAlert('error', 'Information', 'You must at least enter a Page title');
+      return false;
+    }
+
+    for (let i = 0; i < menuObj["menuTiles"].length; i++) {
+      if (menuObj["menuTiles"][i].hasOwnProperty("name") && this.utils.isNullOrEmpty(this.utils.trim(menuObj["menuTiles"][i]["name"]))) {
+        if (menuObj["menuTiles"][i]["linkId"].toLowerCase() !== "streamtoupdate") {
+          this.utils.iAlert('error', 'Information', 'Title can not be empty');
+
+          return false;
+        }
+      }
+    }
+
+    this.updateOrganizationIdsTile();
+
+    var streamImageToUpdateObj = {};
+    var streamUpdateIndex = -1;
+
+    streamUpdateIndex = menuObj["menuTiles"].map(s => { return s['linkId']; }).indexOf('streamToUpdate');
+
+    if (streamUpdateIndex != -1) {
+      streamImageToUpdateObj = menuObj["menuTiles"][streamUpdateIndex];
+      menuObj["menuTiles"].splice(streamUpdateIndex, 1);
+    }
+
+
+    if (menuObj.hasOwnProperty("_id") && this.selectedLanguage !== "en") {
+      menuObj[this.selectedLanguage] = {};
+      menuObj[this.selectedLanguage]["title"] = this.pageTitle;
+      menuObj[this.selectedLanguage]["menuTiles"] = menuObj["menuTiles"];
+
+      streamUpdateIndex = menuObj[this.selectedLanguage]["menuTiles"].map(s => { return s['linkId']; }).indexOf('streamToUpdate');
+
+      if (streamUpdateIndex != -1) {
+        streamImageToUpdateObj = menuObj[this.selectedLanguage]["menuTiles"][streamUpdateIndex];
+        menuObj[this.selectedLanguage]["menuTiles"].splice(streamUpdateIndex, 1);
+      }
+      delete menuObj["title"];
+      delete menuObj["menuTiles"];
+    }
+  };
+
+  updateOrganizationIdsTile() {
+    this.tilesToUpdate = [];
+    var pushedTiles = [];
+    var draggedItems = this.page.hasOwnProperty("dragged") && this.page["dragged"].length > 0 ? this.page["dragged"] : [];
+
+    for (let i = 0; i < draggedItems.length; i++) {
+      var dragItemObj = draggedItems[i];
+
+      if (!dragItemObj.hasOwnProperty["pageDragContainer"]) {
+        if (dragItemObj["type"] === "tile" && pushedTiles.indexOf(dragItemObj["obj"]["_id"]) === -1) {
+          pushedTiles.push(dragItemObj["obj"]["_id"]);
+          this.tilesToUpdate.push(dragItemObj["obj"]);
         }
       }
     }

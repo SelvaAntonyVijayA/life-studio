@@ -57,10 +57,19 @@ var getLanguages = function (lQuery, lOptions, cb) {
   });
 };
 
+var _get = function (lQuery, cb) {
+  options = {};
+
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.languages, lQuery, options, function (result) {
+    cb(result);
+  });
+};
+
 module.exports = {
   "init": init,
   "list": list,
   "save": save,
   "remove": remove,
-  "getLanguages": getLanguages
+  "getLanguages": getLanguages,
+  "_get": _get
 };
