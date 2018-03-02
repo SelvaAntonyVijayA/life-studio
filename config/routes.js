@@ -94,6 +94,7 @@ module.exports = function (app) {
   router.all('/location/list/:appId', $location.list);
 
   router.all('/page/save', $page.save);
+  router.all('/page/update/:menuId*?', $page.update);
   router.all('/page/pagestreamupdate/', $page.pageStreamUpdate);
   router.all('/pages/list/:orgId/:appId/:locationId*?/:language*?', $page.list);
   router.all('/pages/getpagetiles/', $page.getPageTiles);

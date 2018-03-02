@@ -389,7 +389,13 @@ export class PagesComponent implements OnInit {
 
   pageAssignedValues() {
     for (let i = 0; i < this.pageList.length; i++) {
-      this.showAppNamesAssigned(this.pageList[i], 'page')
+      var currPage = this.pageList[i];
+
+      if (!currPage.hasOwnProperty("position")) {
+        currPage["position"] = i;
+      }
+
+      this.showAppNamesAssigned(currPage, 'page');
     }
   };
 
@@ -673,7 +679,7 @@ export class PagesComponent implements OnInit {
 
     if (drgObj["type"] === "tile") {
       this.droppedTile = {};
-      this.droppedTile = !this.utils.isEmptyObject(drgObj) ? Object.assign({}, drgObj) : {};
+      this.droppedTile = currDrgObj;
     } else {
       if (drgObj["type"] === "menu") {
         this.pageList.push(currDrgObj);
@@ -776,6 +782,9 @@ export class PagesComponent implements OnInit {
 
             if (pgIndex !== -1) {
               currObj = this.pageList[pgIndex];
+              this.pageList.splice(pgIndex, 1);
+            } else if (this.draggedGroups["menu"].hasOwnProperty(currDrg["linkId"])) {
+              currObj = this.draggedGroups["menu"][currDrg["linkId"]];
             }
           } else if (currDrg["linkTo"] === "tile") {
             var tileIndex = currTiles.map(function (curTile) { return curTile['_id']; }).indexOf(currDrg["linkId"]);
@@ -788,6 +797,9 @@ export class PagesComponent implements OnInit {
 
             if (grpIndex !== -1) {
               currObj = this.groups[grpIndex];
+              this.groups.splice(grpIndex, 1);
+            } else if (this.draggedGroups[currDrg["linkTo"]].hasOwnProperty(currDrg["linkId"])) {
+              currObj = this.draggedGroups[currDrg["linkTo"]][currDrg["linkId"]];
             }
           }
 
@@ -819,64 +831,67 @@ export class PagesComponent implements OnInit {
     if (this.page.hasOwnProperty("dragged") && this.page["dragged"].length > 0) {
       for (let i = 0; i < this.page["dragged"].length; i++) {
         var currDrg = this.page["dragged"][i];
-        var drgItem = {};
 
-        drgItem["name"] = currDrg["menuName"];
-        drgItem["linkTo"] = currDrg["type"];
-        drgItem["linkId"] = currDrg["obj"]["_id"];
-        drgItem["imageUrl"] = currDrg["art"];
-        drgItem["activate"] = currDrg["activate"];
+        if (!currDrg.hasOwnProperty('pageDragContainer')) {
+          var drgItem = {};
 
-        if (drgItem["linkTo"] === "tile") {
-          drgItem["isChat"] = currDrg["obj"].hasOwnProperty("ischat") && !this.utils.isNullOrEmpty(currDrg["obj"]["ischat"]) ? this.utils.convertToBoolean(currDrg["obj"]["ischat"]) : false;
+          drgItem["name"] = currDrg["menuName"];
+          drgItem["linkTo"] = currDrg["type"];
+          drgItem["linkId"] = currDrg["obj"]["_id"];
+          drgItem["imageUrl"] = currDrg["art"];
+          drgItem["activate"] = currDrg["activate"];
 
-          if (drgItem["isChat"]) {
-            chatTiles.push(drgItem);
-          }
-        }
+          if (drgItem["linkTo"] === "tile") {
+            drgItem["isChat"] = currDrg["obj"].hasOwnProperty("ischat") && !this.utils.isNullOrEmpty(currDrg["obj"]["ischat"]) ? this.utils.convertToBoolean(currDrg["obj"]["ischat"]) : false;
 
-        if (currDrg.hasOwnProperty("procedureId")) {
-          drgItem["procedureId"] = currDrg["procedureId"];
-        }
-
-        if (currDrg.hasOwnProperty("procedureName")) {
-          drgItem["procedureName"] = currDrg["procedureName"];
-        }
-
-        if (currDrg.hasOwnProperty("isProcedureSquare")) {
-          drgItem["isProcedureSquare"] = currDrg["isProcedureSquare"];
-        }
-
-        if (drgItem["linkTo"] === "event" || drgItem["linkTo"] === "catilist" || drgItem["linkTo"] === 'tilist') {
-          var grpObj = currDrg["obj"];
-
-          var currDateStart = drgItem["linkTo"] === "event" ? grpObj["eventStart"] : grpObj["availableStart"];
-
-          if (currDateStart && !this.utils.isNullOrEmpty(this.utils.trim(currDateStart))) {
-            drgItem["availableOn"] = this.utils.toUTCDateTime(currDateStart);
-            drgItem["endOn"] = this.utils.toUTCDateTime(grpObj["availableEnd"]);
-          }
-        }
-
-        if (drgItem["linkTo"] === "livestream" && isSave) {
-          var lvStrmObj = currDrg["obj"];
-
-          if (lvStrmObj["art"] !== drgItem["imageUrl"]) {
-            if (!streamImageToUpdate.hasOwnProperty(drgItem["linkId"])) {
-              streamImageToUpdate[drgItem["linkId"]] = drgItem["imageUrl"];
+            if (drgItem["isChat"]) {
+              chatTiles.push(drgItem);
             }
           }
-        }
 
-        drgItem["showName"] = currDrg["showName"];
-        drgItem["topSquare"] = currDrg["topSquare"];
-        drgItem["wideSquare"] = currDrg["wideSquare"];
-        drgItem["orderFirst"] = currDrg["orderFirst"];
-        drgItem["requiresPermission"] = currDrg["requiresPermission"];
-        drgItem["isPrivate"] = currDrg["isPrivate"];
+          if (currDrg.hasOwnProperty("procedureId")) {
+            drgItem["procedureId"] = currDrg["procedureId"];
+          }
 
-        if (!this.utils.isNullOrEmpty(drgItem["linkId"])) {
-          items.push(drgItem);
+          if (currDrg.hasOwnProperty("procedureName")) {
+            drgItem["procedureName"] = currDrg["procedureName"];
+          }
+
+          if (currDrg.hasOwnProperty("isProcedureSquare")) {
+            drgItem["isProcedureSquare"] = currDrg["isProcedureSquare"];
+          }
+
+          if (drgItem["linkTo"] === "event" || drgItem["linkTo"] === "catilist" || drgItem["linkTo"] === 'tilist') {
+            var grpObj = currDrg["obj"];
+
+            var currDateStart = drgItem["linkTo"] === "event" ? grpObj["eventStart"] : grpObj["availableStart"];
+
+            if (currDateStart && !this.utils.isNullOrEmpty(this.utils.trim(currDateStart))) {
+              drgItem["availableOn"] = this.utils.toUTCDateTime(currDateStart);
+              drgItem["endOn"] = this.utils.toUTCDateTime(grpObj["availableEnd"]);
+            }
+          }
+
+          if (drgItem["linkTo"] === "livestream" && isSave) {
+            var lvStrmObj = currDrg["obj"];
+
+            if (lvStrmObj["art"] !== drgItem["imageUrl"]) {
+              if (!streamImageToUpdate.hasOwnProperty(drgItem["linkId"])) {
+                streamImageToUpdate[drgItem["linkId"]] = drgItem["imageUrl"];
+              }
+            }
+          }
+
+          drgItem["showName"] = currDrg["showName"];
+          drgItem["topSquare"] = currDrg["topSquare"];
+          drgItem["wideSquare"] = currDrg["topSquare"];
+          drgItem["orderFirst"] = currDrg["orderFirst"];
+          drgItem["requiresPermission"] = currDrg["requiresPermission"];
+          drgItem["isPrivate"] = currDrg["isPrivate"];
+
+          if (!this.utils.isNullOrEmpty(drgItem["linkId"])) {
+            items.push(drgItem);
+          }
         }
       }
     }
@@ -928,9 +943,7 @@ export class PagesComponent implements OnInit {
     pgobj["isHome"] = false;
 
     var menuTiles = this.getDraggedMenuTiles(isSave);
-
     pgobj["menuTiles"] = menuTiles["items"];
-
 
     pgobj["pageInDetail"] = this.pageInDetail;
     pgobj["noTabShow"] = this.noTabShow;
@@ -942,7 +955,7 @@ export class PagesComponent implements OnInit {
     return pgobj;
   };
 
-  savePage(e: any, showMessage?: boolean) {
+  savePage(e: any, showMessage?: boolean, isAnother?: string, menuCurrObj?: Object) {
     if (!this.utils.isNullOrEmpty(e)) {
       e.preventDefault();
       e.stopPropagation();
@@ -992,6 +1005,134 @@ export class PagesComponent implements OnInit {
       delete menuObj["title"];
       delete menuObj["menuTiles"];
     }
+
+    this.save(menuObj, streamImageToUpdateObj, showMessage, isAnother, menuCurrObj);
+  };
+
+  save(menuObj: Object, streamObj: Object, showMessage?: boolean, isAnother?: string, menuCurrObj?: Object) {
+    var type = menuObj.hasOwnProperty("_id") ? "update" : "save";
+    var menuId = type === "update" ? menuObj["_id"] : "-1";
+
+    this.pageService.pageSaveUpdate(menuObj, type, menuId)
+      .then(menuResObj => {
+        if (showMessage) {
+          var alertMessage = type === "save" ? "Page Created" : "Page Updated";
+          this.utils.iAlert('success', '', alertMessage + ' Successfully');
+        }
+
+        var menuId = menuResObj.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(menuResObj["_id"]) ? menuResObj["_id"] : "-1";
+
+        if (menuId !== "1") {
+          this.checksaveUpdate(menuId, type, isAnother);
+        }
+
+        this.updatePagesPostion(menuId);
+
+        if (!this.utils.isEmptyObject(streamObj)) {
+          this.updatePageLiveStreamImage(streamObj["streamImageUpdate"]);
+          this.updateLiveStreamImage(streamObj["streamImageUpdate"]);
+        }
+      });
+  };
+
+  updatePagesPostion(menuId: string) {
+    var pagesExists = this.pageList.length > 0 ? this.pageList.map(p => Object.assign({}, p)) : [];
+    var drgMenus = Object.assign({}, this.draggedGroups["menu"]);
+
+    for (let menuId in drgMenus) {
+      pagesExists.push(drgMenus[menuId]);
+    }
+
+    if (pagesExists.length > 0) {
+      for (let i = 0; i < pagesExists.length; i++) {
+        var currPage = pagesExists[i];
+
+        if (currPage["_id"] !== menuId) {
+          var position = {
+            "pageId": currPage["_id"],
+            "position": currPage["position"]
+          };
+
+          this.pageService.pageUpdate(position);
+        }
+      }
+    };
+  };
+
+  updatePageLiveStreamImage(streamObj: Object) {
+    for (let streamId in streamObj) {
+      var liveStreamObj = {
+        "streamId": streamId,
+        "url": streamObj[streamId]
+      };
+
+      this.pageService.updatePageLiveStreamImage(liveStreamObj);
+    }
+  };
+
+  updateLiveStreamImage(streamObj: Object) {
+    for (let ky in streamObj) {
+      var liveStreamObj = {
+        "art": streamObj[ky]
+      };
+
+      this.pageService.updateLiveStreamImage(liveStreamObj);
+    }
+  };
+
+  checksaveUpdate(menuId: string, type: string, isAnother?: string) {
+    var formData = { "_id": menuId };
+
+    this.pageService.getPages(this.oid, this.selectedApp, this.selectedLocation, formData)
+      .then(pgs => {
+
+        if (this.utils.isArray(pgs) && pgs.length > 0) {
+          var isUpdatePg = false;
+
+          if (this.utils.isNullOrEmpty(isAnother) && type === "update") {
+            isUpdatePg = this.checkDraggedMenus(menuId);
+          };
+
+          if (isUpdatePg) {
+            this.draggedGroups[menuId] = pgs[0];
+          } else {
+            if (type === "update") {
+              var pgIndex = this.pageList.map(function (pg) { return pg['_id']; }).indexOf(menuId);
+
+              if (pgIndex !== -1) {
+                this.showAppNamesAssigned(pgs[0], 'page');
+                this.pageList[pgIndex] = pgs[0];
+              }
+            } else {
+              this.showAppNamesAssigned(pgs[0], 'page');
+              this.pageList.push(pgs[0])
+            }
+          }
+
+          if (this.utils.isNullOrEmpty(isAnother)) {
+            this.page["obj"] = pgs[0];
+          }
+        }
+      });
+  };
+
+  checkDraggedMenus(menuId: string) {
+    var result = false;
+
+    if (this.page.hasOwnProperty("dragged") && this.page["dragged"].length > 0) {
+      for (let i = 0; i < this.page["dragged"].length; i++) {
+        var currDragged = this.page["dragged"][i];
+
+        if (currDragged["type"] === "menu" && currDragged.hasOwnProperty("obj") && !this.utils.isEmptyObject(currDragged["obj"])) {
+          if (currDragged["obj"] === menuId) {
+            result = true;
+            break;
+          }
+        }
+      }
+    }
+
+    return result;
   };
 
   updateOrganizationIdsTile() {

@@ -31,11 +31,12 @@ export class PageService {
       .catch(this.handleError);
   };
 
-  getPages(orgId: string, appId: string, locId: string) {
+  getPages(orgId: string, appId: string, locId: string, formData?: Object) {
     var pageUrl = "/pages/list/" + orgId + "/" + appId + "/" + locId;
+    var dataToPost = !this.utils.isNullOrEmpty(formData) && !this.utils.isEmptyObject(formData) ? formData : {};
 
     return this.http
-      .get(pageUrl)
+      .post(pageUrl, JSON.stringify(dataToPost), { headers: this.headers })
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);
@@ -48,6 +49,40 @@ export class PageService {
       .then(response => response.json())
       .catch(this.handleError);
   };
+
+  pageSaveUpdate(menuObj: Object, type: string, menuId?: string) {
+    var menuUrl = type === "save" ? "/page/save" : "/page/update/" + menuId;
+
+    return this.http
+      .post(menuUrl, JSON.stringify({ "form_data": menuObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  updatePageLiveStreamImage(streamObj: Object) {
+    return this.http
+      .post("/page/pagestreamupdate/", JSON.stringify({ "form_data": streamObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  updateLiveStreamImage(streamObj: Object) {
+    return this.http
+      .post("/livestream/update/", JSON.stringify({ "form_data": streamObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  pageUpdate(menuUpdateObj: Object) {
+    return this.http
+      .post("/page/update/", JSON.stringify({ "form_data": menuUpdateObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  }
 
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);

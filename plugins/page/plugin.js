@@ -12,6 +12,7 @@ var init = function (app) {
 
 var save = function (req, res, next) {
   var pages = req.body.form_data;
+  var tokenObj = $authtoken.get(req.cookies.token);
   pages = _setPageObj(pages);
 
   $async.waterfall([
@@ -40,7 +41,7 @@ var save = function (req, res, next) {
       });
     }], function (err) {
       if (__util.isNullOrEmpty(pages._id)) {
-        pages["createdBy"] = context.tokenSession.uid;
+        pages["createdBy"] = tokenObj.uid;
 
         $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.page, pages, function (result) {
           var saveResult = { "_id": result };
@@ -48,19 +49,52 @@ var save = function (req, res, next) {
         });
       } else {
         options = {};
-        query = {};
-        query._id = pages._id;
+        var uQuery = {};
+        uQuery._id = pages._id;
         delete pages["_id"];
 
-        var tokenObj = $authtoken.get(req.cookies.token);
         pages["updatedBy"] = tokenObj.uid;
 
-        _update(query, options, pages, function (result) {
-          var updateResult = { "_id": query._id };
+        _update(uQuery, options, pages, function (result) {
+          var updateResult = { "_id": uQuery._id };
           res.send(updateResult);
         });
       }
     });
+};
+
+var update = function (req, res, next) {
+  position = {};
+  query = {};
+  options = {};
+
+  if (__util.isNullOrEmpty(req.params.menuId)) {
+    var pagePosition = req.body.form_data;
+
+    $async.each(pagePosition, function (pPosion, loop) {
+      query._id = pPosion.pageId;
+      position = { position: pPosion.position };
+
+      _update(query, options, position, function (result) {
+        loop();
+      });
+
+    }, function () {
+      res.send({});
+    });
+
+  } else {
+    query._id = req.params.menuId;
+    position = req.body.form_data;
+
+    var tokenObj = $authtoken.get(req.cookies.token);
+    position.updatedBy = tokenObj.uid;
+
+    _update(query, options, position, function (result) {
+      var updateResult = { "_id": query._id };
+      res.send(updateResult);
+    });
+  }
 };
 
 var list = function (req, res, next) {
@@ -70,6 +104,10 @@ var list = function (req, res, next) {
         query = {};
         options = {};
         options.sort = [['position', 'asc']];
+
+        if (req.body.hasOwnProperty("form_data") && req.body["form_data"].hasOwnProperty("menuId")) {
+          query._id = req.body["form_data"]["menuId"];
+        }
 
         query.orgId = req.params.orgId;
         query.appId = req.params.appId;
@@ -104,7 +142,7 @@ var list = function (req, res, next) {
             page.menuTiles = page[language].menuTiles;
           }
 
-          if (!__util.isEmptyObject(page.menuTiles) && page.menuTiles.length > 0) {
+          if (page.hasOwnProperty("menuTiles") && !__util.isEmptyObject(page.menuTiles) && page.menuTiles.length > 0) {
             var squares = _.filter(page.menuTiles, function (square) {
               return !__util.isNullOrEmpty(square.isPrivate) && square.isPrivate == true && square.linkTo == 'menu';
             });
@@ -423,6 +461,7 @@ var pageStreamUpdate = function (req, res, next) {
 module.exports = {
   "init": init,
   "save": save,
+  "update": update,
   "list": list,
   "isRoleGroup": isRoleGroup,
   "getPageTiles": getPageTiles,
