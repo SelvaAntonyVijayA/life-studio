@@ -608,7 +608,7 @@ export class TilesComponent implements OnInit {
   emptyString: string = "";
   symbols = {};
   tileSelect: Function;
-  cursor: string = "crosshair";
+  cursor: string = "move";
 
   ngOnInit() {
     //this.showSymbols();

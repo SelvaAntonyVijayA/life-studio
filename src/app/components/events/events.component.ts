@@ -1187,7 +1187,7 @@ export class EventsComponent implements OnInit {
     }
   };
 
-  newEvent(e: any, ) {
+  newEvent(e: any) {
     this.checkNew('Would you like to save your previous work?', (r) => {
       if (r) {
         this.saveEvent("", false, false, "new");

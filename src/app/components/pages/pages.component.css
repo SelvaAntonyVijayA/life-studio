@@ -181,6 +181,10 @@
   cursor: pointer;
 }
 
+.page_list_single:hover {
+  background-color: #F2F2F2;
+}
+
 .page_list_single.selected {
   background-color: #3c3c3c;
   color: #ffffff;
@@ -513,8 +517,12 @@
   width: 138px;
   min-height: 42px;
   color: #000000;
-  cursor: pointer;
+  cursor: move;
   border: 1px outset #F2F2F2;
+}
+
+.group_list_single:hover {
+  background-color: #F2F2F2;
 }
 
 .group-art {

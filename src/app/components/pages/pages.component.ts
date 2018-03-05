@@ -772,7 +772,7 @@ export class PagesComponent implements OnInit {
       this.alphabeticalOrder = pgObj.hasOwnProperty("alphabeticalOrder") && !this.utils.isNullOrEmpty(pgObj["alphabeticalOrder"]) ? this.utils.convertToBoolean(pgObj["alphabeticalOrder"]) : false;
       this.livestreamOnTop = pgObj.hasOwnProperty("livestreamOnTop") && !this.utils.isNullOrEmpty(pgObj["livestreamOnTop"]) ? this.utils.convertToBoolean(pgObj["livestreamOnTop"]) : false;
 
-      for (let i = 0; i < pgObj["menuTiles"].length; i++) {
+      for (let i = pgObj["menuTiles"].length - 1; 0 <= i; i--) {
         var currDrg = pgObj["menuTiles"][i];
         var currObj = {};
 
@@ -806,6 +806,12 @@ export class PagesComponent implements OnInit {
           if (!this.utils.isEmptyObject(currObj)) {
             var drgObj = this.setDragged(currObj, currDrg["linkTo"], currDrg, false);
             this.page["dragged"].push(drgObj);
+
+            if (currDrg["linkTo"] !== "tile") {
+              if (!this.draggedGroups[currDrg["linkTo"]].hasOwnProperty(currDrg["linkTo"])) {
+                this.draggedGroups[currDrg["linkTo"]][currDrg["linkId"]] = currObj;
+              }
+            }
           }
         }
       }
@@ -829,7 +835,8 @@ export class PagesComponent implements OnInit {
 
 
     if (this.page.hasOwnProperty("dragged") && this.page["dragged"].length > 0) {
-      for (let i = 0; i < this.page["dragged"].length; i++) {
+
+      for (let i = this.page["dragged"].length - 1; 0 <= i; i--) {
         var currDrg = this.page["dragged"][i];
 
         if (!currDrg.hasOwnProperty('pageDragContainer')) {
@@ -1032,6 +1039,12 @@ export class PagesComponent implements OnInit {
           this.updatePageLiveStreamImage(streamObj["streamImageUpdate"]);
           this.updateLiveStreamImage(streamObj["streamImageUpdate"]);
         }
+
+        if (!this.utils.isNullOrEmpty(isAnother)) {
+          if (isAnother === "new") {
+            this.pageReset("reset");
+          }
+        }
       });
   };
 
@@ -1149,6 +1162,278 @@ export class PagesComponent implements OnInit {
           this.tilesToUpdate.push(dragItemObj["obj"]);
         }
       }
+    }
+  };
+
+  getPageValues(isSave: boolean) {
+    var pageExists = this.page.hasOwnProperty("obj") ? Object.assign({}, this.page["obj"]) : {};
+    var menuPage = {};
+
+    if (pageExists.hasOwnProperty("_id")) {
+      menuPage["_id"] = pageExists["_id"];
+    }
+
+    var currAppId = !this.utils.isNullOrEmpty(this.selectedApp) ? this.selectedApp : "-1";
+    var appIdx = this.appList.map(app => { return app['_id']; }).indexOf(currAppId);
+    var appObj = appIdx !== -1 ? this.appList[appIdx] : {};
+
+    menuPage["title"] = this.pageTitle;
+    menuPage["appId"] = this.selectedApp;
+    menuPage["appName"] = appObj["name"];
+    menuPage["orgId"] = this.oid;
+    menuPage["locationId"] = this.selectedLocation;
+    menuPage["isCategory"] = false;
+    menuPage["position"] = pageExists.hasOwnProperty("position") ? pageExists["position"] : "-1";
+
+    var menuTiles = this.getDraggedMenuTiles(isSave);
+
+    //menuPage.menuTiles = menuTiles.Tiles;
+
+    if (pageExists.hasOwnProperty("_id") && this.selectedLanguage !== "en") {
+      menuPage[this.selectedLanguage] = pageExists.hasOwnProperty(this.selectedLanguage) ? pageExists[this.selectedLanguage] : {};
+      menuPage[this.selectedLanguage]["title"] = this.pageTitle;
+      menuPage[this.selectedLanguage]["menuTiles"] = menuTiles["items"];
+      delete menuPage["title"];
+    }
+
+    menuPage["pageInDetail"] = this.pageInDetail;
+    menuPage["noTabShow"] = this.noTabShow;
+    menuPage["hidden"] = this.hidden;
+    menuPage["randomOrder"] = this.randomOrder;
+    menuPage["alphabeticalOrder"] = this.alphabeticalOrder;
+    menuPage["livestreamOnTop"] = this.livestreamOnTop;
+
+    if (this.selectedLanguage === "en") {
+      menuPage["menuTiles"] = menuTiles["items"];
+
+      if (this.utils.isNullOrEmpty(this.utils.trim(menuPage["title"])) && menuPage["menuTiles"].length === 0) {
+        return {};
+      }
+    }
+
+    return menuPage;
+  };
+
+  processDraggedValues(obj: Object) {
+    if (obj.hasOwnProperty("menuTiles") && obj["menuTiles"].length > 0) {
+      for (let i = 0; i < obj["menuTiles"].length; i++) {
+        var currMenuTile = obj["menuTiles"][i];
+
+
+        if (!currMenuTile.hasOwnProperty("requiresPermission")) {
+          currMenuTile["requiresPermission"] = false;
+        }
+
+        if (!currMenuTile.hasOwnProperty("isPrivate")) {
+          currMenuTile["isPrivate"] = false;
+        }
+      }
+    }
+
+    return obj;
+  };
+
+  tabIconObjectCheck(obj1: Object, obj2: Object) {
+    if (obj2 && !obj2.hasOwnProperty("tabIcon")) {
+      delete obj1["tabIcon"];
+    }
+
+    if (obj2 && !obj2.hasOwnProperty("tabIconIsMask")) {
+      delete obj1["tabIconIsMask"];
+    }
+
+    if (obj2 && !obj2.hasOwnProperty("tabTitleHidden")) {
+      delete obj1["tabTitleHidden"];
+    }
+
+    if (obj2 && !obj2.hasOwnProperty("tabIconWidth")) {
+      delete obj1["tabIconWidth"];
+    }
+
+    if (obj2 && !obj2.hasOwnProperty("tabIconHeight")) {
+      delete obj1["tabIconHeight"];
+    }
+
+    if (obj1 && !obj1.hasOwnProperty("tabIcon")) {
+      delete obj2["tabIcon"];
+    }
+
+    if (obj1 && !obj1.hasOwnProperty("tabIconIsMask")) {
+      delete obj2["tabIconIsMask"];
+    }
+
+    if (obj1 && !obj1.hasOwnProperty("tabTitleHidden")) {
+      delete obj2["tabTitleHidden"];
+    }
+
+    if (obj1 && !obj1.hasOwnProperty("tabIconWidth")) {
+      delete obj2["tabIconWidth"];
+    }
+
+    if (obj1 && !obj1.hasOwnProperty("tabIconHeight")) {
+      delete obj2["tabIconHeight"];
+    }
+  };
+
+  newPage(e: any) {
+    this.checkPageMenu('Would you like to save your previous work?', 'Save', 'Discard', false, (r) => {
+      if (r) {
+        this.savePage("", false, "new");
+      } else {
+        this.pageReset("reset");
+      }
+    });
+  };
+
+  /*setBlankMenu() {
+    this.pageReset("reset");
+  };*/
+
+  checkPageMenu(message: string, yesButton: string, noButton: string, isSave?: boolean, cb?: any) {
+    var pageExists = this.page.hasOwnProperty("obj") ? Object.assign({}, this.page["obj"]) : {};
+
+    var selectedLanguage = this.selectedLanguage;
+    var obj1 = this.getPageValues(isSave);
+    var obj2 = {};
+
+    if (!this.utils.isEmptyObject(pageExists)) {
+      obj2 = pageExists;
+      obj2 = this.processDraggedValues(obj2);
+      delete obj2["dateCreated"];
+      delete obj2["createdBy"];
+      delete obj2["updatedBy"];
+      delete obj2["dateUpdated"];
+      delete obj2["background_landscape"];
+      delete obj2["background_portrait"];
+      delete obj2["top_banner"];
+      delete obj2["notification"];
+      delete obj2["smart"];
+      delete obj2["Apps"];
+      delete obj2["fontColor"];
+
+      delete obj2["background"];
+      delete obj2["pageBackgroundColor"];
+      delete obj2["tabTitleHidden"];
+
+      delete obj2["isRoleBased"];
+      delete obj2["isHome"];
+      delete obj2["backgroundColor"];
+      delete obj2["bannerFontColor"];
+      delete obj2["bannerColor"];
+      delete obj2["navbarFontSize"];
+      delete obj2["top_banner"];
+      delete obj2["topBannerUrl"];
+      delete obj2["tabIcon"];
+      delete obj2["tabIconIsMask"];
+      delete obj2["tabTitleHidden"];
+      delete obj2["tabIconWidth"];
+      delete obj2["tabIconHeight"];
+
+      delete obj2["pageLayout"];
+      delete obj2["singleWidthSquareDetails"];
+      delete obj2["doubleWidthSquareDetails"];
+      delete obj2["webBackground"];
+
+      delete obj2["follow"];
+      delete obj2["linkToNotifications"];
+
+
+      delete obj2["tileNotifications"];
+      delete obj2["tileSmart"];
+      delete obj2["tileApps"];
+      delete obj2["tileProcedure"];
+      delete obj2["isRole"];
+      delete obj2["isSmart"];
+      delete obj2["isNotification"];
+      delete obj2[obj2["_id"]];
+      delete obj2["pageTitle"];
+
+      if (this.selectedLanguage !== "en") {
+        delete obj2["title"];
+        delete obj2["menuTiles"];
+      }
+    }
+    delete obj1["notification"];
+    delete obj1["smart"];
+    delete obj1["Apps"];
+    delete obj1["isRoleBased"]
+
+    if (obj1.hasOwnProperty("position")) {
+      obj1["position"] = parseInt(obj1["position"]);
+    }
+
+    if (obj2.hasOwnProperty("position")) {
+      obj2["position"] = parseInt(obj2["position"]);
+    }
+
+    if (obj2 && !obj2.hasOwnProperty("background")) {
+      delete obj1["background"];
+    }
+
+    for (let i = 0; i < this.languageList.length; i++) {
+      var currLang = this.languageList[i];
+
+      if (currLang["code"] !== this.selectedLanguage) {
+        delete obj1[currLang["code"]];
+        delete obj2[currLang["code"]];
+      }
+    }
+
+    if (obj2 && !obj2.hasOwnProperty("webBackground")) {
+      delete obj1["webBackground"];
+    }
+
+    if (obj2 && !obj2.hasOwnProperty("scrollIconsOver")) {
+      delete obj1["scrollIconsOver"];
+    } else if (obj1 && !obj1.hasOwnProperty("scrollIconsOver")) {
+      delete obj2["scrollIconsOver"];
+    }
+
+    if (obj2 && !obj2.hasOwnProperty("scrollIconsUnder")) {
+      delete obj1["scrollIconsUnder"];
+    } else if (obj1 && !obj1.hasOwnProperty("scrollIconsUnder")) {
+      delete obj2["scrollIconsUnder"];
+    }
+
+    if (obj1 && !obj1.hasOwnProperty("webBackground")) {
+      delete obj2["webBackground"];
+    }
+
+    if (!this.utils.isEmptyObject(obj1) && !this.utils.isEmptyObject(obj2)) {
+      var linkIds = [];
+
+      if (obj2.hasOwnProperty("menuTiles")) {
+        for (let i = 0; i < obj2["menuTiles"].length; i++) {
+          var currMenuTile = obj2["menuTiles"][i];
+
+          if (currMenuTile.hasOwnProperty("imageUrl") && this.utils.isNullOrEmpty(currMenuTile["imageUrl"])) {
+            linkIds.push(currMenuTile["linkId"]);
+          }
+        }
+      }
+
+      if (linkIds.length > 0) {
+        if (obj1.hasOwnProperty("menuTiles")) {
+          for (let i = 0; i < obj1["menuTiles"].length; i++) {
+            var currMenuTile = obj1["menuTiles"][i];
+
+            if (linkIds.indexOf(currMenuTile["linkId"]) > -1 && !this.utils.isNullOrEmpty(currMenuTile["imageUrl"]) && currMenuTile["imageUrl"].indexOf("tile_default") > -1) {
+              currMenuTile["imageUrl"] = "";
+            }
+          }
+        }
+      }
+    }
+
+    this.tabIconObjectCheck(obj1, obj2);
+    var result = this.utils.compareObj(obj1, obj2);
+
+    if (!result) {
+      this.utils.iAlertConfirm("confirm", "Confirm", message, yesButton, noButton, (res) => {
+        cb(res["resolved"]);
+      });
+    } else {
+      cb(false, true);
     }
   };
 
