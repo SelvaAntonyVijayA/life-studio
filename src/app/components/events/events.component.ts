@@ -391,8 +391,13 @@ export class EventsComponent implements OnInit {
 
   /* Dragged tile on drop */
   private onDrop(event, isDynamic) {
+    if (this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
+      this.clearInterval();
+    }
+
     var draggedTile = this.setDefaultDraggedTile(event);
 
+    this.event
     if (this.event.hasOwnProperty("draggedTiles")) {
       if (this.dragIndex === -1) {
         this.event["draggedTiles"].push(draggedTile);
@@ -416,6 +421,10 @@ export class EventsComponent implements OnInit {
 
   /* Deleting current dragged tile */
   deleteDraggedTile(idx: number) {
+    if (this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
+      this.clearInterval();
+    }
+
     this.droppedTile = {};
     var totalIdx = this.event["draggedTiles"].length - 1;
     var currIdx = totalIdx - idx;
@@ -464,6 +473,10 @@ export class EventsComponent implements OnInit {
     var dragged = { "uniqueId": this.getUniqueId(), "eventDragContainer": true };
     var totalIdx = this.event["draggedTiles"].length - 1;
 
+    if (this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
+      this.clearInterval();
+    }
+
     if (this.dragIndex === -1) {
       this.dragIndex = totalIdx === idx ? 0 : idx === 0 ? totalIdx : totalIdx - idx;
       this.event["draggedTiles"].splice(this.dragIndex, 0, dragged);
@@ -500,6 +513,10 @@ export class EventsComponent implements OnInit {
   };
 
   moveUpDown(move: string, idx: number) {
+    if (this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
+      this.clearInterval();
+    }
+
     var totalIdx = this.event["draggedTiles"].length - 1;
     var fromIdx = totalIdx === idx ? 0 : idx === 0 ? totalIdx : totalIdx - idx;
     var toIdx = totalIdx === 0 ? 0 : move === "up" ? fromIdx + 1 : fromIdx - 1;
@@ -546,6 +563,10 @@ export class EventsComponent implements OnInit {
   };
 
   replicateTile(obj: any) {
+    if (this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
+      this.clearInterval();
+    }
+
     var replicateTile = !this.utils.isEmptyObject(obj) && obj.hasOwnProperty("tile") ? obj["tile"] : {};
     var replicatedTile = this.setDefaultDraggedTile(replicateTile);
     this.event["draggedTiles"].push(replicatedTile);
@@ -577,7 +598,7 @@ export class EventsComponent implements OnInit {
     var eventData = this.getEventObj(id);
 
     if (this.utils.isNullOrEmpty(eventData["name"])) {
-      alert('You must at least enter an Event name');
+      this.utils.iAlert('error', 'Information', 'You must at least enter an Event name');
       return false;
     } else if (isDuplicate) {
       eventData["name"] = "Copy of " + eventData["name"];
@@ -590,12 +611,12 @@ export class EventsComponent implements OnInit {
     }*/
 
     if (this.eventCategoryId === "-1") {
-      alert('Please select a type for the Event');
+      this.utils.iAlert('error', 'Information', 'Please select a type for the Event');
       return false;
     }
 
     if (this.utils.isNullOrEmpty(this.eventStart) || this.utils.isNullOrEmpty(this.availableEnd)) {
-      alert('Oops! You need to complete the Event dates above first');
+      this.utils.iAlert('error', 'Information', 'Oops! You need to complete the Event dates above first');
       return false;
     }
 
@@ -610,7 +631,7 @@ export class EventsComponent implements OnInit {
     var triggerChk = this.checkTriggerTime();
 
     if (!triggerChk) {
-      alert('The Activate date has to be within the Events dates above');
+      this.utils.iAlert('error', 'Information', 'The Activate date has to be within the Events dates above');
       return false;
     }
 
@@ -620,7 +641,7 @@ export class EventsComponent implements OnInit {
       var activityCalendarResult = this.checkCalendarDate(eventData["tiles"]);
 
       if (!activityCalendarResult) {
-        alert('Activity Date is empty');
+        this.utils.iAlert('error', 'Information', 'Activity Date is empty');
         return false;
       }
     }
@@ -628,7 +649,7 @@ export class EventsComponent implements OnInit {
     var isActivityDateChk = this.checkActivityTime();
 
     if (!isActivityDateChk) {
-      alert('Activity date should be within Event dates above');
+      this.utils.iAlert('error', 'Information', 'Activity date should be within Event dates above');
       return false;
     }
 
@@ -637,7 +658,7 @@ export class EventsComponent implements OnInit {
 
       if (currTileObj.hasOwnProperty("triggerdata")) {
         if (currTileObj["triggerdata"].hasOwnProperty("type") && currTileObj["triggerdata"]["type"] == "-1") {
-          alert("Please select tigger type");
+          this.utils.iAlert('error', 'Information', 'Please select tigger type');
           return false;
         }
 
@@ -650,7 +671,7 @@ export class EventsComponent implements OnInit {
                 getDeactivatedTime.setMinutes(getDeactivatedTime.getMinutes() + parseInt(currTileObj["triggerdata"]["delayToDeActivate"]));
 
                 if (!(new Date(currTileObj["triggerdata"]["triggerdata"]["availableFrom"]) < getDeactivatedTime)) {
-                  alert('You must select other deactivate option for the tile or increase the delay minutes');
+                  this.utils.iAlert('error', 'Information', 'You must select other deactivate option for the tile or increase the delay minutes');
                   return false;
                 }
               }
@@ -664,7 +685,7 @@ export class EventsComponent implements OnInit {
       var last = eventData["tiles"][eventData["tiles"].length - 1];
 
       if (last.hasOwnProperty("triggerdata") && last["triggerdata"].hasOwnProperty["stopType"] && last["triggerdata"]["stopType"] == 'aftertile') {
-        alert('You must select other deactivate option for last tile');
+        this.utils.iAlert('error', 'Information', 'You must select other deactivate option for last tile');
         return false;
       }
     }
@@ -692,7 +713,7 @@ export class EventsComponent implements OnInit {
         if (showMessage) {
           var alertMessage = isNew ? "Event Created" : "Event Updated";
           alertMessage = isDuplicate ? "Duplicate Event Created" : alertMessage;
-          alert(alertMessage);
+          this.utils.iAlert('success', '', alertMessage);
         }
 
         evtObj = self.assignCategoryName(evtObj);
@@ -807,20 +828,20 @@ export class EventsComponent implements OnInit {
     var untilDate = !this.utils.isNullOrEmpty(this.availableEnd) ? (new Date(this.availableEnd)) : "";
 
     if (!this.utils.isNullOrEmpty(eventStartDate) && !this.utils.isNullOrEmpty(untilDate) && untilDate < eventStartDate) {
-      alert('The Event start date must be lesser than the Until date');
+      this.utils.iAlert('error', 'Information', 'The Event start date must be lesser than the Until date');
       triggerChk = false;
       chkSelect = true;
     }
 
     if (!this.utils.isNullOrEmpty(eventStartDate) && !this.utils.isNullOrEmpty(untilDate) && eventStartDate > untilDate) {
-      alert('The Until date date must be greater than the start date');
+      this.utils.iAlert('error', 'Information', 'The Until date date must be greater than the start date');
       triggerChk = false;
       chkSelect = true;
     }
 
     if (!this.utils.isNullOrEmpty(eventStartDate) && !this.utils.isNullOrEmpty(untilDate)) {
       if ((untilDate < eventStartDate) && !chkSelect) {
-        alert('The Event start date has to be within the dates above');
+        this.utils.iAlert('error', 'Information', 'The Event start date has to be within the dates above');
         triggerChk = false;
       }
     }
@@ -847,7 +868,7 @@ export class EventsComponent implements OnInit {
           activeTime = dragTileObj["triggerdata"].hasOwnProperty("timeToActivate") && !this.utils.isNullOrEmpty(dragTileObj["triggerdata"]["timeToActivate"]) ? dragTileObj["triggerdata"]["timeToActivate"] : "";
 
           if (this.utils.isNullOrEmpty(activeTime)) {
-            alert('The activate date can not be empty');
+            this.utils.iAlert('error', 'Information', 'The activate date can not be empty');
             triggerChk = false;
 
             return false;
@@ -866,7 +887,7 @@ export class EventsComponent implements OnInit {
 
         if (!this.utils.isNullOrEmpty(eventStartDate) && !this.utils.isNullOrEmpty(untilDate) && !this.utils.isNullOrEmpty(activeTime)) {
           if ((eventStartDate > activeTime) || (untilDate < activeTime)) {
-            alert('The activate date has to be within the Events dates above');
+            this.utils.iAlert('error', 'Information', 'The activate date has to be within the Events dates above');
             chkSelect = true;
             triggerChk = false;
 
@@ -876,7 +897,7 @@ export class EventsComponent implements OnInit {
 
         if (!this.utils.isNullOrEmpty(eventStartDate) && !this.utils.isNullOrEmpty(untilDate) && !this.utils.isNullOrEmpty(activeTime) && !this.utils.isNullOrEmpty(deActivateTime)) {
           if (deActivateTime < activeTime && !chkSelect) {
-            alert('The activate date must be lesser than the Deactivate date');
+            this.utils.iAlert('error', 'Information', 'The activate date must be lesser than the Deactivate date');
             triggerChk = false;
 
             return false;
@@ -1024,29 +1045,29 @@ export class EventsComponent implements OnInit {
             return;
           }
 
-          var isConfirm = confirm("The entered category didn't match with existing, would you like to add press OK.");
+          this.utils.iAlertConfirm("confirm", "Confirm", "The entered category didn't match with existing, would you like to add press OK.", "Ok", "Cancel", (r) => {
+            if (r["resolved"]) {
+              var currEventCategory = ui.value;
+              var eventCatObj = {
+                "name": ui.value,
+                "organizationId": self.oid
+              };
 
-          if (isConfirm) {
-            var currEventCategory = ui.value;
-            var eventCatObj = {
-              "name": ui.value,
-              "organizationId": self.oid
-            };
-
-            self.eventService.saveEventCategory(eventCatObj)
-              .then(catObj => {
-                if (!self.utils.isEmptyObject(catObj) && catObj.hasOwnProperty("_id")) {
-                  eventCatObj["_id"] = catObj["_id"];
-                  self.eventCategories.push(eventCatObj);
-                } else {
-                  alert("Category not saved");
-                }
-              });
-          } else {
-            ui.element.val("");
-            ui.inputbox.val("");
-            ui.inputbox.data("ui-autocomplete").term = "";
-          }
+              self.eventService.saveEventCategory(eventCatObj)
+                .then(catObj => {
+                  if (!self.utils.isEmptyObject(catObj) && catObj.hasOwnProperty("_id")) {
+                    eventCatObj["_id"] = catObj["_id"];
+                    self.eventCategories.push(eventCatObj);
+                  } else {
+                    this.utils.iAlert('error', 'Information', 'Category not saved');
+                  }
+                });
+            } else {
+              ui.element.val("");
+              ui.inputbox.val("");
+              ui.inputbox.data("ui-autocomplete").term = "";
+            }
+          });
         }
       });
     }
@@ -1152,7 +1173,7 @@ export class EventsComponent implements OnInit {
           this.eventName = evtName;
         }
       } else {
-        alert('Please select or create an Event');
+        this.utils.iAlert('error', 'Information', 'Please select or create an Event');
       }
     }
   };
@@ -1260,14 +1281,14 @@ export class EventsComponent implements OnInit {
 
             if (!result && !isEventModified) {
               this.clearInterval();
-              var r = confirm("The event has been updated by another user, click proceed to apply the changes");
 
-              if (r) {
-                this.assignEventDatas(evtObj[0], true);
-              } else {
-                this.updateTileInterval();
-              }
-
+              this.utils.iAlertConfirm("confirm", "Confirm", "The event has been updated by another user, click proceed to apply the changes", "Proceed", "Cancel", (r) => {
+                if (r["resolved"]) {
+                  this.assignEventDatas(evtObj[0], true);
+                } else {
+                  this.updateTileInterval();
+                }
+              });
             } else if (isEventModified) {
               this.assignEventDatas(evtObj[0]);
             }
@@ -1652,12 +1673,12 @@ export class EventsComponent implements OnInit {
     var eventId = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id") ? this.event["obj"]["_id"] : "-1";
 
     if (!isEventModified && !isSaved) {
-      var r = confirm("The tiles in this event is modified, Save and activate the tile");
-
-      if (r) {
-        var eventSaveObj = { "tileId": tileId, "idx": idx };
-        this.saveEvent("", false, false, type, eventSaveObj);
-      }
+      this.utils.iAlertConfirm("confirm", "Confirm", "The tiles in this event is modified, Save and activate the tile", "Save & Activate", "Cancel", (r) => {
+        if (r["resolved"]) {
+          var eventSaveObj = { "tileId": tileId, "idx": idx };
+          this.saveEvent("", false, false, type, eventSaveObj);
+        }
+      });
     } else if ((isEventModified && !isSaved) || isSaved) {
       this.activateDeactivate(eventId, tileId, type, idx);
     }
@@ -1697,24 +1718,24 @@ export class EventsComponent implements OnInit {
     e.stopPropagation();
 
     if (this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id")) {
-      var r = confirm("Are you sure want to delete this Event?");
+      this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Event?", "Delete", "Cancel", (r) => {
+        if (r["resolved"]) {
+          var eventId = this.event["obj"]["_id"];
 
-      if (r) {
-        var eventId = this.event["obj"]["_id"];
-
-        this.eventService.removeEvent(eventId).then(deleteRes => {
-          if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted") && deleteRes["deleted"]) {
-            var evtIndex = this.events.map(function (evtCat) { return evtCat['_id']; }).indexOf(eventId);
-            this.events.splice(evtIndex, 1);
-            this.clearInterval();
-            this.event = {};
-            this.resetEvent("reset");
-            alert("Event Removed");
-          }
-        });
-      }
+          this.eventService.removeEvent(eventId).then(deleteRes => {
+            if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted") && deleteRes["deleted"]) {
+              var evtIndex = this.events.map(function (evtCat) { return evtCat['_id']; }).indexOf(eventId);
+              this.events.splice(evtIndex, 1);
+              this.clearInterval();
+              this.event = {};
+              this.resetEvent("reset");
+              this.utils.iAlert('success', '', 'Event Removed');
+            }
+          });
+        }
+      });
     } else {
-      alert("Event not selected");
+      this.utils.iAlert('error', 'Information', 'Event not selected');
     }
   };
 
@@ -1725,7 +1746,7 @@ export class EventsComponent implements OnInit {
     if (this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id")) {
       this.saveEvent("", true, true);
     } else {
-      alert("Event not selected");
+      this.utils.iAlert('error', 'Information', 'Event not selected');
     }
   };
 
@@ -1733,8 +1754,9 @@ export class EventsComponent implements OnInit {
     var isModified = this.newEventCompare();
 
     if (!isModified) {
-      var r = confirm(message);
-      cb(r);
+      this.utils.iAlertConfirm("confirm", "Confirm", message, "Save", "Cancel", (r) => {
+        cb(r["resolved"])
+      });
     } else {
       cb(false);
     }
