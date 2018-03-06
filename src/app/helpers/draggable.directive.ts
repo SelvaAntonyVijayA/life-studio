@@ -12,14 +12,13 @@ export interface DraggableOptions {
 })
 export class DraggableDirective {
   constructor(private dragService?: DragService, private el?: ElementRef) {
-
   }
 
   private options: DraggableOptions = {};
 
   @HostBinding('draggable')
   get draggable() {
-    var isDraggable = this.options.page != "tiles" ? true : false;
+    var isDraggable = this.options.page != "tiles" && this.options["data"].hasOwnProperty("_id") ? true : false;
     return isDraggable;
   };
 

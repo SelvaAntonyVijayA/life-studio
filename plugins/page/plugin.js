@@ -105,8 +105,8 @@ var list = function (req, res, next) {
         options = {};
         options.sort = [['position', 'asc']];
 
-        if (req.body.hasOwnProperty("form_data") && req.body["form_data"].hasOwnProperty("menuId")) {
-          query._id = req.body["form_data"]["menuId"];
+        if (req.body.hasOwnProperty("form_data") && req.body["form_data"].hasOwnProperty("_id")) {
+          query._id = req.body["form_data"]["_id"];
         }
 
         query.orgId = req.params.orgId;
@@ -458,6 +458,21 @@ var pageStreamUpdate = function (req, res, next) {
     });
 };
 
+var remove = function (req, res, next) {
+  query = {};
+  query._id = req.params.menuId;
+
+  var data = {
+    deleted: true,
+    dateUpdated: (new Date((new Date()).toUTCString()))
+  };
+
+  _update(query, {}, data, function (result) {
+    var delResult = {"deleted": result};
+    res.send(delResult);
+  });
+};
+
 module.exports = {
   "init": init,
   "save": save,
@@ -467,5 +482,6 @@ module.exports = {
   "getPageTiles": getPageTiles,
   "getAppMenu": getAppMenu,
   "_update": _update,
-  "pageStreamUpdate": pageStreamUpdate
+  "pageStreamUpdate": pageStreamUpdate,
+  "remove": remove
 };

@@ -33,7 +33,7 @@ export class PageService {
 
   getPages(orgId: string, appId: string, locId: string, formData?: Object) {
     var pageUrl = "/pages/list/" + orgId + "/" + appId + "/" + locId;
-    var dataToPost = !this.utils.isNullOrEmpty(formData) && !this.utils.isEmptyObject(formData) ? formData : {};
+    var dataToPost = !this.utils.isNullOrEmpty(formData) && !this.utils.isEmptyObject(formData) ? {"form_data": formData} : {};
 
     return this.http
       .post(pageUrl, JSON.stringify(dataToPost), { headers: this.headers })
@@ -82,7 +82,15 @@ export class PageService {
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);
-  }
+  };
+
+  removeMenu(menuId: string) {
+    return this.http
+      .get("/page/remove/" + menuId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
 
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);

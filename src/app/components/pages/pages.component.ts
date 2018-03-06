@@ -209,6 +209,7 @@ export class PagesComponent implements OnInit {
     this.randomOrder = false;
     this.alphabeticalOrder = false;
     this.livestreamOnTop = false;
+    this.resetBlankMenu();
 
     if (mergeReset && mergeReset === "reset") {
       this.isMerge = { "status": "merge" };
@@ -713,18 +714,20 @@ export class PagesComponent implements OnInit {
   selectPage(e: any, pgObj: Object) {
     e.preventDefault();
     e.stopPropagation();
-    var self = this;
 
+    var self = this;
     var pgExist = false;
 
-    if (!this.utils.isEmptyObject(this.page) && this.page.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.page["obj"])) {
-      if (this.page["obj"].hasOwnProperty("_id") && !this.utils.isNullOrEmpty(this.page["obj"]["_id"])) {
-        pgExist = this.page["obj"]["_id"] === pgObj["_id"] ? true : false;
+    if (pgObj.hasOwnProperty("_id")) {
+      if (!this.utils.isEmptyObject(this.page) && this.page.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.page["obj"])) {
+        if (this.page["obj"].hasOwnProperty("_id") && !this.utils.isNullOrEmpty(this.page["obj"]["_id"])) {
+          pgExist = this.page["obj"]["_id"] === pgObj["_id"] ? true : false;
+        }
       }
-    }
 
-    if (!pgExist) {
-      this.setPageData(true, pgObj);
+      if (!pgExist) {
+        this.setPageData(true, pgObj);
+      }
     }
   };
 
@@ -970,6 +973,14 @@ export class PagesComponent implements OnInit {
 
     var menuObj = this.getPageData(true);
 
+    if (!menuObj.hasOwnProperty("_id")) {
+      var isBlankObj = this.pageList[0];
+
+      if (!this.utils.isEmptyObject(isBlankObj) && isBlankObj.hasOwnProperty("_id")) {
+        return false;
+      }
+    }
+
     if (this.utils.isNullOrEmpty(menuObj["title"])) {
       this.utils.iAlert('error', 'Information', 'You must at least enter a Page title');
       return false;
@@ -996,7 +1007,6 @@ export class PagesComponent implements OnInit {
       streamImageToUpdateObj = menuObj["menuTiles"][streamUpdateIndex];
       menuObj["menuTiles"].splice(streamUpdateIndex, 1);
     }
-
 
     if (menuObj.hasOwnProperty("_id") && this.selectedLanguage !== "en") {
       menuObj[this.selectedLanguage] = {};
@@ -1029,6 +1039,14 @@ export class PagesComponent implements OnInit {
 
         var menuId = menuResObj.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(menuResObj["_id"]) ? menuResObj["_id"] : "-1";
 
+        if (type === "save") {
+          if (menuId !== "-1") {
+            this.selectedPage = menuId;
+          }
+
+          this.resetBlankMenu();
+        }
+
         if (menuId !== "1") {
           this.checksaveUpdate(menuId, type, isAnother);
         }
@@ -1042,7 +1060,7 @@ export class PagesComponent implements OnInit {
 
         if (!this.utils.isNullOrEmpty(isAnother)) {
           if (isAnother === "new") {
-            this.pageReset("reset");
+            this.setBlankMenu();
           }
         }
       });
@@ -1280,14 +1298,39 @@ export class PagesComponent implements OnInit {
       if (r) {
         this.savePage("", false, "new");
       } else {
-        this.pageReset("reset");
+        this.setBlankMenu();
       }
     });
   };
 
-  /*setBlankMenu() {
+  setBlankMenu() {
     this.pageReset("reset");
-  };*/
+
+    var blankPageObj = {
+      "pageTitle": "New Page",
+      "position": 0
+    };
+
+    for (let i = 0; i < this.pageList.length; i++) {
+      var pagePosition = parseInt(this.pageList[i]["position"]);
+      this.pageList[i]["position"] = pagePosition + 1;
+    }
+
+    this.pageList.push(blankPageObj);
+  };
+
+  resetBlankMenu() {
+    var pgObj = this.pageList.length > 0 ? this.pageList[0] : {};
+
+    if (!pgObj.hasOwnProperty("_id")) {
+      this.pageList.splice(0, 1);
+
+      for (let i = 0; i < this.pageList.length; i++) {
+        var pagePosition = parseInt(this.pageList[i]["position"]);
+        this.pageList[i]["position"] = pagePosition - 1;
+      }
+    }
+  };
 
   checkPageMenu(message: string, yesButton: string, noButton: string, isSave?: boolean, cb?: any) {
     var pageExists = this.page.hasOwnProperty("obj") ? Object.assign({}, this.page["obj"]) : {};
@@ -1353,7 +1396,7 @@ export class PagesComponent implements OnInit {
         delete obj2["menuTiles"];
       }
     }
-    
+
     delete obj1["notification"];
     delete obj1["smart"];
     delete obj1["Apps"];
@@ -1435,6 +1478,35 @@ export class PagesComponent implements OnInit {
       });
     } else {
       cb(false, true);
+    }
+  };
+
+  deletePage(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (this.page.hasOwnProperty("obj") && this.page["obj"].hasOwnProperty("_id")) {
+      this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Page?", "Delete", "Cancel", (r) => {
+        if (r["resolved"]) {
+          var menuId = this.page["obj"]["_id"];
+          
+          this.pageService.removeMenu(menuId).then(deleteRes => {
+            if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted")) {
+              var pgIdx = this.pageList.map(function (pg) { return pg['_id']; }).indexOf(menuId);
+              this.pageList.splice(pgIdx, 1);
+
+              if(this.draggedGroups["menu"].hasOwnProperty(menuId)){
+                delete this.draggedGroups["menu"][menuId];
+              }
+
+              this.pageReset("reset");
+              this.utils.iAlert('success', '', 'Page Removed');
+            }
+          });
+        }
+      });
+    }else{
+      this.utils.iAlert('error', 'Information', 'Page not selected');
     }
   };
 

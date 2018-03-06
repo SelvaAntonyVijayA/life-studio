@@ -36,7 +36,7 @@
           <label>
             <input value="true" [(ngModel)]="hidden" style="margin-top: 2px;" type="checkbox" value="">Hide from main menu</label>
         </div>
-        <div style="float:left; margin-top: 5px; padding-left: 5px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
+        <div style="float:left; margin-top: 5px; padding-left: 6px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
           <label>
             <input value="true" [(ngModel)]="livestreamOnTop" style="margin-top: 2px;" type="checkbox" value="">Live Stream On Top</label>
         </div>
@@ -49,7 +49,7 @@
       <button (click)="savePage($event, true)" class="ili-btn page_save">
         Save
       </button>
-      <button class="ili-btn page_delete">
+      <button (click)="deletePage($event, true)" class="ili-btn page_delete">
         Delete
       </button>
       <button class="ili-btn page_setup">
@@ -80,7 +80,7 @@
           <span *ngIf="pg['isRole']" title="pg['tileApps']" class="step smart smarticon">
             <i class="icon ion-android-person"></i>
           </span>
-          <div class="app_page_up_down">
+          <div *ngIf="pg.hasOwnProperty('_id')" class="app_page_up_down">
             <span (click)="pgMoveUpDown(pg, 'up', i)" class="glyphicon btn_page_up glyphicon-arrow-up"></span>
             <span (click)="pgMoveUpDown(pg, 'down', i)" class="glyphicon btn_page_down glyphicon-arrow-down"></span>
           </div>
