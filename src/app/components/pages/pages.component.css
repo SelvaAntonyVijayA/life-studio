@@ -215,7 +215,7 @@
 
 .main_page_container {
   position: relative;
-  width: 558px;
+  width: 587px;
   height: 880px;
   float: left;
   margin-left: 1px;
@@ -228,7 +228,7 @@
   margin-top: 9px;
   margin-left: 5px;
   min-height: 150px;
-  width: 547px;
+  width: 569px;
   padding-top: 10px;
   margin-bottom: 2px;
   border-color: #ddd;
@@ -247,7 +247,7 @@
   margin-top: 9px;
   margin-left: 5px;
   min-height: 150px;
-  width: 547px;
+  width: 569px;
   padding-top: 10px;
   margin-bottom: 2px;
   border-color: #ddd;
@@ -371,10 +371,10 @@
 }
 
 .page_tiles_list_single {
-  float: left;
+  float: right;
   position: relative;
   text-align: left;
-  margin-left: 9px;
+  margin-right: 9px;
   margin-bottom: 4px;
   width: 256px;
   max-height: 58px;

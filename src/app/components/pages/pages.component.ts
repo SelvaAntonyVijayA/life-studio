@@ -1353,6 +1353,7 @@ export class PagesComponent implements OnInit {
         delete obj2["menuTiles"];
       }
     }
+    
     delete obj1["notification"];
     delete obj1["smart"];
     delete obj1["Apps"];

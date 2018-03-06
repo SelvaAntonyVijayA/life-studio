@@ -631,9 +631,82 @@ export class TilesComponent implements OnInit {
     this.tileData.emit(data);
   };
 
+  /*Tile Notify Icons */
+  tileNotifyIcons() {
+    var currTile = this.tile;
+    var tileNotifications = "";
+    var tileSmart = "";
+    var pageApps = "";
+    var tileProcedure = "";
+    var tileRules = "";
+
+    if (currTile.hasOwnProperty("notification") && currTile["notification"].hasOwnProperty("apps") && currTile["notification"]["apps"].length > 0) {
+      for (let j = 0; j < currTile["notification"]["apps"].length; j++) {
+        var app = currTile["notification"]["apps"][j];
+        tileNotifications += j === 0 ? app.name : ", " + app.name;
+      }
+
+      currTile["isNotification"] = "block";
+    } else {
+      currTile["isNotification"] = "none";
+    }
+
+    if (currTile.hasOwnProperty("smart") && currTile["smart"].hasOwnProperty("apps") && currTile["smart"]["apps"].length > 0) {
+      for (let k = 0; k < currTile["smart"]["apps"].length; k++) {
+        var smartApp = currTile["smart"]["apps"][k];
+        tileSmart += k == 0 ? smartApp.name : ", " + smartApp.name;
+      }
+
+      currTile["isSmart"] = "block";
+    } else {
+      currTile["isSmart"] = "none";
+    }
+
+    if (currTile.hasOwnProperty("Apps") && currTile["Apps"].length > 0) {
+      for (let l = 0; l < currTile["Apps"].length; l++) {
+        var app = currTile["Apps"][l];
+        pageApps += l === 0 ? app.appName : ", " + app.appName;
+      }
+    }
+
+    if (currTile.hasOwnProperty("Procedure") && currTile["Procedure"].length > 0) {
+      for (let m = 0; m < currTile["Procedure"].length; m++) {
+        var procedure = currTile["Procedure"][m];
+        tileProcedure += m === 0 ? procedure.name : ", " + procedure.name;
+      }
+
+      currTile["isProcedure"] = "block";
+    } else {
+      currTile["isProcedure"] = "none";
+    }
+
+    if (currTile.hasOwnProperty("hsrRuleEngine") && currTile["hsrRuleEngine"].length > 0) {
+      for (let n = 0; n < currTile["hsrRuleEngine"].length; n++) {
+        var hsr = currTile["hsrRuleEngine"][n];
+        tileRules += n === 0 ? hsr.ruleName : ", " + hsr.ruleName;
+      }
+
+      currTile["isRules"] = "block";
+    } else {
+      currTile["isRules"] = "none";
+    }
+
+    currTile["isWgt"] = currTile.hasOwnProperty("isWeight") && currTile["isWeight"] ? "block" : "none";
+    currTile["isRole"] = currTile.hasOwnProperty("isRoleBased") && currTile["isRoleBased"] ? "block" : "none";
+    currTile["tileNotifications"] = tileNotifications;
+    currTile["tileSmart"] = tileSmart;
+    currTile["tileApps"] = pageApps;
+    currTile["tileProcedure"] = tileProcedure;
+    currTile["tileHealthStatusRules"] = tileRules;
+  };
+
   ngOnDestroy() {
     if (this.page === "tiles") {
       this.tileSelect();
+    }
+
+    if(this.page === "category"){
+      this.tileNotifyIcons()
     }
   };
 };

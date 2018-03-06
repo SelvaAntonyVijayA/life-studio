@@ -140,7 +140,7 @@
 
 .main_event_container {
   position: relative;
-  width: 726px;
+  width: 756px;
   height: 880px;
   float: left;
   margin-left: 1px;
@@ -153,7 +153,7 @@
   margin-top: 9px;
   margin-left: 5px;
   min-height: 220px;
-  width: 708px;
+  width: 740px;
   padding-top: 10px;
   margin-bottom: 2px;
   border-color: #ddd;
@@ -199,7 +199,7 @@
   margin-top: 9px;
   margin-left: 5px;
   min-height: 250px;
-  width: 708px;
+  width: 740px;
   padding-top: 10px;
   margin-bottom: 2px;
   border-color: #ddd;
@@ -326,14 +326,14 @@
 
 .deactivate_delay {
   position: relative;
-  width: 83.8%;
+  width: 80.1%;
   float: right;
   margin-bottom: 10px;
 }
 
 .deactivate_time {
   position: relative;
-  width: 83.8%;
+  width: 80.1%;
   float: right;
   margin-bottom: 10px;
 }
@@ -341,14 +341,14 @@
 .activate_delay {
   margin-top: 10px;
   position: relative;
-  width: 83.8%;
+  width: 80.1%;
   float: right;
 }
 
 .activate_time {
   margin-top: 10px;
   position: relative;
-  width: 83.8%;
+  width: 80.1%;
   float: right;
 }
 
