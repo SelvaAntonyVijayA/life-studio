@@ -313,11 +313,28 @@ export class PagesComponent implements OnInit {
 
   languageChange(langCode: string) {
     this.selectedLanguage = langCode;
+
+    if ((this.page.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.page["obj"])) && ((this.selectedLanguage !== "en" && this.page["obj"].hasOwnProperty(this.selectedLanguage)) || this.selectedLanguage === "en")) {
+      this.checkPageMenu('Would you like to save your previous work?', 'Save', 'Discard', false, (r) => {
+        if (r) {
+          this.savePage("", false, "lang");
+        } else {
+          this.setPageData(true, this.page["obj"]);
+        }
+      });
+    }
   };
 
   appChange(appId: string) {
     this.selectedApp = appId;
     this.getLocations(appId);
+    this.pageReset("merge");
+  };
+
+  locationChange(locId: string) {
+    this.selectedLocation = locId;
+    this.pageReset("merge");
+    this.getPages("", true);
   };
 
   getApps() {
@@ -349,7 +366,7 @@ export class PagesComponent implements OnInit {
           this.selectedLocation = this.locationList[0]["_id"];
         }
 
-        this.getPages();
+        this.getPages("", true);
       });
   };
 
@@ -371,7 +388,7 @@ export class PagesComponent implements OnInit {
     });
   };
 
-  getPages(pageId?: string) {
+  getPages(pageId?: string, isSelect?: boolean) {
     if (!this.utils.isNullOrEmpty(this.selectedApp) && !this.utils.isNullOrEmpty(this.selectedLocation)) {
       this.pageService.getPages(this.oid, this.selectedApp, this.selectedLocation)
         .then(pgs => {
@@ -379,6 +396,10 @@ export class PagesComponent implements OnInit {
             this.pageList = pgs;
             this.selectedPage = this.pageList[0]["_id"];
             this.pageAssignedValues();
+
+            if (isSelect) {
+              this.selectPage("", this.pageList[0]);
+            }
           } else {
             this.pageList = [];
           }
@@ -711,9 +732,11 @@ export class PagesComponent implements OnInit {
     return dragName;
   };
 
-  selectPage(e: any, pgObj: Object) {
-    e.preventDefault();
-    e.stopPropagation();
+  selectPage(e: any, pgObj: Object, isSave?: boolean) {
+    if (!this.utils.isNullOrEmpty(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
     var self = this;
     var pgExist = false;
@@ -726,7 +749,13 @@ export class PagesComponent implements OnInit {
       }
 
       if (!pgExist) {
-        this.setPageData(true, pgObj);
+        this.checkPageMenu('Would you like to save your previous work?', 'Save', 'Discard', false, (r) => {
+          if (r) {
+            this.savePage("", false, "select", pgObj);
+          } else {
+            this.setPageData(true, pgObj);
+          }
+        });
       }
     }
   };
@@ -735,9 +764,11 @@ export class PagesComponent implements OnInit {
     if (isSelect) {
       this.pageReset();
 
-      if (!this.utils.isEmptyObject(obj) && obj.hasOwnProperty("menuTiles") && obj["menuTiles"].length > 0) {
-        for (let i = 0; i < obj["menuTiles"].length; i++) {
-          var currDrg = obj["menuTiles"][i];
+      var menuTiles = this.selectedLanguage === "en" && !this.utils.isEmptyObject(obj) && obj.hasOwnProperty("menuTiles") && obj["menuTiles"].length > 0 ? obj["menuTiles"] : this.selectedLanguage !== "en" && !this.utils.isEmptyObject(obj) && obj.hasOwnProperty(this.selectedLanguage) && obj[this.selectedLanguage].hasOwnProperty("menuTiles") && obj[this.selectedLanguage]["menuTiles"].length > 0 ? obj[this.selectedLanguage]["menuTiles"] : [];
+
+      if (menuTiles.length > 0) {
+        for (let i = 0; i < menuTiles.length; i++) {
+          var currDrg = menuTiles[i];
           if (!this.utils.isEmptyObject(currDrg) && currDrg.hasOwnProperty("linkTo") && !this.utils.isNullOrEmpty(currDrg["linkTo"])) {
             if (currDrg["linkTo"] === "tile") {
               this.draggedTiles.push(currDrg["linkId"]);
@@ -766,7 +797,8 @@ export class PagesComponent implements OnInit {
 
     if (!this.utils.isEmptyObject(pgObj)) {
       this.page["dragged"] = [];
-      this.pageTitle = pgObj.hasOwnProperty("title") && !this.utils.isNullOrEmpty(pgObj["title"]) ? pgObj["title"] : "";
+      var pgTitle = this.selectedLanguage === "en" && pgObj.hasOwnProperty("title") && !this.utils.isNullOrEmpty(pgObj["title"]) ? pgObj["title"] : pgObj.hasOwnProperty(this.selectedLanguage) && pgObj[this.selectedLanguage].hasOwnProperty("title") && !this.utils.isNullOrEmpty(pgObj[this.selectedLanguage]["title"]) ? pgObj[this.selectedLanguage]["title"] : "";
+      this.pageTitle = pgTitle;
 
       this.pageInDetail = pgObj.hasOwnProperty("pageInDetail") && !this.utils.isNullOrEmpty(pgObj["pageInDetail"]) ? this.utils.convertToBoolean(pgObj["pageInDetail"]) : false;
       this.noTabShow = pgObj.hasOwnProperty("noTabShow") && !this.utils.isNullOrEmpty(pgObj["noTabShow"]) ? this.utils.convertToBoolean(pgObj["noTabShow"]) : false;
@@ -775,8 +807,10 @@ export class PagesComponent implements OnInit {
       this.alphabeticalOrder = pgObj.hasOwnProperty("alphabeticalOrder") && !this.utils.isNullOrEmpty(pgObj["alphabeticalOrder"]) ? this.utils.convertToBoolean(pgObj["alphabeticalOrder"]) : false;
       this.livestreamOnTop = pgObj.hasOwnProperty("livestreamOnTop") && !this.utils.isNullOrEmpty(pgObj["livestreamOnTop"]) ? this.utils.convertToBoolean(pgObj["livestreamOnTop"]) : false;
 
-      for (let i = pgObj["menuTiles"].length - 1; 0 <= i; i--) {
-        var currDrg = pgObj["menuTiles"][i];
+      var menuTiles = this.selectedLanguage === "en" && pgObj.hasOwnProperty("menuTiles") && pgObj["menuTiles"].length > 0 ? pgObj["menuTiles"] : this.selectedLanguage !== "en" && pgObj.hasOwnProperty(this.selectedLanguage) && pgObj[this.selectedLanguage].hasOwnProperty("menuTiles") ? pgObj[this.selectedLanguage]["menuTiles"] : [];
+
+      for (let i = menuTiles.length - 1; 0 <= i; i--) {
+        var currDrg = menuTiles[i];
         var currObj = {};
 
         if (!this.utils.isEmptyObject(currDrg) && currDrg.hasOwnProperty("linkTo") && !this.utils.isNullOrEmpty(currDrg["linkTo"])) {
@@ -977,6 +1011,7 @@ export class PagesComponent implements OnInit {
       var isBlankObj = this.pageList[0];
 
       if (!this.utils.isEmptyObject(isBlankObj) && isBlankObj.hasOwnProperty("_id")) {
+        this.utils.iAlert('error', 'Information', 'Please select new to create new page');
         return false;
       }
     }
@@ -1061,6 +1096,8 @@ export class PagesComponent implements OnInit {
         if (!this.utils.isNullOrEmpty(isAnother)) {
           if (isAnother === "new") {
             this.setBlankMenu();
+          } else if (isAnother === "select") {
+            this.setPageData(true, menuCurrObj);
           }
         }
       });
@@ -1140,8 +1177,12 @@ export class PagesComponent implements OnInit {
             }
           }
 
-          if (this.utils.isNullOrEmpty(isAnother)) {
+          if (this.utils.isNullOrEmpty(isAnother) || (!this.utils.isNullOrEmpty(isAnother) && isAnother === "lang")) {
             this.page["obj"] = pgs[0];
+
+            if (!this.utils.isNullOrEmpty(isAnother) && isAnother === "lang") {
+              this.setPageData(true, this.page["obj"]);
+            }
           }
         }
       });
@@ -1489,13 +1530,13 @@ export class PagesComponent implements OnInit {
       this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Page?", "Delete", "Cancel", (r) => {
         if (r["resolved"]) {
           var menuId = this.page["obj"]["_id"];
-          
+
           this.pageService.removeMenu(menuId).then(deleteRes => {
             if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted")) {
               var pgIdx = this.pageList.map(function (pg) { return pg['_id']; }).indexOf(menuId);
               this.pageList.splice(pgIdx, 1);
 
-              if(this.draggedGroups["menu"].hasOwnProperty(menuId)){
+              if (this.draggedGroups["menu"].hasOwnProperty(menuId)) {
                 delete this.draggedGroups["menu"][menuId];
               }
 
@@ -1505,7 +1546,7 @@ export class PagesComponent implements OnInit {
           });
         }
       });
-    }else{
+    } else {
       this.utils.iAlert('error', 'Information', 'Page not selected');
     }
   };

@@ -10,35 +10,35 @@
         <select [ngModel]="selectedApp" (ngModelChange)="appChange($event)" class="form-control input-sm app_box">
           <option *ngFor="let app of appList; let i = index" [value]="app?._id">{{app?.name}}</option>
         </select>
-        <select [(ngModel)]="selectedLocation" class="form-control input-sm location_box">
+        <select [ngModel]="selectedLocation" (ngModelChange)="locationChange($event)" class="form-control input-sm location_box">
           <option *ngFor="let loc of locationList; let i = index" [value]="loc?._id">{{loc?.name}}</option>
         </select>
       </div>
       <div class="page_checks">
         <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 3px; min-height: 18px;" class="checkbox">
           <label>
-            <input value="true" [(ngModel)]="noTabShow" style="margin-top: 2px;" type="checkbox" value="">Navigation tab disabled</label>
+            <input value="true" [(ngModel)]="noTabShow" style="margin-top: 2px;" type="checkbox">Navigation tab disabled</label>
         </div>
         <div style="float:left; margin-top: 5px; padding-left: 5px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
           <label>
-            <input value="true" [(ngModel)]="randomOrder" style="margin-top: 2px;" type="checkbox" value="">Random Order</label>
+            <input value="true" [(ngModel)]="randomOrder" style="margin-top: 2px;" type="checkbox">Random Order</label>
         </div>
         <div style="float:left; margin-top: 5px; padding-left: 5px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
           <label>
             <input value="true" [disabled]="(page.hasOwnProperty('dragged') && (page['dragged'].length > 1 || (page['dragged'].length === 1 && page['dragged'][0]['type'] === 'menu')))? true : false"
-              [(ngModel)]="pageInDetail" style="margin-top: 2px;" type="checkbox" value="">Open straight to content</label>
+              [(ngModel)]="pageInDetail" style="margin-top: 2px;" type="checkbox">Open straight to content</label>
         </div>
         <div style="float:left; margin-top: 5px; padding-left: 5px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
           <label>
-            <input value="true" [(ngModel)]="alphabeticalOrder" style="margin-top: 2px;" type="checkbox" value="">Alphabetical Order</label>
+            <input value="true" [(ngModel)]="alphabeticalOrder" style="margin-top: 2px;" type="checkbox">Alphabetical Order</label>
         </div>
         <div style="float:left; margin-top: 5px; padding-left: 5px; margin-bottom:0px; margin-right: 13px; min-height: 18px;" class="checkbox">
           <label>
-            <input value="true" [(ngModel)]="hidden" style="margin-top: 2px;" type="checkbox" value="">Hide from main menu</label>
+            <input value="true" [(ngModel)]="hidden" style="margin-top: 2px;" type="checkbox">Hide from main menu</label>
         </div>
         <div style="float:left; margin-top: 5px; padding-left: 6px;  margin-bottom:0px; min-height: 18px;" class="checkbox">
           <label>
-            <input value="true" [(ngModel)]="livestreamOnTop" style="margin-top: 2px;" type="checkbox" value="">Live Stream On Top</label>
+            <input value="true" [(ngModel)]="livestreamOnTop" style="margin-top: 2px;" type="checkbox">Live Stream On Top</label>
         </div>
       </div>
     </div>
