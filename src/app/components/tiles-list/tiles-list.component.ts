@@ -111,7 +111,7 @@ export class TilesListComponent {
       for (let i = 0; i < tileObjData.length; i++) {
         var currTileObj = tileObjData[i];
         var currTileId = currTileObj["_id"];
-        let index = this.tiles.map(function (t) { return t['_id']; }).indexOf(currTileId);
+        let index = this.tiles.map(t => { return t['_id']; }).indexOf(currTileId);
         var updateResult = index !== -1 ? true : this.draggedSeparatedTiles.hasOwnProperty(currTileId) ? true : false;
 
         if (!updateResult) {
@@ -239,11 +239,16 @@ export class TilesListComponent {
         tilesData[i]["categoryName"] = categoryName;
         tilesData[i] = this.tileNotifyIcons(tilesData[i]);
       }
+
+      if (this.draggedTiles.length > 0 && this.utils.isEmptyObject(this.draggedSeparatedTiles)) {
+        var tileIds = this.draggedTiles;
+        this.separateDraggedTiles(tileIds);
+      }
     }
   };
 
   getCategoryName(id: string) {
-    return this.tileCategories.filter(function (cat) {
+    return this.tileCategories.filter(cat => {
       return cat["_id"] === id;
     });
   };
@@ -279,7 +284,7 @@ export class TilesListComponent {
 
   private releaseDrop(currTile: any) {
     if (currTile && !this.utils.isEmptyObject(currTile) && currTile.hasOwnProperty("_id")) {
-      let index = this.tiles.map(function (t) { return t['_id']; }).indexOf(currTile._id);
+      let index = this.tiles.map(t => { return t['_id']; }).indexOf(currTile._id);
 
       if (index >= 0) {
         var tileToPush = this.tiles[index];
@@ -334,7 +339,7 @@ export class TilesListComponent {
     if (tileIds && tileIds.length > 0) {
       var matchedTileIds = [];
 
-      var tileDatas = this.tiles.filter(function (currTile, idx) {
+      var tileDatas = this.tiles.filter((currTile, idx) => {
         if (tileIds.indexOf(currTile["_id"]) > -1) {
           matchedTileIds.push(currTile["_id"]);
         }
@@ -344,7 +349,7 @@ export class TilesListComponent {
 
       if (matchedTileIds.length > 0) {
         for (let i = 0; i < matchedTileIds.length; i++) {
-          let index = this.tiles.map(function (t) { return t['_id']; }).indexOf(matchedTileIds[i]);
+          let index = this.tiles.map(t => { return t['_id']; }).indexOf(matchedTileIds[i]);
           this.tiles.splice(index, 1);
         }
 
@@ -475,7 +480,7 @@ export class TilesListComponent {
           }
 
           if (!isNew && !this.utils.isEmptyObject(tileObj)) {
-            var tileIdx = this.tiles.map(function (tile) { return tile['_id']; }).indexOf(tileObj["_id"]);
+            var tileIdx = this.tiles.map(tile => { return tile['_id']; }).indexOf(tileObj["_id"]);
 
             if (tileIdx !== -1) {
               this.tiles[tileIdx] = tileObj;
@@ -519,7 +524,7 @@ export class TilesListComponent {
   deleteTiles(tileIds: string[]) {
     if (tileIds.length > 0) {
       for (let i = 0; i < tileIds.length; i++) {
-        var tileIdx = this.tiles.map(function (tile) { return tile['_id']; }).indexOf(tileIds[i]);
+        var tileIdx = this.tiles.map(tile => { return tile['_id']; }).indexOf(tileIds[i]);
         this.tiles.splice(tileIdx, 1);
       }
     }
@@ -537,7 +542,9 @@ export class TilesListComponent {
     }
 
     if (cHObj.hasOwnProperty("draggedTiles") && cHObj["draggedTiles"]["currentValue"].length > 0) {
-      this.separateDraggedTiles(cHObj["draggedTiles"]["currentValue"]);
+      if( this.tiles.length > 0 || !this.utils.isEmptyObject(this.draggedSeparatedTiles)){
+        this.separateDraggedTiles(cHObj["draggedTiles"]["currentValue"]);
+      }      
     }
 
     if (cHObj.hasOwnProperty("isMerge") && !this.utils.isEmptyObject(cHObj["isMerge"]["currentValue"])) {
@@ -705,7 +712,7 @@ export class TilesComponent implements OnInit {
       this.tileSelect();
     }
 
-    if(this.page === "category"){
+    if (this.page === "category") {
       this.tileNotifyIcons()
     }
   };
