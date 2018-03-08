@@ -1076,7 +1076,7 @@ export class WidgetsComponent implements OnInit {
   };
 
   getTileCategoryName(id: string) {
-    return this.tileCategories.filter(function (cat) {
+    return this.tileCategories.filter(cat => {
       return cat["_id"] === id;
     });
   };
@@ -1247,7 +1247,7 @@ export class WidgetsComponent implements OnInit {
     }
   };
 
-  getOrganizationName = function (orgs: string[], currentOrg?: string) {
+  getOrganizationName(orgs: string[], currentOrg?: string) {
     var orgNames = [];
 
     for (let i = 0; i < this.organizations.length; i++) {
@@ -1385,7 +1385,7 @@ export class WidgetsComponent implements OnInit {
       var rightIndex = this.widgetRights.indexOf(widgetBlockName);
 
       if (rightIndex == -1) {
-        var orgIndex = this.organizations.map(function (b) {
+        var orgIndex = this.organizations.map(b => {
           return b['_id'];
         }).indexOf(this.oid);
 
@@ -1471,7 +1471,7 @@ export class WidgetsComponent implements OnInit {
       return false;
     }
 
-    var linkForm = this.blocks.filter(function (b) {
+    var linkForm = this.blocks.filter(b => {
       return b["block"]["type"] === "title";
     });
 
@@ -1575,7 +1575,7 @@ export class WidgetsComponent implements OnInit {
     }
 
     for (let i = 0; i < forms.length; i++) {
-      var formIndx = this.blocks.map(function (b) {
+      var formIndx = this.blocks.map(b => {
         return b["block"]['type'];
       }).indexOf(forms[i]);
 
@@ -1585,7 +1585,7 @@ export class WidgetsComponent implements OnInit {
     }
 
     for (let i = 0; i < formsOne.length; i++) {
-      var formOneIndx = this.blocks.map(function (b) {
+      var formOneIndx = this.blocks.map(b => {
         return b["block"]['type'];
       }).indexOf(formsOne[i]);
 
@@ -1595,7 +1595,7 @@ export class WidgetsComponent implements OnInit {
     }
 
     for (let i = 0; i < exclusiveWidgets.length; i++) {
-      var exclusiveWidgetsIndx = this.blocks.map(function (b) {
+      var exclusiveWidgetsIndx = this.blocks.map(b => {
         return b["block"]['type'];
       }).indexOf(exclusiveWidgets[i]);
 
@@ -1605,7 +1605,7 @@ export class WidgetsComponent implements OnInit {
     }
 
     for (let i = 0; i < displayWigets.length; i++) {
-      var displayWigetsIndx = this.blocks.map(function (b) {
+      var displayWigetsIndx = this.blocks.map(b => {
         return b["block"]['type'];
       }).indexOf(displayWigets[i]);
 
