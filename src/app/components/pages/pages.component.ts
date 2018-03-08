@@ -815,7 +815,7 @@ export class PagesComponent implements OnInit {
 
         if (!this.utils.isEmptyObject(currDrg) && currDrg.hasOwnProperty("linkTo") && !this.utils.isNullOrEmpty(currDrg["linkTo"])) {
           if (currDrg["linkTo"] === "menu") {
-            var pgIndex = this.pageList.map(function (pg) { return pg['_id']; }).indexOf(currDrg["linkId"]);
+            var pgIndex = this.pageList.map(pg => { return pg['_id']; }).indexOf(currDrg["linkId"]);
 
             if (pgIndex !== -1) {
               currObj = this.pageList[pgIndex];
@@ -824,13 +824,13 @@ export class PagesComponent implements OnInit {
               currObj = this.draggedGroups["menu"][currDrg["linkId"]];
             }
           } else if (currDrg["linkTo"] === "tile") {
-            var tileIndex = currTiles.map(function (curTile) { return curTile['_id']; }).indexOf(currDrg["linkId"]);
+            var tileIndex = currTiles.map(curTile => { return curTile['_id']; }).indexOf(currDrg["linkId"]);
 
             if (tileIndex !== -1) {
               currObj = currTiles[tileIndex];
             }
           } else {
-            var grpIndex = this.groups.map(function (grp) { return grp['_id']; }).indexOf(currDrg["linkId"]);
+            var grpIndex = this.groups.map(grp => { return grp['_id']; }).indexOf(currDrg["linkId"]);
 
             if (grpIndex !== -1) {
               currObj = this.groups[grpIndex];
@@ -1153,7 +1153,6 @@ export class PagesComponent implements OnInit {
 
     this.pageService.getPages(this.oid, this.selectedApp, this.selectedLocation, formData)
       .then(pgs => {
-
         if (this.utils.isArray(pgs) && pgs.length > 0) {
           var isUpdatePg = false;
 
@@ -1165,7 +1164,7 @@ export class PagesComponent implements OnInit {
             this.draggedGroups[menuId] = pgs[0];
           } else {
             if (type === "update") {
-              var pgIndex = this.pageList.map(function (pg) { return pg['_id']; }).indexOf(menuId);
+              var pgIndex = this.pageList.map(pg => { return pg['_id']; }).indexOf(menuId);
 
               if (pgIndex !== -1) {
                 this.showAppNamesAssigned(pgs[0], 'page');
@@ -1533,7 +1532,7 @@ export class PagesComponent implements OnInit {
 
           this.pageService.removeMenu(menuId).then(deleteRes => {
             if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted")) {
-              var pgIdx = this.pageList.map(function (pg) { return pg['_id']; }).indexOf(menuId);
+              var pgIdx = this.pageList.map(pg => { return pg['_id']; }).indexOf(menuId);
               this.pageList.splice(pgIdx, 1);
 
               if (this.draggedGroups["menu"].hasOwnProperty(menuId)) {

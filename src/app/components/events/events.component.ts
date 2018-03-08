@@ -1723,7 +1723,7 @@ export class EventsComponent implements OnInit {
           var eventId = this.event["obj"]["_id"];
 
           this.eventService.removeEvent(eventId).then(deleteRes => {
-            if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted") && deleteRes["deleted"]) {
+            if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted")) {
               var evtIndex = this.events.map(function (evtCat) { return evtCat['_id']; }).indexOf(eventId);
               this.events.splice(evtIndex, 1);
               this.clearInterval();
