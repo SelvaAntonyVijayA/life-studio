@@ -4,6 +4,7 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { CommonService } from '../../services/common.service';
 import { Utils } from '../../helpers/utils';
 import { ThemeService } from '../../services/theme.service';
+import { LoaderSharedService } from '../../services/loader-shared.service';
 declare var $: any;
 
 @Component({
@@ -18,6 +19,7 @@ export class ThemeComponent implements OnInit {
     private themeService: ThemeService,
     private e1: ElementRef,
     private renderer: Renderer2,
+    private loaderShared: LoaderSharedService,
     public utils: Utils
   ) {}
 
@@ -80,8 +82,11 @@ export class ThemeComponent implements OnInit {
   };
 
   saveTheme() {
+    this.loaderShared.showSpinner(true);
+
     if (this.name == "") {
       this.utils.iAlert('error', 'Error', 'Theme name is empty');
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
@@ -89,13 +94,17 @@ export class ThemeComponent implements OnInit {
   };
 
   saveAsTheme() {
+    this.loaderShared.showSpinner(true);
+
     if (this.name == "") {
       this.utils.iAlert('error', 'Error', 'Theme name is empty');
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
     if (this.name == this.oldName) {
       this.utils.iAlert('error', 'Error', 'Theme name already exists');
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
@@ -103,6 +112,8 @@ export class ThemeComponent implements OnInit {
   };
 
   deleteTheme() {
+    this.loaderShared.showSpinner(true);
+
     if (this.id.trim() != '' && this.id.trim() != '0') {
       this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this theme?", "Yes", "No", (res) => {
         if (res.hasOwnProperty("resolved") && res["resolved"] == true) {
@@ -111,6 +122,7 @@ export class ThemeComponent implements OnInit {
             .then(res => {
 
               if (res && res.msg == 'exists') {
+                this.loaderShared.showSpinner(false);
                 this.utils.iAlert('error', 'Error', 'Theme can not be deleted. Theme has been assigned to tiles');
               } else {
                 this.utils.iAlert('success', '', 'Theme deleted successfully');
@@ -121,6 +133,7 @@ export class ThemeComponent implements OnInit {
         }
       })
     } else {
+      this.loaderShared.showSpinner(false);
       this.utils.iAlert('error', 'Error', 'Please select a theme to delete');
     }
   };
@@ -317,6 +330,8 @@ export class ThemeComponent implements OnInit {
             this.themes = themes;
           }
         }
+
+        this.loaderShared.showSpinner(false);
       });
   };
 
@@ -331,6 +346,7 @@ export class ThemeComponent implements OnInit {
         if (auto) {
           this.updatePreviewTile(this.themeList, true);
         } else {
+          this.loaderShared.showSpinner(false);
           this.utils.iAlert('success', '', 'Theme saved successfully');
         }
       });
@@ -355,6 +371,8 @@ export class ThemeComponent implements OnInit {
           this.utils.iAlert('error', 'Error', 'Unable to preview');
         }
       }
+
+      this.loaderShared.showSpinner(false);
     });
   };
 

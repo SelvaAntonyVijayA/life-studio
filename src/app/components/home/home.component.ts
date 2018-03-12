@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { LoaderSharedService } from '../../services/loader-shared.service';
+import { Utils } from '../../helpers/utils';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +9,24 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class HomeComponent implements OnInit {
-  constructor() { }
+  constructor(public utils: Utils,
+    private loaderShared: LoaderSharedService
+  ) {
+    loaderShared.changeEmitted$.subscribe(
+      curstate => { 
+        this.status = curstate; 
+      });
+  }
+
+  status: boolean = false;
+
+  getStatus(statusObj: any) {
+    if (!this.utils.isEmptyObject(statusObj) && statusObj.hasOwnProperty("status")) {
+      this.status = statusObj["status"];
+    }
+  };
 
   ngOnInit() {
-    
+
   }
 }

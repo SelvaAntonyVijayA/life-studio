@@ -7,6 +7,7 @@ import { DraggableDirective } from '../../helpers/draggable.directive';
 import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
 import { ProcedureService } from '../../services/procedure.service';
+import { LoaderSharedService } from '../../services/loader-shared.service';
 
 @Component({
   selector: 'processes',
@@ -22,6 +23,7 @@ export class ProcessesComponent implements OnInit {
     private e1: ElementRef,
     private tileService: TileService,
     private renderer: Renderer,
+    private loaderShared: LoaderSharedService,
     public utils: Utils) {
   }
 
@@ -92,7 +94,7 @@ export class ProcessesComponent implements OnInit {
     this.processFilter["sort"]["isAsc"] = false;
   };
 
-  resetProcess(mergeReset?: string) {
+  resetProcess(mergeReset?: string, isSpinner?: boolean) {
     this.dragIndex = -1;
     this.droppedTile = {};
     this.isMerge = {};
@@ -107,6 +109,10 @@ export class ProcessesComponent implements OnInit {
     if (mergeReset && mergeReset === "reset") {
       this.isMerge = { "status": "merge" };
     }
+
+    if (isSpinner) {
+      this.loaderShared.showSpinner(true);
+    }
   };
 
   /* Organizations Intialization */
@@ -117,7 +123,9 @@ export class ProcessesComponent implements OnInit {
   };
 
   getTileContent(obj: any) {
-
+    if (!this.utils.isEmptyObject(obj) && obj.hasOwnProperty("isSpinner")) {
+      this.loaderShared.showSpinner(false);
+    }
   };
 
   /* Setting Drag Index for every tile index change */
@@ -170,7 +178,7 @@ export class ProcessesComponent implements OnInit {
     var index = -1;
 
     if (procCatId !== "-1" && this.processCategories.length > 0) {
-      index = this.processCategories.map(function (procCat) { return procCat['_id']; }).indexOf(procCatId);
+      index = this.processCategories.map(procCat => { return procCat['_id']; }).indexOf(procCatId);
     }
 
     processObj["categoryName"] = index !== -1 && this.processCategories[index].hasOwnProperty("name") ? this.processCategories[index]["name"] : "";
@@ -179,17 +187,19 @@ export class ProcessesComponent implements OnInit {
   };
 
   languageChange(langId: string) {
+    this.loaderShared.showSpinner(true);
+
     this.checkNew('Would you like to save your previous work?', (isChanged) => {
       if (isChanged) {
         this.saveProcess("", false, false, "language", { "langId": langId });
       } else {
         this.selectedLanguage = langId;
-        this.setLanguageData();
+        this.setLanguageData(true);
       }
     });
   };
 
-  setLanguageData() {
+  setLanguageData(isSpinner?: boolean) {
     var procObj = this.process.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.process["obj"]) ? this.process["obj"] : {};
     var langTiles = [];
 
@@ -200,17 +210,21 @@ export class ProcessesComponent implements OnInit {
     } else if ((this.selectedLanguage === "en" || !procObj.hasOwnProperty(this.selectedLanguage)) && (procObj.hasOwnProperty("tiles") && procObj["tiles"].length > 0)) {
       langTiles = procObj["tiles"];
     }
-  
-    if(langTiles.length > 0 || this.selectedLanguage === "en" || procObj.hasOwnProperty(this.selectedLanguage)){
+
+    if (langTiles.length > 0 || this.selectedLanguage === "en" || procObj.hasOwnProperty(this.selectedLanguage)) {
       this.draggedTiles = [];
       this.process["draggedTiles"] = [];
     }
-    
+
     for (let i = langTiles.length - 1; 0 <= i; i--) {
       if (langTiles[i].hasOwnProperty("_id")) {
         this.draggedTiles.push(langTiles[i]["_id"]);
         this.assignDragged(langTiles[i]);
       }
+    }
+
+    if (isSpinner) {
+      this.loaderShared.showSpinner(false);
     }
   };
 
@@ -246,6 +260,7 @@ export class ProcessesComponent implements OnInit {
     var self = this;
 
     var procExist = false;
+    this.loaderShared.showSpinner(true);
 
     if (!this.utils.isEmptyObject(this.process) && this.process.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.process["obj"])) {
       if (this.process["obj"].hasOwnProperty("_id") && !this.utils.isNullOrEmpty(this.process["obj"]["_id"])) {
@@ -257,7 +272,7 @@ export class ProcessesComponent implements OnInit {
       if (r) {
         this.saveProcess("", false, false, "select", obj);
       } else {
-        this.setProcessData(true, obj);
+        this.setProcessData(true, obj, "", true);
       }
     });
   };
@@ -521,8 +536,9 @@ export class ProcessesComponent implements OnInit {
     var isModified = this.newProcessCompare();
 
     if (!isModified) {
-      var r = confirm(message);
-      cb(r);
+      this.utils.iAlertConfirm("confirm", "Confirm", message, "Save", "Cancel", (r) => {
+        cb(r["resolved"]);
+      });
     } else {
       cb(false);
     }
@@ -727,12 +743,14 @@ export class ProcessesComponent implements OnInit {
     }
 
     var processObj = {};
+    this.loaderShared.showSpinner(true);
     var id = this.process.hasOwnProperty("obj") && this.process["obj"].hasOwnProperty("_id") ? this.process["obj"]["_id"] : "-1";
     processObj = this.getProcessObj(id);
 
 
     if (this.utils.isNullOrEmpty(processObj["name"])) {
-      alert('You must at least enter an Process name');
+      this.utils.iAlert('error', 'Information', 'You must at least enter an Process name');
+      this.loaderShared.showSpinner(false);
       return false;
     } else if (isDuplicate) {
       processObj["name"] = "Copy of " + processObj["name"];
@@ -740,7 +758,8 @@ export class ProcessesComponent implements OnInit {
     }
 
     if (this.processCategory === "-1") {
-      alert('Please select a type for the Process');
+      this.utils.iAlert('error', 'Information', 'Please select a type for the Process');
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
@@ -776,13 +795,14 @@ export class ProcessesComponent implements OnInit {
         if (showMessage) {
           var alertMessage = isNew ? "Process Created" : "Process Updated";
           alertMessage = isDuplicate ? "Duplicate Process Created" : alertMessage;
-          alert(alertMessage);
+          this.loaderShared.showSpinner(false);
+          this.utils.iAlert('success', '', alertMessage);
         }
 
         procObj = this.assignCategoryName(procObj);
 
         if (!isNew) {
-          var procIndex = this.processes.map(function (procCat) { return procCat['_id']; }).indexOf(procObj["_id"]);
+          var procIndex = this.processes.map(procCat => { return procCat['_id']; }).indexOf(procObj["_id"]);
 
           if (procIndex !== -1) {
             this.processes[procIndex] = procObj;
@@ -793,21 +813,21 @@ export class ProcessesComponent implements OnInit {
         }
 
         if (!this.utils.isNullOrEmpty(isAnother) && isAnother === "select") {
-          this.setProcessData(true, procCurrObj);
+          this.setProcessData(true, procCurrObj, "", true);
         } else if (!this.utils.isNullOrEmpty(isAnother) && isAnother === "new") {
-          this.resetProcess("reset");
+          this.resetProcess("reset", true);
         } else if (!this.utils.isNullOrEmpty(isAnother) && isAnother === "language") {
-          this.setProcessData(true, procObj, procCurrObj["langId"]);
+          this.setProcessData(true, procObj, procCurrObj["langId"], true);
         } else {
           var isSelect = isDuplicate ? true : false;
-          this.setProcessData(isSelect, procObj);
+          this.setProcessData(isSelect, procObj, "", true);
         }
       });
   };
 
 
   /* Setting the procedure data for the DOM */
-  setProcessData(isSelect: boolean, obj: any, langId?: string) {
+  setProcessData(isSelect: boolean, obj: any, langId?: string, isSpinner?: boolean) {
     if (isSelect) {
       this.resetProcess();
 
@@ -822,6 +842,10 @@ export class ProcessesComponent implements OnInit {
       .then(proObj => {
         if (proObj && proObj[0]) {
           this.assignProcessDatas(proObj[0], langId);
+        }
+
+        if (isSpinner) {
+          this.loaderShared.showSpinner(false);
         }
       });
   };
@@ -884,11 +908,11 @@ export class ProcessesComponent implements OnInit {
 
       if (assignedTiles[curTile["_id"]]) {
         if ((assignedTiles[curTile["_id"]]["type"] === "permanent") || (curTile.hasOwnProperty("permanent") && curTile["permanent"])) {
-          alert('Same tile cannot be assigned after it is assigned to permanent');
+          this.utils.iAlert('error', 'Information', 'Same tile cannot be assigned after it is assigned to permanent');
           result = false;
           return result;
         } else if (assignedTiles[curTile["_id"]]["type"] === curTile["triggerActionOn"] && assignedTiles[curTile["_id"]]["days"] === curTile["triggerDays"]) {
-          alert('Same Tile cannot be assigned with same days and with same trigger');
+          this.utils.iAlert('error', 'Information', 'Same Tile cannot be assigned with same days and with same trigger');
           result = false;
           return result;
         } else {
@@ -952,36 +976,44 @@ export class ProcessesComponent implements OnInit {
   /* Duplicate Process */
   duplicateProcess(e: any) {
     e.preventDefault();
+    this.loaderShared.showSpinner(true);
 
     if (this.process.hasOwnProperty("obj") && this.process["obj"].hasOwnProperty("_id")) {
       this.saveProcess("", true, true);
     } else {
-      alert("Process not selected");
+      this.loaderShared.showSpinner(false);
+      this.utils.iAlert('error', 'Information', 'Process not selected');
     }
   };
 
   /* Delete Process */
   deleteProcess(e: any) {
     e.preventDefault();
+    this.loaderShared.showSpinner(true);
 
     if (this.process.hasOwnProperty("obj") && this.process["obj"].hasOwnProperty("_id")) {
-      var r = confirm("Are you sure want to delete this Process?");
+      this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Process?", "Delete", "Cancel", (r) => {
+        if (r["resolved"]) {
+          var procId = this.process["obj"]["_id"];
 
-      if (r) {
-        var procId = this.process["obj"]["_id"];
+          this.procedureService.removeProcedure(procId).then(deleteRes => {
+            if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted")) {
+              var procIndex = this.processes.map(procCat => { return procCat['_id']; }).indexOf(procId);
+              this.processes.splice(procIndex, 1);
 
-        this.procedureService.removeProcedure(procId).then(deleteRes => {
-          if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted") && deleteRes["deleted"]) {
-            var procIndex = this.processes.map(function (procCat) { return procCat['_id']; }).indexOf(procId);
-            this.processes.splice(procIndex, 1);
+              this.resetProcess("reset");
+              this.utils.iAlert('success', '', 'Process Removed');
+            }
 
-            this.resetProcess("reset");
-            alert("Process Removed");
-          }
-        });
-      }
+            this.loaderShared.showSpinner(false);
+          });
+        } else {
+          this.loaderShared.showSpinner(false);
+        }
+      });
     } else {
-      alert("Process not selected");
+      this.loaderShared.showSpinner(false);
+      this.utils.iAlert('error', 'Information', 'Process not selected');
     }
   };
 

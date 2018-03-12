@@ -11,9 +11,10 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 
 import { LoginService } from './services/login.service';
+import { LoaderSharedService } from './services/loader-shared.service';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 
-import { AlertComponent , AlertsComponent} from './components/alert/alert.component';
+import { AlertComponent, AlertsComponent } from './components/alert/alert.component';
 import { AlertService } from './services/alert.service';
 import { Utils } from './helpers/utils';
 
@@ -23,12 +24,12 @@ import { Utils } from './helpers/utils';
     LoginComponent,
     NotFoundComponent,
     AlertComponent,
-    AlertsComponent       
+    AlertsComponent
   ],
   imports: [
     BrowserModule, BrowserAnimationsModule, HttpClientModule, AppRoutesModule, FormsModule, HttpModule
   ],
-  providers: [LoginService, AlertService, Utils],
+  providers: [LoginService, AlertService, Utils, LoaderSharedService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

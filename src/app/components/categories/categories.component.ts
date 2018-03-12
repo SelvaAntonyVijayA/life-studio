@@ -5,6 +5,7 @@ import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { TileService } from '../../services/tile.service';
 import { CategoryService } from '../../services/category.service';
+import { LoaderSharedService } from '../../services/loader-shared.service';
 import { Utils } from '../../helpers/utils';
 
 @Component({
@@ -21,9 +22,10 @@ export class CategoriesComponent implements OnInit {
     private mScrollbarService: MalihuScrollbarService,
     private e1: ElementRef,
     private renderer: Renderer,
-    public utils : Utils
+    private loaderShared: LoaderSharedService,
+    public utils: Utils
   ) {
-  
+
   }
 
   private orgChangeDetect: any;
@@ -82,6 +84,7 @@ export class CategoriesComponent implements OnInit {
     this.tileService.getTilesCategories(this.oid).subscribe(tileCat => {
       this.tileCategories = tileCat[0];
       this.tiles = tileCat[1];
+      this.loaderShared.showSpinner(false);
     });
   };
 
@@ -153,6 +156,10 @@ export class CategoriesComponent implements OnInit {
         }
 
         this.setCategory(categoriesList[0]);
+      }
+
+      if (!this.utils.isNullOrEmpty(catId)) {
+        this.loaderShared.showSpinner(false);
       }
     });
   };
@@ -243,6 +250,7 @@ export class CategoriesComponent implements OnInit {
       e.stopPropagation();
     }
 
+    this.loaderShared.showSpinner(true);
     var categoryObj = {};
     var id = !this.utils.isEmptyObject(this.category) && this.category.hasOwnProperty("_id") ? this.category["_id"] : "-1";
 
@@ -271,7 +279,8 @@ export class CategoriesComponent implements OnInit {
     categoryObj["descFontColor"] = !this.utils.isEmptyObject(this.category) && this.category.hasOwnProperty("descFontColor") ? this.category["descFontColor"] : "";
 
     if (this.utils.isNullOrEmpty(categoryObj["name"])) {
-      alert('Your must at least enter the Category Name');
+      this.utils.iAlert('error', 'Information', 'Your must at least enter the Category Name');
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
@@ -286,7 +295,8 @@ export class CategoriesComponent implements OnInit {
     }
 
     if (categoryObj["category"] === '-1') {
-      alert('Please select a Category');
+      this.utils.iAlert('error', 'Information', 'Please select a Category');
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
@@ -295,6 +305,7 @@ export class CategoriesComponent implements OnInit {
     var isDatesCheck = this.categoryCheckDates();
 
     if (!isDatesCheck) {
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
@@ -308,10 +319,10 @@ export class CategoriesComponent implements OnInit {
 
     if (!this.utils.isNullOrEmpty(availableStart) && !this.utils.isNullOrEmpty(untilDate)) {
       if (availableStart > untilDate) {
-        alert('The Until date date must be greater than the start date');
+        this.utils.iAlert('error', 'Information', 'The Until date date must be greater than the start date');
         result = false;
       } else if (untilDate < availableStart) {
-        alert('The Start date must be lesser than until date');
+        this.utils.iAlert('error', 'Information', 'The Start date must be lesser than until date');
         result = false;
       }
     }
@@ -329,25 +340,29 @@ export class CategoriesComponent implements OnInit {
   deleteCategory(e: any) {
     e.preventDefault();
     e.stopPropagation();
+    this.loaderShared.showSpinner(true);
 
     if (!this.utils.isEmptyObject(this.category) && this.category.hasOwnProperty("_id")) {
-      var r = confirm("Are you sure want to delete this Category?");
+      this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Category?", "Delete", "Cancel", (r) => {
+        if (r["resolved"]) {
+          var categoryId = this.category["_id"];
 
-      if (r) {
-        var categoryId = this.category["_id"];
+          this.categoryService.removeCategory(categoryId).then(deleteRes => {
+            if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted") && deleteRes["deleted"]) {
+              var catIdx = this.categories.map(function (cat) { return cat['_id']; }).indexOf(categoryId);
+              this.categories.splice(catIdx, 1);
 
-        this.categoryService.removeCategory(categoryId).then(deleteRes => {
-          if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted") && deleteRes["deleted"]) {
-            var catIdx = this.categories.map(function (cat) { return cat['_id']; }).indexOf(categoryId);
-            this.categories.splice(catIdx, 1);
+              this.resetCategory();
+              this.utils.iAlert('success', '', 'Category Removed');
+            }
+          });
+        }
 
-            this.resetCategory();
-            alert("Category Removed");
-          }
-        });
-      }
+        this.loaderShared.showSpinner(false);
+      });
     } else {
-      alert("Category not selected");
+      this.loaderShared.showSpinner(false);
+      this.utils.iAlert('error', 'Information', 'Category not selected');
     }
   };
 
@@ -361,10 +376,12 @@ export class CategoriesComponent implements OnInit {
 
         var alertMessage = isNew ? "Category Created" : "Category Updated";
         alertMessage = isDuplicate ? "Duplicate Category Created" : alertMessage;
-        alert(alertMessage);
+        this.utils.iAlert('success', '', alertMessage);
 
         if (!this.utils.isEmptyObject(catResObj) && catResObj.hasOwnProperty("_id")) {
           this.categoriesList(catResObj["_id"], isNew);
+        } else {
+          this.loaderShared.showSpinner(false);
         }
       });
   };

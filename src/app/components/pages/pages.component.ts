@@ -11,6 +11,7 @@ import { FolderService } from '../../services/folder.service';
 import { CategoryService } from '../../services/category.service';
 import { ProcedureService } from '../../services/procedure.service';
 import { LivestreamService } from '../../services/livestream.service';
+import { LoaderSharedService } from '../../services/loader-shared.service';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/forkJoin';
 
@@ -35,6 +36,7 @@ export class PagesComponent implements OnInit {
     private procedureService: ProcedureService,
     private liveStreamService: LivestreamService,
     private mScrollbarService: MalihuScrollbarService,
+    private loaderShared: LoaderSharedService,
     private e1: ElementRef,
     private renderer: Renderer,
     public utils: Utils) {
@@ -217,6 +219,9 @@ export class PagesComponent implements OnInit {
   };
 
   getTileContent(tileObj: any) {
+    if (!this.utils.isEmptyObject(tileObj) && tileObj.hasOwnProperty("isSpinner")) {
+      this.loaderShared.showSpinner(false);
+    }
   };
 
   /* Getting page title from the current language */
@@ -326,15 +331,17 @@ export class PagesComponent implements OnInit {
   };
 
   appChange(appId: string) {
+    this.loaderShared.showSpinner(true);
     this.selectedApp = appId;
-    this.getLocations(appId);
+    this.getLocations(appId, true);
     this.pageReset("merge");
   };
 
   locationChange(locId: string) {
+    this.loaderShared.showSpinner(true);
     this.selectedLocation = locId;
     this.pageReset("merge");
-    this.getPages("", true);
+    this.getPages("", true, true);
   };
 
   getApps() {
@@ -353,7 +360,7 @@ export class PagesComponent implements OnInit {
     }
   };
 
-  getLocations(appId: string) {
+  getLocations(appId: string, isSpinner?: boolean) {
     if (this.locationList.length > 0) {
       this.locationList = [];
       this.selectedLocation = "";
@@ -366,7 +373,8 @@ export class PagesComponent implements OnInit {
           this.selectedLocation = this.locationList[0]["_id"];
         }
 
-        this.getPages("", true);
+        var spinnerStatus = isSpinner ? true : false;
+        this.getPages("", true, spinnerStatus);
       });
   };
 
@@ -388,7 +396,7 @@ export class PagesComponent implements OnInit {
     });
   };
 
-  getPages(pageId?: string, isSelect?: boolean) {
+  getPages(pageId?: string, isSelect?: boolean, isSpinner?: boolean) {
     if (!this.utils.isNullOrEmpty(this.selectedApp) && !this.utils.isNullOrEmpty(this.selectedLocation)) {
       this.pageService.getPages(this.oid, this.selectedApp, this.selectedLocation)
         .then(pgs => {
@@ -398,13 +406,20 @@ export class PagesComponent implements OnInit {
             this.pageAssignedValues();
 
             if (isSelect) {
-              this.selectPage("", this.pageList[0]);
+              this.selectPage("", this.pageList[0], false, true);
             }
           } else {
             this.pageList = [];
           }
+
+          if (isSpinner) {
+            this.loaderShared.showSpinner(false);
+          }
         });
     } else if (this.utils.isNullOrEmpty(pageId)) {
+      if (isSpinner) {
+        this.loaderShared.showSpinner(false);
+      }
       this.pageList = [];
     }
   };
@@ -732,7 +747,7 @@ export class PagesComponent implements OnInit {
     return dragName;
   };
 
-  selectPage(e: any, pgObj: Object, isSave?: boolean) {
+  selectPage(e: any, pgObj: Object, isSave?: boolean, initial?: boolean) {
     if (!this.utils.isNullOrEmpty(e)) {
       e.preventDefault();
       e.stopPropagation();
@@ -742,6 +757,10 @@ export class PagesComponent implements OnInit {
     var pgExist = false;
 
     if (pgObj.hasOwnProperty("_id")) {
+      if(initial){
+        this.loaderShared.showSpinner(true);
+      }
+      
       if (!this.utils.isEmptyObject(this.page) && this.page.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.page["obj"])) {
         if (this.page["obj"].hasOwnProperty("_id") && !this.utils.isNullOrEmpty(this.page["obj"]["_id"])) {
           pgExist = this.page["obj"]["_id"] === pgObj["_id"] ? true : false;
@@ -753,14 +772,17 @@ export class PagesComponent implements OnInit {
           if (r) {
             this.savePage("", false, "select", pgObj);
           } else {
-            this.setPageData(true, pgObj);
+            var isSpinner = initial? false : true;
+            this.setPageData(true, pgObj, isSpinner);
           }
         });
+      } else {
+        this.loaderShared.showSpinner(false);
       }
     }
   };
 
-  setPageData(isSelect: boolean, obj: any) {
+  setPageData(isSelect: boolean, obj: any, isSpinner?: boolean) {
     if (isSelect) {
       this.pageReset();
 
@@ -786,8 +808,16 @@ export class PagesComponent implements OnInit {
             //this.updateTileInterval();
             this.assignEventDatas(objTiles, obj);
           }
+
+          if (isSpinner) {
+            this.loaderShared.showSpinner(false);
+          }
         });
     } else {
+      if (isSpinner) {
+        this.loaderShared.showSpinner(false);
+      }
+
       this.assignEventDatas([], obj);
     }
   };
@@ -1006,24 +1036,28 @@ export class PagesComponent implements OnInit {
     }
 
     var menuObj = this.getPageData(true);
+    this.loaderShared.showSpinner(true);
 
     if (!menuObj.hasOwnProperty("_id")) {
       var isBlankObj = this.pageList[0];
 
       if (!this.utils.isEmptyObject(isBlankObj) && isBlankObj.hasOwnProperty("_id")) {
         this.utils.iAlert('error', 'Information', 'Please select new to create new page');
+        this.loaderShared.showSpinner(false);
         return false;
       }
     }
 
     if (this.utils.isNullOrEmpty(menuObj["title"])) {
       this.utils.iAlert('error', 'Information', 'You must at least enter a Page title');
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
     for (let i = 0; i < menuObj["menuTiles"].length; i++) {
       if (menuObj["menuTiles"][i].hasOwnProperty("name") && this.utils.isNullOrEmpty(this.utils.trim(menuObj["menuTiles"][i]["name"]))) {
         if (menuObj["menuTiles"][i]["linkId"].toLowerCase() !== "streamtoupdate") {
+          this.loaderShared.showSpinner(false);
           this.utils.iAlert('error', 'Information', 'Title can not be empty');
 
           return false;
@@ -1069,6 +1103,11 @@ export class PagesComponent implements OnInit {
       .then(menuResObj => {
         if (showMessage) {
           var alertMessage = type === "save" ? "Page Created" : "Page Updated";
+
+          if (this.utils.isNullOrEmpty(isAnother)) {
+            this.loaderShared.showSpinner(false);
+          }
+
           this.utils.iAlert('success', '', alertMessage + ' Successfully');
         }
 
@@ -1095,9 +1134,9 @@ export class PagesComponent implements OnInit {
 
         if (!this.utils.isNullOrEmpty(isAnother)) {
           if (isAnother === "new") {
-            this.setBlankMenu();
+            this.setBlankMenu(true);
           } else if (isAnother === "select") {
-            this.setPageData(true, menuCurrObj);
+            this.setPageData(true, menuCurrObj, true);
           }
         }
       });
@@ -1343,7 +1382,7 @@ export class PagesComponent implements OnInit {
     });
   };
 
-  setBlankMenu() {
+  setBlankMenu(isSpinner?: boolean) {
     this.pageReset("reset");
 
     var blankPageObj = {
@@ -1357,6 +1396,10 @@ export class PagesComponent implements OnInit {
     }
 
     this.pageList.push(blankPageObj);
+
+    if (isSpinner) {
+      this.loaderShared.showSpinner(true);
+    }
   };
 
   resetBlankMenu() {
@@ -1524,6 +1567,7 @@ export class PagesComponent implements OnInit {
   deletePage(e: any) {
     e.preventDefault();
     e.stopPropagation();
+    this.loaderShared.showSpinner(true);
 
     if (this.page.hasOwnProperty("obj") && this.page["obj"].hasOwnProperty("_id")) {
       this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Page?", "Delete", "Cancel", (r) => {
@@ -1542,10 +1586,15 @@ export class PagesComponent implements OnInit {
               this.pageReset("reset");
               this.utils.iAlert('success', '', 'Page Removed');
             }
+
+            this.loaderShared.showSpinner(false);
           });
+        } else {
+          this.loaderShared.showSpinner(false);
         }
       });
     } else {
+      this.loaderShared.showSpinner(false);
       this.utils.iAlert('error', 'Information', 'Page not selected');
     }
   };

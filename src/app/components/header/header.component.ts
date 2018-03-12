@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, OnInit, Inject, HostListener } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, OnInit, Inject, HostListener, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { HeaderService } from '../../services/header.service';
 import { CommonService } from '../../services/common.service';
@@ -15,6 +15,7 @@ declare var $: any;
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
+  outputs: ["isSpinner"],
   providers: [DomainPageLib, DomainTools]
 })
 
@@ -44,6 +45,7 @@ export class HeaderComponent implements OnInit {
   selectedOrg: Organization;
   selectedPage: Object = {};
   selectedPageTitle: string = "";
+  isSpinner = new EventEmitter<any>();
 
   menusDatas: Object = {
     "left": [],
@@ -132,7 +134,7 @@ export class HeaderComponent implements OnInit {
 
     if (!hasPage) {
       var loadResult = false;
-      $.each(this.dmDatas[0].intialLoad, function (indx, pgName) {
+      $.each(this.dmDatas[0].intialLoad, (indx, pgName) => {
         if (self.accessList.hasOwnProperty(pgName) && !loadResult) {
           loadResult = true;
           self.loadPage(self.accessList[pgName]);
@@ -154,7 +156,7 @@ export class HeaderComponent implements OnInit {
   };
 
   processAccessList(accessKeys: any) {
-    $.each(accessKeys, function (index, key) {
+    $.each(accessKeys, (index, key) => {
       var accessValue = this.accessList[key];
 
       if (!accessValue) {
@@ -171,7 +173,7 @@ export class HeaderComponent implements OnInit {
     var bindMenu = this.bindMenu;
     var self = this;
 
-    $.each(menuKeys, function (indx, ky) {
+    $.each(menuKeys, (indx, ky) => {
       pages = {};
       var menuDatas = Object.keys(domainDatas.menus[ky]);
 
@@ -195,7 +197,7 @@ export class HeaderComponent implements OnInit {
                 pages[menuNames[j]] = menuDatas[i].toLowerCase() != "tools" ? self.accessList[cMname] : cMname;
               }
             } else if (menuNm instanceof Array) {
-              $.each(menuNm, function (indx, mnName) {
+              $.each(menuNm, (indx, mnName) => {
                 if (mnName == "Basic_Stream" || mnName == "Advanced_Stream") {
                   var cMname: string = String(menuNm);
                   if (self.accessList && self.accessList[cMname]) {
@@ -298,12 +300,14 @@ export class HeaderComponent implements OnInit {
     Cookie.set('pageName', currPageName);
 
     if (!this.utils.isNullOrEmpty(token) && !this.utils.isNullOrEmpty(oid)) {
+      this.showLoadSpinner();
       var pageAddress = currPageName;
       this.selectedPage = pageAddress;
       var currPage = "." + pageAddress;
       let link = [currPage];
       var currDate = Date.parse(new Date().toString());
       this.cms.destroyScroll();
+
       this.router.navigate(link, { queryParams: { "_dt": currDate }, relativeTo: this.route });
     }
 
@@ -313,7 +317,10 @@ export class HeaderComponent implements OnInit {
   userLogout() {
     this.cms.destroyScroll();
     Cookie.deleteAll();
-    this.router.navigate(['/login'], { relativeTo: this.route });
+
+    setTimeout(() => {
+      this.router.navigate(['/login'], { relativeTo: this.route });
+    });
   };
 
   accountPage() {
@@ -469,7 +476,7 @@ export class HeaderComponent implements OnInit {
     var newAccesses = [];
 
     if (accesses && accesses.length > 0) {
-      accesses.forEach(function (currentPage, index) {
+      accesses.forEach((currentPage, index) => {
         if (currentEngines.indexOf("Triggering") == -1 && currentPage.name == "Event Triggers") {
           indexes.push(index);
         }
@@ -509,7 +516,7 @@ export class HeaderComponent implements OnInit {
     }
   };
 
-  domainDatas = function () {
+  domainDatas() {
     this.headerService.getDomainMenus(this.domainName).subscribe(domainDatas => {
       this.dmDatas = domainDatas[0];
       this.userObj = domainDatas[1] && domainDatas[1].length > 0 ? domainDatas[1] : [];
@@ -534,6 +541,14 @@ export class HeaderComponent implements OnInit {
         //this.loadMenu();
       }
     });
+  };
+
+  showLoadSpinner() {
+    this.isSpinner.emit({ "status": true });
+  };
+
+  hideLoadSpinner() {
+    this.isSpinner.emit({ "status": false });
   };
 
   ngOnInit() {

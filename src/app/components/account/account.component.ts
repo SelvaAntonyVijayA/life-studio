@@ -3,6 +3,7 @@ import { CommonService } from '../../services/common.service';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { Utils } from '../../helpers/utils';
 import { AccountService } from '../../services/account.service';
+import { LoaderSharedService } from '../../services/loader-shared.service';
 
 @Component({
   selector: 'account-update',
@@ -11,13 +12,14 @@ import { AccountService } from '../../services/account.service';
   styleUrls: ['./account.component.css']
 })
 export class AccountComponent implements OnInit {
-  constructor(private cms: CommonService, 
+  constructor(private cms: CommonService,
     private accountService: AccountService,
+    private loaderShared: LoaderSharedService,
     public utils: Utils
   ) {
-      
+
   }
-  
+
   oid: string = "";
   users: any[] = [];
   name: string = "";
@@ -29,18 +31,22 @@ export class AccountComponent implements OnInit {
   updateUser(e: any) {
     e.preventDefault();
     e.stopPropagation();
+    this.loaderShared.showSpinner(true);
 
     if (this.utils.isNullOrEmpty(this.name)) {
+      this.loaderShared.showSpinner(false);
       alert('Name should not empty');
       return false;
     }
 
     if (this.utils.isNullOrEmpty(this.password)) {
+      this.loaderShared.showSpinner(false);
       alert('Password should not empty');
       return false;
     }
 
     if (this.password != this.confirmPassword) {
+      this.loaderShared.showSpinner(false);
       alert('Password doesnt match! Unable to Update');
       return false;
     }
@@ -49,7 +55,7 @@ export class AccountComponent implements OnInit {
       .then(res => {
         this.password = "";
         this.confirmPassword = "";
-
+        this.loaderShared.showSpinner(false);
         alert('User successfully updated');
         return false;
       });
@@ -59,6 +65,7 @@ export class AccountComponent implements OnInit {
     this.accountService.userGet()
       .then(userObj => {
         this.setUserObj(userObj);
+        this.loaderShared.showSpinner(false);
       });
   };
 

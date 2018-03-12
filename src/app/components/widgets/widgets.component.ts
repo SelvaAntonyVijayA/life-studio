@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, ComponentFactoryResolver, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, ComponentFactoryResolver, EventEmitter, OnDestroy } from '@angular/core';
 import { TileBlocksDirective } from './tileblocks.directive';
 import { BlockOrganizer, BlockComponent, BlockItem, GetBlocks } from './block-organizer';
 import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
 import { ThemeService } from '../../services/theme.service';
 import { CommonService } from '../../services/common.service';
+import { LoaderSharedService } from '../../services/loader-shared.service';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
@@ -77,6 +78,7 @@ export class WidgetsComponent implements OnInit {
     private route: ActivatedRoute,
     private cms: CommonService,
     private mScrollbarService: MalihuScrollbarService,
+    private loaderShared: LoaderSharedService,
     public utils: Utils
   ) {
 
@@ -329,19 +331,25 @@ export class WidgetsComponent implements OnInit {
 
   languageChange(langCode: string, saved?: boolean) {
     if (!saved) {
+      this.loaderShared.showSpinner(true);
+
       this.newTile('Would you like to save your previous work?', 'Save', 'Discard', (isChanged, auto) => {
         if (isChanged) {
           this.tileSave("", false, false, false, {}, true, langCode);
         } else {
-          this.langReset(langCode);
+          this.langReset(langCode, true);
         }
       });
     } else {
+      if (saved) {
+        this.loaderShared.showSpinner(false);
+      }
+
       this.langReset(langCode);
     }
   };
 
-  langReset(langCode: string) {
+  langReset(langCode: string, isSpinner?: boolean) {
     this.selectedLanguage = langCode;
     this.resetTile("", true);
 
@@ -357,6 +365,10 @@ export class WidgetsComponent implements OnInit {
     this.tileTitle = currLangObj.hasOwnProperty("title") && !this.utils.isNullOrEmpty(currLangObj["title"]) ? currLangObj["title"] : "";
     this.tileNotes = currLangObj.hasOwnProperty("notes") && !this.utils.isNullOrEmpty(currLangObj["notes"]) ? currLangObj["notes"] : "";
     this.rtl = currLangObj.hasOwnProperty("rtl") && !this.utils.isNullOrEmpty(currLangObj["rtl"]) ? this.utils.convertToBoolean(currLangObj["rtl"]) : false;
+
+    if (isSpinner) {
+      this.loaderShared.showSpinner(true);
+    }
   };
 
   getViewBlock(view: any, opt: string) {
@@ -475,6 +487,7 @@ export class WidgetsComponent implements OnInit {
               }
 
               var tileMessage = tileObj.hasOwnProperty("_id") ? "updated" : "saved";
+              this.loaderShared.showSpinner(false);
               this.utils.iAlert('success', '', 'Tile ' + tileMessage + ' successfully');
               this.assignBlockData(savedBlocks);
             } else if (!isUpdate && isDuplicate) {
@@ -486,6 +499,7 @@ export class WidgetsComponent implements OnInit {
                 this.tileIdsUpdate[updatedId] = false;
               }
 
+              this.loaderShared.showSpinner(false);
               this.utils.iAlert('success', '', 'Tile duplicated successfully');
               this.assignBlockData(savedBlocks);
             } else if (isUpdate && isDuplicate) {
@@ -605,6 +619,7 @@ export class WidgetsComponent implements OnInit {
       e.preventDefault();
       e.stopPropagation();
     }
+    this.loaderShared.showSpinner(true);
 
     var updateId = "-1";
     var tileObj = this.getTileObj();
@@ -621,12 +636,14 @@ export class WidgetsComponent implements OnInit {
     if (this.utils.isNullOrEmpty(tileObj["title"])) {
       this.utils.iAlert('error', 'Information', 'You must at least enter a Tile title');
       this.assignExistsLanguage(langCode);
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
     if (tileObj["category"] === "-1") {
       this.utils.iAlert('error', 'Information', 'Please select a category for the Tile');
       this.assignExistsLanguage(langCode);
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
@@ -716,6 +733,7 @@ export class WidgetsComponent implements OnInit {
   duplicateTile(e: any) {
     e.preventDefault();
     var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? Object.assign({}, this.selectedTile) : {};
+    this.loaderShared.showSpinner(true);
 
     if (!this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("_id")) {
       this.newTile('Would you like to save your work and duplicate?', 'Yes', 'No', (isChanged, auto) => {
@@ -725,6 +743,8 @@ export class WidgetsComponent implements OnInit {
           this.tileSave("", false, true);
         }
       });
+    } else {
+      this.loaderShared.showSpinner(false);
     }
   };
 
@@ -749,6 +769,8 @@ export class WidgetsComponent implements OnInit {
 
     if (!this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("_id")) {
       this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Tile?", "Delete", "Cancel", (r) => {
+        this.loaderShared.showSpinner(true);
+
         if (r["resolved"]) {
           var apps = currTileExists.hasOwnProperty("Apps") ? currTileExists["Apps"] : [];
           var procedure = currTileExists.hasOwnProperty("Procedure") ? currTileExists["Procedure"] : [];
@@ -774,14 +796,15 @@ export class WidgetsComponent implements OnInit {
 
             html += "<ul>";
 
+            this.loaderShared.showSpinner(false);
             this.utils.iAlert('info', 'Information', 'This Tile cannot be deleted because it is being used in other organizations <br/><br/>' + html);
           } else if (orgIds.length === 1) {
             this.tileService.tileRemove(currTileExists["_id"])
               .then(delRes => {
-                if (delRes["deleted"]) {
+                if (!this.utils.isEmptyObject(delRes) && delRes.hasOwnProperty("deleted")) {
                   this.tileIdsDelete = [];
                   this.tileIdsDelete.push(currTileExists["_id"]);
-
+                  this.loaderShared.showSpinner(false);
                   this.utils.iAlert('success', '', 'Tile deleted successfully');
                   this.widgetTileReset();
                   this.tileIdsDelete.push(currTileExists["_id"]);
@@ -794,6 +817,7 @@ export class WidgetsComponent implements OnInit {
 
             var updateData = { "organizationId": currOrgs };
             this.tileService.tileUpdate(currTileExists["_id"], updateData);
+            this.loaderShared.showSpinner(false);
             this.utils.iAlert('success', '', 'Tile deleted successfully');
             this.widgetTileReset();
             this.tileIdsDelete.push(currTileExists["_id"]);
@@ -1088,13 +1112,13 @@ export class WidgetsComponent implements OnInit {
 
   /* Getting the tile content datas */
   getTileContent(tileObj: any) {
-    if ((!this.utils.isEmptyObject(tileObj) && !tileObj.hasOwnProperty("savedUpdated")) || tileObj.hasOwnProperty("assignBlocks")) {
+    if (!this.utils.isEmptyObject(tileObj) && !tileObj.hasOwnProperty("isSpinner") && (!tileObj.hasOwnProperty("savedUpdated")) || tileObj.hasOwnProperty("assignBlocks")) {
       if (tileObj.hasOwnProperty("isNew")) {
         this.newTile('Would you like to save your previous work?', 'Save', 'Discard', (isChanged, auto) => {
           if (isChanged) {
             this.tileSave("", true, false, false, tileObj);
           } else {
-            this.setTileContent(tileObj);
+            this.setTileContent(tileObj, false, true);
           }
         });
       } else {
@@ -1102,10 +1126,12 @@ export class WidgetsComponent implements OnInit {
       }
     } else if (!this.utils.isEmptyObject(tileObj) && tileObj.hasOwnProperty("savedUpdated")) {
       this.selectedTile = tileObj.hasOwnProperty("tile") ? tileObj["tile"] : {};
+    } else if (!this.utils.isEmptyObject(tileObj) && tileObj.hasOwnProperty("isSpinner")) {
+      this.loaderShared.showSpinner(false);
     }
   };
 
-  setTileContent(tileObj: Object, isUpdate?: boolean) {
+  setTileContent(tileObj: Object, isUpdate?: boolean, isSpinner?: boolean) {
     var isBlocks = tileObj.hasOwnProperty("assignBlocks") ? true : false;
     this.widgetTileReset(false, isBlocks, isUpdate);
 
@@ -1141,6 +1167,10 @@ export class WidgetsComponent implements OnInit {
           this.loadWidgets("", type, currentBlock);
         }
       }
+    }
+
+    if (isUpdate || isSpinner) {
+      this.loaderShared.showSpinner(false);
     }
   };
 
@@ -1208,7 +1238,7 @@ export class WidgetsComponent implements OnInit {
   };
 
   widgetTileReset(isNew?: boolean, isBlocks?: boolean, isUpdate?: boolean) {
-    if (!isNew) {
+    if (!isNew && !isBlocks) {
       this.resetTile("");
     }
 

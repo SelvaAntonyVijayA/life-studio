@@ -7,6 +7,7 @@ import { DraggableDirective } from '../../helpers/draggable.directive';
 import { Utils } from '../../helpers/utils';
 import { EventService } from '../../services/event.service';
 import { TileService } from '../../services/tile.service';
+import { LoaderSharedService } from '../../services/loader-shared.service';
 //declare var swal: any;
 declare var $: any;
 declare var combobox: any;
@@ -26,6 +27,7 @@ export class EventsComponent implements OnInit {
     private e1: ElementRef,
     private renderer: Renderer,
     private tileService: TileService,
+    private loaderShared: LoaderSharedService,
     public utils: Utils
   ) {
   }
@@ -438,6 +440,9 @@ export class EventsComponent implements OnInit {
     /* if (tileObj.hasOwnProperty("draggedTiles")) {
       this.setDraggedTiles(tileObj["draggedTiles"]);
     } */
+    if (!this.utils.isEmptyObject(tileObj) && tileObj.hasOwnProperty("isSpinner")) {
+      this.loaderShared.showSpinner(false);
+    }
   };
 
   trackByIndex(index: number, obj: any): any {
@@ -572,7 +577,7 @@ export class EventsComponent implements OnInit {
     this.event["draggedTiles"].push(replicatedTile);
   };
 
-  dateWithin = function (startDate: any, endDate: any, checkDate: any) {
+  dateWithin(startDate: any, endDate: any, checkDate: any) {
     var s, e, c;
 
     s = Date.parse(startDate);
@@ -593,12 +598,14 @@ export class EventsComponent implements OnInit {
       e.stopPropagation();
     }
 
+    this.loaderShared.showSpinner(true);
     var id = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id") ? this.event["obj"]["_id"] : "-1";
     var selectedLanguage = this.selectedLanguage;
     var eventData = this.getEventObj(id);
 
     if (this.utils.isNullOrEmpty(eventData["name"])) {
       this.utils.iAlert('error', 'Information', 'You must at least enter an Event name');
+      this.loaderShared.showSpinner(false);
       return false;
     } else if (isDuplicate) {
       eventData["name"] = "Copy of " + eventData["name"];
@@ -612,11 +619,13 @@ export class EventsComponent implements OnInit {
 
     if (this.eventCategoryId === "-1") {
       this.utils.iAlert('error', 'Information', 'Please select a type for the Event');
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
     if (this.utils.isNullOrEmpty(this.eventStart) || this.utils.isNullOrEmpty(this.availableEnd)) {
       this.utils.iAlert('error', 'Information', 'Oops! You need to complete the Event dates above first');
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
@@ -632,6 +641,7 @@ export class EventsComponent implements OnInit {
 
     if (!triggerChk) {
       this.utils.iAlert('error', 'Information', 'The Activate date has to be within the Events dates above');
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
@@ -642,6 +652,7 @@ export class EventsComponent implements OnInit {
 
       if (!activityCalendarResult) {
         this.utils.iAlert('error', 'Information', 'Activity Date is empty');
+        this.loaderShared.showSpinner(false);
         return false;
       }
     }
@@ -650,6 +661,7 @@ export class EventsComponent implements OnInit {
 
     if (!isActivityDateChk) {
       this.utils.iAlert('error', 'Information', 'Activity date should be within Event dates above');
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
@@ -659,6 +671,7 @@ export class EventsComponent implements OnInit {
       if (currTileObj.hasOwnProperty("triggerdata")) {
         if (currTileObj["triggerdata"].hasOwnProperty("type") && currTileObj["triggerdata"]["type"] == "-1") {
           this.utils.iAlert('error', 'Information', 'Please select tigger type');
+          this.loaderShared.showSpinner(false);
           return false;
         }
 
@@ -672,6 +685,7 @@ export class EventsComponent implements OnInit {
 
                 if (!(new Date(currTileObj["triggerdata"]["triggerdata"]["availableFrom"]) < getDeactivatedTime)) {
                   this.utils.iAlert('error', 'Information', 'You must select other deactivate option for the tile or increase the delay minutes');
+                  this.loaderShared.showSpinner(false);
                   return false;
                 }
               }
@@ -686,6 +700,7 @@ export class EventsComponent implements OnInit {
 
       if (last.hasOwnProperty("triggerdata") && last["triggerdata"].hasOwnProperty["stopType"] && last["triggerdata"]["stopType"] == 'aftertile') {
         this.utils.iAlert('error', 'Information', 'You must select other deactivate option for last tile');
+        this.loaderShared.showSpinner(false);
         return false;
       }
     }
@@ -713,13 +728,14 @@ export class EventsComponent implements OnInit {
         if (showMessage) {
           var alertMessage = isNew ? "Event Created" : "Event Updated";
           alertMessage = isDuplicate ? "Duplicate Event Created" : alertMessage;
+          this.loaderShared.showSpinner(false);
           this.utils.iAlert('success', '', alertMessage);
         }
 
         evtObj = self.assignCategoryName(evtObj);
 
         if (!isNew) {
-          var evtIndex = this.events.map(function (evtCat) { return evtCat['_id']; }).indexOf(evtObj["_id"]);
+          var evtIndex = this.events.map(evtCat => { return evtCat['_id']; }).indexOf(evtObj["_id"]);
 
           if (evtIndex !== -1) {
             this.events[evtIndex] = evtObj;
@@ -730,14 +746,14 @@ export class EventsComponent implements OnInit {
         }
 
         if (!this.utils.isNullOrEmpty(isAnother) && isAnother === "select") {
-          this.setEventData(true, evtCurrObj);
+          this.setEventData(true, evtCurrObj, true);
         } else if (!this.utils.isNullOrEmpty(isAnother) && isAnother === "new") {
-          this.evtNew();
+          this.evtNew(true);
         } else if (!this.utils.isNullOrEmpty(isAnother) && (isAnother === "activate" || isAnother === "deactivate")) {
           this.tileActivateDeactivate(evtCurrObj["tileId"], evtCurrObj["idx"], isAnother, true);
         } else {
           var isSelect = isDuplicate ? true : false;
-          self.setEventData(isSelect, evtObj);
+          self.setEventData(isSelect, evtObj, true);
         }
       });
   };
@@ -780,7 +796,7 @@ export class EventsComponent implements OnInit {
     return activityChk;
   };
 
-  checkCalendarDate = function (currTiles: any[]) {
+  checkCalendarDate(currTiles: any[]) {
     var result = true;
 
     for (let i = 0; i < currTiles.length; i++) {
@@ -1008,7 +1024,7 @@ export class EventsComponent implements OnInit {
     var index = -1;
 
     if (evtCatId !== "-1" && this.eventCategories.length > 0) {
-      index = this.eventCategories.map(function (evtCat) { return evtCat['_id']; }).indexOf(evtCatId);
+      index = this.eventCategories.map(evtCat => { return evtCat['_id']; }).indexOf(evtCatId);
     }
 
     eventObj["categoryName"] = index !== -1 && this.eventCategories[index].hasOwnProperty("name") ? this.eventCategories[index]["name"] : "";
@@ -1096,6 +1112,7 @@ export class EventsComponent implements OnInit {
     //this.renderer.setElementClass(elem.srcElement, 'selected', true);
     ///var drgTiles = [];
     var evtExist = false;
+    this.loaderShared.showSpinner(true);
 
     if (!this.utils.isEmptyObject(this.event) && this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
       if (this.event["obj"].hasOwnProperty("_id") && !this.utils.isNullOrEmpty(this.event["obj"]["_id"])) {
@@ -1108,15 +1125,17 @@ export class EventsComponent implements OnInit {
         if (r) {
           this.saveEvent("", false, false, "select", obj);
         } else {
-          this.setEventData(true, obj);
+          this.setEventData(true, obj, true);
         }
       });
+    } else {
+      this.loaderShared.showSpinner(false);
     }
 
     //elem.stopPropagation();
   };
 
-  setEventData(isSelect: boolean, obj: any) {
+  setEventData(isSelect: boolean, obj: any, showSpinner?: boolean) {
     this.clearInterval();
 
     //this.event["obj"] = obj;
@@ -1136,6 +1155,10 @@ export class EventsComponent implements OnInit {
         if (evtObj && evtObj[0]) {
           this.assignEventDatas(evtObj[0]);
           this.updateTileInterval();
+        }
+
+        if (showSpinner) {
+          this.loaderShared.showSpinner(false);
         }
       });
   };
@@ -1161,6 +1184,8 @@ export class EventsComponent implements OnInit {
   };
 
   languageChange(lang: string) {
+    this.loaderShared.showSpinner(true);
+
     if (!this.utils.isNullOrEmpty(lang)) {
       if (!this.utils.isEmptyObject(this.event) && this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
         var evtObj = this.event["obj"];
@@ -1172,7 +1197,10 @@ export class EventsComponent implements OnInit {
           var evtName = evtObj.hasOwnProperty(lang) && evtObj[lang].hasOwnProperty("name") && !this.utils.isNullOrEmpty(evtObj[lang]["name"]) ? evtObj[lang]["name"] : "";
           this.eventName = evtName;
         }
+
+        this.loaderShared.showSpinner(false);
       } else {
+        this.loaderShared.showSpinner(false);
         this.utils.iAlert('error', 'Information', 'Please select or create an Event');
       }
     }
@@ -1209,19 +1237,25 @@ export class EventsComponent implements OnInit {
   };
 
   newEvent(e: any) {
+    this.loaderShared.showSpinner(true);
+
     this.checkNew('Would you like to save your previous work?', (r) => {
       if (r) {
         this.saveEvent("", false, false, "new");
       } else {
-        this.evtNew();
+        this.evtNew(true);
       }
     });
   };
 
-  evtNew() {
+  evtNew(isSpinner?: boolean) {
     this.clearInterval();
     this.event = {};
     this.resetEvent("reset");
+
+    if (isSpinner) {
+      this.loaderShared.showSpinner(false);
+    }
   };
 
   resetOrgTiles() {
@@ -1671,6 +1705,7 @@ export class EventsComponent implements OnInit {
     this.clearInterval();
     var isEventModified = this.newEventCompare();
     var eventId = this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id") ? this.event["obj"]["_id"] : "-1";
+    this.loaderShared.showSpinner(true);
 
     if (!isEventModified && !isSaved) {
       this.utils.iAlertConfirm("confirm", "Confirm", "The tiles in this event is modified, Save and activate the tile", "Save & Activate", "Cancel", (r) => {
@@ -1680,18 +1715,24 @@ export class EventsComponent implements OnInit {
         }
       });
     } else if ((isEventModified && !isSaved) || isSaved) {
-      this.activateDeactivate(eventId, tileId, type, idx);
+      this.activateDeactivate(eventId, tileId, type, idx, true);
     }
   };
 
-  activateDeactivate(eventId: string, tileId: string, activateType: string, idx?: number) {
+  activateDeactivate(eventId: string, tileId: string, activateType: string, idx?: number, isSpinner?: boolean) {
     var self = this;
     var eventObj = self.event.hasOwnProperty("obj") && !self.utils.isEmptyObject(self.event["obj"]) ? self.event["obj"] : {};
 
     if (!this.utils.isNullOrEmpty(idx)) {
       this.eventService.tileActivateDeactivate(eventId, tileId, idx, activateType).then(eventCategoriesList => {
         self.setEventData(false, eventObj);
+
+        if (isSpinner) {
+          this.loaderShared.showSpinner(false);
+        }
       });
+    } else if (isSpinner) {
+      this.loaderShared.showSpinner(false);
     }
   };
 
@@ -1718,20 +1759,26 @@ export class EventsComponent implements OnInit {
     e.stopPropagation();
 
     if (this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id")) {
+      this.loaderShared.showSpinner(true);
+
       this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Event?", "Delete", "Cancel", (r) => {
         if (r["resolved"]) {
           var eventId = this.event["obj"]["_id"];
 
           this.eventService.removeEvent(eventId).then(deleteRes => {
             if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted")) {
-              var evtIndex = this.events.map(function (evtCat) { return evtCat['_id']; }).indexOf(eventId);
+              var evtIndex = this.events.map(evtCat => { return evtCat['_id']; }).indexOf(eventId);
               this.events.splice(evtIndex, 1);
               this.clearInterval();
               this.event = {};
               this.resetEvent("reset");
               this.utils.iAlert('success', '', 'Event Removed');
             }
+
+            this.loaderShared.showSpinner(false);
           });
+        } else {
+          this.loaderShared.showSpinner(false);
         }
       });
     } else {
@@ -1743,9 +1790,12 @@ export class EventsComponent implements OnInit {
     e.preventDefault();
     e.stopPropagation();
 
+    this.loaderShared.showSpinner(true);
+
     if (this.event.hasOwnProperty("obj") && this.event["obj"].hasOwnProperty("_id")) {
       this.saveEvent("", true, true);
     } else {
+      this.loaderShared.showSpinner(false);
       this.utils.iAlert('error', 'Information', 'Event not selected');
     }
   };

@@ -24,6 +24,7 @@ import { SmartComponent } from '../../components/smart/smart.component';
 import { ImagelibraryComponent } from '../../components/imagelibrary/imagelibrary.component';
 import { OrganizationsComponent } from '../../components/organizations/organizations.component';
 import { StudiousersComponent } from '../../components/studiousers/studiousers.component';
+import { MenuBackgroundComponent } from '../../components/menu-background/menu-background.component';
 
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { HeaderService } from '../../services/header.service';
@@ -38,7 +39,6 @@ import { ProcedureService } from '../../services/procedure.service';
 import { ThemeService } from '../../services/theme.service';
 import { AlertService } from '../../services/alert.service';
 import { ImageService } from '../../services/image.service';
-
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 //import { DragDropDirectiveModule} from "angular4-drag-drop";
@@ -72,7 +72,7 @@ import { MatIconModule } from '@angular/material/icon';
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent,
-    OrganizationsComponent, StudiousersComponent],
+    OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService]
 })

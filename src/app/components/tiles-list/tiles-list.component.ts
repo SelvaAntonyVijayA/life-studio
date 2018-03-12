@@ -7,6 +7,7 @@ import { CommonService } from '../../services/common.service';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
+import { LoaderSharedService } from '../../services/loader-shared.service';
 
 @Component({
   selector: 'tiles-list',
@@ -57,15 +58,17 @@ export class TilesListComponent {
     private e1: ElementRef,
     private renderer: Renderer,
     private mScrollbarService: MalihuScrollbarService,
+    private loaderShared: LoaderSharedService,
     public utils: Utils
   ) {
     this.oid = Cookie.get('oid');
   }
 
   orgChange(orgId: string) {
+    this.loaderShared.showSpinner(true);
     this.resetTiles();
     this.selectedOrg = orgId;
-    this.setTileListData();
+    this.setTileListData(true);
     this.tileContent.emit({ "orgId": orgId });
   };
 
@@ -208,12 +211,16 @@ export class TilesListComponent {
   };
 
   /* Tile Categories based on organization*/
-  getTilesCategories() {
+  getTilesCategories(isSpinner?: boolean) {
     this.tileService.getTilesCategories(this.selectedOrg).subscribe(tileCat => {
       this.tileCategories = tileCat[0];
       this.tiles = tileCat[1];
       this.emitCategories(this.tileCategories);
       this.setTileSearch();
+
+      if (isSpinner) {
+        this.loaderShared.showSpinner(false);
+      }
     });
   };
 
@@ -240,11 +247,13 @@ export class TilesListComponent {
         tilesData[i] = this.tileNotifyIcons(tilesData[i]);
       }
 
-      if (this.draggedTiles.length > 0 && this.utils.isEmptyObject(this.draggedSeparatedTiles)) {
+      if (this.utils.isArray(this.draggedTiles) && this.draggedTiles.length > 0 && this.utils.isEmptyObject(this.draggedSeparatedTiles)) {
         var tileIds = this.draggedTiles;
         this.separateDraggedTiles(tileIds);
       }
     }
+
+    this.tileContent.emit({ "isSpinner": true });
   };
 
   getCategoryName(id: string) {
@@ -275,10 +284,10 @@ export class TilesListComponent {
     this.cms.destroyScroll(["#main-tiles-container"]);
   };
 
-  setTileListData() {
+  setTileListData(isSpinner?: boolean) {
     if (this.organizations.length > 0) {
       this.draggedSeparatedTiles = {};
-      this.getTilesCategories();
+      this.getTilesCategories(isSpinner);
     }
   };
 
@@ -542,9 +551,9 @@ export class TilesListComponent {
     }
 
     if (cHObj.hasOwnProperty("draggedTiles") && cHObj["draggedTiles"]["currentValue"].length > 0) {
-      if( this.tiles.length > 0 || !this.utils.isEmptyObject(this.draggedSeparatedTiles)){
+      if (this.tiles.length > 0 || !this.utils.isEmptyObject(this.draggedSeparatedTiles)) {
         this.separateDraggedTiles(cHObj["draggedTiles"]["currentValue"]);
-      }      
+      }
     }
 
     if (cHObj.hasOwnProperty("isMerge") && !this.utils.isEmptyObject(cHObj["isMerge"]["currentValue"])) {
@@ -600,6 +609,7 @@ export class TilesComponent implements OnInit {
     private tileService: TileService,
     private viewContainerRef: ViewContainerRef,
     private resolver: ComponentFactoryResolver,
+    private loaderShared: LoaderSharedService,
     public utils: Utils
   ) {
   }
@@ -623,6 +633,8 @@ export class TilesComponent implements OnInit {
     if (this.page === "tiles") {
       this.cursor = "pointer";
       this.tileSelect = this.renderer.listen(this.e1.nativeElement, 'click', (event) => {
+        this.loaderShared.showSpinner(true);
+
         this.selectedTile = {};
         var blocksIds = this.tile.blocks;
         this.selectedTile = this.tile;

@@ -5,6 +5,7 @@ import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { DraggableDirective } from '../../helpers/draggable.directive';
 import { FolderService } from '../../services/folder.service';
+import { LoaderSharedService } from '../../services/loader-shared.service';
 import { Utils } from '../../helpers/utils';
 
 @Component({
@@ -20,6 +21,7 @@ export class FoldersComponent implements OnInit {
     private mScrollbarService: MalihuScrollbarService,
     private e1: ElementRef,
     private renderer: Renderer,
+    private loaderShared: LoaderSharedService,
     public utils: Utils) {
   }
 
@@ -109,6 +111,10 @@ export class FoldersComponent implements OnInit {
     /* if (tileObj.hasOwnProperty("draggedTiles")) {
       this.setDraggedTiles(tileObj["draggedTiles"]);
     } */
+
+    if (!this.utils.isEmptyObject(tileObj) && tileObj.hasOwnProperty("isSpinner")) {
+      this.loaderShared.showSpinner(false);
+    }
   };
 
   /* Organizations Intialization */
@@ -429,6 +435,8 @@ export class FoldersComponent implements OnInit {
       e.stopPropagation();
     }
 
+    this.loaderShared.showSpinner(true);
+
     var folderObj = this.folder.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.folder["obj"]) ? this.folder["obj"] : {};
     var foldId = folderObj.hasOwnProperty("_id") ? this.folder["obj"]["_id"] : "-1";
     var tilist = {};
@@ -466,7 +474,8 @@ export class FoldersComponent implements OnInit {
     current.setFullYear(current.getFullYear() + 10);
 
     if (this.utils.isNullOrEmpty(tilist["name"])) {
-      alert("You must at least enter a Folder name");
+      this.utils.iAlert('error', 'Information', 'You must at least enter a Folder name');
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
@@ -475,11 +484,15 @@ export class FoldersComponent implements OnInit {
     }
 
     if (this.utils.isNullOrEmpty(tilist["availableStart"])) {
-      alert("Folder available start is empty");
+      this.utils.iAlert('error', 'Information', 'Folder available start is empty');
+      this.loaderShared.showSpinner(false);
+      return false;
     }
 
     if (this.utils.isNullOrEmpty(tilist["availableEnd"])) {
-      alert("Folder available end is empty");
+      this.utils.iAlert('error', 'Information', 'Folder available end is empty');
+      this.loaderShared.showSpinner(false);
+      return false;
     }
 
     tilist["tiles"] = this.getDraggedTiles();
@@ -487,6 +500,7 @@ export class FoldersComponent implements OnInit {
     var isDatesCheck = this.foldercheckDates();
 
     if (!isDatesCheck) {
+      this.loaderShared.showSpinner(false);
       return false;
     }
 
@@ -497,18 +511,21 @@ export class FoldersComponent implements OnInit {
         if (showMessage) {
           var alertMessage = isNew ? "Folder Created" : "Folder Updated";
           alertMessage = isDuplicate ? "Duplicate Folder Created" : alertMessage;
-          alert(alertMessage);
+          this.utils.iAlert('success', '', alertMessage);
         }
 
         if (!isNew) {
-          var foldIndex = this.folders.map(function (fold) { return fold['_id']; }).indexOf(folderResObj["_id"]);
+          var foldIndex = this.folders.map(fold => { return fold['_id']; }).indexOf(folderResObj["_id"]);
 
           if (foldIndex !== -1) {
             this.folders[foldIndex] = tilist;
           }
+
+          this.loaderShared.showSpinner(false);
         } else if (folderResObj.hasOwnProperty("_id") && !self.utils.isNullOrEmpty(folderResObj["_id"])) {
           tilist["_id"] = folderResObj["_id"];
           this.folders.push(tilist);
+          this.loaderShared.showSpinner(false);
         }
 
         var isSelect = isDuplicate ? true : false;
@@ -541,10 +558,10 @@ export class FoldersComponent implements OnInit {
 
     if (!this.utils.isNullOrEmpty(availableStart) && !this.utils.isNullOrEmpty(untilDate)) {
       if (availableStart > untilDate) {
-        alert('The Until date date must be greater than the start date');
+        this.utils.iAlert('error', 'Information', 'The Until date date must be greater than the start date');
         result = false;
       } else if (untilDate < availableStart) {
-        alert('The Start date must be lesser than until date');
+        this.utils.iAlert('error', 'Information', 'The Start date must be lesser than until date');
         result = false;
       }
     }
@@ -571,10 +588,13 @@ export class FoldersComponent implements OnInit {
     e.preventDefault();
     e.stopPropagation();
 
+    this.loaderShared.showSpinner(true);
+
     if (this.folder.hasOwnProperty("obj") && this.folder["obj"].hasOwnProperty("_id")) {
       this.saveFolder("", true, true);
     } else {
-      alert("Folder not selected");
+      this.loaderShared.showSpinner(false);
+      this.utils.iAlert('error', 'Information', 'Folder not selected');
     }
   };
 
@@ -583,24 +603,30 @@ export class FoldersComponent implements OnInit {
     e.stopPropagation();
 
     if (this.folder.hasOwnProperty("obj") && this.folder["obj"].hasOwnProperty("_id")) {
-      var r = confirm("Are you sure want to delete this Folder?");
+      this.loaderShared.showSpinner(true);
 
-      if (r) {
-        var folderId = this.folder["obj"]["_id"];
+      this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Folder?", "Delete", "Cancel", (r) => {
+        if (r["resolved"]) {
+          var folderId = this.folder["obj"]["_id"];
 
-        this.folderService.removeFolder(folderId).then(deleteRes => {
-          if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted") && deleteRes["deleted"]) {
-            var foldIndex = this.folders.map(function (evtCat) { return evtCat['_id']; }).indexOf(folderId);
-            this.folders.splice(foldIndex, 1);
+          this.folderService.removeFolder(folderId).then(deleteRes => {
+            if (!this.utils.isEmptyObject(deleteRes) && deleteRes.hasOwnProperty("deleted")) {
+              var foldIndex = this.folders.map(evtCat => { return evtCat['_id']; }).indexOf(folderId);
+              this.folders.splice(foldIndex, 1);
 
-            this.folder = {};
-            this.resetFolder("reset");
-            alert("Folder Removed");
-          }
-        });
-      }
+              this.folder = {};
+              this.resetFolder("reset");
+              this.utils.iAlert('success', '', 'Folder Removed');
+            }
+
+            this.loaderShared.showSpinner(false);
+          });
+        } else {
+          this.loaderShared.showSpinner(false);
+        }
+      });
     } else {
-      alert("Folder not selected");
+      this.utils.iAlert('error', 'Information', 'Folder not selected');
     }
   };
 
@@ -614,6 +640,7 @@ export class FoldersComponent implements OnInit {
     //this.renderer.setElementClass(elem.target, 'selected', true);
     //this.renderer.setElementClass(elem.srcElement, 'selected', true);
     ///var drgTiles = [];
+    this.loaderShared.showSpinner(true);
     var foldExists = false;
 
     if (!this.utils.isEmptyObject(this.folder) && this.folder.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.folder["obj"])) {
@@ -623,11 +650,13 @@ export class FoldersComponent implements OnInit {
     }
 
     if (!foldExists) {
-      this.setFolderData(true, obj);
+      this.setFolderData(true, obj, true);
+    } else {
+      this.loaderShared.showSpinner(false);
     }
   };
 
-  setFolderData(isSelect: boolean, obj: any) {
+  setFolderData(isSelect: boolean, obj: any, isSpinner?: boolean) {
     if (isSelect) {
       //this.draggedTiles = [];
       this.resetFolder();
@@ -643,6 +672,10 @@ export class FoldersComponent implements OnInit {
       .then(foldObj => {
         if (foldObj && foldObj[0]) {
           this.assignFolderDatas(foldObj[0]);
+        }
+
+        if (isSpinner) {
+          this.loaderShared.showSpinner(false);
         }
       });
   };

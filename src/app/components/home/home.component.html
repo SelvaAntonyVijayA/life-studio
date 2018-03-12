@@ -1,2 +1,5 @@
-<app-header></app-header>
-<router-outlet></router-outlet>
+<app-header (isSpinner)="getStatus($event)"></app-header>
+<div class="ili_load_spinner" *ngIf="status">
+    <div id="loadinggif"></div>
+</div>
+<router-outlet (isSpinner)="getStatus($event)"></router-outlet>
