@@ -7,6 +7,7 @@ import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
 import { PageService } from '../../services/page.service';
 import { PageSettingsService } from '../../services/pagesettings.service';
+import { LoaderSharedService } from '../../services/loader-shared.service';
 
 @Component({
   selector: 'app-settings',
@@ -21,6 +22,7 @@ export class SettingsComponent implements OnInit {
     private tileService: TileService,
     private pageService: PageService,
     private pagesettings: PageSettingsService,
+    private loaderShared: LoaderSharedService,
     private mScrollbarService: MalihuScrollbarService,
     public utils: Utils) { }
 
@@ -40,6 +42,9 @@ export class SettingsComponent implements OnInit {
   imglibData: object = {};
 
   getTileContent(tileObj: any) {
+    if (!this.utils.isEmptyObject(tileObj) && tileObj.hasOwnProperty("isSpinner")) {
+      this.loaderShared.showSpinner(false);
+    }
   };
 
   setOrganizations() {
@@ -50,12 +55,12 @@ export class SettingsComponent implements OnInit {
 
   appChange(appId: string) {
     this.selectedApp = appId;
-    this.getLocations(appId);
+    this.getLocations(appId, true);
   };
 
-  locationChange(locationId: string) {
+  locationChange(locationId: string, isSpinner?: boolean) {
     this.selectedLocation = locationId;
-    this.getSettings();
+    this.getSettings(true);
   };
 
   getApps() {
@@ -75,7 +80,7 @@ export class SettingsComponent implements OnInit {
     }
   };
 
-  getLocations(appId: string) {
+  getLocations(appId: string, isSpinner?: boolean) {
     if (this.locationList.length > 0) {
       this.locationList = [];
       this.selectedLocation = "";
@@ -88,11 +93,11 @@ export class SettingsComponent implements OnInit {
           this.selectedLocation = this.locationList[0]["_id"];
         }
 
-        this.getSettings();
+        this.getSettings(isSpinner);
       });
   };
 
-  getSettings() {
+  getSettings(isSpinner?: boolean) {
     this.pagesettings.get(this.oid, this.selectedApp, this.selectedLocation).then(xlist => {
 
       if (!this.utils.isEmptyObject(xlist)) {
@@ -123,22 +128,35 @@ export class SettingsComponent implements OnInit {
 
                 this.xsettings["menuTiles"] = settingMenuTiles;
               }
+
+              if (isSpinner) {
+                this.loaderShared.showSpinner(false);
+              }
             });
 
         } else {
           this.xsettings["menuTiles"] = [];
+
+          if (isSpinner) {
+            this.loaderShared.showSpinner(false);
+          }
         }
 
       } else {
         this.xsettings = {};
         this.xsettings["showBalancePage"] = false;
         this.xsettings["menuTiles"] = [];
-      }
 
+        if (isSpinner) {
+          this.loaderShared.showSpinner(false);
+        }
+      }
     });
   };
 
-  saveSettings() {
+  saveSettings(e: any) {
+    this.loaderShared.showSpinner(true);
+
     if (this.utils.isNullOrEmpty(this.xsettings["_id"])) {
       this.xsettings["title"] = "Settings";
       this.xsettings["appId"] = this.selectedApp;
@@ -156,19 +174,25 @@ export class SettingsComponent implements OnInit {
     this.pagesettings.save(saveObj)
       .then(res => {
         this.xsettings["_id"] = res._id;
+        this.loaderShared.showSpinner(false);
         this.utils.iAlert('success', '', 'Saved Successfully');
       });
   };
 
-  deleteSettings() {
+  deleteSettings(e: any) {
+    this.loaderShared.showSpinner(true);
+
     this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure?", "Yes", "No", (res) => {
 
       if (res.hasOwnProperty("resolved") && res["resolved"] == true) {
         this.pagesettings.remove(this.xsettings["_id"])
           .then(res => {
             this.xsettings = {};
+            this.loaderShared.showSpinner(false);
             this.utils.iAlert('success', '', 'Deleted Successfully');
           });
+      } else {
+        this.loaderShared.showSpinner(false);
       }
     });
   };

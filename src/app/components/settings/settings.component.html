@@ -116,7 +116,7 @@
         </div>
       </div>
 
-      <tiles-list class="dragItem" [draggedTiles]="draggedTiles" [droppedTile]="droppedTile" [organizations]="organizations" [page]="'settings'">
+      <tiles-list class="dragItem" (tileContent)="getTileContent($event)" [draggedTiles]="draggedTiles" [droppedTile]="droppedTile" [organizations]="organizations" [page]="'settings'">
       </tiles-list>
     </div>
 
