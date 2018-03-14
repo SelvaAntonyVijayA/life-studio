@@ -1,3 +1,92 @@
-<p>
-  menu-background works!
-</p>
+<!-- <ng-template #menuBgLib>
+  <div class="modal-header bg-header">
+    <h4 class="modal-title bg-title pull-left">MOBILE AND WEB BACKGROUNDS AND COLORS</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body menu-bg-body">
+    <div class="main_menu_layout">
+      <div class="main-bg-tab">
+        <div (click)="tabChange($event)" [ngClass]="tabIndex === 0 ? 'tab-mobile tab-selected': 'tab-mobile'">Mobile</div>
+        <span class="tab-separator">|</span>
+        <div (click)="tabChange($event)" [ngClass]="tabIndex === 1 ? 'tab-web tab-selected': 'tab-web'">Web</div>
+      </div>
+
+      <div class="menu-background-group ">
+        <ul *ngIf="menuBgGroupNames?.length> 0">
+          <li (click)="selectGroupOption($event, i)" *ngFor="let menuGrpName of menuBgGroupNames; let i = index" [ngClass]="groupBgIdx === i?'current-page': ''">{{menuGrpName}}</li>
+        </ul>
+      </div>
+
+      <div *ngIf="groupBgIdx === 0" class="menu-group-content menu-bg-pattern">
+        <div class="general-pattern">
+          <img class="delete-pattern" [src]="'/img/close_bg.png'" style="display: none;">
+          <img class="img-general-pattern" style="display: none;" [src]="''">
+          <div class="upload-general-pattern" style="display: block;">
+            <input class="bg-main-img" type="image" src="/img/background_upload.png" width="40px">
+            <span class="pt-txt-fileUpload">Upload File</span>
+          </div>
+        </div>
+        <div class="general-background">
+          <span class="general-background-text">Or</span>
+          <div style="padding-bottom: 10px;">
+            <div style="float: left; margin: 5px 13px 0 0;">Background Color :</div>
+            <input [(ngModel)]="bgColor" (change)="colorChange($event,'bgColor')" class='form-control input-sm pattern-bg-color' [(colorPicker)]="pageFontColor"
+              [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+              [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageFontColor" type='text' />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>-->
+
+<div class="modal fade" bsModal #menuBgLib="bs-modal" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="menuBackground" aria-hidden="true"
+  (onHide)="onHide($event)">
+  <div class="modal-dialog menu-bg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title bg-title pull-left">MOBILE AND WEB BACKGROUNDS AND COLORS</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body menu-bg-body">
+        <div class="main_menu_layout">
+          <div class="main-bg-tab">
+            <div (click)="tabChange($event)" [ngClass]="tabIndex === 0 ? 'tab-mobile tab-selected': 'tab-mobile'">Mobile</div>
+            <span class="tab-separator">|</span>
+            <div (click)="tabChange($event)" [ngClass]="tabIndex === 1 ? 'tab-web tab-selected': 'tab-web'">Web</div>
+          </div>
+
+          <div class="menu-background-group ">
+            <ul *ngIf="menuBgGroupNames?.length> 0">
+              <li (click)="selectGroupOption($event, i)" *ngFor="let menuGrpName of menuBgGroupNames; let i = index" [ngClass]="groupBgIdx === i?'current-page': ''">{{menuGrpName}}</li>
+            </ul>
+          </div>
+
+          <div *ngIf="groupBgIdx === 0" class="menu-group-content menu-bg-pattern">
+            <div class="general-pattern">
+              <img class="delete-pattern" [src]="'/img/close_bg.png'" style="display: none;">
+              <img class="img-general-pattern" style="display: none;" [src]="''">
+              <div class="upload-general-pattern" style="display: block;">
+                <input class="bg-main-img" type="image" src="/img/background_upload.png" width="40px">
+                <span class="pt-txt-fileUpload">Upload File</span>
+              </div>
+            </div>
+            <div class="general-background">
+              <span class="general-background-text">Or</span>
+              <div style="padding-bottom: 10px;">
+                <div style="float: left; margin: 5px 13px 0 0;">Background Color :</div>
+                <input [(ngModel)]="bgColor" (change)="colorChange($event,'bgColor')" class='form-control input-sm pattern-bg-color' [(colorPicker)]="pageFontColor"
+                  [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+                  [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageFontColor" type='text' />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

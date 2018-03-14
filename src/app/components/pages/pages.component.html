@@ -52,7 +52,7 @@
       <button (click)="deletePage($event, true)" class="ili-btn page_delete">
         Delete
       </button>
-      <button class="ili-btn page_setup">
+      <button (click)="menuBackgroundLibrary($event)" class="ili-btn page_setup">
         Page Setup
       </button>
       <button class="ili-btn default_page_setup">
@@ -284,3 +284,5 @@
       [droppedTile]="droppedTile" [organizations]="organizations" [page]="'pages'"></tiles-list>
   </div>
 </div>
+
+<menu-background (menuBgContent)="menuBackground($event)" [show-modal]="isMenuBg"></menu-background>

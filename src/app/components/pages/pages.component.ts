@@ -91,6 +91,7 @@ export class PagesComponent implements OnInit {
   randomOrder: boolean = false;
   alphabeticalOrder: boolean = false;
   livestreamOnTop: boolean = false;
+  isMenuBg: boolean = false;
 
   /* Setting dragging Groups, Menus, Tiles */
   setDragged(currObj: Object, type: string, menuItem?: Object, drgExits?: boolean, procedure?: Object) {
@@ -211,6 +212,7 @@ export class PagesComponent implements OnInit {
     this.randomOrder = false;
     this.alphabeticalOrder = false;
     this.livestreamOnTop = false;
+    this.isMenuBg = false;
     this.resetBlankMenu();
 
     if (mergeReset && mergeReset === "reset") {
@@ -757,10 +759,8 @@ export class PagesComponent implements OnInit {
     var pgExist = false;
 
     if (pgObj.hasOwnProperty("_id")) {
-      if(initial){
-        this.loaderShared.showSpinner(true);
-      }
-      
+      this.loaderShared.showSpinner(true);
+
       if (!this.utils.isEmptyObject(this.page) && this.page.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.page["obj"])) {
         if (this.page["obj"].hasOwnProperty("_id") && !this.utils.isNullOrEmpty(this.page["obj"]["_id"])) {
           pgExist = this.page["obj"]["_id"] === pgObj["_id"] ? true : false;
@@ -772,7 +772,7 @@ export class PagesComponent implements OnInit {
           if (r) {
             this.savePage("", false, "select", pgObj);
           } else {
-            var isSpinner = initial? false : true;
+            var isSpinner = initial ? false : true;
             this.setPageData(true, pgObj, isSpinner);
           }
         });
@@ -1598,6 +1598,17 @@ export class PagesComponent implements OnInit {
       this.utils.iAlert('error', 'Information', 'Page not selected');
     }
   };
+
+  menuBackgroundLibrary(e: any) {
+    e.preventDefault();
+    this.isMenuBg = true;
+  };
+
+  menuBackground(menuObj: Object){
+    if(!this.utils.isEmptyObject(menuObj) && menuObj.hasOwnProperty("close")){
+      this.isMenuBg = false;
+    }
+  }
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {

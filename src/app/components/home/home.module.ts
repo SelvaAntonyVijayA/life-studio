@@ -58,6 +58,7 @@ import 'hammerjs';
 import 'mousetrap';
 import { GalleryModule } from '../../module/gallery.module';
 import { NgSelectModule } from '../../ng-select';
+import { ModalModule } from 'ngx-bootstrap';
 import { ProgressHttpModule, HTTP_FACTORY } from 'angular-progress-http';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -65,7 +66,7 @@ import { MatIconModule } from '@angular/material/icon';
 @NgModule({
   imports: [
     CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule,
-    ColorPickerModule, CKEditorModule, GalleryModule.forRoot(), NgSelectModule, MatIconModule, ProgressHttpModule
+    ColorPickerModule, CKEditorModule, GalleryModule.forRoot(), NgSelectModule, MatIconModule, ProgressHttpModule, ModalModule.forRoot()
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,

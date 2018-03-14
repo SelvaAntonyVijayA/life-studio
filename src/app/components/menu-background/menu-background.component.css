@@ -1,0 +1,153 @@
+.menu-bg {
+  width: 550px;
+  min-height: 400px;
+}
+
+.menu-bg-body {
+  height: 516px;
+}
+
+.bg-header {
+  border-bottom: 1px solid rgb(170, 170, 170);
+}
+
+.bg-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.main_menu_layout {
+  float: left;
+  width: 566px;
+  height: 450px;
+  color: #000000;
+}
+
+.main-bg-tab {
+  float: left;
+  width: 100%;
+  height: 40px;
+  font-size: 13px;
+}
+
+.tab-mobile {
+  float: left;
+  margin: 9px 16px 0px 248px;
+  cursor: pointer;
+}
+
+.tab-separator {
+  float: left;
+  font-weight: bold;
+  margin: 8px 18px 0 0;
+}
+
+.tab-web {
+  float: left;
+  margin: 8px 0px 0px 2px;
+  cursor: pointer;
+}
+
+.tab-selected {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.menu-background-group {
+  position: relative;
+  float: left;
+  width: 29%;
+  height: 240px;
+  border-right: 1px solid #aaaaaa;
+}
+
+.menu-background-group ul {
+  padding: 0;
+  list-style-type: none;
+}
+
+.menu-background-group ul li {
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.menu-background-group ul li.current-page {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+/* Main Background group content*/
+
+.menu-group-content {
+  margin-top: 15px;
+  margin-left: 20px;
+}
+
+/* Background  Pattern */
+
+.menu-bg-pattern {
+  float: left;
+  width: 60%;
+  height: 140px;
+}
+
+.general-pattern {
+  height: 100px;
+  width: 100px;
+  border-radius: 0px;
+  box-shadow: 0px 0px 3px #071838;
+  margin-right: 20px;
+  float: left;
+  position: relative;
+}
+
+.delete-pattern {
+  float: right;
+  margin-top: -17px;
+  cursor: pointer;
+}
+
+.img-general-pattern {
+  position: relative;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translateX(-50%) translateY(-45%);
+  max-height: 100px;
+  max-width: 100%;
+}
+
+.bg-main-img {
+  margin: 20px 10px 4px 29px;
+}
+
+.pt-txt-fileUpload {
+  float: left;
+  font-size: 12px;
+  margin-left: 17px;
+  width: 100%;
+}
+
+.general-background {
+  height: 50px;
+  width: 100%;
+  margin-top: 19px;
+  border-radius: 0px;
+  float: left;
+  position: relative;
+}
+
+.general-background-text {
+  float: left;
+  width: 100%;
+  margin-bottom: 5px;
+  margin-top: 0px;
+}
+
+.pattern-bg-color {
+  width: 82px;
+  margin-left: 10px;
+}
