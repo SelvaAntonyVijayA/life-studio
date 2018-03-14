@@ -17,6 +17,7 @@ import { SmartComponent } from '../components/smart/smart.component';
 import { ImagelibraryComponent } from '../components/imagelibrary/imagelibrary.component';
 import { OrganizationsComponent } from '../components/organizations/organizations.component';
 import { StudiousersComponent } from '../components/studiousers/studiousers.component';
+import { SettingsComponent } from '../components/settings/settings.component';
 
 const homeRoutes: Routes = [
   {
@@ -78,6 +79,10 @@ const homeRoutes: Routes = [
       {
         path: 'studiousers',
         component: StudiousersComponent
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent
       }
     ]
   }

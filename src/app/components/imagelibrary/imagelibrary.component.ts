@@ -60,6 +60,7 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   aspectRatio: any = NaN;
   @Input() isOpen = 'none';
   @Input() page: string;
+  @Input() data: object;
   @Input() popFrom: string;
   @Output('onDone') doneEvent = new EventEmitter();
   @Output('onClose') closeEvent = new EventEmitter();
@@ -100,7 +101,12 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
 
   onCloseHandled() {
     this.isOpen = 'none';
-    this.closeEvent.emit(this.selectedimage);
+    var onCloseData = {
+      url: this.selectedimage,
+      data: this.data
+    };
+
+    this.closeEvent.emit(onCloseData);
   }
 
   upload() {
@@ -222,7 +228,12 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
 
     this.selectedimage = url;
     this.isOpen = "none";
-    this.doneEvent.emit(this.selectedimage);
+    var onCloseData = {
+      url: this.selectedimage,
+      data: this.data
+    };
+
+    this.doneEvent.emit(onCloseData);
   }
 
   crop() {
@@ -259,7 +270,13 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
           this.loadImages();
           this.isOpen = "none";
           this.isUploadedCrop = false;
-          this.doneEvent.emit(this.selectedimage);
+
+          var onCloseData = {
+            url: this.selectedimage,
+            data: this.data
+          };
+
+          this.doneEvent.emit(onCloseData);
         }
       });
   }
@@ -267,9 +284,14 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   withOutCrop() {
     if (this.selectedimages.length > 0) {
       var url = this.selectedimages[this.selectedimages.length - 1];
-
       this.isOpen = "none";
-      this.doneEvent.emit(url);
+      var onCloseData = {
+        url: url,
+        data: this.data
+      };
+
+      this.doneEvent.emit(onCloseData);
+
     } else {
       this.utils.iAlert('error', 'Error', 'Please select a image');
     }
@@ -370,7 +392,12 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
     if (this.isUploadedCrop) {
       this.isOpen = "none";
       this.isUploadedCrop = false;
-      this.doneEvent.emit(this.selectedimage);
+      var onCloseData = {
+        url: this.selectedimage,
+        data: this.data
+      };
+
+      this.doneEvent.emit(onCloseData);
     }
   }
 

@@ -25,6 +25,7 @@ import { ImagelibraryComponent } from '../../components/imagelibrary/imagelibrar
 import { OrganizationsComponent } from '../../components/organizations/organizations.component';
 import { StudiousersComponent } from '../../components/studiousers/studiousers.component';
 import { MenuBackgroundComponent } from '../../components/menu-background/menu-background.component';
+import { SettingsComponent } from '../../components/settings/settings.component';
 
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { HeaderService } from '../../services/header.service';
@@ -72,7 +73,7 @@ import { MatIconModule } from '@angular/material/icon';
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent,
-    OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent],
+    OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService]
 })

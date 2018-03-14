@@ -134,5 +134,9 @@ module.exports = function (app) {
   router.all('/language/remove/:id*?', $languages.remove);
   router.get('/language/list', $languages.list);
 
+  router.get('/pagesettings/list/:orgId/:appId/:locationId*?', $pagesettings.list);
+  router.post('/pagesettings/save', $pagesettings.save);
+  router.all('/pagesettings/remove/:id', $pagesettings.remove);
+
   app.use('/', router);
 };

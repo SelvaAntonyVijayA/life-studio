@@ -1,0 +1,127 @@
+<div class="container settings_container">
+  <div class='app_page_form app_page_form_settings'>
+
+    <div class='page_block app_page_head app_page_head_settings'>
+
+      <div class='app_form' style="width: 605px; float: left;">
+        <select [ngModel]="selectedApp" (ngModelChange)="appChange($event)" class="form-control input-sm app_box">
+          <option *ngFor="let app of appList; let i = index" [value]="app?._id">{{app?.name}}</option>
+        </select>
+        <select [(ngModel)]="selectedLocation" (ngModelChange)="locationChange($event)" class="form-control input-sm location_box">
+          <option *ngFor="let loc of locationList; let i = index" [value]="loc?._id">{{loc?.name}}</option>
+        </select>
+
+        <div class="checkbox" style="float: right; margin-top: 10px;">
+          <label>
+            <input id="chkShowBalancePage" type="checkbox" [(ngModel)]="xsettings.showBalancePage">Show balance page</label>
+        </div>
+      </div>
+
+      <div class='app_settings_form_btns'>
+        <button (click)="saveSettings($event)" class="ili-btn save_settings_btn">
+          Save
+        </button>
+        <button (click)="deleteSettings($event)" class="ili-btn delete_settings_btn">
+          Delete
+        </button>
+      </div>
+
+    </div>
+
+    <div>
+      <div class='page_block drag_block app_settings_drag_block'>
+        <div class='app_page_items_container page_settings_app_items'>
+
+          <div iliDropTarget (myDrop)="onDrop($event, false)" class="ili-panel app_setting_items drop_target">
+            <div class='label_bg draggable_label'>
+              Drag a tile into this space
+              <br>
+              <br>to create the setting menu of the app
+            </div>
+          </div>
+
+          <div *ngFor="let dragTile of xsettings!.menuTiles | reverse; let i = index; trackBy: trackByUniqueId" class="ili-panel xsettings_content">
+            {{ setDragIndex(i, dragTile)}}
+
+            <div *ngIf="!dragTile.hasOwnProperty('xsettingsDragContainer')" class="xsettings_main_panel app_setting_items">
+
+              <div class="menu_art">
+                <div class="icon-img">
+                  <img class="menu_item_art img-v-align" [src]="dragTile.imageUrl">
+                </div>
+              </div>
+
+              <div class="pageform_settings">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" [(ngModel)]="dragTile.showOnReg" class="showOnReg">Show&nbsp;on&nbsp;Registration</label>
+                </div>
+
+                <div class="main-group-skip-answered">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" [disabled]="(dragTile.showOnReg==true? false : true)" [(ngModel)]="dragTile.skipAlreadyAnswered" class="skipAlreadyAnswered">Skip&nbsp;Already&nbsp;Answered</label>
+                  </div>
+                </div>
+
+                <div class="main-group-nav-bar-button">
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" [(ngModel)]="dragTile.navBarButton" class="navBarButton">Nav&nbsp;Bar&nbsp;Button</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="xsettings_content_right">
+
+                <div class="drag_buttons">
+                  <button (click)="addIcon(i)" class="drg_btn" title="Add Icon and recommended size 50x50 or 100x100">
+                    <span class="glyphicon glyphicon-upload"></span>
+                  </button>
+                  <button (click)="addDraggable(i)" class="drg_btn" title="Add Space">
+                    <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+                  <button (click)="replicateTile(dragTile)" class="drg_btn" title="Replicate">
+                    <span class="glyphicon glyphicon-retweet"></span>
+                  </button>
+                  <button (click)="moveUpDown('up', i)" class="drg_btn" title="MoveUp">
+                    <span class="glyphicon glyphicon-arrow-up"></span>
+                  </button>
+                  <button (click)="moveUpDown('down', i)" class="drg_btn" title="MoveDown">
+                    <span class="glyphicon glyphicon-arrow-down"></span>
+                  </button>
+                  <button (click)="deleteDraggedTile(i)" class="drg_btn" title="Remove">
+                    <span class="glyphicon glyphicon-remove"></span>
+                  </button>
+                </div>
+
+                <div class="xsettings_main_tile_block settings_tiles_list_single">
+                  <img class="settings_tile_list_art settings_tile-content-img" [src]="dragTile['tile']?.art | safe">
+                  <div class="settings_tile_list_title settings_tile-content-title">{{dragTile['tile']?.title}}</div>
+                </div>
+              </div>
+
+            </div>
+
+            <div iliDropTarget (myDrop)="onDrop($event, true)" *ngIf="dragTile.hasOwnProperty('xsettingsDragContainer')" class="ili-panel app_setting_items drop_target">
+              <div class='label_bg draggable_label'>
+                Drag a tile into this space
+                <br>
+                <br>to create the setting menu of the app
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <tiles-list class="dragItem" [draggedTiles]="draggedTiles" [droppedTile]="droppedTile" [organizations]="organizations" [page]="'settings'">
+      </tiles-list>
+    </div>
+
+  </div>
+</div>
+
+<image-library [popFrom]="'menuart'" [data]="imglibData" [isOpen]="isImageLibrary" [page]="'settings'" (onClose)="onImageLibraryClose($event)"
+  (onDone)="onImageLibraryResult($event)"></image-library>

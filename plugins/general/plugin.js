@@ -219,6 +219,13 @@ var _getDeActivateTime = function (eventObj, tile, dateTime, indx, newActivate) 
   return tile;
 };
 
+var getIsoDate = function () {
+  var isoString = new Date().toISOString();
+  var isoDate = new Date(isoString);
+
+  return isoDate;
+};
+
 module.exports = {
   "init": init,
   "encrypt": encrypt,
@@ -227,6 +234,7 @@ module.exports = {
   "convertToJsonObject": convertToJsonObject,
   "setAvailableFrom": setAvailableFrom,
   "_getDeActivateTime": _getDeActivateTime,
-  "stringToDate": stringToDate
+  "stringToDate": stringToDate,
+  "getIsoDate" : getIsoDate
 };
 

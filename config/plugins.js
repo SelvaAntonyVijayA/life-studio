@@ -34,6 +34,7 @@ var plugins = {
   "organization": "organization",
   "organizationtype": "organizationtype",
   "livestream": "livestream",
+  "pagesettings": "pagesettings",
   "log": "log"
 };
 
