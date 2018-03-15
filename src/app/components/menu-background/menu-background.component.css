@@ -24,6 +24,7 @@
   width: 566px;
   height: 450px;
   color: #000000;
+  font-family: 'Roboto'
 }
 
 .main-bg-tab {
@@ -150,4 +151,219 @@
 .pattern-bg-color {
   width: 82px;
   margin-left: 10px;
+}
+
+.upload-background-group {
+  float: left;
+  width: 63%;
+  height: 38px;
+}
+
+/* Background Image */
+
+.vertical-app-background {
+  height: 150px;
+  width: 120px;
+  border-radius: 0px;
+  box-shadow: 0px 0px 3px #071838;
+  margin-right: 15px;
+  float: left;
+  position: relative;
+}
+
+.delete-vertical-bg {
+  float: right;
+  margin-top: -17px;
+  cursor: pointer;
+}
+
+.img-vertical-app-background {
+  position: relative;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translateX(-50%) translateY(-45%);
+  max-height: 150px;
+  max-width: 100%;
+}
+
+#img-vertical-background {
+  margin: 36px 20px 5px 40px;
+}
+
+.bgp-txt-fileUpload {
+  float: left;
+  margin-bottom: 1px;
+  font-size: 12px;
+  width: 100%;
+  margin-left: 30px;
+}
+
+.vertical-size {
+  margin-left: 22px;
+}
+
+.horizontal-app-background {
+  height: 90px;
+  width: 190px;
+  border-radius: 0px;
+  box-shadow: 0px 0px 3px #071838;
+  float: left;
+  position: relative;
+}
+
+.delete-horizontal-bg {
+  float: right;
+  margin-top: -17px;
+  cursor: pointer;
+}
+
+.img-horizontal-app-background {
+  position: relative;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translateX(-50%) translateY(-45%);
+  max-height: 90px;
+  max-width: 100%;
+}
+
+#img-horizontal-background {
+  margin: 14px 50px 1px 70px;
+}
+
+.bgl-txt-fileUpload {
+  float: right;
+  font-size: 12px;
+  margin-right: 64px;
+}
+
+.horizontal-size {
+  margin-left: 59px;
+}
+
+/* Top Pattern */
+
+.top-pattern-group {
+  float: left;
+  width: 38%;
+  height: 150px;
+}
+
+.horizontal-top-pattern {
+  margin-bottom: 20px;
+  height: 90px;
+  width: 190px;
+  border-radius: 0px;
+  box-shadow: 0px 0px 3px #071838;
+  float: left;
+  position: relative;
+}
+
+.delete-top-pattern {
+  float: right;
+  margin-top: -17px;
+  cursor: pointer;
+}
+
+.img-horizontal-top-pattern {
+  position: relative;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translateX(-50%) translateY(-45%);
+  max-height: 90px;
+  max-width: 100%;
+}
+
+#img-horizontal-top-pattern {
+  margin: 12px 50px 1px 70px;
+}
+
+.tp-txt-fileUpload {
+  float: left;
+  width: 100%;
+  margin-left: 60px;
+  font-size: 12px;
+}
+
+.top-pattern-scroll-mobile {
+  float: left;
+}
+
+.dv-top-banner-url {
+  float: left;
+  margin-top: 2px;
+  margin-left: 0px;
+  width: 350px;
+}
+
+.topbannerurl {
+  margin-left: 0px;
+  width: 308px;
+  margin-top: 11px;
+}
+
+/* Nav Bar */
+
+.bg-text-color-group {
+  float: left;
+  width: 65%;
+  display: block;
+}
+
+.icon-title-color, .page-bg-color, .page-banner-color, .page-banner-bg-color, .page-navbar-fontsize {
+  float: right;
+  width: 90px;
+  display: inline;
+  margin-right: 100px;
+}
+
+/* Tab Icon */
+.tab-icon-group {
+  float: left;
+  width: 64%;
+  height: 140px;
+}
+
+.mobile-tab-icon {
+  height: 100px;
+  width: 100px;
+  border-radius: 0px;
+  box-shadow: 0px 0px 3px #071838;
+  margin-right: 20px;
+  float: left;
+  position: relative;
+}
+
+.delete-tab-icon {
+  float: right;
+  margin-top: -17px;
+  cursor: pointer;
+}
+
+.img-tab-icon {
+  position: relative;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translateX(-50%) translateY(-45%);
+  max-height: 100px;
+  max-width: 100%;
+}
+
+#img-tab-icon {
+  margin: 20px 10px 4px 29px;
+}
+
+.ti-txt-fileUpload {
+  float: left;
+  font-size: 12px;
+  margin-left: 17px;
+  width: 100%;
+}
+
+.tab-icon-input-group {
+  float: left;
+  width: 100%;
 }

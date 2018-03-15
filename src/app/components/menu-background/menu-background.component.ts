@@ -35,6 +35,15 @@ export class MenuBackgroundComponent implements OnInit {
   tabIndex: number = 0;
   private orgChangeDetect: any;
   bgColor: string = "";
+  bgObj = {
+    navBar: {
+      "fontColor": "",
+      "backgroundColor": "",
+      "bannerFontColor": "",
+      "bannerColor": "",
+      "navbarFontSize": ""
+    }
+  }
 
   menuBG() {
     this.menuBgLib.show();

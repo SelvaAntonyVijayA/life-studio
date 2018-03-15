@@ -42,8 +42,8 @@
   </div>
 </ng-template>-->
 
-<div class="modal fade" bsModal #menuBgLib="bs-modal" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="menuBackground" aria-hidden="true"
-  (onHide)="onHide($event)">
+<div class="modal fade" bsModal #menuBgLib="bs-modal" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="menuBackground"
+  aria-hidden="true" (onHide)="onHide($event)">
   <div class="modal-dialog menu-bg">
     <div class="modal-content">
       <div class="modal-header">
@@ -66,6 +66,7 @@
             </ul>
           </div>
 
+          <!--- Background Pattern -->
           <div *ngIf="groupBgIdx === 0" class="menu-group-content menu-bg-pattern">
             <div class="general-pattern">
               <img class="delete-pattern" [src]="'/img/close_bg.png'" style="display: none;">
@@ -85,6 +86,112 @@
               </div>
             </div>
           </div>
+
+          <!--- Background Image -->
+          <div *ngIf="groupBgIdx === 1" class="menu-group-content upload-background-group">
+            <div class="vertical-app-background">
+              <img class="delete-vertical-bg" [src]="'/img/close_bg.png'" style="display: none;">
+              <img class="img-vertical-app-background" style="display: none;" [src]="''">
+              <div class="upload-vertical-app-background" style="display: block;">
+                <input id="img-vertical-background" type="image" [src]="'/img/background_upload.png'" width="40px">
+                <span class="bgp-txt-fileUpload">Upload File</span>
+                <span class="vertical-size">1240 x 2208</span>
+              </div>
+            </div>
+            <div class="horizontal-app-background">
+              <img class="delete-horizontal-bg" [src]="'/img/close_bg.png'" style="display: none;">
+              <img class="img-horizontal-app-background" style="display: none;" [src]="''">
+              <div class="upload-horizontal-app-background" style="display: block;">
+                <input id="img-horizontal-background" type="image" [src]="'/img/background_upload.png'" width="40px">
+                <span class="bgl-txt-fileUpload">Upload File</span>
+                <span class="horizontal-size">2208 x 1240</span>
+              </div>
+            </div>
+          </div>
+
+          <!--- Top Banner -->
+          <div *ngIf="groupBgIdx === 2" class="menu-group-content top-pattern-group">
+            <div class="horizontal-top-pattern">
+              <img class="delete-top-pattern" [src]="'/img/close_bg.png'" style="display: none;">
+              <img class="img-horizontal-top-pattern" style="display: none;" [src]="''">
+              <div class="upload-horizontal-top-pattern" style="display: block;">
+                <input id="img-horizontal-top-pattern" type="image" [src]="'/img/background_upload.png'" width="40px">
+                <span class="tp-txt-fileUpload">Upload File</span>
+                <span class="horizontal-size">1240 x 375</span>
+              </div>
+            </div>
+            <div style="display: block; margin-top: 15px;" class="top-pattern-scroll-mobile">
+              <div style="float: left; margin-top: 2px;">Scroll Icons Over :</div>
+              <div style="float: left; padding-left: 8px; margin-top: 0px;" class="checkbox">
+                <label>
+                  <input value="true" type="checkbox">
+                </label>
+              </div>
+            </div>
+            <div class="dv-top-banner-url">
+              <div style="margin: 0px 10px 10 0;">Top Banner URL :</div>
+              <input class="form-control input-sm topbannerurl" type="text" disabled="">
+            </div>
+          </div>
+
+          <!-- Nav Bar -->
+          <div *ngIf="groupBgIdx === 3" class="menu-group-content bg-text-color-group">
+            <div style="padding-bottom: 10px;">
+              <div style="float: left; margin: 2px 74px 0 0;">Icon Title Color :</div>
+              <input [(ngModel)]="bgObj['navBar']['fontColor']" (change)="colorChange($event, bgObj['navBar']['fontColor'])" class="form-control input-sm icon-title-color"
+                [(colorPicker)]="bgObj['navBar']['fontColor']" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true"
+                [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="bgObj['navBar']['fontColor']"
+                type="text" color="color" />
+            </div>
+            <div style="padding-bottom: 10px; margin-top: 27px;">
+              <div style="float: left; margin: 2px 1px 0 0;">Icon Title Background Color :</div>
+              <input [(ngModel)]="bgObj['navBar']['backgroundColor']" (change)="colorChange($event, bgObj['navBar']['backgroundColor'])"
+                class="form-control input-sm page-bg-color" [(colorPicker)]="bgObj['navBar']['backgroundColor']" [cpOKButtonClass]="'btn btn-success btn-xs'"
+                [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'"
+                [value]="bgObj['navBar']['backgroundColor']" type="text" color="color" />
+            </div>
+            <div style="padding-bottom: 10px; margin-top: 27px;">
+              <div style="float: left; margin: 2px 52px 0 0;">Nav Bar Font Color :</div>
+              <input [(ngModel)]="bgObj['navBar']['bannerFontColor']" (change)="colorChange($event, bgObj['navBar']['bannerFontColor'])"
+                class="form-control input-sm page-banner-color" [(colorPicker)]="bgObj['navBar']['bannerFontColor']" [cpOKButtonClass]="'btn btn-success btn-xs'"
+                [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'"
+                [value]="bgObj['navBar']['bannerFontColor']" type="text" color="color" />
+            </div>
+            <div style="padding-bottom: 10px; margin-top: 27px;">
+              <div style="float: left; margin: 2px 59px 0 0;">Nav Bar Font Size :</div>
+              <input class="form-control input-sm page-navbar-fontsize" [(ngModel)]="bgObj['navBar']['navbarFontSize']" type="number" color="color">
+            </div>
+            <div style="padding-bottom: 10px; margin-top: 27px;">
+              <div style="float: left; margin: 2px 9px 0 0;">Nav Bar Background Color :</div>
+              <input [(ngModel)]="bgObj['navBar']['bannerColor']" (change)="colorChange($event, bgObj['navBar']['bannerColor'])" class="form-control input-sm page-banner-bg-color"
+                [(colorPicker)]="bgObj['navBar']['bannerColor']" [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true"
+                [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="bgObj['navBar']['bannerColor']"
+                type="text" color="color" />
+            </div>
+          </div>
+
+          <!-- Tab Icon -->
+          <div *ngIf="groupBgIdx === 4" class="menu-group-content tab-icon-group" style="display: block;">
+            <div class="mobile-tab-icon">
+              <img class="delete-tab-icon" src="/img/close_bg.png" style="display: none;">
+              <img class="img-tab-icon" style="display: none;" src="">
+              <div class="upload-tab-icon" style="display: block;">
+                <input id="img-tab-icon" type="image" src="/img/background_upload.png" width="40px">
+                <span class="ti-txt-fileUpload">Upload File</span>
+              </div>
+            </div>
+            <div class="tab-icon-input-group">
+              <div style="margin-top:18px; padding-left:0px;" class="checkbox">
+                <label>
+                  <input type="checkbox" name="tabIconIsMask" style="margin-top: 1px;" value="">Mask</label>
+              </div>
+              <div style="padding-left:0px;" class="checkbox">
+                <label>
+                  <input type="checkbox" name="tabTitleHidden" style="margin-top: 1px;" value="">Hide Title</label>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
