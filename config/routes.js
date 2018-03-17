@@ -88,7 +88,7 @@ module.exports = function (app) {
   router.all('/organization/update/:id', $organization.update);
   router.all('/organization/packageupdate/:id', $organization.packageUpdate);
   router.post('/organizationtype/save', $organizationtype.save);
-  router.post('/organizationtype/list', $organizationtype.list);
+  router.all('/organizationtype/list', $organizationtype.list);
   router.get('/organizationtype/remove/:id', $organizationtype.remove);
   router.all("/cms/apps/list/:orgId/:isAdmin*?", $apps.list);
   router.all('/location/list/:appId', $location.list);

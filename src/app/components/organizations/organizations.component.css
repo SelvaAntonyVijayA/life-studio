@@ -1,0 +1,18 @@
+.jqx-rc-all {
+    border-radius: 0px;
+}
+
+.jqx-expander-header, .jqx-expander-content-bottom {
+    border-bottom-width: 0px;
+}
+
+.jqx-expander-header, .jqx-expander-content-top {
+    border-top-width: 0px;
+}
+
+.mat-toolbar-row, .mat-toolbar-single-row {
+    background: #e8e8e8;
+    padding: 0 10px;
+    color: #000000;
+    font-size: 16px;
+}

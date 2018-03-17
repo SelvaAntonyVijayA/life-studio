@@ -1,3 +1,53 @@
-<p>
-  organizations works!
-</p>
+<div class="container procedures_container">
+  <div class="page_block">
+    <div style="clear: both; font-size: 12px; font-family: Verdana;">
+      <span>Selection Log:</span>
+      <div style="margin-top: 10px">
+        <span>Selected Row Index:</span>
+        <span #selectedRowIndex></span>
+        <br />
+        <span>Unselected Row Index:</span>
+        <span #unselectedRowIndex></span>
+      </div>
+    </div>
+    <div style='margin-left:1px;margin-top: 2px; float:left;'>
+      <mat-toolbar style="height:35px;    color: #000000; padding: 0 10px;">
+        <span>Organizations</span>
+      </mat-toolbar>
+      <jqxGrid #orgGrid [selectionmode]="'singlerow'" [width]="470" [height]="415" [toolbarheight]="35" [pageable]="false" [sortable]="true"
+        [editable]="true" [editmode]="'selectedrow'" [showstatusbar]="false" [showheader]="true" [showtoolbar]="true" [rendertoolbar]="renderToolbar"
+        (onBindingcomplete)="onBindingComplete($event)" (rendered)="orgRendered($event)" [altrows]="true" (ready)="ready" 
+        (beginrowedit)="beginRowEdit()" (endrowedit)="endRowEdit()" (onRowselect)="orgGridOnRowSelect($event)" (onRowdoubleclick)="orgDoubleClick($event)"
+        (onRowunselect)="orgGridOnRowUnselect($event)" [source]="dataAdapter" [columns]="columns">
+      </jqxGrid>
+    </div>
+    <div style='margin-top: 2px; float:left;margin-left:2px;'>
+      <div id="apps-grid-pager"></div>
+      <table id="apps-grid"></table>
+    </div>
+    <div style='margin-top: 2px; float:left;margin-left:2px;'>
+      <div id="engines-grid-pager"></div>
+      <table id="engines-grid"></table>
+    </div>
+    <div style='margin-left:1px; margin-top: 5px;float:left;'>
+      <div id="locations-grid-pager"></div>
+      <table id="locations-grid"></table>
+    </div>
+    <div style='margin-top: 5px; float:left;margin-left:2px;'>
+      <div id="integration-grid-pager"></div>
+      <table id="integration-grid"></table>
+    </div>
+    <div style='margin-top: 5px; float:left;margin-left:2px;'>
+      <div id="integration-widgets-pager"></div>
+      <table id="integration-widgets-grid"></table>
+    </div>
+    <div style='margin-left: 1px; margin-top:5px;float:left;'>
+      <div id="stream-grid-pager"></div>
+      <table id="stream-grid"></table>
+    </div>
+    <div style='margin-top:5px; float:left;margin-left:2px;'>
+      <div id="language-grid-pager"></div>
+      <table id="language-grid"></table>
+    </div>
+  </div>
+</div>

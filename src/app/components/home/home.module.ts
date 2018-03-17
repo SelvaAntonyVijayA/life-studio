@@ -40,6 +40,7 @@ import { ProcedureService } from '../../services/procedure.service';
 import { ThemeService } from '../../services/theme.service';
 import { AlertService } from '../../services/alert.service';
 import { ImageService } from '../../services/image.service';
+import { OrganizationsService } from '../../services/organizations.service';
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 //import { DragDropDirectiveModule} from "angular4-drag-drop";
@@ -61,11 +62,17 @@ import { NgSelectModule } from '../../ng-select';
 import { ModalModule } from 'ngx-bootstrap';
 import { ProgressHttpModule, HTTP_FACTORY } from 'angular-progress-http';
 import { MatIconModule } from '@angular/material/icon';
+import { jqxGridComponent } from '../../grid/jqwidgets-ts/angular_jqxgrid';
+import { jqxWindowComponent } from '../../grid/jqwidgets-ts/angular_jqxwindow';
+import { jqxExpanderComponent } from '../../grid/jqwidgets-ts/angular_jqxexpander';
+import { jqxTooltipComponent } from '../../grid/jqwidgets-ts/angular_jqxtooltip';
+import { jqxButtonComponent } from '../../grid/jqwidgets-ts/angular_jqxbuttons';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   imports: [
     CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule,
-    ColorPickerModule, CKEditorModule, NgSelectModule, MatIconModule, ProgressHttpModule, ModalModule.forRoot()
+    ColorPickerModule, CKEditorModule, NgSelectModule, MatIconModule, MatToolbarModule, ProgressHttpModule, ModalModule.forRoot()
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
@@ -73,9 +80,9 @@ import { MatIconModule } from '@angular/material/icon';
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent,
-    OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent],
+    OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent, jqxButtonComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
-    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService]
+    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService]
 })
 
 export class HomeModule { }

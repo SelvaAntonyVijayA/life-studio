@@ -6,7 +6,7 @@ var init = function (app) {
 };
 
 var getPackage = function (pQuery, pOptions, cb) {
-  $db.select(settingsConf.dbname.tilist_core.tilist_core, settingsConf.collections.package, pQuery, pOptions, function (result) {
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.package, pQuery, pOptions, function (result) {
     cb(result);
   });
 };
@@ -14,7 +14,7 @@ var getPackage = function (pQuery, pOptions, cb) {
 var save = function (req, res, next) {
   let obj = req.body.form_data;
 
-  $db.save(settingsConf.dbname.tilist_core, packageconf.auth, packageconf.collections.package, obj, function (result) {
+  $db.save(settingsConf.dbname.tilist_core, packageconf.collections.package, obj, function (result) {
     obj = {};
     obj._id = result;
 
@@ -31,7 +31,10 @@ var list = function (req, res, next) {
     query = req.body.form_data;
   }
 
-  $package.getPackage(query, options, function (result) {
+  console.log(query)
+  console.log(options)
+
+  getPackage(query, options, function (result) {
     res.send(result);
   });
 };
@@ -46,7 +49,7 @@ var update = function (req, res, next) {
   query._id = req.params.id;
   obj = req.body.form_data;
 
-  $package._update(query, options, obj, function (result) {
+  _update(query, options, obj, function (result) {
     res.send(query);
   });
 };

@@ -30,7 +30,8 @@
         "../node_modules/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css",
         "styles.css",
         "../src/css/bootstrap-datetimepicker.css",
-        "../node_modules/cropperjs/dist/cropper.css"
+        "../node_modules/cropperjs/dist/cropper.css",
+        "../src/app/grid/jqwidgets/styles/jqx.base.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",
