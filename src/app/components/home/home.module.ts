@@ -26,6 +26,7 @@ import { OrganizationsComponent } from '../../components/organizations/organizat
 import { StudiousersComponent } from '../../components/studiousers/studiousers.component';
 import { MenuBackgroundComponent } from '../../components/menu-background/menu-background.component';
 import { SettingsComponent } from '../../components/settings/settings.component';
+import { AppgridComponent } from '../../appgrid/appgrid.component';
 
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { HeaderService } from '../../services/header.service';
@@ -41,6 +42,7 @@ import { ThemeService } from '../../services/theme.service';
 import { AlertService } from '../../services/alert.service';
 import { ImageService } from '../../services/image.service';
 import { OrganizationsService } from '../../services/organizations.service';
+import { AppsService } from '../../services/apps.service';
 
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 //import { DragDropDirectiveModule} from "angular4-drag-drop";
@@ -80,9 +82,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent,
-    OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent, jqxButtonComponent],
+    OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent, jqxButtonComponent, AppgridComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
-    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService]
+    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService]
 })
 
 export class HomeModule { }
