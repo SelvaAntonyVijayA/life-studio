@@ -87,5 +87,6 @@ module.exports = {
   "list": list,
   "remove": remove,
   "update": update,
+  "_getAccess" : _getAccess,
   "userAccesses": userAccesses
 };

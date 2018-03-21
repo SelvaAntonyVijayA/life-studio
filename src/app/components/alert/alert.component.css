@@ -8,7 +8,7 @@ il-alert .il__alert_overlay {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1051;
+    z-index: 2000;
     background: rgba(0, 0, 0, 0.5);
 }
 
@@ -20,7 +20,7 @@ il-alert .il__alert_wrapper {
     text-align: center;
     left: calc(50% - 200px);
     box-shadow: 0 5px 40px rgba(0, 0, 0, 0.1);
-    z-index: 1100;
+    z-index: 2010;
     transform-origin: bottom center;
     background: white;
 }

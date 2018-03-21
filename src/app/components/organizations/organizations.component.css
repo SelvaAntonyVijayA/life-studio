@@ -10,6 +10,10 @@
     border-top-width: 0px;
 }
 
+.jqx-window-header {
+    padding: 10px;
+}
+
 .mat-toolbar-row, .mat-toolbar-single-row {
     background: #e8e8e8;
     padding: 0 10px;

@@ -1,0 +1,5 @@
+<mat-toolbar style="height:35px;color: #000000; padding: 0 10px;">
+  <span>Apps</span>
+</mat-toolbar>
+<jqxGrid #appGrid [source]="dataAdapter" [width]="width" (onRowselect)="onRowSelect($event)" (onRowunselect)="onRowUnselect($event)"
+  (onRowdoubleclick)="Rowdoubleclick($event)" [selectionmode]="'singlerow'" [altrows]="true" [height]="height" [columns]="columns"></jqxGrid>

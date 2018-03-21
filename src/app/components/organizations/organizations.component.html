@@ -1,53 +1,86 @@
 <div class="container procedures_container">
   <div class="page_block">
-    <div style="clear: both; font-size: 12px; font-family: Verdana;">
-      <span>Selection Log:</span>
-      <div style="margin-top: 10px">
-        <span>Selected Row Index:</span>
-        <span #selectedRowIndex></span>
-        <br />
-        <span>Unselected Row Index:</span>
-        <span #unselectedRowIndex></span>
-      </div>
-    </div>
     <div style='margin-left:1px;margin-top: 2px; float:left;'>
-      <mat-toolbar style="height:35px;    color: #000000; padding: 0 10px;">
+      <mat-toolbar style="height:35px; color: #000000; padding: 0 10px;">
         <span>Organizations</span>
       </mat-toolbar>
       <jqxGrid #orgGrid [selectionmode]="'singlerow'" [width]="470" [height]="415" [toolbarheight]="35" [pageable]="false" [sortable]="true"
-        [editable]="true" [editmode]="'selectedrow'" [showstatusbar]="false" [showheader]="true" [showtoolbar]="true" [rendertoolbar]="renderToolbar"
-        (onBindingcomplete)="onBindingComplete($event)" (rendered)="orgRendered($event)" [altrows]="true" (ready)="ready" 
-        (beginrowedit)="beginRowEdit()" (endrowedit)="endRowEdit()" (onRowselect)="orgGridOnRowSelect($event)" (onRowdoubleclick)="orgDoubleClick($event)"
+        [showstatusbar]="false" [showheader]="true" [showtoolbar]="true" [rendertoolbar]="renderToolbar" (onBindingcomplete)="onBindingComplete($event)"
+        (rendered)="orgRendered($event)" [altrows]="true" (ready)="ready" (onRowselect)="orgGridOnRowSelect($event)" (onRowdoubleclick)="orgDoubleClick($event)"
         (onRowunselect)="orgGridOnRowUnselect($event)" [source]="dataAdapter" [columns]="columns">
       </jqxGrid>
+
+      <jqxWindow #addOrg (onOpen)="addOpen($event)" (onClose)="addClose($event)" [minHeight]="320" [maxHeight]="400" [width]="400"
+        [resizable]="false" [isModal]="true" [autoOpen]="false" [modalOpacity]="'0.1'">
+        <div>Edit</div>
+        <div style="overflow: hidden;height:100%;">
+          <form (ngSubmit)="onSubmit()" #orgForm="ngForm">
+            <div>
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input id="name" name="name" class="form-control" required minlength="2" [(ngModel)]="org.name" #name="ngModel">
+
+                <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
+
+                  <div *ngIf="name.errors.required">
+                    Name is required.
+                  </div>
+                  <div *ngIf="name.errors.minlength">
+                    Name must be at least 2 characters long.
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="type">Type</label>
+                <select id="type" name="type" class="form-control" [(ngModel)]="org.type_id" #power="ngModel">
+                  <option *ngFor="let t of organizationTypes" [value]="t._id">{{t.name}}</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="package">Package</label>
+                <select id="package" name="package" class="form-control" [(ngModel)]="org.packageId" #power="ngModel">
+                  <option *ngFor="let p of packages" [value]="p._id">{{p.name}}</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-default" [disabled]="orgForm.invalid">Submit</button>
+              <button type="button" class="btn btn-default" (click)="orgForm.resetForm({packageId:'',type_id:''})">Reset</button>
+            </div>
+          </form>
+        </div>
+      </jqxWindow>
     </div>
     <div style='margin-top: 2px; float:left;margin-left:2px;'>
-      <div id="apps-grid-pager"></div>
-      <table id="apps-grid"></table>
+      <div *ngIf="isGrid">
+        <app-grid [id]="orgId" [width]="470" [height]="415" [obj]="orgObj"></app-grid>
+      </div>
     </div>
     <div style='margin-top: 2px; float:left;margin-left:2px;'>
-      <div id="engines-grid-pager"></div>
-      <table id="engines-grid"></table>
+      <div *ngIf="isGrid">
+      </div>
     </div>
     <div style='margin-left:1px; margin-top: 5px;float:left;'>
-      <div id="locations-grid-pager"></div>
-      <table id="locations-grid"></table>
+      <div *ngIf="isGrid">
+      </div>
     </div>
     <div style='margin-top: 5px; float:left;margin-left:2px;'>
-      <div id="integration-grid-pager"></div>
-      <table id="integration-grid"></table>
+      <div *ngIf="isGrid">
+      </div>
     </div>
     <div style='margin-top: 5px; float:left;margin-left:2px;'>
-      <div id="integration-widgets-pager"></div>
-      <table id="integration-widgets-grid"></table>
+      <div *ngIf="isGrid">
+      </div>
     </div>
     <div style='margin-left: 1px; margin-top:5px;float:left;'>
-      <div id="stream-grid-pager"></div>
-      <table id="stream-grid"></table>
+      <div *ngIf="isGrid">
+      </div>
     </div>
     <div style='margin-top:5px; float:left;margin-left:2px;'>
-      <div id="language-grid-pager"></div>
-      <table id="language-grid"></table>
+      <div *ngIf="isGrid">
+      </div>
     </div>
   </div>
 </div>

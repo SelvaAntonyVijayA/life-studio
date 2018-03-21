@@ -84,7 +84,7 @@ module.exports = function (app) {
   router.get('/organization/getorgpackage/:orgId', $organization.getOrgPackage);
   router.post('/organization/save/:name*?', $organization.save);
   router.all('/organization/list', $organization.list);
-  router.all('/organization/remove/', $organization.remove);
+  router.all('/organization/remove/:id*?', $organization.remove);
   router.all('/organization/update/:id', $organization.update);
   router.all('/organization/packageupdate/:id', $organization.packageUpdate);
   router.post('/organizationtype/save', $organizationtype.save);

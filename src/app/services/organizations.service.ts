@@ -51,7 +51,7 @@ export class OrganizationsService {
   };
 
   deleteOrganization(id: string) {
-    var url = '/organization/list' + id;
+    var url = '/organization/remove/' + id;
 
     return this.http
       .get(url)

@@ -9,6 +9,8 @@ import { jqxWindowComponent } from '../../grid/jqwidgets-ts/angular_jqxwindow';
 import { jqxExpanderComponent } from '../../grid/jqwidgets-ts/angular_jqxexpander';
 import * as _ from 'underscore';
 import { LoaderSharedService } from '../../services/loader-shared.service';
+import { ReactiveFormsModule, FormsModule, FormGroup, FormControl, Validators, FormBuilder, NgForm } from '@angular/forms';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 @Component({
   selector: 'app-organizations',
@@ -27,24 +29,21 @@ export class OrganizationsComponent implements OnInit {
   ) {
   }
 
-  public organizations: Object[] = [];
-  public organizationTypes: Object[] = [];
-  public packages: Object[] = [];
   private orgChangeDetect: any;
-
   @ViewChild('orgGrid') orgGrid: jqxGridComponent;
-  @ViewChild('selectedRowIndex') selectedRowIndex: ElementRef;
-  @ViewChild('unselectedRowIndex') unselectedRowIndex: ElementRef;
+  @ViewChild('addOrg') addOrg: jqxWindowComponent;
+  @ViewChild('orgForm') orgForm: NgForm;
+
   rowIndex: number;
+  isGrid: boolean = false;
+  orgId: string;
+  org: object = { type: "", name: '', type_id: '', packageId: "" };
   myAddButton: jqwidgets.jqxButton;
-  myEditButton: jqwidgets.jqxButton;
   myDeleteButton: jqwidgets.jqxButton;
-  myCancelButton: jqwidgets.jqxButton;
-  myUpdateButton: jqwidgets.jqxButton;
-
-  ngAfterViewInit(): void {
-  };
-
+  dataAdapter: any;
+  source: any;
+  organizationTypes: any;
+  packages: any;
   packageSource: any =
     {
       datatype: 'json',
@@ -55,7 +54,6 @@ export class OrganizationsComponent implements OnInit {
       url: '/package/list',
       async: false
     };
-
   typeSource: any =
     {
       datatype: 'json',
@@ -66,7 +64,6 @@ export class OrganizationsComponent implements OnInit {
       url: '/organizationtype/list',
       async: false
     };
-
   packageAdaptor: any = new jqx.dataAdapter(this.packageSource, {
     autoBind: true,
     beforeLoadComplete: (records: any[]): any[] => {
@@ -74,7 +71,7 @@ export class OrganizationsComponent implements OnInit {
 
       for (let i = 0; i < records.length; i++) {
         let pack = records[i];
-        pack.package = pack.name;
+        pack.packageName = pack.name;
         pack.packageId = pack._id;
 
         pck.push(pack);
@@ -83,7 +80,6 @@ export class OrganizationsComponent implements OnInit {
       return pck;
     }
   });
-
   typeAdaptor: any = new jqx.dataAdapter(this.typeSource, {
     autoBind: true,
     beforeLoadComplete: (records: any[]): any[] => {
@@ -91,7 +87,7 @@ export class OrganizationsComponent implements OnInit {
 
       for (let i = 0; i < records.length; i++) {
         let typeObj = records[i];
-        typeObj.type = typeObj.name;
+        typeObj.typeName = typeObj.name;
         typeObj.type_id = typeObj._id;
 
         data.push(typeObj);
@@ -100,10 +96,19 @@ export class OrganizationsComponent implements OnInit {
       return data;
     }
   });
+  datafields: any = [
+    { name: '_id', type: 'string' },
+    { name: 'type_id', type: 'string' },
+    { name: 'packageId', type: 'string' },
+    { name: 'name', type: 'string' },
+    { name: 'typeName', value: 'type_id', values: { source: this.typeAdaptor.records, value: 'type_id', name: 'typeName' } },
+    { name: 'packageName', value: 'packageId', values: { source: this.packageAdaptor.records, value: 'packageId', name: 'packageName' } },
+    { name: 'engines', type: 'string' },
+    { name: 'publishing', type: 'boolean' },
+  ];
 
-  addrow(rowid: any, rowdata: any, position: any, commit: any): void {
-    commit(true);
-  }
+  ngAfterViewInit(): void {
+  };
 
   deleterow(rowid: any, rowdata: any, commit: any): void {
     if (rowid.length > 12) {
@@ -122,41 +127,8 @@ export class OrganizationsComponent implements OnInit {
   }
 
   updaterow(rowid: any, rowdata: any, commit: any): void {
-    this.saveOrganization(rowid, rowdata, (res) => {
-      if (res) {
-        if (rowid.length > 12) {
-          this.utils.iAlert('success', '', 'Organization saved successfully!!!');
-        } else {
-          this.utils.iAlert('success', '', 'Organization updated successfully!!!');
-        }
-        commit(true);
-        this.orgGrid.source(this.dataAdapter)
-      } else {
-        commit(false);
-      }
-    });
-  }
 
-  source = {
-    datatype: "json",
-    id: '_id',
-    datafields: [
-      { name: '_id', type: 'string' },
-      { name: 'type_id', type: 'string' },
-      { name: 'packageId', type: 'string' },
-      { name: 'name', type: 'string' },
-      { name: 'type', value: 'type_id', values: { source: this.typeAdaptor.records, value: 'type_id', name: 'type' } },
-      { name: 'package', value: 'packageId', values: { source: this.packageAdaptor.records, value: 'packageId', name: 'package' } },
-      { name: 'engines', type: 'string' },
-      { name: 'publishing', type: 'boolean' },
-    ],
-    url: "/organization/list",
-    addrow: this.addrow,
-    updaterow: this.updaterow,
-    deleterow: this.deleterow
   };
-
-  dataAdapter = new jqx.dataAdapter(this.source);
 
   snorenderer = (row: number, column: any, value: string): string => {
     var id = parseInt(value) + 1;
@@ -167,35 +139,28 @@ export class OrganizationsComponent implements OnInit {
   columns: any[] =
     [
       {
-        text: 'SNo.', dataField: '', columntype: 'number', width: 100, editable: false,
+        text: 'SNo.', dataField: '', columntype: 'number', width: 50, editable: false,
         sortable: false, cellsalign: 'left', align: 'center', cellsrenderer: this.snorenderer
       },
       {
         text: '_id', hidden: true, datafield: '_id', sortable: false
       },
       {
-        text: 'Name', datafield: 'name', width: 140, columntype: 'textbox', sortable: true, editable: true,
-        cellsalign: 'left', align: 'center',
-        validation: (cell: any, value: any): any => {
-          if (value == '') {
-            return { result: false, message: 'Name is required!' };
-          }
-
-          return true;
-        }
+        text: 'Name', datafield: 'name', width: 220, columntype: 'textbox', sortable: true, editable: true,
+        cellsalign: 'left', align: 'center'
       },
       {
-        text: 'Type', displayfield: 'type', width: 120, columntype: 'dropdownlist', datafield: 'type_id',
+        text: 'Type', displayfield: 'typeName', width: 90, columntype: 'dropdownlist', datafield: 'type_id',
         sortable: true, cellsalign: 'left', align: 'center',
         createeditor: (row: number, value: any, editor: any): void => {
-          editor.jqxDropDownList({ autoDropDownHeight: true, source: this.typeAdaptor.records, displayMember: 'type', valueMember: 'type_id' });
+          editor.jqxDropDownList({ autoDropDownHeight: true, source: this.typeAdaptor.records, displayMember: 'typeName', valueMember: 'type_id' });
         }
       },
       {
-        text: 'Package', displayfield: 'package', columntype: 'dropdownlist', datafield: 'packageId',
-        sortable: true, cellsalign: 'left', align: 'center', width: 140,
+        text: 'Package', displayfield: 'packageName', columntype: 'dropdownlist', datafield: 'packageId',
+        sortable: true, cellsalign: 'left', align: 'center', width: 90,
         createeditor: (row: number, value: any, editor: any): void => {
-          editor.jqxDropDownList({ autoDropDownHeight: true, source: this.packageAdaptor.records, displayMember: 'package', valueMember: 'packageId' });
+          editor.jqxDropDownList({ autoDropDownHeight: true, source: this.packageAdaptor.records, displayMember: 'packageName', valueMember: 'packageId' });
         }
       },
       {
@@ -242,10 +207,7 @@ export class OrganizationsComponent implements OnInit {
 
     let buttons = [
       createButtons('addButton', toTheme('jqx-icon-plus')),
-      createButtons('editButton', toTheme('jqx-icon-edit')),
       createButtons('deleteButton', toTheme('jqx-icon-delete')),
-      createButtons('cancelButton', toTheme('jqx-icon-cancel')),
-      createButtons('updateButton', toTheme('jqx-icon-save'))
     ];
 
     for (let i = 0; i < buttons.length; i++) {
@@ -265,116 +227,90 @@ export class OrganizationsComponent implements OnInit {
       }
 
     this.myAddButton = jqwidgets.createInstance(buttons[0], 'jqxButton', addButtonOptions);
-    this.myEditButton = jqwidgets.createInstance(buttons[1], 'jqxButton', otherButtonsOptions);
-    this.myDeleteButton = jqwidgets.createInstance(buttons[2], 'jqxButton', otherButtonsOptions);
-    this.myCancelButton = jqwidgets.createInstance(buttons[3], 'jqxButton', otherButtonsOptions);
-    this.myUpdateButton = jqwidgets.createInstance(buttons[4], 'jqxButton', otherButtonsOptions);
+    this.myDeleteButton = jqwidgets.createInstance(buttons[1], 'jqxButton', otherButtonsOptions);
 
     let addTooltopOptions: jqwidgets.TooltipOptions =
       {
         position: 'bottom', content: 'Add'
       }
-    let editTooltopOptions: jqwidgets.TooltipOptions =
-      {
-        position: 'bottom', content: 'Edit'
-      }
+
     let deleteTooltopOptions: jqwidgets.TooltipOptions =
       {
         position: 'bottom', content: 'Delete'
       }
-    let updateTooltopOptions: jqwidgets.TooltipOptions =
-      {
-        position: 'bottom', content: 'Save Changes'
-      }
-    let cancelTooltopOptions: jqwidgets.TooltipOptions =
-      {
-        position: 'bottom', content: 'Cancel'
-      }
 
     let myAddToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[0], 'jqxTooltip', addTooltopOptions);
-    let myEditToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[1], 'jqxTooltip', editTooltopOptions);
-    let myDeleteToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[2], 'jqxTooltip', deleteTooltopOptions);
-    let myCancelToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[3], 'jqxTooltip', cancelTooltopOptions);
-    let myUpdateToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[4], 'jqxTooltip', updateTooltopOptions);
+    let myDeleteToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[1], 'jqxTooltip', deleteTooltopOptions);
 
     this.myAddButton.addEventHandler('click', (event: any) => {
       if (!this.myAddButton.disabled) {
-        //add new empty row.
-        this.orgGrid.addrow(null, {}, 'first')
-        //select the first row and clear the selection.
-        this.orgGrid.clearselection();
-        //this.orgGrid.selectrow(0);
-        //edit the new row.
-        this.orgGrid.beginrowedit(0);
-      }
-    });
-
-    this.myEditButton.addEventHandler('click', (event: any) => {
-      if (!this.myEditButton.disabled) {
-        this.orgGrid.beginrowedit(this.rowIndex);
-        this.updateButtons('edit');
+        this.orgId = "";
+        this.org = { name: '', packageId: '', type_id: '' };
+        this.addOrg.setTitle("Add Organization");
+        this.addOrg.position({ x: 100, y: 120 });
+        this.addOrg.open();
       }
     });
 
     this.myDeleteButton.addEventHandler('click', (event: any) => {
       if (!this.myDeleteButton.disabled) {
-        this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Organization?", "Yes", "No", (res) => {
-          if (res.hasOwnProperty("resolved") && res["resolved"] == true) {
-            this.orgGrid.deleterow(this.rowIndex);
-            this.updateButtons('delete');
-          }
-        })
+        if (this.rowIndex != -1) {
+          this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Organization?", "Yes", "No", (res) => {
+            if (res.hasOwnProperty("resolved") && res["resolved"] == true) {
+              var datarow = this.orgGrid.getrowdata(this.rowIndex)
+              this.deleteOrganization(datarow["_id"], (res) => {
+                if (res) {
+                  this.utils.iAlert('success', '', 'Organization deleted successfully');
+                  this.orgGrid.source(this.dataAdapter);
+                  this.updateButtons('delete');
+                  this.addOrg.close();
+                }
+              });
+            }
+          })
+        } else {
+          this.utils.iAlert('error', 'Error', 'Please select the organization!!!');
+        }
       }
     });
-
-    this.myCancelButton.addEventHandler('click', (event: any) => {
-      if (!this.myCancelButton.disabled) {
-        //cancel changes.
-        this.orgGrid.endrowedit(this.rowIndex, true);
-      }
-    });
-
-    this.myUpdateButton.addEventHandler('click', (event: any) => {
-      if (!this.myUpdateButton.disabled) {
-        //save changes.
-        this.orgGrid.endrowedit(this.rowIndex, false);
-      }
-    });
-  };
-
-  getOrganizations() {
-    this.orgService.organizationList()
-      .then(org => {
-        this.organizations = org;
-      });
   };
 
   orgGridOnRowSelect(event: any): void {
-    this.selectedRowIndex.nativeElement.innerHTML = event.args.rowindex;
     this.rowIndex = event.args.rowindex;
+    var data = event.args.row;
+    this.orgId = data["_id"];
+    this.org = { name: data["name"] };
+
+    if (!this.utils.isNullOrEmpty(data["packageId"])) {
+      this.org["packageId"] = data["packageId"];
+    } else {
+      this.org["packageId"] = "";
+    }
+
+    if (!this.utils.isNullOrEmpty(data["type_id"])) {
+      this.org["type_id"] = data["type_id"];
+    } else {
+      this.org["type_id"] = "";
+    }
+
+    this.isGrid = true;
     this.updateButtons('Select');
   };
 
   orgGridOnRowUnselect(event: any): void {
-    this.unselectedRowIndex.nativeElement.innerHTML = event.args.rowindex;
-    //this.updateButtons('Unselect');
+    var index = event.args.rowindex;
   };
 
   orgDoubleClick(event: any): void {
     var args = event.args;
     this.rowIndex = args.rowindex;
-
-    this.orgGrid.beginrowedit(this.rowIndex);
+    var datarow = this.orgGrid.getrowdata(this.rowIndex)
+    this.isGrid = true;
     this.updateButtons('Edit');
+    this.addOrg.setTitle("Update Organization");
+    this.addOrg.position({ x: 100, y: 120 });
+    this.addOrg.open();
   }
-
-  beginRowEdit(event: any): void {
-    this.updateButtons('Edit');
-  };
-
-  endRowEdit(event: any): void {
-    this.updateButtons('End Edit');
-  };
 
   onBindingComplete(event: any): void {
   }
@@ -384,30 +320,18 @@ export class OrganizationsComponent implements OnInit {
       case 'Select':
         this.myAddButton.setOptions({ disabled: false });
         this.myDeleteButton.setOptions({ disabled: false });
-        this.myEditButton.setOptions({ disabled: false });
-        this.myCancelButton.setOptions({ disabled: true });
-        this.myUpdateButton.setOptions({ disabled: true });
         break;
       case 'Unselect':
         this.myAddButton.setOptions({ disabled: false });
         this.myDeleteButton.setOptions({ disabled: true });
-        this.myEditButton.setOptions({ disabled: true });
-        this.myCancelButton.setOptions({ disabled: true });
-        this.myUpdateButton.setOptions({ disabled: true });
         break;
       case 'Edit':
         this.myAddButton.setOptions({ disabled: true });
         this.myDeleteButton.setOptions({ disabled: true });
-        this.myEditButton.setOptions({ disabled: true });
-        this.myCancelButton.setOptions({ disabled: false });
-        this.myUpdateButton.setOptions({ disabled: false });
         break;
       case 'End Edit':
         this.myAddButton.setOptions({ disabled: false });
         this.myDeleteButton.setOptions({ disabled: false });
-        this.myEditButton.setOptions({ disabled: false });
-        this.myCancelButton.setOptions({ disabled: true });
-        this.myUpdateButton.setOptions({ disabled: true });
         break;
     }
   };
@@ -416,6 +340,7 @@ export class OrganizationsComponent implements OnInit {
     this.orgService.organizationTypeList()
       .then(orgTypes => {
         this.organizationTypes = orgTypes;
+        this.organizationTypes.push({ _id: "", name: "Select type" })
       });
   };
 
@@ -423,6 +348,7 @@ export class OrganizationsComponent implements OnInit {
     this.orgService.getPackages()
       .then(packages => {
         this.packages = packages;
+        this.packages.push({ _id: "", name: "Select package" })
       });
   };
 
@@ -471,10 +397,56 @@ export class OrganizationsComponent implements OnInit {
       });
   };
 
+  addOpen() {
+
+  }
+
+  addClose() {
+
+  }
+
+  onSubmit() {
+    var obj = this.org;
+    var typeObj = _.findWhere(this.organizationTypes, { _id: obj["type_id"] });
+    obj["type"] = typeObj["name"];
+
+    this.saveOrganization(this.orgId, obj, (res) => {
+      if (res) {
+        if (this.orgId.length > 12) {
+          this.utils.iAlert('success', '', 'Organization saved successfully!!!');
+        } else {
+          this.utils.iAlert('success', '', 'Organization updated successfully!!!');
+        }
+
+        this.orgGrid.source(this.dataAdapter);
+        this.addOrg.close();
+      }
+    });
+  }
+
+  onFormReset() {
+    this.org = { name: '', packageId: '', type_id: '' };
+    //this.orgForm.resetForm({ name: '', packageId: '', type_id: '' });
+  }
+
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
-      this.getOrganizations();
-      this.loaderShared.showSpinner(true);
+      this.getOrganizationTypes();
+      this.getPackages();
+      this.source = {
+        datatype: "json",
+        id: '_id',
+        url: "/organization/list",
+        datafields: this.datafields
+      };
+
+      if (!this.dataAdapter) {
+        this.dataAdapter = new jqx.dataAdapter(this.source);
+      } else {
+        this.orgGrid.source(this.dataAdapter);
+      }
+
+      //this.loaderShared.showSpinner(true);
       this.loaderShared.showSpinner(false);
     });
   };

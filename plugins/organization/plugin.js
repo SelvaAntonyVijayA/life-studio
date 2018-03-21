@@ -78,7 +78,12 @@ var list = function (req, res, next) {
 
 var remove = function (req, res, next) {
   let query = {};
-  query._id = req.body._id;
+  let options = {};
+  query._id = req.params.id;
+
+  if (!__util.isEmptyObject(req.body.form_data)) {
+    query = req.body.form_data;
+  }
 
   $db.remove(settingsConf.dbname.tilist_core, settingsConf.collections.organization, query, options, function (result) {
     let obj = {};
@@ -136,8 +141,14 @@ var update = function (req, res, next) {
 
   if (!__util.isEmptyObject(req.body.form_data)) {
     orgToUpdate = req.body.form_data;
-    appIds = orgToUpdate.appIds;
-    publishing = orgToUpdate.publishing;
+    if (!__util.isNullOrEmpty(orgToUpdate.appIds)) {
+      appIds = orgToUpdate.appIds;
+    }
+
+    if (!__util.isNullOrEmpty(orgToUpdate.publishing)) {
+      publishing = orgToUpdate.publishing;
+    }
+
     delete orgToUpdate["appIds"];
   }
 
