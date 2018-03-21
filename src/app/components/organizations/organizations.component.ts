@@ -44,90 +44,17 @@ export class OrganizationsComponent implements OnInit {
   source: any;
   organizationTypes: any;
   packages: any;
-  packageSource: any =
-    {
-      datatype: 'json',
-      datafields: [
-        { name: '_id', type: 'string' },
-        { name: 'name', type: 'string' }
-      ],
-      url: '/package/list',
-      async: false
-    };
-  typeSource: any =
-    {
-      datatype: 'json',
-      datafields: [
-        { name: '_id', type: 'string' },
-        { name: 'name', type: 'string' }
-      ],
-      url: '/organizationtype/list',
-      async: false
-    };
-  packageAdaptor: any = new jqx.dataAdapter(this.packageSource, {
-    autoBind: true,
-    beforeLoadComplete: (records: any[]): any[] => {
-      let pck = new Array();
-
-      for (let i = 0; i < records.length; i++) {
-        let pack = records[i];
-        pack.packageName = pack.name;
-        pack.packageId = pack._id;
-
-        pck.push(pack);
-      }
-
-      return pck;
-    }
-  });
-  typeAdaptor: any = new jqx.dataAdapter(this.typeSource, {
-    autoBind: true,
-    beforeLoadComplete: (records: any[]): any[] => {
-      let data = new Array();
-
-      for (let i = 0; i < records.length; i++) {
-        let typeObj = records[i];
-        typeObj.typeName = typeObj.name;
-        typeObj.type_id = typeObj._id;
-
-        data.push(typeObj);
-      }
-
-      return data;
-    }
-  });
-  datafields: any = [
+  packageSource: any;
+  typeSource: any;
+  packageAdaptor: any;
+  typeAdaptor: any;
+  datafields: any;
+  fields: any = [
     { name: '_id', type: 'string' },
-    { name: 'type_id', type: 'string' },
-    { name: 'packageId', type: 'string' },
-    { name: 'name', type: 'string' },
-    { name: 'typeName', value: 'type_id', values: { source: this.typeAdaptor.records, value: 'type_id', name: 'typeName' } },
-    { name: 'packageName', value: 'packageId', values: { source: this.packageAdaptor.records, value: 'packageId', name: 'packageName' } },
-    { name: 'engines', type: 'string' },
-    { name: 'publishing', type: 'boolean' },
+    { name: 'name', type: 'string' }
   ];
 
   ngAfterViewInit(): void {
-  };
-
-  deleterow(rowid: any, rowdata: any, commit: any): void {
-    if (rowid.length > 12) {
-      this.deleteOrganization(rowid, (res) => {
-        if (res) {
-          this.utils.iAlert('success', '', 'Organization deleted successfully');
-          commit(true);
-          this.orgGrid.source(this.dataAdapter)
-        } else {
-          commit(false);
-        }
-      });
-    } else {
-      commit(true);
-    }
-  }
-
-  updaterow(rowid: any, rowdata: any, commit: any): void {
-
   };
 
   snorenderer = (row: number, column: any, value: string): string => {
@@ -260,6 +187,7 @@ export class OrganizationsComponent implements OnInit {
               var datarow = this.orgGrid.getrowdata(this.rowIndex)
               this.deleteOrganization(datarow["_id"], (res) => {
                 if (res) {
+                  this.orgId = "";
                   this.utils.iAlert('success', '', 'Organization deleted successfully');
                   this.orgGrid.source(this.dataAdapter);
                   this.updateButtons('delete');
@@ -357,7 +285,7 @@ export class OrganizationsComponent implements OnInit {
 
     obj["name"] = orgObj["name"];
     obj["type_id"] = orgObj["type_id"];
-    obj["packageId "] = orgObj["packageId"];
+    obj["packageId"] = orgObj["packageId"];
 
     return obj;
   }
@@ -374,7 +302,7 @@ export class OrganizationsComponent implements OnInit {
       this.orgService.updateOrganization(id, obj)
         .then(res => {
           if (res) {
-            cb(true)
+            cb(res)
           }
         });
 
@@ -382,7 +310,7 @@ export class OrganizationsComponent implements OnInit {
       this.orgService.saveOrganization(obj, type)
         .then(res => {
           if (res) {
-            cb(true)
+            cb(res)
           }
         });
     }
@@ -402,7 +330,7 @@ export class OrganizationsComponent implements OnInit {
   }
 
   addClose() {
-
+    this.updateButtons('End Edit');
   }
 
   onSubmit() {
@@ -412,12 +340,14 @@ export class OrganizationsComponent implements OnInit {
 
     this.saveOrganization(this.orgId, obj, (res) => {
       if (res) {
+
         if (this.orgId.length > 12) {
-          this.utils.iAlert('success', '', 'Organization saved successfully!!!');
-        } else {
           this.utils.iAlert('success', '', 'Organization updated successfully!!!');
+        } else {
+          this.utils.iAlert('success', '', 'Organization saved successfully!!!');
         }
 
+        this.orgId = res._id;
         this.orgGrid.source(this.dataAdapter);
         this.addOrg.close();
       }
@@ -429,22 +359,99 @@ export class OrganizationsComponent implements OnInit {
     //this.orgForm.resetForm({ name: '', packageId: '', type_id: '' });
   }
 
-  ngOnInit() {
-    this.orgChangeDetect = this.route.queryParams.subscribe(params => {
-      this.getOrganizationTypes();
-      this.getPackages();
-      this.source = {
-        datatype: "json",
-        id: '_id',
-        url: "/organization/list",
-        datafields: this.datafields
+  pageLoad() {
+    this.packageSource =
+      {
+        datatype: 'json',
+        datafields: this.fields,
+        url: '/package/list',
+        async: false
       };
 
-      if (!this.dataAdapter) {
-        this.dataAdapter = new jqx.dataAdapter(this.source);
-      } else {
-        this.orgGrid.source(this.dataAdapter);
-      }
+    this.typeSource =
+      {
+        datatype: 'json',
+        datafields: this.fields,
+        url: '/organizationtype/list',
+        async: false
+      };
+
+    if (!this.packageAdaptor) {
+      this.packageAdaptor = new jqx.dataAdapter(this.packageSource, {
+        autoBind: true,
+        beforeLoadComplete: (records: any[]): any[] => {
+          let pck = new Array();
+
+          for (let i = 0; i < records.length; i++) {
+            let pack = records[i];
+            pack.packageName = pack.name;
+            pack.packageId = pack._id;
+
+            pck.push(pack);
+          }
+
+          return pck;
+        }
+      });
+
+      this.packages = this.packageAdaptor.records;
+      this.packages.push({ _id: "", name: "Select package" });
+    }
+
+    if (!this.typeAdaptor) {
+      this.typeAdaptor = new jqx.dataAdapter(this.typeSource, {
+        autoBind: true,
+        beforeLoadComplete: (records: any[]): any[] => {
+          let data = new Array();
+
+          for (let i = 0; i < records.length; i++) {
+            let typeObj = records[i];
+            typeObj.typeName = typeObj.name;
+            typeObj.type_id = typeObj._id;
+
+            data.push(typeObj);
+          }
+
+          return data;
+        }
+      });
+
+      this.organizationTypes = this.typeAdaptor.records;
+      this.organizationTypes.push({ _id: "", name: "Select type" });
+    }
+
+    this.datafields = [
+      { name: '_id', type: 'string' },
+      { name: 'type_id', type: 'string' },
+      { name: 'packageId', type: 'string' },
+      { name: 'name', type: 'string' },
+      { name: 'typeName', value: 'type_id', values: { source: this.typeAdaptor.records, value: 'type_id', name: 'typeName' } },
+      { name: 'packageName', value: 'packageId', values: { source: this.packageAdaptor.records, value: 'packageId', name: 'packageName' } },
+      { name: 'engines', type: 'string' },
+      { name: 'publishing', type: 'boolean' },
+    ];
+
+    this.source = {
+      datatype: "json",
+      id: '_id',
+      url: "/organization/list",
+      datafields: this.datafields
+    };
+
+    if (!this.dataAdapter) {
+      this.dataAdapter = new jqx.dataAdapter(this.source);
+    } else {
+      this.orgGrid.clearselection();
+      this.orgGrid.source(this.dataAdapter);
+    }
+  };
+
+  ngOnInit() {
+    this.orgChangeDetect = this.route.queryParams.subscribe(params => {
+      //  this.getOrganizationTypes();
+      // this.getPackages();
+
+      this.pageLoad();
 
       //this.loaderShared.showSpinner(true);
       this.loaderShared.showSpinner(false);

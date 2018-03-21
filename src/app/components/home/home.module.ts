@@ -26,7 +26,7 @@ import { OrganizationsComponent } from '../../components/organizations/organizat
 import { StudiousersComponent } from '../../components/studiousers/studiousers.component';
 import { MenuBackgroundComponent } from '../../components/menu-background/menu-background.component';
 import { SettingsComponent } from '../../components/settings/settings.component';
-import { AppgridComponent } from '../../components/appgrid/appgrid.component';
+import { AppgridComponent } from '../../components/organizations/appgrid.component';
 
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { HeaderService } from '../../services/header.service';

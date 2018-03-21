@@ -648,7 +648,6 @@ export class jqxGridComponent implements OnChanges
    }
 
    showtoolbar(arg?: boolean) : any {
-       console.log(arg)
       if (arg !== undefined) {
           this.host.jqxGrid('showtoolbar', arg);
       } else {
@@ -1541,6 +1540,7 @@ export class jqxGridComponent implements OnChanges
    savestate(): jqwidgets.GridGetState {
       return this.host.jqxGrid('savestate');
    }
+
 
    // jqxGridComponent events
    @Output() onBindingcomplete = new EventEmitter();
