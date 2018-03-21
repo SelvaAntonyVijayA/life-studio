@@ -9,7 +9,6 @@
       "outDir": "public",
       "assets": [
         "assets",
-        "img",
         "css",
         "js",
         "views",
