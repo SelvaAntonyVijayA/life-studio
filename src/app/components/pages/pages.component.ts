@@ -92,6 +92,7 @@ export class PagesComponent implements OnInit {
   alphabeticalOrder: boolean = false;
   livestreamOnTop: boolean = false;
   isMenuBg: boolean = false;
+  menuBgObj: Object = {};
 
   /* Setting dragging Groups, Menus, Tiles */
   setDragged(currObj: Object, type: string, menuItem?: Object, drgExits?: boolean, procedure?: Object) {
@@ -214,6 +215,7 @@ export class PagesComponent implements OnInit {
     this.livestreamOnTop = false;
     this.isMenuBg = false;
     this.resetBlankMenu();
+    this.menuBgObj = {};
 
     if (mergeReset && mergeReset === "reset") {
       this.isMerge = { "status": "merge" };
@@ -1601,14 +1603,19 @@ export class PagesComponent implements OnInit {
 
   menuBackgroundLibrary(e: any) {
     e.preventDefault();
-    this.isMenuBg = true;
+    this.menuBgObj = {};
+    
+    if (this.page.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.page["obj"])) {
+      this.menuBgObj = this.page["obj"];
+      this.isMenuBg = true;
+    }
   };
 
-  menuBackground(menuObj: Object){
-    if(!this.utils.isEmptyObject(menuObj) && menuObj.hasOwnProperty("close")){
+  menuBackground(menuObj: Object) {
+    if (!this.utils.isEmptyObject(menuObj) && menuObj.hasOwnProperty("close")) {
       this.isMenuBg = false;
     }
-  }
+  };
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {

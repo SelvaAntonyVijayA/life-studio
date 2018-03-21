@@ -370,7 +370,6 @@ var uploadBackgroundGroup = function (req, res, next) {
 
       res.send({});
     }
-
   });
 };
 
@@ -379,7 +378,6 @@ var backgroundPatternUpload = function (req, res, next) {
   var fileName;
 
   _formParse(req, function (data, files) {
-
     try {
       if (files) {
         for (var prop in files) {
@@ -390,6 +388,7 @@ var backgroundPatternUpload = function (req, res, next) {
             var appId = data.appId;
             var pageId = data.pageId;
             var type = data.type;
+
             var pageFrom = data.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(data.pagefrom) ? data.pagefrom : "";
             var fileArray = file.name.split('.');
             var fileName = fileArray[0] + Date.parse(new Date());
@@ -427,7 +426,6 @@ var backgroundPatternUpload = function (req, res, next) {
             } else {
               imagePathAssigned = imagePathAssigned + fileName;
             }
-
 
             var urlRtrn = {};
             urlRtrn.imageUrl = imagePathAssigned;
@@ -1928,9 +1926,7 @@ module.exports = {
   "backgroundPatternRemove": backgroundPatternRemove,
   "backgroundPatternList": backgroundPatternList,
   "uploadBackgroundGroup": uploadBackgroundGroup,
-  "backgroundPatternUpload": backgroundPatternUpload,
   "bgGroupRemove": bgGroupRemove,
-  "backgroundPatternList": backgroundPatternList,
   "bgGroupList": bgGroupList,
   "emoticonsUpload": emoticonsUpload,
   "emoticonsList": emoticonsList,

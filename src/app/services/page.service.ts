@@ -33,7 +33,7 @@ export class PageService {
 
   getPages(orgId: string, appId: string, locId: string, formData?: Object) {
     var pageUrl = "/pages/list/" + orgId + "/" + appId + "/" + locId;
-    var dataToPost = !this.utils.isNullOrEmpty(formData) && !this.utils.isEmptyObject(formData) ? {"form_data": formData} : {};
+    var dataToPost = !this.utils.isNullOrEmpty(formData) && !this.utils.isEmptyObject(formData) ? { "form_data": formData } : {};
 
     return this.http
       .post(pageUrl, JSON.stringify(dataToPost), { headers: this.headers })
@@ -90,6 +90,31 @@ export class PageService {
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);
+  };
+
+  imageUpload(url, form_data: any) {
+    /* return this.http
+     .post(url, form_data, { headers: this.headers })
+     .toPromise()
+     .then(response => response.json())
+     .catch(this.handleError);*/
+
+    return this.http
+      .post(url, form_data)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+
+    /*let imgHeaders = new Headers({
+      'Content-Type': 'application/octet-stream',
+      'charset': 'UTF-8'
+    });
+
+    let options = new RequestOptions({ headers: imgHeaders });
+
+    return this.http.post(url, form_data, options)
+      .map(response => response.json())
+      .catch(error => Observable.throw(error));*/
   };
 
   private handleError(error: any): Promise<any> {

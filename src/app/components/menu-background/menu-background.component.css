@@ -320,6 +320,7 @@
 }
 
 /* Tab Icon */
+
 .tab-icon-group {
   float: left;
   width: 64%;
@@ -366,4 +367,46 @@
 .tab-icon-input-group {
   float: left;
   width: 100%;
+}
+
+/* Page Layout */
+
+.page-layout-group {
+  float: left;
+  width: 340px;
+}
+
+.page-layout-text {
+  width: 85px;
+  float: right;
+  margin-right: 68px;
+}
+
+.page-layout-group, .wide-icon-group, {
+  float: left;
+}
+
+/* Square Icon */
+
+.square-icon-group {
+  float: left;
+  width: 50%;
+}
+
+.si-input-size {
+  width: 120px;
+  float: right;
+}
+
+/* Follow */
+
+.page-follow-group {
+  float: left;
+  width: 48%;
+  margin-left: 20px;
+}
+
+select.page-follow, select.page-link-notification {
+  width: 120px;
+  float: right;
 }

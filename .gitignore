@@ -10,7 +10,7 @@
 /node_modules
 
 # images
-/src/img/orgs
+/src/assets/img
 
 # log
 /log

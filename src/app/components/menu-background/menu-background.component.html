@@ -55,9 +55,9 @@
       <div class="modal-body menu-bg-body">
         <div class="main_menu_layout">
           <div class="main-bg-tab">
-            <div (click)="tabChange($event)" [ngClass]="tabIndex === 0 ? 'tab-mobile tab-selected': 'tab-mobile'">Mobile</div>
+            <div (click)="tabChange($event, 'mobile')" [ngClass]="tabName === 'mobile' ? 'tab-mobile tab-selected': 'tab-mobile'">Mobile</div>
             <span class="tab-separator">|</span>
-            <div (click)="tabChange($event)" [ngClass]="tabIndex === 1 ? 'tab-web tab-selected': 'tab-web'">Web</div>
+            <div (click)="tabChange($event, 'web')" [ngClass]="tabName === 'web' ? 'tab-web tab-selected': 'tab-web'">Web</div>
           </div>
 
           <div class="menu-background-group ">
@@ -66,12 +66,13 @@
             </ul>
           </div>
 
-          <!--- Background Pattern -->
-          <div *ngIf="groupBgIdx === 0" class="menu-group-content menu-bg-pattern">
+          <!---                       Background Pattern                        -->
+          <div *ngIf="groupBgIdx === 0" class="form-group menu-group-content menu-bg-pattern">
             <div class="general-pattern">
               <img class="delete-pattern" [src]="'/img/close_bg.png'" style="display: none;">
-              <img class="img-general-pattern" style="display: none;" [src]="''">
-              <div class="upload-general-pattern" style="display: block;">
+              <img class="img-general-pattern" *ngIf="!utils.isNullOrEmpty(bgObj['bgp']['background'])" [src]="bgObj['bgp']['background'] | safe">
+              <input style="display: none;" type="file" #fileBgp (change)="imageFileUpload($event.target.files, 'bgp')">
+              <div class="upload-general-pattern" (click)="fileProcess($event, 'bgp')" *ngIf="utils.isNullOrEmpty(bgObj['bgp']['background'])">
                 <input class="bg-main-img" type="image" src="/img/background_upload.png" width="40px">
                 <span class="pt-txt-fileUpload">Upload File</span>
               </div>
@@ -80,15 +81,16 @@
               <span class="general-background-text">Or</span>
               <div style="padding-bottom: 10px;">
                 <div style="float: left; margin: 5px 13px 0 0;">Background Color :</div>
-                <input [(ngModel)]="bgColor" (change)="colorChange($event,'bgColor')" class='form-control input-sm pattern-bg-color' [(colorPicker)]="pageFontColor"
-                  [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
-                  [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="pageFontColor" type='text' />
+                <input [(ngModel)]="bgObj['bgp']['pageBackgroundColor']" (change)="colorChange($event, bgObj['bgp']['pageBackgroundColor'])"
+                  class="form-control input-sm pattern-bg-color" [(colorPicker)]="bgObj['bgp']['pageBackgroundColor']" [cpOKButtonClass]="'btn btn-success btn-xs'"
+                  [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'"
+                  [value]="bgObj['bgp']['pageBackgroundColor']" type="text" />
               </div>
             </div>
           </div>
 
-          <!--- Background Image -->
-          <div *ngIf="groupBgIdx === 1" class="menu-group-content upload-background-group">
+          <!---                        Background Image                                 -->
+          <div *ngIf="groupBgIdx === 1" class="form-group menu-group-content upload-background-group">
             <div class="vertical-app-background">
               <img class="delete-vertical-bg" [src]="'/img/close_bg.png'" style="display: none;">
               <img class="img-vertical-app-background" style="display: none;" [src]="''">
@@ -109,8 +111,8 @@
             </div>
           </div>
 
-          <!--- Top Banner -->
-          <div *ngIf="groupBgIdx === 2" class="menu-group-content top-pattern-group">
+          <!---                        Top Banner                                 -->
+          <div *ngIf="groupBgIdx === 2" class="form-group menu-group-content top-pattern-group">
             <div class="horizontal-top-pattern">
               <img class="delete-top-pattern" [src]="'/img/close_bg.png'" style="display: none;">
               <img class="img-horizontal-top-pattern" style="display: none;" [src]="''">
@@ -134,8 +136,8 @@
             </div>
           </div>
 
-          <!-- Nav Bar -->
-          <div *ngIf="groupBgIdx === 3" class="menu-group-content bg-text-color-group">
+          <!--                               Nav Bar                                -->
+          <div *ngIf="groupBgIdx === 3" class="form-group menu-group-content bg-text-color-group">
             <div style="padding-bottom: 10px;">
               <div style="float: left; margin: 2px 74px 0 0;">Icon Title Color :</div>
               <input [(ngModel)]="bgObj['navBar']['fontColor']" (change)="colorChange($event, bgObj['navBar']['fontColor'])" class="form-control input-sm icon-title-color"
@@ -170,8 +172,8 @@
             </div>
           </div>
 
-          <!-- Tab Icon -->
-          <div *ngIf="groupBgIdx === 4" class="menu-group-content tab-icon-group" style="display: block;">
+          <!--                                      Tab Icon                                          -->
+          <div *ngIf="groupBgIdx === 4" class="form-group menu-group-content tab-icon-group" style="display: block;">
             <div class="mobile-tab-icon">
               <img class="delete-tab-icon" src="/img/close_bg.png" style="display: none;">
               <img class="img-tab-icon" style="display: none;" src="">
@@ -192,8 +194,131 @@
             </div>
           </div>
 
+          <!--                      Page Layout                                   -->
+          <div *ngIf="groupBgIdx === 5" class="form-group menu-group-content page-layout-group">
+            <div style="float:left; width: 100%; height: 226px;">
+              <div style="padding-bottom: 10px; padding-bottom: 35px;">
+                <div style="float: left; margin: 2px 15.5px 0 0;">Standard number of columns :</div>
+                <select class="form-control input-sm page-layout-text">
+                  <option [value]="'2'">2</option>
+                  <option [value]="'3'">3</option>
+                  <option [value]="'4'">4</option>
+                  <option [value]="'5'">5</option>
+                </select>
+              </div>
+              <div style="padding-bottom: 10px; padding-bottom: 35px;">
+                <div style="float: left; margin: 2px 41px 0 0;">Min Square Icon Size (%) :</div>
+                <input class="form-control input-sm page-layout-text" type="number" min="0" max="100">
+              </div>
+              <div style="padding-bottom: 10px; padding-bottom: 35px;">
+                <div style="float: left; margin: 2px 50px 0 0;">Spacing between Icons :</div>
+                <input class="form-control input-sm page-layout-text" type="number" placeholder="pt">
+              </div>
+              <div style="padding-bottom: 10px; padding-bottom: 35px;">
+                <div style="float: left; margin: 2px 96.5px 0 0;">Navigation Tab :</div>
+                <select class="form-control input-sm page-layout-text">
+                  <option [value]="false">Top</option>
+                  <option [value]="true">Bottom</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!--                           Square Icon (and) Wide Icon                    -->
+          <div *ngIf="groupBgIdx === 6 || groupBgIdx === 7" class="form-group menu-group-content square-icon-group">
+            <div style="padding-bottom: 10px; width:100%; float:left;">
+              <div style="float: left;">Vertical Alignment :</div>
+              <select [(ngModel)]="bgObj['squareWideIcon']['verticalAlignment']" class="form-control input-sm si-input-size">
+                <option [value]="'-1'">Select</option>
+                <option [value]="'top'">Top</option>
+                <option [value]="'center'">Center</option>
+                <option [value]="'bottom'">Bottom</option>
+                <option [value]="'below'">Below Image</option>
+              </select>
+            </div>
+            <div style="padding-bottom: 10px; width:100%; float:left;">
+              <div style="float: left;">Horizontal Alignment :</div>
+              <select [(ngModel)]="bgObj['squareWideIcon']['horizontalAlignment']" class="form-control input-sm si-input-size">
+                <option [value]="'-1'">Select</option>
+                <option [value]="'leading'">Leading</option>
+                <option [value]="'center'">Center</option>
+                <option [value]="'trailing'">Trailing</option>
+              </select>
+            </div>
+            <div style="padding-bottom: 10px; width:100%; float:left;">
+              <div style="float: left;">Vertical Offset :</div>
+              <input [(ngModel)]="bgObj['squareWideIcon']['verticalOffset']" class="form-control input-sm si-input-size" type="number">
+            </div>
+            <div style="padding-bottom: 10px; width:100%; float:left;">
+              <div style="float: left;">Horizontal Offset :</div>
+              <input [(ngModel)]="bgObj['squareWideIcon']['horizontalOffset']" class="form-control input-sm si-input-size" type="number">
+            </div>
+            <div style="padding-bottom: 10px; width:100%; float:left;">
+              <div style="float: left;">Font Size :</div>
+              <input [(ngModel)]="bgObj['squareWideIcon']['fontSize']" class="form-control input-sm si-input-size" type="number" placeholder="pt">
+            </div>
+            <div style="padding-bottom: 10px; width:100%; float:left;">
+              <div style="float: left;">Font Color :</div>
+              <input [(ngModel)]="bgObj['squareWideIcon']['fontColor']" (change)="colorChange($event, bgObj['squareWideIcon']['fontColor'])"
+                class="form-control input-sm si-input-size" [(colorPicker)]="bgObj['squareWideIcon']['fontColor']" [cpOKButtonClass]="'btn btn-success btn-xs'"
+                [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'" [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'"
+                [value]="bgObj['squareWideIcon']['fontColor']" type="text" color="color" />
+            </div>
+            <div style="padding-bottom: 10px; width:100%; float:left;">
+              <div style="float: left;">Font Background Color :</div>
+              <input [(ngModel)]="bgObj['squareWideIcon']['textBackgroundColor']" (change)="colorChange($event, bgObj['squareWideIcon']['textBackgroundColor'])"
+                class="form-control input-sm si-input-size" [(colorPicker)]="bgObj['squareWideIcon']['textBackgroundColor']"
+                [cpOKButtonClass]="'btn btn-success btn-xs'" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+                [cpCancelButton]="true" [cpCancelButtonText]="'Cancel'" [value]="bgObj['squareWideIcon']['textBackgroundColor']"
+                type="text" color="color" />
+            </div>
+            <div style="padding-bottom: 10px; width:100%; float:left;">
+              <div style="float: left;">Font Background Alpha :</div>
+              <input [(ngModel)]="bgObj['squareWideIcon']['textBackgroundAlpha']" class="form-control input-sm si-input-size" type="number"
+                min="0.0" max="1.0" value="0.0" step="0.1">
+            </div>
+            <div style="padding-bottom: 10px; width:100%; float:left;">
+              <div style="float: left;">Border :</div>
+              <select [(ngModel)]="bgObj['squareWideIcon']['border']" class="form-control input-sm si-input-size">
+                <option [value]="''">Default</option>
+                <option [value]="true">On</option>
+                <option [value]="false">Off</option>
+              </select>
+            </div>
+            <div style="padding-bottom: 10px; width:100%; float:left;">
+              <div style="float: left;">Bold :</div>
+              <select [(ngModel)]="bgObj['squareWideIcon']['fontBold']" class="form-control input-sm si-input-size">
+                <option [value]="''">Default</option>
+                <option [value]="true">On</option>
+                <option [value]="false">Off</option>
+              </select>
+            </div>
+          </div>
+
+          <!--             Follow                             -->
+          <div *ngIf="groupBgIdx === 8" class="form-group menu-group-content page-follow-group">
+            <div style="float: left; width: 100%; padding-bottom: 10px;">
+              <div style="float: left;">Follow :</div>
+              <select class="form-control input-sm page-follow">
+                <option [value]="''">Default</option>
+                <option [value]="true">On</option>
+                <option [value]="false">Off</option>
+              </select>
+            </div>
+            <div style="padding-bottom: 10px;">
+              <div style="float: left; margin: 2px 20px 0 0;">Link to Notifications :</div>
+              <select class="form-control input-sm page-link-notification">
+                <option [value]="''">Default</option>
+                <option [value]="true">On</option>
+                <option [value]="false">Off</option>
+              </select>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
   </div>
 </div>
+
+
