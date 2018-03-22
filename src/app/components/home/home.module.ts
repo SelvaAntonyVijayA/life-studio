@@ -27,6 +27,12 @@ import { StudiousersComponent } from '../../components/studiousers/studiousers.c
 import { MenuBackgroundComponent } from '../../components/menu-background/menu-background.component';
 import { SettingsComponent } from '../../components/settings/settings.component';
 import { AppgridComponent } from '../../components/organizations/appgrid.component';
+import { EnginesComponent } from '../../components/organizations/engines.component';
+import { IntegrationComponent } from '../../components/organizations/integration.component';
+import { LocationComponent } from '../../components/organizations/location.component';
+import { IntegrationwidgetsComponent } from '../../components/organizations/integrationwidgets.component';
+import { StreamComponent } from '../../components/organizations/stream.component';
+import { LanguageComponent } from '../../components/organizations/language.component';
 
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { HeaderService } from '../../services/header.service';
@@ -82,7 +88,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent,
-    OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent, jqxButtonComponent, AppgridComponent],
+    OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
+    jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent, LanguageComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService]
 })

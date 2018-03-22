@@ -15,7 +15,6 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 @Component({
   selector: 'app-grid',
   templateUrl: './appgrid.component.html',
-  styleUrls: ['./appgrid.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class AppgridComponent implements OnInit {
