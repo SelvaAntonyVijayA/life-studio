@@ -2,8 +2,6 @@
 
 //var user = require(path.join(process.cwd(), 'models', 'user'));
 var settingsConf;
-var query = {};
-var options = {};
 
 var init = function (app) {
   console.log("ILI Intialized");
@@ -83,9 +81,9 @@ var getLogin = function (req, res, next) {
 };*/
 
 var login = function (req, res, next) {
-  var user = req.body.form_data;
+  let user = req.body.form_data;
 
-  query = {
+  let query = {
     $or: [{ email: user.email }, { email: user.email.toLowerCase() }],
     password: $general.encrypt(user.password)
   };
@@ -122,8 +120,8 @@ var login = function (req, res, next) {
           callback(null, []);
         }
       }], function (err, userResult, result) {
-        var userObj = {};
-        var returnVal = {};
+        let userObj = {};
+        let returnVal = {};
         returnVal.userfound = false;
 
         if (userResult.length > 0) {
@@ -138,7 +136,7 @@ var login = function (req, res, next) {
           userObj.role = result.role[0];
 
           //var firstOrgId = result.organizations.length > 0 ? (result.organizations.length > 1 ? "-1" : result.organizations[0]._id) : '';
-          var tokenJSON = {
+          let tokenJSON = {
             uid: userResult[0]._id,
             user: userObj
           };
@@ -174,8 +172,8 @@ var login = function (req, res, next) {
 };*/
 
 var get = function (req, res, next) {
-  query = {};
-  options = {};
+  let query = {};
+  let options = {};
 
   if (!__util.isNullOrEmpty(req.params.userId)) {
     query._id = req.params.userId;
@@ -200,7 +198,7 @@ var get = function (req, res, next) {
 };
 
 var getsession = function (req, res, next) {
-  var obj = $authtoken.get(req.cookies.token);
+  let obj = $authtoken.get(req.cookies.token);
 
   res.send({
     name: obj.user.name,
@@ -216,8 +214,8 @@ var getsession = function (req, res, next) {
 };
 
 var getList = function (userIds, cb) {
-  query = {};
-  options = {};
+  let query = {};
+  let options = {};
   query._id = userIds;
 
   $db.select(settingsConf.dbname.tilist_users, settingsConf.collections.orgmembers, query, options, function (result) {
@@ -226,7 +224,7 @@ var getList = function (userIds, cb) {
 };
 
 var _getOrgMembers = function (queryGet, cb) {
-  options = {};
+  let options = {};
   options.sort = [['name', 'asc']];
 
   $db.select(settingsConf.dbname.tilist_users, settingsConf.collections.orgmembers, queryGet, options, function (result) {
@@ -241,8 +239,8 @@ var _updateOrgsMembers = function (queryId, dataToUpdate, cb) {
 };
 
 var _update = function (req, res, next) {
-  query = {};
-  user = {};
+  let query = {};
+  let user = {};
 
   if (!__util.isNullOrEmpty(req.params.userId)) {
     query._id = req.params.userId;
@@ -267,15 +265,84 @@ var _update = function (req, res, next) {
   });
 };
 
+var _saveUserApp = function (datas, cb) {
+  // $member.appmember(datas.members, function (memberResult) {
+  $db.save(settingsConf.dbname.tilist_users, settingsConf.collections.userapp, datas.apps, function (result) {
+    cb(result);
+  });
+  // });
+};
+
+var _saveUserLoc = function (querySave, cb) {
+  $db.save(settingsConf.dbname.tilist_users, settingsConf.collections.userlocation, querySave, function (result) {
+    cb(result);
+  });
+};
+
+var getUserApp = function (uaQuery, cb) {
+  $db.select(settingsConf.dbname.tilist_users, settingsConf.collections.userapp, uaQuery, {}, function (result) {
+    cb(result);
+  });
+};
+
+var getUserlocation = function (ulQuery, ulOptions, cb) {
+  $db.select(settingsConf.dbname.tilist_users, settingsConf.collections.userlocation, ulQuery, ulOptions, function (result) {
+    cb(result);
+  });
+};
+
+var remove = function (req, res, next) {
+  let query = {};
+
+  if (!__util.isNullOrEmpty(req.params.id)) {
+    query._id = req.params.id;
+  }
+
+  if (!__util.isNullOrEmpty(req.body._id)) {
+    query._id = req.body._id;
+  }
+
+  $db.remove(appsconf.dbname, appsconf.auth, appsconf.collections.apps, query, options, function (result) {
+    let obj = {};
+    obj.deleted = result;
+
+    res.send(obj);
+  });
+};
+
+var getAppByPin = function (req, res, next) {
+  let query = {};
+  query = {
+    pin: {
+      $exists: true,
+      $in: [parseInt(req.params.id)]
+    }
+  };
+
+  _getApps(query, {}, function (result) {
+    let _id = result.length > 0 ? result[0]._id : "";
+
+    res.send({
+      appId: _id
+    });
+  });
+};
+
 module.exports = {
   "init": init,
   "login": login,
   "getLogin": getLogin,
   "login": login,
   "get": get,
+  "remove": remove,
   "getsession": getsession,
   "getList": getList,
   "update": _update,
   "_updateOrgsMembers": _updateOrgsMembers,
-  "_getOrgMembers": _getOrgMembers
+  "_getOrgMembers": _getOrgMembers,
+  "_saveUserApp": _saveUserApp,
+  "_saveUserLoc": _saveUserLoc,
+  "getUserApp": getUserApp,
+  "getAppByPin" : getAppByPin,
+  "getUserlocation": getUserlocation
 };

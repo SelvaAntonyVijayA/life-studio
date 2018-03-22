@@ -4,7 +4,7 @@
       <mat-toolbar style="height:35px; color: #000000; padding: 0 10px;">
         <span>Organizations</span>
       </mat-toolbar>
-      <jqxGrid #orgGrid [selectionmode]="'singlerow'" [width]="470" [height]="415" [toolbarheight]="35" [pageable]="false" [sortable]="true"
+      <jqxGrid #orgGrid [selectionmode]="'singlerow'" [width]="420" [height]="415" [toolbarheight]="35" [pageable]="false" [sortable]="true"
         [showstatusbar]="false" [showheader]="true" [showtoolbar]="true" [rendertoolbar]="renderToolbar" (onBindingcomplete)="onBindingComplete($event)"
         (rendered)="orgRendered($event)" [altrows]="true" (ready)="ready" (onRowselect)="orgGridOnRowSelect($event)" (onRowdoubleclick)="orgDoubleClick($event)"
         (onRowunselect)="orgGridOnRowUnselect($event)" [source]="dataAdapter" [columns]="columns">
@@ -47,7 +47,7 @@
               </div>
 
               <button type="submit" class="btn btn-default" [disabled]="orgForm.invalid">Submit</button>
-              <button type="button" class="btn btn-default" (click)="orgForm.resetForm({packageId:'',type_id:''})">Reset</button>
+              <button type="button" class="btn btn-default" (click)="onFormReset()">Reset</button>
             </div>
           </form>
         </div>
@@ -55,7 +55,7 @@
     </div>
     <div style='margin-top: 2px; float:left;margin-left:2px;'>
       <div *ngIf="isGrid">
-        <app-grid [id]="orgId" [width]="470" [height]="415" [obj]="orgObj"></app-grid>
+        <app-grid [id]="orgId" [orgtype]="type" [width]="620" [height]="415"></app-grid>
       </div>
     </div>
     <div style='margin-top: 2px; float:left;margin-left:2px;'>

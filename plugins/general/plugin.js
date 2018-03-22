@@ -219,11 +219,24 @@ var _getDeActivateTime = function (eventObj, tile, dateTime, indx, newActivate) 
   return tile;
 };
 
+
 var getIsoDate = function () {
   var isoString = new Date().toISOString();
   var isoDate = new Date(isoString);
 
   return isoDate;
+};
+
+var getDynamicPin = function () {
+  var str = '';
+
+  for (var i = 0; i < 6; i++) {
+    str += Math.floor(Math.random() * 7) + 1;
+  }
+
+  var randnum = parseInt(str, 10);
+
+  return randnum;
 };
 
 module.exports = {
@@ -235,6 +248,7 @@ module.exports = {
   "setAvailableFrom": setAvailableFrom,
   "_getDeActivateTime": _getDeActivateTime,
   "stringToDate": stringToDate,
-  "getIsoDate" : getIsoDate
+  "getIsoDate": getIsoDate,
+  "getDynamicPin": getDynamicPin
 };
 

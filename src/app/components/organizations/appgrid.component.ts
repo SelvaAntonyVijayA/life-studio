@@ -4,23 +4,37 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { CommonService } from '../../services/common.service';
 import { Utils } from '../../helpers/utils';
 import { AppsService } from '../../services/apps.service';
-import { jqxGridComponent } from '../../grid/jqwidgets-ts/angular_jqxgrid';
+import { jqxWindowComponent } from '../../grid/jqwidgets-ts/angular_jqxwindow';
 import { jqxExpanderComponent } from '../../grid/jqwidgets-ts/angular_jqxexpander';
+import { jqxGridComponent } from '../../grid/jqwidgets-ts/angular_jqxgrid';
 import * as _ from 'underscore';
 import { LoaderSharedService } from '../../services/loader-shared.service';
+import { ReactiveFormsModule, FormsModule, FormGroup, FormControl, Validators, FormBuilder, NgForm } from '@angular/forms';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 @Component({
   selector: 'app-grid',
   templateUrl: './appgrid.component.html',
-  styleUrls: ['./appgrid.component.css']
+  styleUrls: ['./appgrid.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppgridComponent implements OnInit {
-  @Input('id') id: string;
-  @Input('obj') obj: object;
+  @Input('id') organizationId: string;
+  @Input('orgtype') orgType: string;
   @Input('height') height: string;
   @Input('width') width: string;
+  @ViewChild('appGrid') appGrid: jqxGridComponent;
+  @ViewChild('appWindow') appWindow: jqxWindowComponent;
+  @ViewChild('appForm') appForm: NgForm;
   dataAdapter: any;
   source: any;
+  rowIndex: number;
+  appId: string;
+  app: object = { name: "", authenticated: "-1", pin: "", googleAnalytics: "", alerts: "", chat: "-1" };
+  myAddButton: jqwidgets.jqxButton;
+  myDeleteButton: jqwidgets.jqxButton;
+  chatList: any;
+  authList: any;
 
   constructor(private route: ActivatedRoute,
     private cms: CommonService,
@@ -28,39 +42,38 @@ export class AppgridComponent implements OnInit {
     private e1: ElementRef,
     private renderer: Renderer2,
     public utils: Utils,
-
     private loaderShared: LoaderSharedService) { }
-
-  @ViewChild('appGrid') appGrid: jqxGridComponent;
 
   chatSource: any =
     {
       datafields: [
-        { name: 'chat', type: 'string' },
-        { name: 'option', type: 'string' },
+        { name: 'chatId', type: 'string' },
+        { name: 'chatName', type: 'string' },
         { name: 'sno' }
       ],
       localdata: [
-        { sno: 1, chat: '0', option: 'Off' },
-        { sno: 2, chat: '1', option: 'On' },
-        { sno: 3, chat: '2', option: 'Private' }
+        { sno: 0, authId: '-1', chatName: 'Select Chat' },
+        { sno: 1, chatId: '0', chatName: 'Off' },
+        { sno: 2, chatId: '1', chatName: 'On' },
+        { sno: 3, chatId: '2', chatName: 'Private' }
       ]
     };
 
   authSource: any =
     {
       datafields: [
-        { name: 'authenticated', type: 'string' },
-        { name: 'auth', type: 'string' },
+        { name: 'authId', type: 'string' },
+        { name: 'authName', type: 'string' },
         { name: 'sno' }
       ],
       localdata: [
-        { sno: 1, authenticated: '0', auth: 'Pre-approved' },
-        { sno: 2, authenticated: '1', auth: 'Email' },
-        { sno: 3, authenticated: '4', auth: 'Email-Auto Approve' },
-        { sno: 4, authenticated: '2', auth: 'Username' },
-        { sno: 5, authenticated: '3', auth: 'No Security' },
-        { sno: 6, authenticated: '5', auth: 'Late Registration' }
+        { sno: 0, authId: '-1', authName: 'Select Secure Auth.' },
+        { sno: 1, authId: '0', authName: 'Pre-approved' },
+        { sno: 2, authId: '1', authName: 'Email' },
+        { sno: 3, authId: '4', authName: 'Email-Auto Approve' },
+        { sno: 4, authId: '2', authName: 'Username' },
+        { sno: 5, authId: '3', authName: 'No Security' },
+        { sno: 6, authId: '5', authName: 'Late Registration' }
       ]
     };
 
@@ -72,13 +85,110 @@ export class AppgridComponent implements OnInit {
     autoBind: true
   });
 
+  renderToolbar = (toolBar: any): void => {
+    let theme = jqx.theme;
+
+    let toTheme = (className: string): string => {
+      if (theme == '') return className;
+      return className + ' ' + className + '-' + theme;
+    }
+
+    // appends buttons to the status bar.
+    let container = document.createElement('div');
+    let fragment = document.createDocumentFragment();
+
+    container.style.cssText = 'overflow: hidden; position: hidden; height: "100%"; width: "100%"'
+
+    let createButtons = (name: string, cssClass: string): any => {
+      this[name] = document.createElement('div');
+      this[name].style.cssText = 'padding: 3px; margin: 2px; float: left; border: none'
+
+      let iconDiv = document.createElement('div');
+      iconDiv.style.cssText = 'margin: 4px; width: 16px; height: 16px;'
+      iconDiv.className = cssClass;
+
+      this[name].appendChild(iconDiv);
+      return this[name];
+    }
+
+    let buttons = [
+      createButtons('addButton', toTheme('jqx-icon-plus')),
+      createButtons('deleteButton', toTheme('jqx-icon-delete')),
+    ];
+
+    for (let i = 0; i < buttons.length; i++) {
+      fragment.appendChild(buttons[i]);
+    }
+
+    container.appendChild(fragment)
+    toolBar[0].appendChild(container);
+
+    let addButtonOptions: jqwidgets.ButtonOptions =
+      {
+        height: 25, width: 25
+      }
+    let otherButtonsOptions: jqwidgets.ButtonOptions =
+      {
+        disabled: true, height: 25, width: 25
+      }
+
+    this.myAddButton = jqwidgets.createInstance(buttons[0], 'jqxButton', addButtonOptions);
+    this.myDeleteButton = jqwidgets.createInstance(buttons[1], 'jqxButton', otherButtonsOptions);
+
+    let addTooltopOptions: jqwidgets.TooltipOptions =
+      {
+        position: 'bottom', content: 'Add'
+      }
+
+    let deleteTooltopOptions: jqwidgets.TooltipOptions =
+      {
+        position: 'bottom', content: 'Delete'
+      }
+
+    let myAddToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[0], 'jqxTooltip', addTooltopOptions);
+    let myDeleteToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[1], 'jqxTooltip', deleteTooltopOptions);
+
+    this.myAddButton.addEventHandler('click', (event: any) => {
+      if (!this.myAddButton.disabled) {
+        this.appId = "";
+        this.app = { name: "", authenticated: "-1", pin: "", googleAnalytics: "", alerts: "", chat: "-1" };
+        this.appWindow.setTitle("Add Apps");
+        this.appWindow.position({ x: 600, y: 90 });
+        this.appWindow.open();
+      }
+    });
+
+    this.myDeleteButton.addEventHandler('click', (event: any) => {
+      if (!this.myDeleteButton.disabled) {
+        if (this.rowIndex != -1) {
+          this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this App.?", "Yes", "No", (res) => {
+            if (res.hasOwnProperty("resolved") && res["resolved"] == true) {
+              var datarow = this.appGrid.getrowdata(this.rowIndex)
+              this.deleteOrganization(datarow["_id"], (res) => {
+                if (res) {
+                  this.appId = "";
+                  this.utils.iAlert('success', '', 'Apps deleted successfully');
+                  this.appGrid.source(this.dataAdapter);
+                  this.updateButtons('delete');
+                  this.appWindow.close();
+                }
+              });
+            }
+          })
+        } else {
+          this.utils.iAlert('error', 'Error', 'Please select the App!!!');
+        }
+      }
+    });
+  };
+
   datafields: any = [
     { name: '_id', type: 'string' },
     { name: 'authenticated', type: 'string' },
     { name: 'chat', type: 'string' },
     { name: 'name', type: 'string' },
-    { name: 'authname', value: 'authenticated', values: { source: this.authAdaptor.records, value: 'authenticated', name: 'auth' } },
-    { name: 'chatname', value: 'chat', values: { source: this.chatAdaptor.records, value: 'chat', name: 'option' } },
+    { name: 'aname', value: 'authenticated', values: { source: this.authAdaptor.records, value: 'authId', name: 'authName' } },
+    { name: 'cname', value: 'chat', values: { source: this.chatAdaptor.records, value: 'chatId', name: 'chatName' } },
     { name: 'logo', type: 'string' },
     { name: 'startScreenImage', type: 'string' },
     { name: 'website', type: 'string' },
@@ -100,7 +210,7 @@ export class AppgridComponent implements OnInit {
   columns: any[] =
     [
       {
-        text: 'SNo.', dataField: '', columntype: 'number', width: 100, editable: false,
+        text: 'SNo.', dataField: '', columntype: 'number', width: 50, editable: false,
         sortable: false, cellsalign: 'left', align: 'center', cellsrenderer: this.snorenderer
       },
       {
@@ -108,12 +218,6 @@ export class AppgridComponent implements OnInit {
       },
       {
         text: 'logo', hidden: true, datafield: 'logo', sortable: false
-      },
-      {
-        text: 'authenticated', hidden: true, datafield: 'authenticated', sortable: false
-      },
-      {
-        text: 'chat', hidden: true, datafield: 'chat', sortable: false
       },
       {
         text: 'startScreenImage', hidden: true, datafield: 'startScreenImage', sortable: false
@@ -134,93 +238,207 @@ export class AppgridComponent implements OnInit {
         text: 'languages', hidden: true, datafield: 'languages', sortable: false
       },
       {
-        text: 'Name', datafield: 'name', width: 140, columntype: 'textbox', sortable: true, editable: true,
-        cellsalign: 'left', align: 'center',
-        validation: (cell: any, value: any): any => {
-          if (value == '') {
-            return { result: false, message: 'Name is required!' };
-          }
-
-          return true;
-        }
-      },
-      {
-        text: 'Secure Auth', displayfield: 'authname', width: 150, columntype: 'dropdownlist', datafield: 'auth',
-        sortable: true, cellsalign: 'left', align: 'center',
-        createeditor: (row: number, value: any, editor: any): void => {
-          editor.jqxDropDownList({ autoDropDownHeight: true, source: this.authAdaptor.records, displayMember: 'auth', valueMember: 'authenticated' });
-        }
-      },
-      {
-        text: 'PIN', editable: false, datafield: 'pin', width: 70, columntype: 'textbox', sortable: true,
+        text: 'Name', datafield: 'name', width: 100, columntype: 'textbox', sortable: true, editable: true,
         cellsalign: 'left', align: 'center'
       },
       {
-        text: 'Google Analytics', datafield: 'googleAnalytics', width: 140, columntype: 'textbox', sortable: true, editable: true,
+        text: 'Secure Auth', width: 100, datafield: 'aname', sortable: true, cellsalign: 'left', align: 'center'
+      },
+      {
+        text: 'PIN', editable: false, datafield: 'pin', width: 60, columntype: 'textbox', sortable: true,
         cellsalign: 'left', align: 'center'
       },
       {
-        text: 'Alerts', datafield: 'alerts', width: 140, columntype: 'textbox', sortable: true, editable: true,
+        text: 'Google Analytics', datafield: 'googleAnalytics', width: 100, columntype: 'textbox', sortable: true, editable: true,
         cellsalign: 'left', align: 'center'
       },
       {
-        text: 'Chat', displayfield: 'option', columntype: 'dropdownlist', datafield: 'chatname',
-        sortable: true, cellsalign: 'left', align: 'center', width: 100,
-        createeditor: (row: number, value: any, editor: any): void => {
-          editor.jqxDropDownList({ autoDropDownHeight: true, source: this.chatAdaptor.records, displayMember: 'option', valueMember: 'chat' });
-        }
+        text: 'Alerts', datafield: 'alerts', width: 150, columntype: 'textbox', sortable: true, editable: true,
+        cellsalign: 'left', align: 'center'
+      },
+      {
+        text: 'Chat', datafield: 'cname', sortable: true, cellsalign: 'left', align: 'center', width: 60
       },
     ];
 
 
-  Rowdoubleclick(event: any): void {
-    //  let _id = event.args.row._id;
-
-    this.appGrid.beginrowedit(event.args.rowindex);
-
-    // Do Something
+  rowdoubleclick(event: any): void {
+    var args = event.args;
+    this.rowIndex = args.rowindex;
+    var datarow = this.appGrid.getrowdata(this.rowIndex)
+    this.updateButtons('Edit');
+    this.appWindow.setTitle("Update App");
+    this.appWindow.position({ x: 600, y: 90 });
+    this.appWindow.open();
   }
 
   onRowSelect(event: any): void {
-    // let _id = event.args.row._id;
+    this.rowIndex = event.args.rowindex;
+    var data = event.args.row;
+    this.appId = data["_id"];
+    this.app = { name: data["name"] };
 
-    // Do Something
+    if (!this.utils.isNullOrEmpty(data["alerts"])) {
+      this.app["alerts"] = data["alerts"];
+    } else {
+      this.app["alerts"] = "";
+    }
+
+    if (!this.utils.isNullOrEmpty(data["authenticated"])) {
+      this.app["authenticated"] = data["authenticated"];
+    } else {
+      this.app["authenticated"] = "";
+    }
+
+    if (!this.utils.isNullOrEmpty(data["googleAnalytics"])) {
+      this.app["googleAnalytics"] = data["googleAnalytics"];
+    } else {
+      this.app["googleAnalytics"] = "";
+    }
+
+    if (!this.utils.isNullOrEmpty(data["pin"])) {
+      this.app["pin"] = data["pin"];
+    } else {
+      this.app["pin"] = "";
+    }
+
+    this.updateButtons('Select');
   }
 
   onRowUnselect(event: any): void {
-    //let _id = event.args.row._id;
-
-    // Do Something
   }
 
-  onRowBeginEdit(event: any): void {
-    //let _id = event.args.row._id;
-    alert('start')
-    // Do Something
+  addWindowOpen() {
   }
 
-  onRowEndEdits(event: any): void {
-    //let _id = event.args.row._id;
-    alert('end')
+  addWindowClose() {
+    this.app = { name: "", authenticated: "-1", pin: "", googleAnalytics: "", alerts: "", chat: "-1" };
+    this.updateButtons('End Edit');
+  }
 
-    // Do Something
+  updateButtons(action: string): void {
+    switch (action) {
+      case 'Select':
+        this.myAddButton.setOptions({ disabled: false });
+        this.myDeleteButton.setOptions({ disabled: false });
+        break;
+      case 'Unselect':
+        this.myAddButton.setOptions({ disabled: false });
+        this.myDeleteButton.setOptions({ disabled: true });
+        break;
+      case 'Edit':
+        this.myAddButton.setOptions({ disabled: true });
+        this.myDeleteButton.setOptions({ disabled: true });
+        break;
+      case 'End Edit':
+        this.myAddButton.setOptions({ disabled: false });
+        this.myDeleteButton.setOptions({ disabled: false });
+        break;
+    }
+  };
+
+  geAppObject(appObj: object) {
+    var obj = {};
+
+    obj["name"] = appObj["name"];
+
+    if (appObj["authenticated"] != "-1") {
+      obj["authenticated"] = appObj["authenticated"];
+    } else {
+      obj["authenticated"] = "";
+    }
+
+    if (appObj["chat"] != "-1") {
+      obj["chat"] = appObj["chat"];
+    } else {
+      obj["chat"] = "";
+    }
+
+    obj["pin"] = appObj["pin"];
+    obj["googleAnalytics"] = appObj["googleAnalytics"];
+    obj["alerts"] = appObj["alerts"];
+    obj["organizationId"] = this.organizationId;
+
+    if (obj["authenticated"] == "4") {
+      obj["autoApprove"] = true;
+    } else {
+      obj["autoApprove"] = false;
+    }
+
+    return obj;
+  }
+
+  saveApp(id: any, appObj: object, cb?: any) {
+    var obj = this.geAppObject(appObj);
+
+    if (id.length > 12) {
+      this.appService.updateApp(id, obj)
+        .then(res => {
+          if (res) {
+            cb(res)
+          }
+        });
+
+    } else {
+      this.appService.saveApp(obj, this.orgType)
+        .then(res => {
+          if (res) {
+            cb(res)
+          }
+        });
+    }
+  };
+
+  deleteOrganization(id: any, cb?: any) {
+    this.appService.deleteApp(id)
+      .then(res => {
+        if (res) {
+          cb(true);
+        }
+      });
+  };
+
+  onSubmit() {
+    var obj = this.app;
+
+    this.saveApp(this.appId, obj, (res) => {
+      if (res) {
+
+        if (this.appId.length > 12) {
+          this.utils.iAlert('success', '', 'Apps updated successfully!!!');
+        } else {
+          this.utils.iAlert('success', '', 'Apps saved successfully!!!');
+        }
+
+        this.appId = res._id;
+        this.appGrid.source(this.dataAdapter);
+        this.appWindow.close();
+      }
+    });
+  }
+
+  onFormReset() {
+    this.appForm.resetForm();
+    this.app = { name: "", authenticated: "-1", pin: "", googleAnalytics: "", alerts: "", chat: "-1" };
   }
 
   ngOnChanges(cHObj: any) {
-    if (cHObj.hasOwnProperty("id") && !this.utils.isNullOrEmpty(cHObj["id"]["currentValue"])) {
-      let obj = cHObj["id"];
+    if (cHObj.hasOwnProperty("organizationId") && !this.utils.isNullOrEmpty(cHObj["organizationId"]["currentValue"])) {
+      let obj = cHObj["organizationId"];
 
       if (!obj["firstChange"] && !this.utils.isNullOrEmpty(obj["previousValue"]) && obj["previousValue"] !== obj["currentValue"]) {
         this.appGrid.refreshdata();
 
-        this.source = {
+        let dataSource = {
           datatype: "json",
           id: '_id',
+          url: '/cms/apps/list/' + this.organizationId + '/' + 'admin',
           datafields: this.datafields,
-          url: '/cms/apps/list/' + this.id + '/' + 'admin',
-        };
+        }
 
-        this.dataAdapter = new jqx.dataAdapter(this.source);
+        let adapter = new jqx.dataAdapter(dataSource);
+
+        this.appGrid.source(adapter);
       }
 
       if (obj["firstChange"]) {
@@ -228,10 +446,14 @@ export class AppgridComponent implements OnInit {
           datatype: "json",
           id: '_id',
           datafields: this.datafields,
-          url: '/cms/apps/list/' + this.id + '/' + 'admin',
+          url: '/cms/apps/list/' + this.organizationId + '/' + 'admin',
         };
 
-        this.dataAdapter = new jqx.dataAdapter(this.source);
+        if (!this.dataAdapter) {
+          this.dataAdapter = new jqx.dataAdapter(this.source);
+        } else {
+          this.appGrid.source(this.dataAdapter);
+        }
       }
     }
   }

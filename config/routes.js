@@ -90,8 +90,19 @@ module.exports = function (app) {
   router.post('/organizationtype/save', $organizationtype.save);
   router.all('/organizationtype/list', $organizationtype.list);
   router.get('/organizationtype/remove/:id', $organizationtype.remove);
+
+  router.all("/cms/apps/save/:name*?", $apps.save);
+  router.all("/cms/apps/update/:id*?", $apps.appUpdate);
+  router.all("/cms/apps/remove/:id*?", $apps.remove);
   router.all("/cms/apps/list/:orgId/:isAdmin*?", $apps.list);
-  router.all('/location/list/:appId', $location.list);
+  router.all("/app/id/:pin*?", $apps.getAppByPin);
+  router.all("/app/auth/:appid*?", $apps.auth);
+
+  router.all('/location/list/:appId*?', $location.list);
+  router.all("/location/save/:name*?", $location.save);
+  router.all("/location/update/:id*?", $location.update);
+  router.all("/location/remove/:id*?", $location.remove);
+  router.all('/cms/loc/list/:orgid*?/:appid*?', $location.list);
 
   router.all('/page/save', $page.save);
   router.all('/page/update/:menuId*?', $page.update);
@@ -100,8 +111,15 @@ module.exports = function (app) {
   router.all('/pages/list/:orgId/:appId/:locationId*?/:language*?', $page.list);
   router.all('/pages/getpagetiles/', $page.getPageTiles);
 
+  router.all('/livestream/save/:id*?', $livestream.byId);
   router.all('/livestream/list/:orgId*?/:appId*?/:locationId*?', $livestream.list);
   router.all('/livestream/update/:livestreamId/:appId*?', $livestream.update);
+  router.all('/livestream/groupupdate/:id*?', $livestream.groupUpdate);
+  router.all('/livestream/like/:id*?', $livestream.like);
+  router.all('/livestream/dislike/:id*?', $livestream.unlike);
+  router.all('/livestream/remove/:id*?', $livestream.remove);
+  router.all('/livestream/get/:id*?', $livestream.byId);
+
   router.all('/files/delete/:orgId*', $image.fileDelete);
   router.get('/files/url/:orgId', $image.urlList);
 
@@ -137,6 +155,15 @@ module.exports = function (app) {
   router.get('/pagesettings/list/:orgId/:appId/:locationId*?', $pagesettings.list);
   router.post('/pagesettings/save', $pagesettings.save);
   router.all('/pagesettings/remove/:id', $pagesettings.remove);
+
+  router.get('/migration/apps/data/:id*?', $datamigration.appMigration);
+  router.post('/migration/members/data/:id*?', $datamigration.memberMigration);
+  router.all('/migration/data', $datamigration.migration);
+
+  router.get('/app/member/plget/:appid*/:memberid*?', $member.getpreferredlocation);
+  router.all('/app/member/plsave:id*?', $member.savepreferredlocation);
+  router.all('/app/square/assign', $member.squareAssign);
+  router.all('/app/member/preferredlocation/assigned/:locationid*?', $member.getAssignedPl);
 
   app.use('/', router);
 };

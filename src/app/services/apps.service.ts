@@ -24,7 +24,7 @@ export class AppsService {
       .catch(this.handleError);
   };
 
-  saveApp(obj: any, type: string) {
+  saveApp(obj: any, type?: string) {
     var url = '/cms/apps/save/';
 
     if (!this.utils.isNullOrEmpty(type)) {

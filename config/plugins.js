@@ -35,7 +35,8 @@ var plugins = {
   "organizationtype": "organizationtype",
   "livestream": "livestream",
   "pagesettings": "pagesettings",
-  "log": "log"
+  "log": "log",
+  "datamigration": "datamigration"
 };
 
 module.exports = function (appPath, dirName, app) {

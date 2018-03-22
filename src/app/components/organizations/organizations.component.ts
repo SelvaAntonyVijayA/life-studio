@@ -37,6 +37,7 @@ export class OrganizationsComponent implements OnInit {
   rowIndex: number;
   isGrid: boolean = false;
   orgId: string;
+  type: string;
   org: object = { type: "", name: '', type_id: '', packageId: "" };
   myAddButton: jqwidgets.jqxButton;
   myDeleteButton: jqwidgets.jqxButton;
@@ -58,7 +59,7 @@ export class OrganizationsComponent implements OnInit {
   };
 
   snorenderer = (row: number, column: any, value: string): string => {
-    var id = parseInt(value) + 1;
+    let id = parseInt(value) + 1;
 
     return '<span style="margin-left: 4px; margin-top: 9px; float: left;">' + id + '</span>';
   };
@@ -73,26 +74,21 @@ export class OrganizationsComponent implements OnInit {
         text: '_id', hidden: true, datafield: '_id', sortable: false
       },
       {
-        text: 'Name', datafield: 'name', width: 220, columntype: 'textbox', sortable: true, editable: true,
-        cellsalign: 'left', align: 'center'
+        text: 'Name', datafield: 'name', width: 210, columntype: 'textbox', sortable: true,
+        editable: true, cellsalign: 'left', align: 'center'
       },
       {
-        text: 'Type', displayfield: 'typeName', width: 90, columntype: 'dropdownlist', datafield: 'type_id',
-        sortable: true, cellsalign: 'left', align: 'center',
-        createeditor: (row: number, value: any, editor: any): void => {
-          editor.jqxDropDownList({ autoDropDownHeight: true, source: this.typeAdaptor.records, displayMember: 'typeName', valueMember: 'type_id' });
-        }
+        text: 'Type', width: 70, datafield: 'type', sortable: true, cellsalign: 'left',
+        align: 'center',
+
       },
       {
-        text: 'Package', displayfield: 'packageName', columntype: 'dropdownlist', datafield: 'packageId',
-        sortable: true, cellsalign: 'left', align: 'center', width: 90,
-        createeditor: (row: number, value: any, editor: any): void => {
-          editor.jqxDropDownList({ autoDropDownHeight: true, source: this.packageAdaptor.records, displayMember: 'packageName', valueMember: 'packageId' });
-        }
+        text: 'Package', datafield: 'package', sortable: true, cellsalign: 'left', align: 'center',
+        width: 70,
       },
       {
-        text: 'publishing', datafield: 'publishing', hidden: true, cellsalign: 'left', align: 'center',
-        sortable: false
+        text: 'publishing', datafield: 'publishing', hidden: true, cellsalign: 'left',
+        align: 'center', sortable: false
       },
       {
         text: 'engines', datafield: 'engines', hidden: true, cellsalign: 'left', align: 'center',
@@ -184,7 +180,8 @@ export class OrganizationsComponent implements OnInit {
         if (this.rowIndex != -1) {
           this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Organization?", "Yes", "No", (res) => {
             if (res.hasOwnProperty("resolved") && res["resolved"] == true) {
-              var datarow = this.orgGrid.getrowdata(this.rowIndex)
+              let datarow = this.orgGrid.getrowdata(this.rowIndex);
+
               this.deleteOrganization(datarow["_id"], (res) => {
                 if (res) {
                   this.orgId = "";
@@ -205,8 +202,9 @@ export class OrganizationsComponent implements OnInit {
 
   orgGridOnRowSelect(event: any): void {
     this.rowIndex = event.args.rowindex;
-    var data = event.args.row;
+    let data = event.args.row;
     this.orgId = data["_id"];
+    this.type = data["type"];
     this.org = { name: data["name"] };
 
     if (!this.utils.isNullOrEmpty(data["packageId"])) {
@@ -232,7 +230,9 @@ export class OrganizationsComponent implements OnInit {
   orgDoubleClick(event: any): void {
     var args = event.args;
     this.rowIndex = args.rowindex;
-    var datarow = this.orgGrid.getrowdata(this.rowIndex)
+    var datarow = this.orgGrid.getrowdata(this.rowIndex);
+    this.type = datarow["type"];
+
     this.isGrid = true;
     this.updateButtons('Edit');
     this.addOrg.setTitle("Update Organization");
@@ -281,7 +281,7 @@ export class OrganizationsComponent implements OnInit {
   };
 
   getOrgObject(orgObj: object) {
-    var obj = {};
+    let obj = {};
 
     obj["name"] = orgObj["name"];
     obj["type_id"] = orgObj["type_id"];
@@ -291,8 +291,8 @@ export class OrganizationsComponent implements OnInit {
   }
 
   saveOrganization(id: any, orgObj: object, cb?: any) {
-    var obj = this.getOrgObject(orgObj);
-    var type = "";
+    let obj = this.getOrgObject(orgObj);
+    let type = "";
 
     if (!this.utils.isNullOrEmpty(orgObj["type"])) {
       type = orgObj["type"];
@@ -330,13 +330,15 @@ export class OrganizationsComponent implements OnInit {
   }
 
   addClose() {
+    this.org = { name: '', packageId: '', type_id: '' };
     this.updateButtons('End Edit');
   }
 
   onSubmit() {
-    var obj = this.org;
-    var typeObj = _.findWhere(this.organizationTypes, { _id: obj["type_id"] });
+    let obj = this.org;
+    let typeObj = _.findWhere(this.organizationTypes, { _id: obj["type_id"] });
     obj["type"] = typeObj["name"];
+    this.type = typeObj["name"];
 
     this.saveOrganization(this.orgId, obj, (res) => {
       if (res) {
@@ -355,8 +357,8 @@ export class OrganizationsComponent implements OnInit {
   }
 
   onFormReset() {
+    this.orgForm.resetForm();
     this.org = { name: '', packageId: '', type_id: '' };
-    //this.orgForm.resetForm({ name: '', packageId: '', type_id: '' });
   }
 
   pageLoad() {
@@ -425,8 +427,8 @@ export class OrganizationsComponent implements OnInit {
       { name: 'type_id', type: 'string' },
       { name: 'packageId', type: 'string' },
       { name: 'name', type: 'string' },
-      { name: 'typeName', value: 'type_id', values: { source: this.typeAdaptor.records, value: 'type_id', name: 'typeName' } },
-      { name: 'packageName', value: 'packageId', values: { source: this.packageAdaptor.records, value: 'packageId', name: 'packageName' } },
+      { name: 'type', value: 'type_id', values: { source: this.typeAdaptor.records, value: 'type_id', name: 'typeName' } },
+      { name: 'package', value: 'packageId', values: { source: this.packageAdaptor.records, value: 'packageId', name: 'packageName' } },
       { name: 'engines', type: 'string' },
       { name: 'publishing', type: 'boolean' },
     ];
@@ -448,9 +450,6 @@ export class OrganizationsComponent implements OnInit {
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
-      //  this.getOrganizationTypes();
-      // this.getPackages();
-
       this.pageLoad();
 
       //this.loaderShared.showSpinner(true);
