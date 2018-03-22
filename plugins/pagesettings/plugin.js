@@ -73,9 +73,16 @@ var remove = function (req, res, next) {
   }
 };
 
+var _get = function (settingQuery, settingOptions, cb) {
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.settings, settingQuery, settingOptions, function (result) {
+    cb(result);
+  });
+};
+
 module.exports = {
   "init": init,
   "list": list,
   "save": save,
+  "_get": _get,
   "remove": remove
 };

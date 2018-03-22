@@ -203,6 +203,12 @@ export class OrganizationsComponent implements OnInit {
   orgGridOnRowSelect(event: any): void {
     this.rowIndex = event.args.rowindex;
     let data = event.args.row;
+    this.assignDataToObject(data);
+    this.isGrid = true;
+    this.updateButtons('Select');
+  };
+
+  assignDataToObject(data: object) {
     this.orgId = data["_id"];
     this.type = data["type"];
     this.org = { name: data["name"] };
@@ -218,9 +224,6 @@ export class OrganizationsComponent implements OnInit {
     } else {
       this.org["type_id"] = "";
     }
-
-    this.isGrid = true;
-    this.updateButtons('Select');
   };
 
   orgGridOnRowUnselect(event: any): void {
@@ -231,17 +234,16 @@ export class OrganizationsComponent implements OnInit {
     var args = event.args;
     this.rowIndex = args.rowindex;
     var datarow = this.orgGrid.getrowdata(this.rowIndex);
-    this.type = datarow["type"];
-
+    this.assignDataToObject(datarow);
     this.isGrid = true;
     this.updateButtons('Edit');
     this.addOrg.setTitle("Update Organization");
     this.addOrg.position({ x: 100, y: 120 });
     this.addOrg.open();
-  }
+  };
 
   onBindingComplete(event: any): void {
-  }
+  };
 
   updateButtons(action: string): void {
     switch (action) {
@@ -288,7 +290,7 @@ export class OrganizationsComponent implements OnInit {
     obj["packageId"] = orgObj["packageId"];
 
     return obj;
-  }
+  };
 
   saveOrganization(id: any, orgObj: object, cb?: any) {
     let obj = this.getOrgObject(orgObj);
@@ -327,12 +329,12 @@ export class OrganizationsComponent implements OnInit {
 
   addOpen() {
 
-  }
+  };
 
   addClose() {
     this.org = { name: '', packageId: '', type_id: '' };
     this.updateButtons('End Edit');
-  }
+  };
 
   onSubmit() {
     let obj = this.org;
@@ -354,12 +356,12 @@ export class OrganizationsComponent implements OnInit {
         this.addOrg.close();
       }
     });
-  }
+  };
 
   onFormReset() {
     this.orgForm.resetForm();
     this.org = { name: '', packageId: '', type_id: '' };
-  }
+  };
 
   pageLoad() {
     this.packageSource =

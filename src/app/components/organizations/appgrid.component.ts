@@ -52,7 +52,7 @@ export class AppgridComponent implements OnInit {
         { name: 'sno' }
       ],
       localdata: [
-        { sno: 0, authId: '-1', chatName: 'Select Chat' },
+        { sno: 0, chatId: '-1', chatName: 'Select Chat' },
         { sno: 1, chatId: '0', chatName: 'Off' },
         { sno: 2, chatId: '1', chatName: 'On' },
         { sno: 3, chatId: '2', chatName: 'Private' }
@@ -164,11 +164,11 @@ export class AppgridComponent implements OnInit {
           this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this App.?", "Yes", "No", (res) => {
             if (res.hasOwnProperty("resolved") && res["resolved"] == true) {
               var datarow = this.appGrid.getrowdata(this.rowIndex)
-              this.deleteOrganization(datarow["_id"], (res) => {
+              this.deleteApp(datarow["_id"], (res) => {
                 if (res) {
                   this.appId = "";
                   this.utils.iAlert('success', '', 'Apps deleted successfully');
-                  this.appGrid.source(this.dataAdapter);
+                  this.reloadGrid();
                   this.updateButtons('delete');
                   this.appWindow.close();
                 }
@@ -261,20 +261,31 @@ export class AppgridComponent implements OnInit {
       },
     ];
 
-
   rowdoubleclick(event: any): void {
     var args = event.args;
     this.rowIndex = args.rowindex;
-    var datarow = this.appGrid.getrowdata(this.rowIndex)
+    var datarow = this.appGrid.getrowdata(this.rowIndex);
+    this.assingDataToObject(datarow);
     this.updateButtons('Edit');
     this.appWindow.setTitle("Update App");
     this.appWindow.position({ x: 600, y: 90 });
     this.appWindow.open();
-  }
+  };
 
   onRowSelect(event: any): void {
     this.rowIndex = event.args.rowindex;
     var data = event.args.row;
+    this.assingDataToObject(data);
+    this.updateButtons('Select');
+  };
+
+  onRowUnselect(event: any): void {
+  };
+
+  addWindowOpen() {
+  };
+
+  assingDataToObject(data: object) {
     this.appId = data["_id"];
     this.app = { name: data["name"] };
 
@@ -290,6 +301,12 @@ export class AppgridComponent implements OnInit {
       this.app["authenticated"] = "";
     }
 
+    if (!this.utils.isNullOrEmpty(data["chat"])) {
+      this.app["chat"] = data["chat"];
+    } else {
+      this.app["chat"] = "";
+    }
+
     if (!this.utils.isNullOrEmpty(data["googleAnalytics"])) {
       this.app["googleAnalytics"] = data["googleAnalytics"];
     } else {
@@ -301,20 +318,12 @@ export class AppgridComponent implements OnInit {
     } else {
       this.app["pin"] = "";
     }
-
-    this.updateButtons('Select');
-  }
-
-  onRowUnselect(event: any): void {
-  }
-
-  addWindowOpen() {
-  }
+  };
 
   addWindowClose() {
     this.app = { name: "", authenticated: "-1", pin: "", googleAnalytics: "", alerts: "", chat: "-1" };
     this.updateButtons('End Edit');
-  }
+  };
 
   updateButtons(action: string): void {
     switch (action) {
@@ -366,7 +375,7 @@ export class AppgridComponent implements OnInit {
     }
 
     return obj;
-  }
+  };
 
   saveApp(id: any, appObj: object, cb?: any) {
     var obj = this.geAppObject(appObj);
@@ -389,7 +398,7 @@ export class AppgridComponent implements OnInit {
     }
   };
 
-  deleteOrganization(id: any, cb?: any) {
+  deleteApp(id: any, cb?: any) {
     this.appService.deleteApp(id)
       .then(res => {
         if (res) {
@@ -411,16 +420,31 @@ export class AppgridComponent implements OnInit {
         }
 
         this.appId = res._id;
-        this.appGrid.source(this.dataAdapter);
+        this.appGrid.refreshdata();
+        this.reloadGrid();
+
         this.appWindow.close();
       }
     });
+  };
+
+  reloadGrid() {
+    let dataSource = {
+      datatype: "json",
+      id: '_id',
+      url: '/cms/apps/list/' + this.organizationId + '/' + 'admin',
+      datafields: this.datafields,
+    }
+
+    let adapter = new jqx.dataAdapter(dataSource);
+
+    this.appGrid.source(adapter);
   }
 
   onFormReset() {
     this.appForm.resetForm();
     this.app = { name: "", authenticated: "-1", pin: "", googleAnalytics: "", alerts: "", chat: "-1" };
-  }
+  };
 
   ngOnChanges(cHObj: any) {
     if (cHObj.hasOwnProperty("organizationId") && !this.utils.isNullOrEmpty(cHObj["organizationId"]["currentValue"])) {
@@ -429,16 +453,7 @@ export class AppgridComponent implements OnInit {
       if (!obj["firstChange"] && !this.utils.isNullOrEmpty(obj["previousValue"]) && obj["previousValue"] !== obj["currentValue"]) {
         this.appGrid.refreshdata();
 
-        let dataSource = {
-          datatype: "json",
-          id: '_id',
-          url: '/cms/apps/list/' + this.organizationId + '/' + 'admin',
-          datafields: this.datafields,
-        }
-
-        let adapter = new jqx.dataAdapter(dataSource);
-
-        this.appGrid.source(adapter);
+        this.reloadGrid();
       }
 
       if (obj["firstChange"]) {
@@ -456,9 +471,8 @@ export class AppgridComponent implements OnInit {
         }
       }
     }
-  }
+  };
 
   ngOnInit() {
   }
-
 }

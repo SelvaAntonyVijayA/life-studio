@@ -27,8 +27,10 @@ var save = function (req, res, next) {
         apps.pin = _processAppsPin(appsExists);
       }
 
-      $db.save(settingsConf.dbname.tilist_users, settingsConf.collections.apps, apps, function (result) {
+      $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.apps, apps, function (result) {
         apps._id = result;
+
+        console.dir(apps)
         callback(null);
       });
     },
@@ -64,7 +66,7 @@ var update = function (appId, updateApp, cb) {
     updateApp.dateUpdated = $general.getIsoDate();
   }
 
-  $db.update(settingsConf.dbname.tilist_users, settingsConf.collections.apps, query, options, updateApp, function (result) {
+  $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.apps, query, options, updateApp, function (result) {
     updateApp._id = query._id;
     $datamigration.appSave(updateApp);
 
@@ -268,7 +270,7 @@ var _get = function (appId, cb) {
   query._id = appId;
   let options = {};
 
-  $db.select(settingsConf.dbname.tilist_users, settingsConf.collections.apps, query, options, function (result) {
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.apps, query, options, function (result) {
     cb(result);
   });
 };
@@ -293,20 +295,23 @@ var getAppByPin = function (req, res, next) {
 
 var remove = function (req, res, next) {
   let query = {};
+  let options = {};
 
   if (!__util.isNullOrEmpty(req.params.id)) {
     query._id = req.params.id;
   }
 
-  if (!__util.isEmptyObject(res.body._id)) {
-    query._id = res.body._id;
+  if (!__util.isEmptyObject(req.body)) {
+    query._id = req.body._id;
   }
 
-  $db.remove(settingsConf.dbname.tilist_users, settingsConf.collections.apps, query, options, function (result) {
+  console.dir(query)
+
+  $db.remove(settingsConf.dbname.tilist_core, settingsConf.collections.apps, query, options, function (result) {
     let obj = {};
     obj.deleted = result;
 
-    res.rend(obj);
+    res.send(obj);
   });
 };
 

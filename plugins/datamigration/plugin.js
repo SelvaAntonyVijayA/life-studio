@@ -371,7 +371,7 @@ var _returnMemberDetails = function (member) {
 };
 
 var _request = function (url, data, cb) {
-  url = appConf.authDomain + url;
+  url = settingsConf.authDomain + url;
   let options = {
     uri: url,
     method: 'POST',
@@ -397,7 +397,7 @@ var _request = function (url, data, cb) {
 };
 
 var _requestUser = function (url, data, cb) {
-  url = appConf.authDomain + url;
+  url = settingsConf.authDomain + url;
 
   let options = {
     uri: url,
@@ -429,5 +429,6 @@ module.exports = {
   "init": init,
   "appMigration": appMigration,
   "memberMigration": memberMigration,
-  "migration": migration
+  "migration": migration,
+  "appSave": appSave
 };

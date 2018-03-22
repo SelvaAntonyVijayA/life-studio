@@ -18,7 +18,7 @@
             <div>
               <div class="form-group">
                 <label for="name">Name</label>
-                <input id="name" name="name" class="form-control" required minlength="2" [(ngModel)]="org.name" #name="ngModel">
+                <input id="name" name="name" class="form-control input-sm" required minlength="2" [(ngModel)]="org.name" #name="ngModel">
 
                 <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
 
@@ -34,20 +34,20 @@
 
               <div class="form-group">
                 <label for="type">Type</label>
-                <select id="type" name="type" class="form-control" [(ngModel)]="org.type_id" #power="ngModel">
+                <select id="type" name="type" class="form-control input-sm" [(ngModel)]="org.type_id" #power="ngModel">
                   <option *ngFor="let t of organizationTypes" [value]="t._id">{{t.name}}</option>
                 </select>
               </div>
 
               <div class="form-group">
                 <label for="package">Package</label>
-                <select id="package" name="package" class="form-control" [(ngModel)]="org.packageId" #power="ngModel">
+                <select id="package" name="package" class="form-control input-sm" [(ngModel)]="org.packageId" #power="ngModel">
                   <option *ngFor="let p of packages" [value]="p._id">{{p.name}}</option>
                 </select>
               </div>
 
-              <button type="submit" class="btn btn-default" [disabled]="orgForm.invalid">Submit</button>
-              <button type="button" class="btn btn-default" (click)="onFormReset()">Reset</button>
+              <button type="submit" class="btn btn-default btn-xs" [disabled]="orgForm.invalid">Submit</button>
+              <button type="button" class="btn btn-default btn-xs" (click)="onFormReset()">Reset</button>
             </div>
           </form>
         </div>

@@ -108,6 +108,8 @@ var update = function (req, res, next) {
 };
 
 var getList = function (query, cb) {
+  let options = {};
+
   $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.location, query, options, function (result) {
     cb(result);
   });
@@ -227,5 +229,6 @@ module.exports = {
   "save": save,
   "update": update,
   "remove": remove,
+  "getList": getList,
   "locationByUserId": locationByUserId
 };

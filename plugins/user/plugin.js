@@ -303,7 +303,7 @@ var remove = function (req, res, next) {
     query._id = req.body._id;
   }
 
-  $db.remove(appsconf.dbname, appsconf.auth, appsconf.collections.apps, query, options, function (result) {
+  $db.remove(appsconf.dbname, appsconf.collections.apps, query, options, function (result) {
     let obj = {};
     obj.deleted = result;
 
