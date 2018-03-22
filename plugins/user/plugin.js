@@ -82,7 +82,7 @@ var getLogin = function (req, res, next) {
 
 var login = function (req, res, next) {
   let user = req.body.form_data;
-
+  let options = {};
   let query = {
     $or: [{ email: user.email }, { email: user.email.toLowerCase() }],
     password: $general.encrypt(user.password)
@@ -293,6 +293,7 @@ var getUserlocation = function (ulQuery, ulOptions, cb) {
 
 var remove = function (req, res, next) {
   let query = {};
+  let options = {};
 
   if (!__util.isNullOrEmpty(req.params.id)) {
     query._id = req.params.id;
@@ -343,6 +344,6 @@ module.exports = {
   "_saveUserApp": _saveUserApp,
   "_saveUserLoc": _saveUserLoc,
   "getUserApp": getUserApp,
-  "getAppByPin" : getAppByPin,
+  "getAppByPin": getAppByPin,
   "getUserlocation": getUserlocation
 };
