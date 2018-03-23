@@ -67,7 +67,7 @@ var update = function (req, res, next) {
   position = {};
   query = {};
   options = {};
-
+  
   if (__util.isNullOrEmpty(req.params.menuId)) {
     var pagePosition = req.body.form_data;
 
@@ -91,7 +91,7 @@ var update = function (req, res, next) {
     position.updatedBy = tokenObj.uid;
 
     _update(query, options, position, function (result) {
-      var updateResult = { "_id": query._id };
+      var updateResult = { "_id": req.params.menuId };
       res.send(updateResult);
     });
   }

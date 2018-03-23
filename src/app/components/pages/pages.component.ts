@@ -1162,7 +1162,7 @@ export class PagesComponent implements OnInit {
             "position": currPage["position"]
           };
 
-          this.pageService.pageUpdate(position);
+          this.pageService.pageUpdate("", position);
         }
       }
     };

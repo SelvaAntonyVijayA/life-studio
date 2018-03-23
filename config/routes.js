@@ -55,7 +55,7 @@ module.exports = function (app) {
   router.post('/image/folder/save', $image.saveFolder);
   router.all('/image/bgpatternupload/', $image.backgroundPatternUpload);
   router.all('/image/backgroundpatternremove/', $image.backgroundPatternRemove);
-  router.get('/image/listbackground/', $image.backgroundPatternList);
+  router.all('/image/listbackground/', $image.backgroundPatternList);
   router.all('/image/bggroupupload/', $image.uploadBackgroundGroup);
   router.all('/image/bggroupremove/', $image.bgGroupRemove);
   router.get('/image/listbggroup/', $image.bgGroupList);

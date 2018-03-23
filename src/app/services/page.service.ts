@@ -76,9 +76,12 @@ export class PageService {
       .catch(this.handleError);
   };
 
-  pageUpdate(menuUpdateObj: Object) {
+  pageUpdate(pageId: string, menuUpdateObj: Object) {
+    var pageUrl = "/page/update/";
+    pageUrl = !this.utils.isNullOrEmpty(pageId) ? pageUrl + pageId : pageUrl;
+
     return this.http
-      .post("/page/update/", JSON.stringify({ "form_data": menuUpdateObj }), { headers: this.headers })
+      .post(pageUrl, JSON.stringify({ "form_data": menuUpdateObj }), { headers: this.headers })
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);
@@ -93,28 +96,27 @@ export class PageService {
   };
 
   imageUpload(url, form_data: any) {
-    /* return this.http
-     .post(url, form_data, { headers: this.headers })
-     .toPromise()
-     .then(response => response.json())
-     .catch(this.handleError);*/
-
     return this.http
       .post(url, form_data)
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);
+  };
 
-    /*let imgHeaders = new Headers({
-      'Content-Type': 'application/octet-stream',
-      'charset': 'UTF-8'
-    });
+  removeMenuBackgroundImage(objToDelete: Object) {
+    return this.http
+      .post("/image/backgroundpatternremove/", JSON.stringify({ "form_data": objToDelete }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
 
-    let options = new RequestOptions({ headers: imgHeaders });
-
-    return this.http.post(url, form_data, options)
-      .map(response => response.json())
-      .catch(error => Observable.throw(error));*/
+  menuImageList(imgObj: Object) {
+    return this.http
+      .post("/image/listbackground/", JSON.stringify({ "form_data": imgObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
   };
 
   private handleError(error: any): Promise<any> {

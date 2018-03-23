@@ -1,6 +1,6 @@
 .menu-bg {
   width: 550px;
-  min-height: 400px;
+  min-height: 450px;
 }
 
 .menu-bg-body {
@@ -22,7 +22,6 @@
 .main_menu_layout {
   float: left;
   width: 566px;
-  height: 450px;
   color: #000000;
   font-family: 'Roboto'
 }
@@ -409,4 +408,19 @@
 select.page-follow, select.page-link-notification {
   width: 120px;
   float: right;
+}
+
+/* Save Menu BG Button */
+
+.save-bg-btn {
+  width: 60%;
+  float: left;
+  height: 40px;
+  margin-left: 170px;
+  margin-top: 15px;
+}
+
+.bg-save {
+  float: left;
+  margin-right: 10px;
 }

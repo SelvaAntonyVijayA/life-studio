@@ -24,6 +24,6 @@ a.homelink:hover{font-family: Arial,Verdana,San-serif;font-size: 11px;font-weigh
 .lgn_password{margin-top: 5px; margin-bottom: 5px;}
 .login_lbl_txt{margin: 0 223px 0 0; color:#cecece;}
 .login_validate_color{color: #FF0000;}
-.login_btn{background: linear-gradient(#148CD3, #0D7BCB) repeat scroll 0 0 rgba(0, 0, 0, 0); border: 1px solid #0F6BBA; border-radius: 20px; color: #FFFFFF; cursor: pointer; display: inline-block; font-family: "Corbel"; font-size: 16px; padding: 8px 30px; text-decoration: none; margin-top: 15px;}
+.login_btn{background: linear-gradient(#148CD3, #0D7BCB) repeat scroll 0 0 rgba(0, 0, 0, 0); border: 1px solid #0F6BBA; border-radius: 20px; color: #FFFFFF; cursor: pointer; display: inline-block; font-family: "Corbel"; font-size: 16px; padding: 8px 30px; text-decoration: none; margin-top: 15px; width: 105px}
 .need-help {color: #3282E6; font-weight: normal; text-decoration: none; margin-right: -207px;}
 .login_btn_group{margin: 17px 0px 25px 0;}
