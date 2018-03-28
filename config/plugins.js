@@ -36,7 +36,8 @@ var plugins = {
   "livestream": "livestream",
   "pagesettings": "pagesettings",
   "log": "log",
-  "datamigration": "datamigration"
+  "datamigration": "datamigration",
+  "engines": "engines"
 };
 
 module.exports = function (appPath, dirName, app) {

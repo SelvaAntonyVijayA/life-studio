@@ -35,8 +35,10 @@ export class OrganizationsComponent implements OnInit {
   @ViewChild('orgForm') orgForm: NgForm;
 
   rowIndex: number;
-  isGrid: boolean = false;
+  isOrgGrid: boolean = false;
+  isAppGrid: boolean = false;
   orgId: string;
+
   type: string;
   org: object = { type: "", name: '', type_id: '', packageId: "" };
   myAddButton: jqwidgets.jqxButton;
@@ -50,12 +52,15 @@ export class OrganizationsComponent implements OnInit {
   packageAdaptor: any;
   typeAdaptor: any;
   datafields: any;
+  engines: Array<object> = [];
+  appIds: Array<string> = [];
   fields: any = [
     { name: '_id', type: 'string' },
     { name: 'name', type: 'string' }
   ];
 
   ngAfterViewInit(): void {
+
   };
 
   snorenderer = (row: number, column: any, value: string): string => {
@@ -74,7 +79,7 @@ export class OrganizationsComponent implements OnInit {
         text: '_id', hidden: true, datafield: '_id', sortable: false
       },
       {
-        text: 'Name', datafield: 'name', width: 210, columntype: 'textbox', sortable: true,
+        text: 'Name', datafield: 'name', width: 195, columntype: 'textbox', sortable: true,
         editable: true, cellsalign: 'left', align: 'center'
       },
       {
@@ -118,7 +123,7 @@ export class OrganizationsComponent implements OnInit {
 
     let createButtons = (name: string, cssClass: string): any => {
       this[name] = document.createElement('div');
-      this[name].style.cssText = 'padding: 3px; margin: 2px; float: left; border: none'
+      this[name].style.cssText = 'cursor: pointer; padding: 3px; margin: 2px; float: left; border: none'
 
       let iconDiv = document.createElement('div');
       iconDiv.style.cssText = 'margin: 4px; width: 16px; height: 16px;'
@@ -204,13 +209,14 @@ export class OrganizationsComponent implements OnInit {
     this.rowIndex = event.args.rowindex;
     let data = event.args.row;
     this.assignDataToObject(data);
-    this.isGrid = true;
+    this.isOrgGrid = true;
     this.updateButtons('Select');
   };
 
   assignDataToObject(data: object) {
     this.orgId = data["_id"];
     this.type = data["type"];
+    this.engines = data["engines"];
     this.org = { name: data["name"] };
 
     if (!this.utils.isNullOrEmpty(data["packageId"])) {
@@ -235,7 +241,7 @@ export class OrganizationsComponent implements OnInit {
     this.rowIndex = args.rowindex;
     var datarow = this.orgGrid.getrowdata(this.rowIndex);
     this.assignDataToObject(datarow);
-    this.isGrid = true;
+    this.isOrgGrid = true;
     this.updateButtons('Edit');
     this.addOrg.setTitle("Update Organization");
     this.addOrg.position({ x: 100, y: 120 });
@@ -243,6 +249,17 @@ export class OrganizationsComponent implements OnInit {
   };
 
   onBindingComplete(event: any): void {
+    let orgDatas = this.orgGrid.getrows();
+  };
+
+  onEndAppLoad(appObj: any): void {
+    this.appIds = appObj["appIds"]
+    this.isAppGrid = true;
+  };
+
+  onEngineAssignDone(engines: any): void {
+    this.engines = engines;
+    this.orgGrid.source(this.dataAdapter);
   };
 
   updateButtons(action: string): void {
@@ -452,10 +469,13 @@ export class OrganizationsComponent implements OnInit {
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
-      this.pageLoad();
+      let loadTime = Cookie.get('pageLoadTime');
 
-      //this.loaderShared.showSpinner(true);
-      this.loaderShared.showSpinner(false);
+      if (this.utils.isNullOrEmpty(loadTime) || (!this.utils.isNullOrEmpty(loadTime) && loadTime !== params["_dt"])) {
+        Cookie.set('pageLoadTime', params["_dt"]);
+        this.pageLoad();
+        this.loaderShared.showSpinner(false);
+      }
     });
   };
 

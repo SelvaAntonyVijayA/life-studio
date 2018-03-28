@@ -1,3 +1,7 @@
-<p>
-  engines works!
-</p>
+<mat-toolbar style="height:35px;color: #000000; padding: 0 10px;">
+  <span>Engines</span>
+</mat-toolbar>
+<jqxGrid #engineGrid [source]="dataAdapter" [width]="width" [altrows]="true" [height]="height" [columns]="columns" [toolbarheight]="35"
+  [pageable]="false" [sortable]="true" [showstatusbar]="false" [showheader]="true" [showtoolbar]="true" [rendertoolbar]="renderToolbar"
+  (onBindingcomplete)="onBindingComplete($event)" (onRowselect)="onRowSelect($event)" (onRowunselect)="onRowUnselect($event)"
+  (onRowdoubleclick)="rowdoubleclick($event)" [selectionmode]="'checkbox'"></jqxGrid>

@@ -373,22 +373,22 @@ declare module jqwidgets {
 
     export interface ButtonOptions {
         // ButtonOptions properties
-        delay?: undefined;
+        delay?: undefined | boolean;
         disabled?: undefined | boolean;
         height?: number | string;
-        imgSrc?: undefined;
+        imgSrc?: undefined | string;
         imgWidth?: number | string;
         imgHeight?: number | string;
         imgPosition?: string;
         roundedCorners?: string;
-        rtl?: undefined;
-        textPosition?: string;
-        textImageRelation?: string;
-        theme?: undefined;
+        rtl?: undefined | string;
+        textPosition?: undefined | string;
+        textImageRelation?: undefined | string;
+        theme?: undefined | string;
         template?: string;
-        toggled?: undefined;
+        toggled?: undefined | boolean;
         width?: number | string;
-        value?: undefined;
+        value?: undefined | string;
     }// ButtonOptions
 
     export interface jqxButton extends widget, ButtonOptions {

@@ -3,7 +3,9 @@
 </mat-toolbar>
 <jqxGrid #appGrid [source]="dataAdapter" [width]="width" [altrows]="true" [height]="height" [columns]="columns" [toolbarheight]="35"
   [pageable]="false" [sortable]="true" [showstatusbar]="false" [showheader]="true" [showtoolbar]="true" [rendertoolbar]="renderToolbar"
-  (onRowselect)="onRowSelect($event)" (onRowunselect)="onRowUnselect($event)" (onRowdoubleclick)="rowdoubleclick($event)" [selectionmode]="'singlerow'"></jqxGrid>
+  (onRowselect)="onRowSelect($event)" (onRowunselect)="onRowUnselect($event)" (onRowdoubleclick)="rowdoubleclick($event)" 
+  [selectionmode]="'singlerow'" (onBindingcomplete)="onBindingComplete($event)">
+</jqxGrid>
 
 <jqxWindow #appWindow (onOpen)="addWindowOpen($event)" (onClose)="addWindowClose($event)" [minHeight]="320" [maxHeight]="600"
   [width]="400" [resizable]="false" [isModal]="true" [autoOpen]="false" [modalOpacity]="'0.1'">

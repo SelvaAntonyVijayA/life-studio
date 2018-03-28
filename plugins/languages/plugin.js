@@ -19,7 +19,7 @@ var save = function (req, res, next) {
   var tokenObj = $authtoken.get(req.cookies.token);
   obj["createdBy"] = tokenObj.uid;
 
-  $db.save(settingsConf.dbname.tilist_core, settingsConf.auth, settingsConf.collections.languages, obj, function (result) {
+  $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.languages, obj, function (result) {
     obj = {};
     obj._id = result;
 
@@ -33,7 +33,7 @@ var update = function (req, res, next) {
   let languageToUpdate = req.body.form_data;
   query._id = req.params.id;
 
-  $db.update(settingsConf.dbname.tilist_core, settingsConf.auth, settingsConf.collections.languages, query, options, languageToUpdate, function (result) {
+  $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.languages, query, options, languageToUpdate, function (result) {
     res.send(result);
   });
 };
@@ -43,7 +43,7 @@ var remove = function (req, res, next) {
   let query = {};
   query._id = req.params.id;
 
-  $db.remove(settingsConf.dbname.tilist_core, settingsConf.auth, settingsConf.collections.languages, query, options, function (result) {
+  $db.remove(settingsConf.dbname.tilist_core, settingsConf.collections.languages, query, options, function (result) {
     let obj = {};
     obj.deleted = result;
 

@@ -25,6 +25,7 @@ export class AppgridComponent implements OnInit {
   @ViewChild('appGrid') appGrid: jqxGridComponent;
   @ViewChild('appWindow') appWindow: jqxWindowComponent;
   @ViewChild('appForm') appForm: NgForm;
+  @Output('endAppLoad') onEndAppLoad = new EventEmitter();
   dataAdapter: any;
   source: any;
   rowIndex: number;
@@ -100,7 +101,7 @@ export class AppgridComponent implements OnInit {
 
     let createButtons = (name: string, cssClass: string): any => {
       this[name] = document.createElement('div');
-      this[name].style.cssText = 'padding: 3px; margin: 2px; float: left; border: none'
+      this[name].style.cssText = 'cursor: pointer; padding: 3px; margin: 2px; float: left; border: none'
 
       let iconDiv = document.createElement('div');
       iconDiv.style.cssText = 'margin: 4px; width: 16px; height: 16px;'
@@ -275,13 +276,30 @@ export class AppgridComponent implements OnInit {
     this.rowIndex = event.args.rowindex;
     var data = event.args.row;
     this.assingDataToObject(data);
-    this.updateButtons('Select');
+   // this.updateButtons('Select');
   };
 
   onRowUnselect(event: any): void {
   };
 
   addWindowOpen() {
+  };
+
+  ngAfterViewInit(): void {
+    let value = this.appGrid.getrows();
+  };
+
+  onBindingComplete(event: any): void {
+    alert('app complete')
+    this.appGrid.selectrow(0);
+    var rowID = this.appGrid.getrowid(0);
+    let appDatas = this.appGrid.getrows();
+    let ids = _.pluck(appDatas, '_id');
+    let obj = {};
+    obj["_id"] = rowID;
+    obj["ids"] = ids;
+
+    this.onEndAppLoad.emit(obj);
   };
 
   assingDataToObject(data: object) {

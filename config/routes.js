@@ -168,5 +168,8 @@ module.exports = function (app) {
   router.all('/app/square/assign', $member.squareAssign);
   router.all('/app/member/preferredlocation/assigned/:locationid*?', $member.getAssignedPl);
 
+  router.get('/engine/list/', $engines.list);
+  router.all('/engine/save?', $engines.save);
+
   app.use('/', router);
 };

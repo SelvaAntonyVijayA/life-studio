@@ -1,28 +1,34 @@
-var engineConf;
-var query = {};
-var options = {};
+var settingsConf;
 
-exports.init = function() {
-  engineConf = __conf.get("engines");
+var init = function (app) {
+  settingsConf = app.get('settings');
 };
 
-exports.save = function(context) {
-  var obj = JSON.parse(context.data.form_data);
+var save = function (req, res, next) {
+  let obj = req.body.form_data;
+  var tokenObj = $authtoken.get(req.cookies.token);
+  obj["createdBy"] = tokenObj.uid;
 
-  $db.save(engineConf.dbname, engineConf.auth, engineConf.collections.engines, obj, function(result) {
+  $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.engines, obj, function (result) {
     obj = {};
     obj._id = result;
 
-    $general.returnJSON(context, obj);
+    res.send(obj);
   });
 };
 
-exports.list = function(context) {
-  query = {};
-  options = {};
+var list = function (req, res, next) {
+  let query = {};
+  let options = {};
   options.sort = [['name', 'asc']];
 
-  $db.select(engineConf.dbname, engineConf.auth, engineConf.collections.engines, query, options, function(result) {
-    $general.returnJSON(context, result);
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.engines, query, options, function (result) {
+    res.send(result);
   });
+};
+
+module.exports = {
+  "init": init,
+  "list": list,
+  "save": save
 };
