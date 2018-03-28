@@ -386,21 +386,33 @@ var backgroundPatternUpload = function (req, res, next) {
           if (!__util.isNullOrEmpty(file.name)) {
             var pathCount = 0;
             var appId = data.appId;
-            var pageId = data.pageId;
+            var locationId = data.hasOwnProperty("locationId") ? data["locationId"] : "";
+            var pageId = data.hasOwnProperty("pageId") ? data.pageId : "";
             var type = data.type;
 
             var pageFrom = data.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(data.pagefrom) ? data.pagefrom : "";
+            var menuDefault = data.hasOwnProperty("menuDefault") ? data["menuDefault"] : false;
             var fileArray = file.name.split('.');
             var fileName = fileArray[0] + Date.parse(new Date());
             fileName = fileName.split("_");
             fileName = fileName[0].replace(/\s/g, "");
             fileName = !__util.isNullOrEmpty(pageFrom) && pageFrom == "web" ? fileName + "_" + "web" + "_" + type + "." + fileArray[1] : fileName + "_" + type + "." + fileArray[1];
-            var imagePath = __appPath + imageConf.imgBgFolderPath.replace('{0}', appId);
+            var imagePath = !menuDefault ? __appPath + imageConf.imgBgFolderPath.replace('{0}', appId) : __appPath + imageConf.imgBgDefaultFolderPath.replace('{0}', appId);
+
+            if (menuDefault) {
+              var splittedPath = imagePath.split("/");
+              splittedPath.length = splittedPath.length - 2
+              var pathExists = splittedPath.join("/");
+              __util.createDir(pathExists);
+            };
+
             var pathCreateLen = !__util.isNullOrEmpty(pageFrom) && pageFrom == "web" ? 3 : 2;
 
             for (var i = 0; i < pathCreateLen; i++) {
-              if (i == 1) {
+              if (i === 1 && !menuDefault) {
                 imagePath = imagePath + pageId + "/";
+              } else if (i === 1 && menuDefault) {
+                imagePath = imagePath + locationId + "/";
               }
 
               if (i == 2) {
@@ -418,8 +430,8 @@ var backgroundPatternUpload = function (req, res, next) {
               }
             });
 
-            var imagePathAssigned = appConf.domain + imageConf.imgAppUrlPath.replace('{0}', appId);
-            imagePathAssigned = imagePathAssigned.replace("{1}", pageId);
+            var imagePathAssigned = !menuDefault ? appConf.domain + imageConf.imgAppUrlPath.replace('{0}', appId) : appConf.domain + imageConf.imgBgDefaultMenuUrlPath.replace('{0}', appId);
+            imagePathAssigned = !menuDefault ? imagePathAssigned.replace("{1}", pageId) : imagePathAssigned.replace("{1}", locationId);
 
             if (!__util.isNullOrEmpty(pageFrom) && pageFrom == "web") {
               imagePathAssigned = imagePathAssigned + "web" + "/" + fileName;
@@ -448,9 +460,11 @@ var backgroundPatternUpload = function (req, res, next) {
 var backgroundPatternRemove = function (req, res, next) {
   var obj = req.body.form_data;
   var pageFrom = obj.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(obj.pagefrom) ? obj.pagefrom : "";
+  var locationId = obj.hasOwnProperty("locationId") && !__util.isNullOrEmpty(obj.locationId) ? obj.locationId : "";
+  var menuDefault = obj.hasOwnProperty("menuDefault") ? obj["menuDefault"] : false;
 
-  var imagePath = __appPath + imageConf.imgAppFolderPath.replace('{0}', obj.appId);
-  imagePath = imagePath.replace('{1}', obj.pageId);
+  var imagePath = !menuDefault ? __appPath + imageConf.imgAppFolderPath.replace('{0}', obj.appId) : __appPath + imageConf.imgDefaultThemeFolderPath.replace('{0}', obj.appId);
+  imagePath = !menuDefault ? imagePath.replace('{1}', obj.pageId) : imagePath.replace('{1}', obj.locationId);
 
   if (!__util.isNullOrEmpty(pageFrom) && pageFrom == "web") {
     imagePath = imagePath + "web" + "/" + obj.name;
@@ -482,9 +496,11 @@ var backgroundPatternList = function (req, res, next) {
   var images = [];
   var obj = req.body.form_data;
   var pageFrom = obj.hasOwnProperty("pagefrom") && !__util.isNullOrEmpty(obj.pagefrom) ? obj.pagefrom : "";
+  var locationId = obj.hasOwnProperty("locationId") && !__util.isNullOrEmpty(obj.locationId) ? obj.locationId : "";
+  var menuDefault = obj.hasOwnProperty("menuDefault") ? obj.menuDefault : false;
 
-  var rootFolderPath = __appPath + imageConf.imgAppFolderPath.replace('{0}', obj.appId);
-  rootFolderPath = rootFolderPath.replace('{1}', obj.pageId);
+  var rootFolderPath = !menuDefault ? __appPath + imageConf.imgAppFolderPath.replace('{0}', obj.appId) : __appPath + imageConf.imgBgDefaultMenuUrlPath.replace('{0}', obj.appId);
+  rootFolderPath = !menuDefault ? rootFolderPath.replace('{1}', obj.pageId) : rootFolderPath.replace('{1}', locationId);
 
   if (!__util.isNullOrEmpty(pageFrom) && pageFrom == "web") {
     rootFolderPath = rootFolderPath + "web" + "/";

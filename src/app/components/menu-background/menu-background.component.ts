@@ -35,12 +35,17 @@ export class MenuBackgroundComponent implements OnInit {
   @ViewChild('fileTi') fileTi: ElementRef;
   @Input('show-modal') showModal: boolean = false;
   @Input('pageData') pageData: Object = {};
+  @Input('appId') appId: string = "";
+  @Input('locationId') locationId: string = "";
+  @Input('setupFrom') setupFrom: string = "";
+  @Input('pageId') pageId: string = "";
   menuBgContent = new EventEmitter<any>();
   menuBgGroupNames: string[] = [];
   groupBgIdx: number = -1;
   tabName: string = "mobile";
   private orgChangeDetect: any;
   bgObj: Object = {};
+  menuPageTitle: string = "";
   menuImageData: Object = {
     "pt": "",
     "bgp": "",
@@ -51,9 +56,16 @@ export class MenuBackgroundComponent implements OnInit {
 
   /* Showing menu background */
   menuBG() {
-    if (!this.utils.isEmptyObject(this.pageData)) {
+    if (!this.utils.isNullOrEmpty(this.setupFrom) && ((!this.utils.isEmptyObject(this.pageData) && this.setupFrom === "menu") || this.setupFrom === "default")) {
+      this.menuPageTitle = "MOBILE AND WEB BACKGROUNDS AND COLORS";
+      this.menuPageTitle = this.setupFrom === "menu" ? this.menuPageTitle : this.menuPageTitle + " (DEFAULT)";
       this.menuBgLib.show();
       this.loadImages();
+      this.menuBgGroupNames = [];
+
+      setTimeout(() => {
+        this.menuBgGroupNames = this.setGroupNames();
+      });
     }
   };
 
@@ -64,7 +76,10 @@ export class MenuBackgroundComponent implements OnInit {
   };
 
   onHide(e: any) {
-    this.menuBgContent.emit({ "close": true });
+    this.menuBgContent.emit({
+      "pageData": this.pageData,
+      "close": true
+    });
   };
 
   selectGroupOption(e: any, idx: number) {
@@ -77,15 +92,19 @@ export class MenuBackgroundComponent implements OnInit {
     this.groupBgIdx = 0;
     this.bgObj = this.pageBgObjectAssign();
     this.tabName = "mobile";
-    this.menuBgGroupNames = ["Background Pattern", "Background Image", "Top Banner", "Nav Bar",
-      "Tab Icon", "Page Layout", "Square Icon", "Wide Icon", "Follow"];
+    this.menuBgGroupNames = this.setGroupNames();
     this.menuImageData = {
       "pt": "",
       "bgp": "",
       "bgl": "",
       "tp": "",
       "ti": ""
-    }
+    };
+  };
+
+  setGroupNames() {
+    return ["Background Pattern", "Background Image", "Top Banner", "Nav Bar",
+      "Tab Icon", "Page Layout", "Square Icon", "Wide Icon", "Follow"];
   };
 
   /* Changing the current instance of  the tab */
@@ -162,12 +181,22 @@ export class MenuBackgroundComponent implements OnInit {
   };
 
   getImageFormData(file: any, grpType: string) {
-    var pageId = this.pageData["_id"];
-    var appId = this.pageData["appId"];
+    let appId = this.appId;
+    let locationId = this.locationId;
 
     let formData: any = new FormData();
     formData.append("appId", appId);
-    formData.append("pageId", pageId);
+
+    if (this.setupFrom === "menu") {
+      let pageId = this.pageData["_id"];
+      formData.append("pageId", pageId);
+    }
+
+    if (this.setupFrom === "default") {
+      formData.append("locationId", locationId);
+      formData.append("menuDefault", true);
+    }
+
     formData.append("type", grpType);
     formData.append("pagefrom", this.tabName);
     formData.append("file[]", file);
@@ -179,7 +208,7 @@ export class MenuBackgroundComponent implements OnInit {
     return {
       pt: {
         "background": "",
-        "pageBackgroundColor": "",
+        "pageBackgroundColor": ""
       },
       bgpl: {
         "background_portrait": "",
@@ -267,7 +296,7 @@ export class MenuBackgroundComponent implements OnInit {
       e.preventDefault();
     }
 
-    let pageUpdateObj = {};
+    let updateObj = {};
     let obj = {};
 
     if (this.groupBgIdx === 0) {
@@ -287,29 +316,41 @@ export class MenuBackgroundComponent implements OnInit {
     } else if (this.groupBgIdx === 5) {
 
       obj = this.bgObj["pageLayout"];
-      pageUpdateObj = this.tabName === "web" ? { "webBackground": { "pageLayout": obj } } : { "pageLayout": obj };
+      updateObj = this.tabName === "web" ? { "webBackground": { "pageLayout": obj } } : { "pageLayout": obj };
     } else if (this.groupBgIdx === 6) {
 
       obj = this.bgObj["squareWideIcon"];
-      pageUpdateObj = this.tabName === "web" ? { "webBackground": { "singleWidthSquareDetails": obj } } : { "singleWidthSquareDetails": obj };
+      updateObj = this.tabName === "web" ? { "webBackground": { "singleWidthSquareDetails": obj } } : { "singleWidthSquareDetails": obj };
     } else if (this.groupBgIdx === 7) {
 
       obj = this.bgObj["squareWideIcon"];
-      pageUpdateObj = this.tabName === "web" ? { "webBackground": { "doubleWidthSquareDetails": obj } } : { "doubleWidthSquareDetails": obj };
+      updateObj = this.tabName === "web" ? { "webBackground": { "doubleWidthSquareDetails": obj } } : { "doubleWidthSquareDetails": obj };
     } else if (this.groupBgIdx === 8) {
 
       obj = this.bgObj["flw"];
     }
 
     if (this.groupBgIdx !== 5 && this.groupBgIdx !== 6 && this.groupBgIdx !== 7) {
-      pageUpdateObj = this.tabName === "web" ? { "webBackground": obj } : obj;
+      updateObj = this.tabName === "web" ? { "webBackground": obj } : obj;
     }
 
-    if (!this.utils.isEmptyObject(pageUpdateObj)) {
-      pageUpdateObj["dateUpdated"] = (new Date()).toUTCString();
+    if (!this.utils.isEmptyObject(updateObj)) {
+      if (this.setupFrom === "menu") {
+        updateObj["dateUpdated"] = (new Date()).toUTCString();
 
-      let isMsg = isRemove ? false : true;
-      this.pageUpdate(pageUpdateObj, isMsg);
+        let isMsg = isRemove ? false : true;
+        this.pageUpdate(updateObj, isMsg);
+      } else if (this.setupFrom === "default") {
+
+        if (this.utils.isEmptyObject(this.pageData)) {
+          updateObj["appId"] = this.appId;
+          updateObj["locationId"] = this.locationId;
+        } else if (this.pageData.hasOwnProperty("_id")) {
+          updateObj["_id"] = this.pageData["_id"];
+        }
+
+        this.defaultThemeSaveUpdate(updateObj, true);
+      }
     }
   };
 
@@ -326,8 +367,8 @@ export class MenuBackgroundComponent implements OnInit {
 
       //this.bgObj["bgpl"]["background_landscape"] = obj.hasOwnProperty("background_landscape") ? obj["background_landscape"] : "";
       //this.bgObj["bgpl"]["background_portrait"] = obj.hasOwnProperty("background_portrait") ? obj["background_portrait"] : "";
-      this.bgObj["bgpl"]["background_landscape"] = this.menuImageData["bgp"];
-      this.bgObj["bgpl"]["background_portrait"] = this.menuImageData["bgl"];
+      this.bgObj["bgpl"]["background_portrait"] = this.menuImageData["bgp"];
+      this.bgObj["bgpl"]["background_landscape"] = this.menuImageData["bgl"];
     } else if (this.groupBgIdx === 2) {
 
       //this.bgObj["tp"]["top_banner"] = obj.hasOwnProperty("top_banner") ? obj["top_banner"] : "";
@@ -391,6 +432,7 @@ export class MenuBackgroundComponent implements OnInit {
     }
   };
 
+  /* Menu datas update to the API */
   pageUpdate(updateObj: Object, showMsg?: boolean) {
     var pageId = this.pageData["_id"];
 
@@ -404,8 +446,32 @@ export class MenuBackgroundComponent implements OnInit {
       });
   };
 
+  /* Update and save default theme */
+  defaultThemeSaveUpdate(obj: Object, showMsg?: boolean) {
+    var isSave = obj.hasOwnProperty("_id") ? false : true;
+
+    this.pageService.defaultThemeSaveUpdate(obj, isSave)
+      .then(updatedStatus => {
+        if (showMsg) {
+          this.utils.iAlert('success', '', 'Page theme updated successfully');
+        }
+
+        this.getUpdatedDefaultTheme();
+      });
+  };
+
+  /* Getting page default datas */
+  getUpdatedDefaultTheme() {
+    this.pageService.defaultThemeList(this.appId, this.locationId)
+      .then(defaultThemeObj => {
+        if (this.utils.isArray(defaultThemeObj) && defaultThemeObj.length > 0) {
+          this.pageData = defaultThemeObj[0];
+        }
+      });
+  };
+
   getImageWidthHeight(file: any, cb: any) {
-    let fr: FileReader = new FileReader();     // File reader new Instance
+    let fr: FileReader = new FileReader();    // File reader new Instance
 
     fr.onload = () => {           // File onload callback method
       var img = new Image;
@@ -419,7 +485,7 @@ export class MenuBackgroundComponent implements OnInit {
         cb(resultObj);
       };
 
-      img.src = fr.result; // Data URL because called with readAsDataURL
+      img.src = fr.result;    // Data URL because called with readAsDataURL
     };
 
     fr.readAsDataURL(file);  // Assigning the file as data URL
@@ -431,7 +497,6 @@ export class MenuBackgroundComponent implements OnInit {
 
     let imageToDelete = {
       "appId": pageObj["appId"],
-      "pageId": pageObj["_id"],
       "pagefrom": this.tabName
     };
 
@@ -471,6 +536,13 @@ export class MenuBackgroundComponent implements OnInit {
 
       imageToDelete["name"] = filename;
 
+      if (this.setupFrom === "menu" || (this.setupFrom === 'default' && imgUrl.indexOf("defaultTheme") === -1)) {
+        imageToDelete["pageId"] = this.pageId;
+      } else if (this.setupFrom === "default" && imgUrl.indexOf("defaultTheme") > -1) {
+        imageToDelete["locationId"] = this.locationId;
+        imageToDelete["menuDefault"] = true;
+      }
+
       this.pageService.removeMenuBackgroundImage(imageToDelete)
         .then(pagUpdateObj => {
           this.updatePageData("", true);
@@ -480,8 +552,10 @@ export class MenuBackgroundComponent implements OnInit {
 
   loadImages() {
     let imgData = {
-      "appId": this.pageData["appId"],
+      "appId": this.appId,
+      "locationId": this.locationId,
       "pageId": this.pageData["_id"],
+      "menuDefault": this.setupFrom === "default" ? true : false,
       "pagefrom": this.tabName
     }
 
@@ -491,6 +565,7 @@ export class MenuBackgroundComponent implements OnInit {
           this.splitImageByType(imgList);
         }
 
+        this.checkImageSetup();
         this.setMenuObjData();
       });
   };
@@ -512,6 +587,19 @@ export class MenuBackgroundComponent implements OnInit {
     }
   };
 
+  checkImageSetup() {
+    if (this.setupFrom === "default") {
+      let pageObj = this.pageData;
+      let obj = this.tabName === "web" && pageObj.hasOwnProperty("webBackground") ? pageObj["webBackground"] : this.tabName === "mobile" ? pageObj : {};
+
+      this.menuImageData["pt"] = obj.hasOwnProperty("background") && !this.utils.isNullOrEmpty(obj["background"]) ? obj["background"] : this.menuImageData["pt"];
+      this.menuImageData["bgp"] = obj.hasOwnProperty("background_portrait") && !this.utils.isNullOrEmpty(obj["background_portrait"]) ? obj["background_portrait"] : this.menuImageData["bgp"];
+      this.menuImageData["bgl"] = obj.hasOwnProperty("background_landscape") && !this.utils.isNullOrEmpty(obj["background_landscape"]) ? obj["background_landscape"] : this.menuImageData["bgl"];
+      this.menuImageData["tp"] = obj.hasOwnProperty("top_banner") && !this.utils.isNullOrEmpty(obj["top_banner"]) ? obj["top_banner"] : this.menuImageData["tp"];
+      this.menuImageData["ti"] = obj.hasOwnProperty("tabIcon") && !this.utils.isNullOrEmpty(obj["tabIcon"]) ? obj["tabIcon"] : this.menuImageData["ti"];
+    }
+  };
+
   getPageData() {
     let pageId = this.pageData["_id"];
     let orgId = this.pageData["orgId"];
@@ -525,6 +613,16 @@ export class MenuBackgroundComponent implements OnInit {
           this.pageData = pgs[0];
         }
       });
+  };
+
+  checkSetupClass(idx: number) {
+    var className = this.groupBgIdx === idx ? 'current-page' : '';
+
+    if (!this.utils.isNullOrEmpty(this.setupFrom) && this.setupFrom === "default" && (idx === 2 || idx === 4)) {
+      className = !this.utils.isNullOrEmpty(className) ? +  className + " menu-hide" : "menu-hide";
+    }
+
+    return className;
   };
 
   ngOnChanges(cHObj: any) {

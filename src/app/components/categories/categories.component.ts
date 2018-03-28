@@ -389,11 +389,16 @@ export class CategoriesComponent implements OnInit {
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
-      this.resetCategoryContents();
-      this.setScrollList();
-      this.oid = Cookie.get('oid');
-      this.getTilesCategories();
-      this.categoriesList();
+      let loadTime = Cookie.get('pageLoadTime');
+
+      if (this.utils.isNullOrEmpty(loadTime) || (!this.utils.isNullOrEmpty(loadTime) && loadTime !== params["_dt"])) {
+        Cookie.set('pageLoadTime', params["_dt"]);
+        this.resetCategoryContents();
+        this.setScrollList();
+        this.oid = Cookie.get('oid');
+        this.getTilesCategories();
+        this.categoriesList();
+      }
     });
   };
 

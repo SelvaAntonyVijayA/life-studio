@@ -719,11 +719,16 @@ export class FoldersComponent implements OnInit {
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
-      this.resetFolderContents();
-      this.setScrollList();
-      this.oid = Cookie.get('oid');
-      this.setOrganizations();
-      this.folderList();
+      let loadTime = Cookie.get('pageLoadTime');
+
+      if (this.utils.isNullOrEmpty(loadTime) || (!this.utils.isNullOrEmpty(loadTime) && loadTime !== params["_dt"])) {
+        Cookie.set('pageLoadTime', params["_dt"]);
+        this.resetFolderContents();
+        this.setScrollList();
+        this.oid = Cookie.get('oid');
+        this.setOrganizations();
+        this.folderList();
+      }
     });
   };
 

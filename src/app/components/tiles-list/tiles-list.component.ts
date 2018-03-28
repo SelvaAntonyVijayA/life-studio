@@ -383,11 +383,11 @@ export class TilesListComponent {
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       //this.setOrganizations();
-      this.setScrollList();
-      this.resetTiles();
-      this.oid = Cookie.get('oid');
-      this.selectedOrg = this.oid;
-      this.setTileListData();
+        this.setScrollList();
+        this.resetTiles();
+        this.oid = Cookie.get('oid');
+        this.selectedOrg = this.oid;
+        this.setTileListData();
     });
   };
 

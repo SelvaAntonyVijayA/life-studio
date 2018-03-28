@@ -1023,12 +1023,17 @@ export class ProceduresComponent implements OnInit {
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
-      this.setScrollList();
-      this.resetProcedureDatas();
-      this.setOrganizations();
-      this.oid = Cookie.get('oid');
-      this.listProcedureCategories();
-      this.getLanguages();
+      let loadTime = Cookie.get('pageLoadTime');
+
+      if (this.utils.isNullOrEmpty(loadTime) || (!this.utils.isNullOrEmpty(loadTime) && loadTime !== params["_dt"])) {
+        Cookie.set('pageLoadTime', params["_dt"]);
+        this.setScrollList();
+        this.resetProcedureDatas();
+        this.setOrganizations();
+        this.oid = Cookie.get('oid');
+        this.listProcedureCategories();
+        this.getLanguages();
+      }
     });
   };
 

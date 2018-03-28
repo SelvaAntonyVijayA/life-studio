@@ -67,7 +67,7 @@ var update = function (req, res, next) {
   position = {};
   query = {};
   options = {};
-  
+
   if (__util.isNullOrEmpty(req.params.menuId)) {
     var pagePosition = req.body.form_data;
 
@@ -468,8 +468,101 @@ var remove = function (req, res, next) {
   };
 
   _update(query, {}, data, function (result) {
-    var delResult = {"deleted": result};
+    var delResult = { "deleted": result };
     res.send(delResult);
+  });
+};
+
+var pageThemeSave = function (req, res, next) {
+  var tokenObj = $authtoken.get(req.cookies.token);
+  var obj = req.body.form_data;
+  obj.createdBy = tokenObj.uid;
+
+  obj = $general.getObjectIdByQuery(obj);
+
+  $async.waterfall([
+    function (callback) {
+      query = {};
+      if (!__util.isNullOrEmpty(obj.appId)) {
+        query.appId = obj.appId;
+      }
+
+      if (!__util.isNullOrEmpty(obj.locationId)) {
+        query.locationId = obj.locationId;
+      }
+
+      query = $general.getObjectIdByQuery(query);
+
+      $page.getPageTheme(query, options, function (res) {
+        callback(null, res)
+      });
+    },
+  ], function (err, theme) {
+    if (theme.length == 0) {
+      obj.createdOn = $general.getIsoDate();
+
+      $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.pagetheme, obj, function (result) {
+        var resObj = { "_id": result };
+
+        res.send(resObj);
+      });
+    } else {
+      options = {};
+      var updateQuery = {};
+      updateQuery._id = theme[0]._id;
+      delete obj["_id"];
+      obj.lastUpdatedOn = $general.getIsoDate();
+
+      $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.pagetheme, updateQuery, options, obj, function (result) {
+        var resObj = { "_id": updateQuery._id };
+
+        res.send(resObj);
+      });
+    }
+  });
+};
+
+var pageThemeUpdate = function (req, res, next) {
+  var obj = req.body.form_data;
+  obj = $general.getObjectIdByQuery(obj);
+
+  options = {};
+  var updateQuery = {};
+  updateQuery._id = req.params.themeId;
+
+  delete obj["_id"];
+  obj.lastUpdatedOn = $general.getIsoDate();
+
+  $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.pagetheme, updateQuery, options, obj, function (result) {
+    var resultObj = { "_id": updateQuery._id };
+
+    res.send(resultObj);
+  });
+};
+
+var pageThemeList = function (req, res, next) {
+  query = {};
+
+  if (!__util.isNullOrEmpty(req.params.appId)) {
+    query.appId = req.params.appId;
+  }
+
+  if (!__util.isNullOrEmpty(req.params.locationId)) {
+    query.locationId = req.params.locationId;
+  }
+
+  query = $general.getObjectIdByQuery(query);
+  options = {};
+
+  $page.getPageTheme(query, options, function (themeResult) {
+    res.send(themeResult);
+  });
+};
+
+var getPageTheme = function (tQuery, tOptions, cb) {
+
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.pagetheme, tQuery, tOptions, function (result) {
+    cb(result);
   });
 };
 
@@ -483,5 +576,9 @@ module.exports = {
   "getAppMenu": getAppMenu,
   "_update": _update,
   "pageStreamUpdate": pageStreamUpdate,
+  "pageThemeSave": pageThemeSave,
+  "pageThemeUpdate": pageThemeUpdate,
+  "pageThemeList": pageThemeList,
+  "getPageTheme": getPageTheme,
   "remove": remove
 };

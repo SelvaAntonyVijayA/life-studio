@@ -119,6 +119,24 @@ export class PageService {
       .catch(this.handleError);
   };
 
+  defaultThemeList(appId: string, locationId?: string) {
+    return this.http
+      .get("/pages/theme/list/" + appId + "/" + locationId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  defaultThemeSaveUpdate(themeObj: Object, isSave: boolean) {
+    let themeUrl = isSave ? "/pages/theme/save/" : "/pages/theme/update/" + themeObj["_id"];
+
+    return this.http
+      .post(themeUrl, JSON.stringify({ "form_data": themeObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);

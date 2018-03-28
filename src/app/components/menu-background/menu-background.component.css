@@ -11,6 +11,10 @@
   border-bottom: 1px solid rgb(170, 170, 170);
 }
 
+.menu-hide{
+  display: none;
+}
+
 .bg-title {
   white-space: nowrap;
   overflow: hidden;

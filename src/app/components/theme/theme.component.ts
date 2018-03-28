@@ -21,7 +21,7 @@ export class ThemeComponent implements OnInit {
     private renderer: Renderer2,
     private loaderShared: LoaderSharedService,
     public utils: Utils
-  ) {}
+  ) { }
 
   themes: any[] = [];
   selectedOrganization: string = "-1";
@@ -76,7 +76,7 @@ export class ThemeComponent implements OnInit {
   save: string = "block";
   saveAs: string = "block";
   delete: string = "block";
-  
+
   newTheme() {
     this.loadNew();
   };
@@ -429,10 +429,16 @@ export class ThemeComponent implements OnInit {
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
-      this.oid = Cookie.get('oid');
-      this.selectedOrganization = this.oid;
-      this.getUserSession();
-      this.loadThemes();
+      let loadTime = Cookie.get('pageLoadTime');
+
+      if (this.utils.isNullOrEmpty(loadTime) || (!this.utils.isNullOrEmpty(loadTime) && loadTime !== params["_dt"])) {
+        Cookie.set('pageLoadTime', params["_dt"]);
+
+        this.oid = Cookie.get('oid');
+        this.selectedOrganization = this.oid;
+        this.getUserSession();
+        this.loadThemes();
+      }
     });
   }
 

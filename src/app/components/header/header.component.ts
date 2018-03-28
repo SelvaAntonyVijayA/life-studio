@@ -307,7 +307,6 @@ export class HeaderComponent implements OnInit {
       let link = [currPage];
       var currDate = Date.parse(new Date().toString());
       this.cms.destroyScroll();
-
       this.router.navigate(link, { queryParams: { "_dt": currDate }, relativeTo: this.route });
     }
 

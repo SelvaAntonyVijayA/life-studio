@@ -14,6 +14,7 @@ import { LivestreamService } from '../../services/livestream.service';
 import { LoaderSharedService } from '../../services/loader-shared.service';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/forkJoin';
+import 'rxjs/add/operator/debounceTime';
 
 
 declare var $: any;
@@ -93,6 +94,11 @@ export class PagesComponent implements OnInit {
   livestreamOnTop: boolean = false;
   isMenuBg: boolean = false;
   menuBgObj: Object = {};
+  setupFrom: string = "default";
+  defaultTheme: Object = {};
+  initialTileLoad: boolean = false;
+  isImageLibrary: string = "none";
+  imglibData: object = {};
 
   /* Setting dragging Groups, Menus, Tiles */
   setDragged(currObj: Object, type: string, menuItem?: Object, drgExits?: boolean, procedure?: Object) {
@@ -216,6 +222,9 @@ export class PagesComponent implements OnInit {
     this.isMenuBg = false;
     this.resetBlankMenu();
     this.menuBgObj = {};
+    this.setupFrom = "default";
+    this.isImageLibrary = "none";
+    this.imglibData = {};
 
     if (mergeReset && mergeReset === "reset") {
       this.isMerge = { "status": "merge" };
@@ -226,6 +235,8 @@ export class PagesComponent implements OnInit {
     if (!this.utils.isEmptyObject(tileObj) && tileObj.hasOwnProperty("isSpinner")) {
       this.loaderShared.showSpinner(false);
     }
+
+    this.initialTileLoad = true;
   };
 
   /* Getting page title from the current language */
@@ -346,6 +357,7 @@ export class PagesComponent implements OnInit {
     this.selectedLocation = locId;
     this.pageReset("merge");
     this.getPages("", true, true);
+    this.getPageDefaultTheme();
   };
 
   getApps() {
@@ -379,7 +391,21 @@ export class PagesComponent implements OnInit {
 
         var spinnerStatus = isSpinner ? true : false;
         this.getPages("", true, spinnerStatus);
+        this.getPageDefaultTheme();
       });
+  };
+
+  getPageDefaultTheme() {
+    this.defaultTheme = {};
+
+    if (!this.utils.isNullOrEmpty(this.selectedApp) && this.selectedApp !== "-1" && !this.utils.isNullOrEmpty(this.selectedLocation) && this.selectedLocation !== "-1") {
+      this.pageService.defaultThemeList(this.selectedApp, this.selectedLocation)
+        .then(themes => {
+          if (this.utils.isArray(themes) && themes.length > 0) {
+            this.defaultTheme = themes[0];
+          }
+        });
+    }
   };
 
   assignGroups() {
@@ -774,7 +800,7 @@ export class PagesComponent implements OnInit {
           if (r) {
             this.savePage("", false, "select", pgObj);
           } else {
-            var isSpinner = initial ? false : true;
+            var isSpinner = initial && !this.initialTileLoad ? false : true;
             this.setPageData(true, pgObj, isSpinner);
           }
         });
@@ -1601,31 +1627,77 @@ export class PagesComponent implements OnInit {
     }
   };
 
-  menuBackgroundLibrary(e: any) {
+  menuBackgroundLibrary(e: any, type: string) {
     e.preventDefault();
     this.menuBgObj = {};
-    
-    if (this.page.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.page["obj"])) {
+    this.setupFrom = "";
+
+    if (this.page.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.page["obj"]) && type === "menu") {
       this.menuBgObj = this.page["obj"];
+    } else if (type === "default") {
+      this.menuBgObj = this.defaultTheme;
+    }
+
+    if ((type === "menu" && !this.utils.isEmptyObject(this.menuBgObj)) || type === "default") {
+      this.setupFrom = type;
       this.isMenuBg = true;
+    } else if (type === "menu") {
+      this.setupFrom = "default";
+      this.utils.iAlert('error', 'Information', 'Please select a page');
     }
   };
 
   menuBackground(menuObj: Object) {
     if (!this.utils.isEmptyObject(menuObj) && menuObj.hasOwnProperty("close")) {
       this.isMenuBg = false;
+
+      if (this.setupFrom === "menu") {
+        this.showAppNamesAssigned(menuObj["pageData"], 'page');
+        var pgIndex = this.pageList.map(pg => { return pg['_id']; }).indexOf(menuObj["pageData"]["_id"]);
+        this.page["obj"] = menuObj["pageData"];
+        this.pageList[pgIndex] = menuObj["pageData"];
+      } else if (this.setupFrom === "default") {
+        this.defaultTheme = menuObj["pageData"];
+      }
     }
+  };
+
+  onImageLibraryClose(imglib: object) {
+    this.isImageLibrary = 'none';
+    var currDrg = this.page["dragged"][imglib["data"]["index"]];
+    currDrg["art"] = imglib["url"];
+  };
+
+  onImageLibraryResult(imglib: object) {
+    this.isImageLibrary = 'none';
+    var currDrg = this.page["dragged"][imglib["data"]["index"]];
+    currDrg["art"] = imglib["url"];
+  };
+
+  imageArt(e: any, idx: number) {
+    e.preventDefault();
+
+    var totalIdx = this.page["dragged"].length - 1;
+    var currIdx = totalIdx - idx;
+
+    this.isImageLibrary = 'block';
+    this.imglibData = { index: currIdx };
   };
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
-      this.pageDataReset();
-      this.setScrollList();
-      this.setOrganizations();
-      this.oid = Cookie.get('oid');
-      this.assignGroups();
-      this.getLanguages();
-      this.getApps();
+      let loadTime = Cookie.get('pageLoadTime');
+
+      if (this.utils.isNullOrEmpty(loadTime) || (!this.utils.isNullOrEmpty(loadTime) && loadTime !== params["_dt"])) {
+        Cookie.set('pageLoadTime', params["_dt"]);
+        this.pageDataReset();
+        this.setScrollList();
+        this.setOrganizations();
+        this.oid = Cookie.get('oid');
+        this.assignGroups();
+        this.getLanguages();
+        this.getApps();
+      }
     });
   };
 

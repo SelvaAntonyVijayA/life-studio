@@ -47,7 +47,7 @@
   <div class="modal-dialog menu-bg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title bg-title pull-left">MOBILE AND WEB BACKGROUNDS AND COLORS</h4>
+        <h4 class="modal-title bg-title pull-left">{{ this.menuPageTitle }}</h4>
         <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -62,14 +62,15 @@
 
           <div class="menu-background-group ">
             <ul *ngIf="menuBgGroupNames?.length> 0">
-              <li (click)="selectGroupOption($event, i)" *ngFor="let menuGrpName of menuBgGroupNames; let i = index" [ngClass]="groupBgIdx === i?'current-page': ''">{{menuGrpName}}</li>
+              <li (click)="selectGroupOption($event, i)" *ngFor="let menuGrpName of menuBgGroupNames; let i = index" [ngClass]="checkSetupClass(i)">{{menuGrpName}}</li>
             </ul>
           </div>
 
-          <!---                       Background Pattern                        -->
+          <!---                       Background Pattern                                   -->
           <div *ngIf="groupBgIdx === 0" class="form-group menu-group-content menu-bg-pattern">
             <div class="general-pattern">
-              <img class="delete-pattern" (click)="deleteMenuImages($event, 'pt')" *ngIf="!utils.isNullOrEmpty(bgObj['pt']['background'])" [src]="'/img/close_bg.png'">
+              <img class="delete-pattern" (click)="deleteMenuImages($event, 'pt')" *ngIf="!utils.isNullOrEmpty(bgObj['pt']['background'])"
+                [src]="'/img/close_bg.png'">
               <img class="img-general-pattern" *ngIf="!utils.isNullOrEmpty(bgObj['pt']['background'])" [src]="bgObj['pt']['background'] | safe">
               <input style="display: none;" type="file" #filept (change)="imageFileUpload($event.target.files, 'pt')">
               <div class="upload-general-pattern" (click)="fileProcess($event, 'pt')" *ngIf="utils.isNullOrEmpty(bgObj['pt']['background'])">
@@ -92,7 +93,8 @@
           <!---                        Background Image                                 -->
           <div *ngIf="groupBgIdx === 1" class="form-group menu-group-content upload-background-group">
             <div class="vertical-app-background">
-              <img class="delete-vertical-bg" (click)="deleteMenuImages($event, 'bgp')" *ngIf="!utils.isNullOrEmpty(bgObj['bgpl']['background_portrait'])" [src]="'/img/close_bg.png'">
+              <img class="delete-vertical-bg" (click)="deleteMenuImages($event, 'bgp')" *ngIf="!utils.isNullOrEmpty(bgObj['bgpl']['background_portrait'])"
+                [src]="'/img/close_bg.png'">
               <img class="img-vertical-app-background" *ngIf="!utils.isNullOrEmpty(bgObj['bgpl']['background_portrait'])" [src]="bgObj['bgpl']['background_portrait'] | safe">
               <input style="display: none;" type="file" #fileBgp (change)="imageFileUpload($event.target.files, 'bgp')">
               <div class="upload-vertical-app-background" (click)="fileProcess($event, 'bgp')" *ngIf="utils.isNullOrEmpty(bgObj['bgpl']['background_portrait'])">
@@ -102,7 +104,8 @@
               </div>
             </div>
             <div class="horizontal-app-background">
-              <img class="delete-horizontal-bg" (click)="deleteMenuImages($event, 'bgl')" *ngIf="!utils.isNullOrEmpty(bgObj['bgpl']['background_landscape'])" [src]="'/img/close_bg.png'">
+              <img class="delete-horizontal-bg" (click)="deleteMenuImages($event, 'bgl')" *ngIf="!utils.isNullOrEmpty(bgObj['bgpl']['background_landscape'])"
+                [src]="'/img/close_bg.png'">
               <img class="img-horizontal-app-background" *ngIf="!utils.isNullOrEmpty(bgObj['bgpl']['background_landscape'])" [src]="bgObj['bgpl']['background_landscape'] | safe">
               <input style="display: none;" type="file" #fileBgl (change)="imageFileUpload($event.target.files, 'bgl')">
               <div class="upload-horizontal-app-background" (click)="fileProcess($event, 'bgl')" *ngIf="utils.isNullOrEmpty(bgObj['bgpl']['background_landscape'])">
@@ -113,10 +116,11 @@
             </div>
           </div>
 
-          <!---                        Top Banner                                 -->
+          <!---                                   Top Banner                                 -->
           <div *ngIf="groupBgIdx === 2" class="form-group menu-group-content top-pattern-group">
             <div class="horizontal-top-pattern">
-              <img class="delete-top-pattern" (click)="deleteMenuImages($event, 'tp')" *ngIf="!utils.isNullOrEmpty(bgObj['tp']['top_banner'])" [src]="'/img/close_bg.png'">
+              <img class="delete-top-pattern" (click)="deleteMenuImages($event, 'tp')" *ngIf="!utils.isNullOrEmpty(bgObj['tp']['top_banner'])"
+                [src]="'/img/close_bg.png'">
               <img class="img-horizontal-top-pattern" *ngIf="!utils.isNullOrEmpty(bgObj['tp']['top_banner'])" [src]="bgObj['tp']['top_banner'] | safe">
               <input style="display: none;" type="file" #fileTp (change)="imageFileUpload($event.target.files, 'tp')">
               <div class="upload-horizontal-top-pattern" (click)="fileProcess($event, 'tp')" *ngIf="utils.isNullOrEmpty(bgObj['tp']['top_banner'])">
@@ -176,9 +180,11 @@
           </div>
 
           <!--                                      Tab Icon                                                      -->
-          <div *ngIf="groupBgIdx === 4" class="form-group menu-group-content tab-icon-group" style="display: block;">
+          <div *ngIf="groupBgIdx === 4" class="form-group menu-group-content tab-icon-group"
+            style="display: block;">
             <div class="mobile-tab-icon">
-              <img class="delete-tab-icon" (click)="deleteMenuImages($event, 'ti')" *ngIf="!utils.isNullOrEmpty(bgObj['ti']['tabIcon'])" src="/img/close_bg.png">
+              <img class="delete-tab-icon" (click)="deleteMenuImages($event, 'ti')" *ngIf="!utils.isNullOrEmpty(bgObj['ti']['tabIcon'])"
+                src="/img/close_bg.png">
               <img class="img-tab-icon" *ngIf="!utils.isNullOrEmpty(bgObj['ti']['tabIcon'])" [src]="bgObj['ti']['tabIcon'] | safe">
               <input style="display: none;" type="file" #fileTi (change)="imageFileUpload($event.target.files, 'ti')">
               <div class="upload-tab-icon" (click)="fileProcess($event, 'ti')" *ngIf="utils.isNullOrEmpty(bgObj['ti']['tabIcon'])">
@@ -214,11 +220,13 @@
               </div>
               <div style="padding-bottom: 10px; padding-bottom: 35px;">
                 <div style="float: left; margin: 2px 41px 0 0;">Min Square Icon Size (%) :</div>
-                <input class="form-control input-sm page-layout-text" [(ngModel)]="bgObj['pageLayout']['minSquareIconSize']" type="number" min="0" max="100">
+                <input class="form-control input-sm page-layout-text" [(ngModel)]="bgObj['pageLayout']['minSquareIconSize']" type="number"
+                  min="0" max="100">
               </div>
               <div style="padding-bottom: 10px; padding-bottom: 35px;">
                 <div style="float: left; margin: 2px 50px 0 0;">Spacing between Icons :</div>
-                <input class="form-control input-sm page-layout-text" [(ngModel)]="bgObj['pageLayout']['spacingBetweenIcons']" type="number" placeholder="pt">
+                <input class="form-control input-sm page-layout-text" [(ngModel)]="bgObj['pageLayout']['spacingBetweenIcons']" type="number"
+                  placeholder="pt">
               </div>
               <div *ngIf="bgObj['pageLayout'].hasOwnProperty('navigationTabOnBottom')" style="padding-bottom: 10px; padding-bottom: 35px;">
                 <div style="float: left; margin: 2px 96.5px 0 0;">Navigation Tab :</div>

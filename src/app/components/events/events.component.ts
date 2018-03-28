@@ -1815,16 +1815,21 @@ export class EventsComponent implements OnInit {
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       //this.setComboBox();
-      this.setScrollList();
-      this.resetEventDatas();
-      this.setOrganizations();
-      this.oid = Cookie.get('oid');
-      //this.getEvents();
-      //this.getEventCategories();
-      this.listEventCategories();
-      this.getLanguages();
-      this.selectedOrganization = this.oid;
-      //this.setEventType();
+      let loadTime = Cookie.get('pageLoadTime');
+
+      if (this.utils.isNullOrEmpty(loadTime) || (!this.utils.isNullOrEmpty(loadTime) && loadTime !== params["_dt"])) {
+        Cookie.set('pageLoadTime', params["_dt"]);
+        this.setScrollList();
+        this.resetEventDatas();
+        this.setOrganizations();
+        this.oid = Cookie.get('oid');
+        //this.getEvents();
+        //this.getEventCategories();
+        this.listEventCategories();
+        this.getLanguages();
+        this.selectedOrganization = this.oid;
+        //this.setEventType();
+      }
     });
   };
 

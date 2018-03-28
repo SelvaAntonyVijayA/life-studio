@@ -239,6 +239,34 @@ var getDynamicPin = function () {
   return randnum;
 };
 
+var getObjectIdByQuery = function (memberObj) {
+  if (!__util.isNullOrEmpty(memberObj.appId)) {
+    memberObj.appId = $db.objectId(memberObj.appId);
+  }
+
+  if (!__util.isNullOrEmpty(memberObj.locationId)) {
+    memberObj.locationId = $db.objectId(memberObj.locationId);
+  }
+
+  if (!__util.isNullOrEmpty(memberObj.memberId)) {
+    memberObj.memberId = $db.objectId(memberObj.memberId);
+  }
+
+  if (!__util.isNullOrEmpty(memberObj.tileId)) {
+    memberObj.tileId = $db.objectId(memberObj.tileId);
+  }
+
+  if (!__util.isNullOrEmpty(memberObj.tileBlockId)) {
+    memberObj.tileBlockId = $db.objectId(memberObj.tileBlockId);
+  }
+
+  if (!__util.isNullOrEmpty(memberObj.procedureMappingId) && memberObj.procedureMappingId != "0") {
+    memberObj.procedureMappingId = $db.objectId(memberObj.procedureMappingId);
+  }
+
+  return memberObj;
+};
+
 module.exports = {
   "init": init,
   "encrypt": encrypt,
@@ -249,6 +277,7 @@ module.exports = {
   "_getDeActivateTime": _getDeActivateTime,
   "stringToDate": stringToDate,
   "getIsoDate": getIsoDate,
-  "getDynamicPin": getDynamicPin
+  "getDynamicPin": getDynamicPin,
+  "getObjectIdByQuery": getObjectIdByQuery
 };
 

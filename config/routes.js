@@ -110,6 +110,9 @@ module.exports = function (app) {
   router.all('/page/remove/:menuId', $page.remove);
   router.all('/pages/list/:orgId/:appId/:locationId*?/:language*?', $page.list);
   router.all('/pages/getpagetiles/', $page.getPageTiles);
+  router.all('/pages/theme/save/', $page.pageThemeSave);
+  router.all('/pages/theme/update/:themeId', $page.pageThemeUpdate);
+  router.all('/pages/theme/list/:appId/:locationId*?', $page.pageThemeList);
 
   router.all('/livestream/save/:id*?', $livestream.byId);
   router.all('/livestream/list/:orgId*?/:appId*?/:locationId*?', $livestream.list);

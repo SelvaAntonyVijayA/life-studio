@@ -781,6 +781,7 @@ export class WidgetsComponent implements OnInit {
 
           if (!isDelete) {
             this.utils.iAlert('info', 'Information', 'This Tile cannot be deleted because it is being used in Apps');
+            this.loaderShared.showSpinner(false);
             return;
           }
 
@@ -1790,26 +1791,35 @@ export class WidgetsComponent implements OnInit {
     }
   };
 
+  widgetsInit() {
+    if (!this.utils.isArray(this.blocks)) {
+      this.blocks = [];
+    }
+
+    this.setScrollList();
+    this.setOrganizations();
+    this.oid = Cookie.get('oid');
+    this.selectedOrganization = this.oid;
+    this.resetWidgetDatas(false);
+    this.getLanguages();
+    this.getThemes(this.selectedOrganization);
+    this.setWidgetRights();
+
+    if (this.organizations.length > 0) {
+      this.setWidgetDatas();
+    }
+  };
+
   ngOnInit() {
-    //this.setScrollOptions();
-    this.orgChangeDetect = this.route.queryParams.subscribe(params => {
-      if (!this.utils.isArray(this.blocks)) {
-        this.blocks = [];
-      }
+    this.orgChangeDetect = this.route.queryParams
+      .subscribe(params => {
+        let loadTime = Cookie.get('pageLoadTime');
 
-      this.setScrollList();
-      this.setOrganizations();
-      this.oid = Cookie.get('oid');
-      this.selectedOrganization = this.oid;
-      this.resetWidgetDatas(false);
-      this.getLanguages();
-      this.getThemes(this.selectedOrganization);
-      this.setWidgetRights();
-
-      if (this.organizations.length > 0) {
-        this.setWidgetDatas();
-      }
-    });
+        if (this.utils.isNullOrEmpty(loadTime) || (!this.utils.isNullOrEmpty(loadTime) && loadTime !== params["_dt"])) {
+          Cookie.set('pageLoadTime', params["_dt"]);
+          this.widgetsInit();
+        }
+      });
   };
 
   ngOnDestroy() {

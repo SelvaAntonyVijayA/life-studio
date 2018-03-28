@@ -52,10 +52,10 @@
       <button (click)="deletePage($event, true)" class="ili-btn page_delete">
         Delete
       </button>
-      <button (click)="menuBackgroundLibrary($event)" class="ili-btn page_setup">
+      <button (click)="menuBackgroundLibrary($event, 'menu')" class="ili-btn page_setup">
         Page Setup
       </button>
-      <button class="ili-btn default_page_setup">
+      <button (click)="menuBackgroundLibrary($event, 'default')" class="ili-btn default_page_setup">
         Default Page Setup
       </button>
     </div>
@@ -99,7 +99,7 @@
         <div *ngIf="!dragObj.hasOwnProperty('pageDragContainer')" class="page_main_panel">
           <div class="page_content_right">
             <div class="drag_buttons">
-              <button class="trigger_btn" title="Add Icon and recommended size 200x200">
+              <button (click)="imageArt($event, i)" class="trigger_btn" title="Add Icon and recommended size 200x200">
                 <span class="glyphicon glyphicon-upload"></span>
               </button>
               <button (click)="addDraggable(i)" class="trigger_btn" title="Add Space">
@@ -285,4 +285,7 @@
   </div>
 </div>
 
-<menu-background (menuBgContent)="menuBackground($event)" [pageData]="menuBgObj" [show-modal]="isMenuBg"></menu-background>
+<menu-background (menuBgContent)="menuBackground($event)" [pageId]="page.hasOwnProperty('obj')? page['obj']['_id']: '-1'"
+  [appId]="selectedApp" [locationId]="selectedLocation" [setupFrom]="setupFrom" [pageData]="menuBgObj" [show-modal]="isMenuBg"></menu-background>
+<image-library [popFrom]="'menuart'" [data]="imglibData" [isOpen]="isImageLibrary" [page]="'pages'" (onClose)="onImageLibraryClose($event)"
+  (onDone)="onImageLibraryResult($event)"></image-library>
