@@ -3,14 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { CommonService } from '../../services/common.service';
 import { Utils } from '../../helpers/utils';
-import { jqxWindowComponent } from '../../grid/jqwidgets-ts/angular_jqxwindow';
-import { jqxExpanderComponent } from '../../grid/jqwidgets-ts/angular_jqxexpander';
 import { jqxGridComponent } from '../../grid/jqwidgets-ts/angular_jqxgrid';
 import * as _ from 'underscore';
 import { LoaderSharedService } from '../../services/loader-shared.service';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormControl, Validators, FormBuilder, NgForm } from '@angular/forms';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { jqxButtonComponent } from '../../grid/jqwidgets-ts/angular_jqxbuttons';
 import { OrganizationsService } from '../../services/organizations.service';
 
 @Component({
@@ -22,8 +19,8 @@ export class EnginesComponent implements OnInit {
   @Input('orgtype') orgType: string;
   @Input('height') height: string;
   @Input('width') width: string;
-  @Input('engines') engines: Array<object> = [];
-  @Input('appIds') appIds: Array<string> = [];
+  @Input('engines') engines: any;
+  @Input('appIds') appIds: any;
   @Output('onEngineAssignDone') doneEvent = new EventEmitter();
   @ViewChild('engineGrid') engineGrid: jqxGridComponent;
   assignButton: jqwidgets.jqxButton;
@@ -95,20 +92,25 @@ export class EnginesComponent implements OnInit {
 
     this.assignButton.addEventHandler('click', (event: any) => {
       let enginesList = [];
-      let appIds = [];
       let publishing = false;
       let selectedIndexes = this.engineGrid.getselectedrowindexes();
 
-      _.each(selectedIndexes, function (data, index) {
-        let engineObj = this.engineGrid.getrowdata(this.rowIndex);
+      let length = selectedIndexes.length;
 
+      for (let i = 0; i < length; i++) {
+        let index = selectedIndexes[i];
+        var datarow = this.engineGrid.getrowdata(index);
 
-        if (engineObj.name.toLowerCase() == "publishing") {
+        var engineObj = {};
+        engineObj["id"] = datarow["_id"];
+        engineObj["name"] = datarow["name"];
+
+        if (datarow.name.toLowerCase() == "publishing") {
           publishing = true;
         }
 
         enginesList.push(engineObj);
-      });
+      }
 
       let obj = {};
       obj["engines"] = enginesList;
@@ -154,7 +156,27 @@ export class EnginesComponent implements OnInit {
 
   onRowSelect(event: any): void {
     this.rowIndex = event.args.rowindex;
-    var data = event.args.row;
+    let rowdata = this.engineGrid.getrowdata(this.rowIndex);
+
+    var engine = "";
+    if (rowdata["name"].toLowerCase() == "basic stream" || rowdata["name"].toLowerCase() == "advanced stream") {
+      engine = rowdata["name"].toLowerCase() == "basic stream" ? "Advanced Stream" : "Basic Stream";
+
+      this.selectUnselectRowbyColumn(engine);
+    }
+  };
+
+  selectUnselectRowbyColumn(cellValue: string) {
+    var rows = this.engineGrid.getrows();
+    var rowsCount = rows.length;
+
+    for (var i = 0; i < rowsCount; i++) {
+      var value = this.engineGrid.getcellvalue(i, "name");
+      if (value == cellValue) {
+        this.engineGrid.unselectrow(i)
+        break;
+      };
+    };
   };
 
   onRowUnselect(event: any): void {
@@ -178,16 +200,28 @@ export class EnginesComponent implements OnInit {
   onBindingComplete(event: any): void {
     var indexes = [];
     this.engineGrid.clearselection();
+    let length = this.engines.length;
 
-    _.each(this.engines, function (data, index) {
-      //let rIndex = this.engineGrid.getrowboundindexbyid(data["_id"]);
+    for (let i = 0; i < length; i++) {
+      let record = this.engines[i];
+      let rIndex = this.engineGrid.getrowboundindexbyid(record["id"]);
 
-      // if (rIndex > 0) {
-      // indexes.push(rIndex)
-      //}
+      if (rIndex > 0) {
+        indexes.push(rIndex);
+
+        this.engineGrid.selectrow(rIndex);
+      }
+    }
+
+    /*_.each(this.engines, function (data, index) {
+      let rIndex = this.engineGrid.getrowboundindexbyid(data["_id"]);
+
+       if (rIndex > 0) {
+       indexes.push(rIndex)
+      }
     });
 
-    this.engineGrid.selectedrowindexes(indexes)
+    this.engineGrid.selectedrowindexes(indexes)*/
   }
 
   ngOnChanges(cHObj: any) {
@@ -218,17 +252,5 @@ export class EnginesComponent implements OnInit {
   };
 
   ngOnInit() {
-  }
-
-  ngAfterViewInit(): void {
-    var indexes = [];
-
-    _.each(this.engines, function (data, index) {
-      let rIndex = this.engineGrid.getrowboundindexbyid(data["_id"]);
-
-      if (rIndex > 0) {
-        indexes.push(rIndex)
-      }
-    });
   }
 }

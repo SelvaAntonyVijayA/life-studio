@@ -175,7 +175,7 @@ export class OrganizationsComponent implements OnInit {
         this.orgId = "";
         this.org = { name: '', packageId: '', type_id: '' };
         this.addOrg.setTitle("Add Organization");
-        this.addOrg.position({ x: 100, y: 120 });
+        this.addOrg.position({ x: 85, y: 100 });
         this.addOrg.open();
       }
     });
@@ -244,7 +244,7 @@ export class OrganizationsComponent implements OnInit {
     this.isOrgGrid = true;
     this.updateButtons('Edit');
     this.addOrg.setTitle("Update Organization");
-    this.addOrg.position({ x: 100, y: 120 });
+    this.addOrg.position({ x: 85, y: 100 });
     this.addOrg.open();
   };
 
@@ -253,7 +253,7 @@ export class OrganizationsComponent implements OnInit {
   };
 
   onEndAppLoad(appObj: any): void {
-    this.appIds = appObj["appIds"]
+    this.appIds = appObj["ids"];
     this.isAppGrid = true;
   };
 
@@ -460,7 +460,7 @@ export class OrganizationsComponent implements OnInit {
     };
 
     if (!this.dataAdapter) {
-      this.dataAdapter = new jqx.dataAdapter(this.source);
+      this.orgGrid.source(this.source);
     } else {
       this.orgGrid.clearselection();
       this.orgGrid.source(this.dataAdapter);
@@ -477,6 +477,10 @@ export class OrganizationsComponent implements OnInit {
         this.loaderShared.showSpinner(false);
       }
     });
+  };
+
+  ngOnChanges(cHObj: any) {
+    console.log(cHObj)
   };
 
   ngOnDestroy() {

@@ -290,7 +290,6 @@ export class AppgridComponent implements OnInit {
   };
 
   onBindingComplete(event: any): void {
-    alert('app complete')
     this.appGrid.selectrow(0);
     var rowID = this.appGrid.getrowid(0);
     let appDatas = this.appGrid.getrows();
