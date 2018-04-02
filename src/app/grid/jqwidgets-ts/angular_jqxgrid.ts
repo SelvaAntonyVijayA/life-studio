@@ -1541,7 +1541,6 @@ export class jqxGridComponent implements OnChanges
       return this.host.jqxGrid('savestate');
    }
 
-
    // jqxGridComponent events
    @Output() onBindingcomplete = new EventEmitter();
    @Output() onColumnresized = new EventEmitter();

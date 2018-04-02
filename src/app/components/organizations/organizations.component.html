@@ -12,37 +12,37 @@
     </div>
     <div style='margin-top: 2px; float:left;margin-left:2px;'>
       <div *ngIf="isOrgGrid">
-        <app-grid [id]="orgId" (endAppLoad)="onEndAppLoad($event)" [orgtype]="type" [width]="620" [height]="415"></app-grid>
+        <app-grid [orgId]="orgId" (onSelectApp)="onSelectApp($event)" (endAppLoad)="onEndAppLoad($event)" [orgtype]="type" [width]="620" [height]="415"></app-grid>
       </div>
     </div>
     <div style='margin-top: 2px; float:left;margin-left:2px;'>
-      <div *ngIf="isAppGrid">
-        <engines-grid [id]="orgId" [appIds]="appIds" (onEngineAssignDone)="onEngineAssignDone($event)" [orgtype]="type" [engines]="engines" [width]="164" [height]="415"></engines-grid>
+      <div *ngIf="isEngineGrid">
+        <engines-grid [orgId]="orgId" [appIds]="appIds" (onEngineAssignDone)="onEngineAssignDone($event)" [orgtype]="type" [engines]="engines" [width]="164" [height]="415"></engines-grid>
       </div>
     </div>
     <div style='margin-left:1px; margin-top: 5px;float:left;'>
       <div *ngIf="isAppGrid">
-        <location-grid [id]="orgId" [orgtype]="type" [width]="620" [height]="415"></location-grid>
+        <location-grid [orgId]="orgId" [appId]="appId" [orgtype]="type" [width]="620" [height]="415"></location-grid>
       </div>
     </div>
     <div style='margin-top: 5px; float:left;margin-left:2px;'>
       <div *ngIf="isAppGrid">
-        <integration-grid [id]="orgId" [orgtype]="type" [width]="620" [height]="415"></integration-grid>
+        <integration-grid [orgId]="orgId" [orgtype]="type" [width]="620" [height]="415"></integration-grid>
       </div>
     </div>
     <div style='margin-top: 5px; float:left;margin-left:2px;'>
       <div *ngIf="isAppGrid">
-        <integrationwidgets-grid [id]="orgId" [orgtype]="type" [width]="620" [height]="415"></integrationwidgets-grid>
+        <integrationwidgets-grid [orgId]="orgId" [orgtype]="type" [width]="620" [height]="415"></integrationwidgets-grid>
       </div>
     </div>
     <div style='margin-left: 1px; margin-top:5px;float:left;'>
       <div *ngIf="isAppGrid">
-        <stream-grid [id]="orgId" [orgtype]="type" [width]="620" [height]="415"></stream-grid>
+        <stream-grid [orgId]="orgId" [orgtype]="type" [width]="620" [height]="415"></stream-grid>
       </div>
     </div>
     <div style='margin-top:5px; float:left;margin-left:2px;'>
       <div *ngIf="isAppGrid">
-        <language-grid [id]="orgId" [orgtype]="type" [width]="620" [height]="415"></language-grid>
+        <language-grid [orgId]="orgId" [orgtype]="type" [width]="620" [height]="415"></language-grid>
       </div>
     </div>
   </div>

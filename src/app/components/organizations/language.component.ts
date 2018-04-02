@@ -16,7 +16,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
   templateUrl: './language.component.html'
 })
 export class LanguageComponent implements OnInit {
-  @Input('id') organizationId: string;
+  @Input('orgId') organizationId: string;
   @Input('orgtype') orgType: string;
   @Input('height') height: string;
   @Input('width') width: string;

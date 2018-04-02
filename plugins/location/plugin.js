@@ -42,7 +42,6 @@ var save = function (req, res, next) {
     orgId = req.params.orgid;
   }
 
-
   $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.location, location, function (result) {
     location = {};
     location._id = result;
@@ -51,14 +50,14 @@ var save = function (req, res, next) {
       $access._getAccess(orgType, function (objAccess) {
         if (objAccess.length > 0) {
           _processLocationByType(objAccess[0], orgId, appId, location, function (obj) {
-            req.send(location);
+            res.send(location);
           });
         } else {
-          req.send(location);
+          res.send(location);
         }
       });
     } else {
-      req.send(location);
+      res.send(location);
     }
   });
 };
@@ -66,13 +65,14 @@ var save = function (req, res, next) {
 var remove = function (req, res, next) {
   let query = {};
   let options = {};
+  let locToRemove = {};
 
   if (!__util.isNullOrEmpty(req.params.id)) {
     query._id = req.params.id;
   }
 
-  if (!__util.isEmptyObject(res.body.form_data)) {
-    let locToRemove = res.body.form_data;
+  if (!__util.isEmptyObject(req.body.form_data)) {
+    locToRemove = req.body.form_data;
     query._id = locToRemove._id;
   }
 
@@ -86,24 +86,24 @@ var remove = function (req, res, next) {
       });
     }
 
-    req.send(obj);
+    res.send(obj);
   });
 };
 
 var update = function (req, res, next) {
-  let userId = {};
+  let obj = {};
   let query = {};
   let options = {};
   query._id = req.params.id;
-  userId = res.body.form_data;
+  obj = req.body.form_data;
 
-  if (!__util.isEmptyObject(userId)) {
-    userId.dateUpdated = $general.getIsoDate();
+  if (!__util.isEmptyObject(obj)) {
+    obj.dateUpdated = $general.getIsoDate();
   }
 
-  $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.location, query, options, userId, function (result) {
+  $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.location, query, options, obj, function (result) {
 
-    req.send(query);
+    res.send(query);
   });
 };
 
@@ -168,7 +168,7 @@ var locationByUserId = function (req, res, next) {
         });
       }
     }], function (error, result) {
-      req.send(result);
+      res.send(result);
     });
 };
 

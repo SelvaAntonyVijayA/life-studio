@@ -11,12 +11,16 @@ import * as _ from 'underscore';
 import { LoaderSharedService } from '../../services/loader-shared.service';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormControl, Validators, FormBuilder, NgForm } from '@angular/forms';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { LanguageService } from '../../services/language.service';
+import { EnginesService } from '../../services/engines.service';
+import { LocationService } from '../../services/location.service';
 
 @Component({
   selector: 'app-organizations',
   templateUrl: './organizations.component.html',
   styleUrls: ['./organizations.component.css'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  providers: [LanguageService, LocationService, LanguageService]
 })
 export class OrganizationsComponent implements OnInit {
   constructor(private route: ActivatedRoute,
@@ -36,9 +40,9 @@ export class OrganizationsComponent implements OnInit {
 
   rowIndex: number;
   isOrgGrid: boolean = false;
+  isEngineGrid: boolean = false;
   isAppGrid: boolean = false;
   orgId: string;
-
   type: string;
   org: object = { type: "", name: '', type_id: '', packageId: "" };
   myAddButton: jqwidgets.jqxButton;
@@ -53,6 +57,7 @@ export class OrganizationsComponent implements OnInit {
   typeAdaptor: any;
   datafields: any;
   engines: Array<object> = [];
+  appId: string = "";
   appIds: Array<string> = [];
   fields: any = [
     { name: '_id', type: 'string' },
@@ -142,8 +147,11 @@ export class OrganizationsComponent implements OnInit {
       fragment.appendChild(buttons[i]);
     }
 
-    container.appendChild(fragment)
-    toolBar[0].appendChild(container);
+    container.appendChild(fragment);
+
+    if (toolBar && toolBar.length > 0) {
+      toolBar[0].appendChild(container);
+    }
 
     let addButtonOptions: jqwidgets.ButtonOptions =
       {
@@ -254,13 +262,20 @@ export class OrganizationsComponent implements OnInit {
 
   onEndAppLoad(appObj: any): void {
     this.appIds = appObj["ids"];
-    this.isAppGrid = true;
+    this.isEngineGrid = true;
   };
+
 
   onEngineAssignDone(engines: any): void {
     this.engines = engines;
     this.orgGrid.source(this.dataAdapter);
   };
+
+  onSelectApp(appObj: any) {
+    this.appIds = appObj["ids"];
+    this.appId = appObj["_id"];
+    this.isAppGrid = true;
+  }
 
   updateButtons(action: string): void {
     switch (action) {
@@ -480,7 +495,6 @@ export class OrganizationsComponent implements OnInit {
   };
 
   ngOnChanges(cHObj: any) {
-    console.log(cHObj)
   };
 
   ngOnDestroy() {

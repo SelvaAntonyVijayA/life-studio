@@ -15,7 +15,7 @@ import { OrganizationsService } from '../../services/organizations.service';
   templateUrl: './engines.component.html'
 })
 export class EnginesComponent implements OnInit {
-  @Input('id') organizationId: string;
+  @Input('orgId') organizationId: string;
   @Input('orgtype') orgType: string;
   @Input('height') height: string;
   @Input('width') width: string;

@@ -17,7 +17,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 })
 
 export class StreamComponent implements OnInit {
-  @Input('id') organizationId: string;
+  @Input('orgId') organizationId: string;
   @Input('orgtype') orgType: string;
   @Input('height') height: string;
   @Input('width') width: string;

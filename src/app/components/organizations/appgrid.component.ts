@@ -18,7 +18,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
   encapsulation: ViewEncapsulation.None
 })
 export class AppgridComponent implements OnInit {
-  @Input('id') organizationId: string;
+  @Input('orgId') organizationId: string;
   @Input('orgtype') orgType: string;
   @Input('height') height: string;
   @Input('width') width: string;
@@ -26,6 +26,7 @@ export class AppgridComponent implements OnInit {
   @ViewChild('appWindow') appWindow: jqxWindowComponent;
   @ViewChild('appForm') appForm: NgForm;
   @Output('endAppLoad') onEndAppLoad = new EventEmitter();
+  @Output('onSelectApp') onSelectApp= new EventEmitter();
   dataAdapter: any;
   source: any;
   rowIndex: number;
@@ -33,8 +34,6 @@ export class AppgridComponent implements OnInit {
   app: object = { name: "", authenticated: "-1", pin: "", googleAnalytics: "", alerts: "", chat: "-1" };
   myAddButton: jqwidgets.jqxButton;
   myDeleteButton: jqwidgets.jqxButton;
-  chatList: any;
-  authList: any;
 
   constructor(private route: ActivatedRoute,
     private cms: CommonService,
@@ -262,21 +261,37 @@ export class AppgridComponent implements OnInit {
     ];
 
   rowdoubleclick(event: any): void {
-    var args = event.args;
+    let args = event.args;
     this.rowIndex = args.rowindex;
-    var datarow = this.appGrid.getrowdata(this.rowIndex);
+    let datarow = this.appGrid.getrowdata(this.rowIndex);
     this.assingDataToObject(datarow);
+
+
+
     this.updateButtons('Edit');
     this.appWindow.setTitle("Update App");
     this.appWindow.position({ x: 600, y: 90 });
     this.appWindow.open();
+    this.emitSelectEvent();
   };
+
+  emitSelectEvent() {
+    let rowID = this.appGrid.getrowid(this.rowIndex);
+    let appDatas = this.appGrid.getrows();
+    let ids = _.pluck(appDatas, '_id');
+    let obj = {};
+    obj["_id"] = rowID;
+    obj["ids"] = ids;
+
+    this.onSelectApp.emit(obj);
+  }
 
   onRowSelect(event: any): void {
     this.rowIndex = event.args.rowindex;
-    var data = event.args.row;
+    let data = event.args.row;
     this.assingDataToObject(data);
-   // this.updateButtons('Select');
+    this.emitSelectEvent();
+    // this.updateButtons('Select');
   };
 
   onRowUnselect(event: any): void {
