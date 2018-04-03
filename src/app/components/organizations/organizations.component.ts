@@ -14,13 +14,14 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { LanguageService } from '../../services/language.service';
 import { EnginesService } from '../../services/engines.service';
 import { LocationService } from '../../services/location.service';
+import { IntegrationService } from '../../services/integration.service';
 
 @Component({
   selector: 'app-organizations',
   templateUrl: './organizations.component.html',
   styleUrls: ['./organizations.component.css'],
   encapsulation: ViewEncapsulation.None,
-  providers: [LanguageService, LocationService, LanguageService]
+  providers: [LanguageService, LocationService, LanguageService, IntegrationService]
 })
 export class OrganizationsComponent implements OnInit {
   constructor(private route: ActivatedRoute,
@@ -57,7 +58,10 @@ export class OrganizationsComponent implements OnInit {
   typeAdaptor: any;
   datafields: any;
   engines: Array<object> = [];
+  widgetIds: Array<string> = [];
   appId: string = "";
+  locationId: string = "";
+  integrationId: string = "";
   appIds: Array<string> = [];
   fields: any = [
     { name: '_id', type: 'string' },
@@ -265,16 +269,28 @@ export class OrganizationsComponent implements OnInit {
     this.isEngineGrid = true;
   };
 
-
   onEngineAssignDone(engines: any): void {
     this.engines = engines;
     this.orgGrid.source(this.dataAdapter);
+  };
+
+  onIntegrationWidgetDone(widgetIds: any): void {
+    this.widgetIds = widgetIds;
   };
 
   onSelectApp(appObj: any) {
     this.appIds = appObj["ids"];
     this.appId = appObj["_id"];
     this.isAppGrid = true;
+  }
+
+  onSelectLocation(obj: any) {
+    this.locationId = obj["_id"];
+  }
+
+  onSelectIntegration(obj: any) {
+    this.integrationId = obj["_id"];
+    this.widgetIds = obj["widgetIds"];
   }
 
   updateButtons(action: string): void {
@@ -302,7 +318,7 @@ export class OrganizationsComponent implements OnInit {
     this.orgService.organizationTypeList()
       .then(orgTypes => {
         this.organizationTypes = orgTypes;
-        this.organizationTypes.push({ _id: "", name: "Select type" })
+        this.organizationTypes.unshift({ _id: "", name: "Select type" })
       });
   };
 
@@ -310,7 +326,7 @@ export class OrganizationsComponent implements OnInit {
     this.orgService.getPackages()
       .then(packages => {
         this.packages = packages;
-        this.packages.push({ _id: "", name: "Select package" })
+        this.packages.unshift({ _id: "", name: "Select package" })
       });
   };
 
@@ -431,7 +447,7 @@ export class OrganizationsComponent implements OnInit {
       });
 
       this.packages = this.packageAdaptor.records;
-      this.packages.push({ _id: "", name: "Select package" });
+      this.packages.unshift({ _id: "", name: "Select package" });
     }
 
     if (!this.typeAdaptor) {
@@ -453,7 +469,7 @@ export class OrganizationsComponent implements OnInit {
       });
 
       this.organizationTypes = this.typeAdaptor.records;
-      this.organizationTypes.push({ _id: "", name: "Select type" });
+      this.organizationTypes.unshift({ _id: "", name: "Select type" });
     }
 
     this.datafields = [

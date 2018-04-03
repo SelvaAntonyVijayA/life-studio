@@ -1,7 +1,7 @@
 var settingsConf;
 
 var init = function (app) {
-  settingsConf = app.get("integration");
+  settingsConf = app.get('settings');
 };
 
 var save = function (req, res, next) {
@@ -22,7 +22,7 @@ var list = function (req, res, next) {
     query = req.body.form_data;
   }
 
-  $integrationtype.getIntegrationTypes(query, function (result) {
+  getIntegrationTypes(query, function (result) {
     res.send(result);
   });
 };

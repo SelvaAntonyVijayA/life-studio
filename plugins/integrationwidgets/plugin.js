@@ -1,7 +1,7 @@
 var settingsConf;
 
 var init = function (app) {
-  settingsConf = app.get("integration");
+  settingsConf = app.get('settings');
 };
 
 var save = function (req, res, next) {

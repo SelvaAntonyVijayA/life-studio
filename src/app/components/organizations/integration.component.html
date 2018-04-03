@@ -1,3 +1,40 @@
 <mat-toolbar style="height:35px;color: #000000; padding: 0 10px;">
   <span>3rd Party Integration</span>
 </mat-toolbar>
+
+<jqxGrid #integrationGrid [source]="dataAdapter" [width]="width" [altrows]="true" [height]="height" [columns]="columns" [toolbarheight]="35"
+  [pageable]="false" [sortable]="true" [showstatusbar]="false" [showheader]="true" [showtoolbar]="true" [rendertoolbar]="renderToolbar"
+  (onRowselect)="onRowSelect($event)" (onRowunselect)="onRowUnselect($event)" (onRowdoubleclick)="rowdoubleclick($event)" [selectionmode]="'singlerow'"
+  (onBindingcomplete)="onBindingComplete($event)">
+</jqxGrid>
+
+<jqxWindow #integrationWindow (onOpen)="addWindowOpen($event)" (onClose)="addWindowClose($event)" [minHeight]="320" [maxHeight]="700"
+  [width]="400" [resizable]="false" [isModal]="true" [autoOpen]="false" [modalOpacity]="'0.1'">
+  <div>Edit</div>
+  <div style="overflow: hidden;height:100%;">
+    <form (ngSubmit)="onSubmit()" #integrationForm="ngForm">
+      <div>
+        <div class="form-group">
+          <label for="userName">User Name</label>
+          <input id="userName" name="userName" class="form-control input-sm" required [(ngModel)]="inteObj.userName" #userName="ngModel">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" name="password" class="form-control input-sm" required [(ngModel)]="inteObj.password" #password="ngModel">
+        </div>
+        <div class="form-group">
+          <label for="code">Code</label>
+          <input id="code" name="code" class="form-control input-sm" [(ngModel)]="inteObj.code" #code="ngModel">
+        </div>
+        <div class="form-group">
+          <label for="type">Type</label>
+          <select id="type" name="type" class="form-control input-sm" [(ngModel)]="inteObj.typeId" #typeId="ngModel">
+            <option *ngFor="let s of integrationTypes" [value]="s._id">{{s.name}}</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-default btn-xs" [disabled]="integrationForm.invalid">Submit</button>
+        <button type="button" class="btn btn-default btn-xs" (click)="onFormReset()">Reset</button>
+      </div>
+    </form>
+  </div>
+</jqxWindow>

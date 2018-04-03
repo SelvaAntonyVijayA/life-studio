@@ -10,7 +10,13 @@
 /node_modules
 
 # images
-/src/assets/img
+/src/assets/img/apps
+/src/assets/img/emoticons
+/src/assets/img/groups
+/src/assets/img/orgs
+/src/assets/img/profile
+/src/assets/img/streams
+/src/assets/img/tile
 
 # log
 /log

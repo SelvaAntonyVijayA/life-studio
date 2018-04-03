@@ -32,6 +32,7 @@ export class LocationComponent implements OnInit {
   @ViewChild('locationWindow') locationWindow: jqxWindowComponent;
   @ViewChild('locationForm') locationForm: NgForm;
   locationId: string;
+  @Output('onSelectLocation') onSelectLocation = new EventEmitter();
 
   statusSource: any =
     {
@@ -209,11 +210,11 @@ export class LocationComponent implements OnInit {
         text: '_id', hidden: true, datafield: '_id', sortable: false
       },
       {
-        text: 'Name', datafield: 'name', width: 100, sortable: true, cellsalign: 'left',
+        text: 'Name', datafield: 'name', width: 90, sortable: true, cellsalign: 'left',
         align: 'center'
       },
       {
-        text: 'Group', datafield: 'groupname', width: 100, sortable: true, cellsalign: 'left',
+        text: 'Group', datafield: 'groupname', width: 60, sortable: true, cellsalign: 'left',
         align: 'center'
       },
       {
@@ -221,27 +222,27 @@ export class LocationComponent implements OnInit {
         cellsalign: 'left', align: 'center'
       },
       {
-        text: 'Address', datafield: 'address', width: 100, sortable: true,
+        text: 'Address', datafield: 'address', width: 90, sortable: true,
         cellsalign: 'left', align: 'center'
       },
       {
-        text: 'City', datafield: 'city', width: 150, sortable: true, cellsalign: 'left',
+        text: 'City', datafield: 'city', width: 60, sortable: true, cellsalign: 'left',
         align: 'center'
       },
       {
         text: 'Longitude', datafield: 'longitude', sortable: true, cellsalign: 'left', align: 'center',
-        width: 60
+        width: 65
       },
       {
         text: 'Latitude', datafield: 'latitude', sortable: true, cellsalign: 'left', align: 'center',
-        width: 60
+        width: 65
       },
       {
         text: 'Radius', datafield: 'radius', sortable: true, cellsalign: 'left', align: 'center',
         width: 60
       }, {
         text: 'Status', datafield: 'sname', sortable: true, cellsalign: 'left', align: 'center',
-        width: 60
+        width: 50
       },
       {
         text: 'appId', hidden: true, datafield: 'appId', sortable: false
@@ -254,6 +255,7 @@ export class LocationComponent implements OnInit {
     this.rowIndex = args.rowindex;
     var datarow = this.locationGrid.getrowdata(this.rowIndex);
     this.assingDataToObject(datarow);
+    this.emitSelectEvent();
     this.updateButtons('Edit');
     this.locationWindow.setTitle("Update Location");
     this.locationWindow.position({ x: 150, y: 40 });
@@ -264,20 +266,21 @@ export class LocationComponent implements OnInit {
     this.rowIndex = event.args.rowindex;
     var data = event.args.row;
     this.assingDataToObject(data);
+    this.emitSelectEvent();
 
-    var rowID = this.locationGrid.getrowid(this.rowIndex);
-    let appDatas = this.locationGrid.getrows();
-    let ids = _.pluck(appDatas, '_id');
-    let obj = {};
-    obj["_id"] = rowID;
-    obj["ids"] = ids;
-    this.locationId = rowID;
-
-    //this.onEndAppLoad.emit(obj);
     setTimeout(() => {
       this.updateButtons('Select');
     }, 0);
   };
+
+  emitSelectEvent() {
+    let rowID = this.locationGrid.getrowid(this.rowIndex);
+    let obj = {};
+    obj["_id"] = rowID;
+    this.locationId = rowID;
+
+    this.onSelectLocation.emit(obj);
+  }
 
   onRowUnselect(event: any): void {
   };
@@ -372,23 +375,25 @@ export class LocationComponent implements OnInit {
   };
 
   updateButtons(action: string): void {
-    switch (action) {
-      case 'Select':
-        this.myAddButton.setOptions({ disabled: false });
-        this.myDeleteButton.setOptions({ disabled: false });
-        break;
-      case 'Unselect':
-        this.myAddButton.setOptions({ disabled: false });
-        this.myDeleteButton.setOptions({ disabled: true });
-        break;
-      case 'Edit':
-        this.myAddButton.setOptions({ disabled: true });
-        this.myDeleteButton.setOptions({ disabled: true });
-        break;
-      case 'End Edit':
-        this.myAddButton.setOptions({ disabled: false });
-        this.myDeleteButton.setOptions({ disabled: false });
-        break;
+    if (this.myAddButton) {
+      switch (action) {
+        case 'Select':
+          this.myAddButton.setOptions({ disabled: false });
+          this.myDeleteButton.setOptions({ disabled: false });
+          break;
+        case 'Unselect':
+          this.myAddButton.setOptions({ disabled: false });
+          this.myDeleteButton.setOptions({ disabled: true });
+          break;
+        case 'Edit':
+          this.myAddButton.setOptions({ disabled: true });
+          this.myDeleteButton.setOptions({ disabled: true });
+          break;
+        case 'End Edit':
+          this.myAddButton.setOptions({ disabled: false });
+          this.myDeleteButton.setOptions({ disabled: false });
+          break;
+      }
     }
   };
 

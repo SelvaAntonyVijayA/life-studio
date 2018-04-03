@@ -12,37 +12,42 @@
     </div>
     <div style='margin-top: 2px; float:left;margin-left:2px;'>
       <div *ngIf="isOrgGrid">
-        <app-grid [orgId]="orgId" (onSelectApp)="onSelectApp($event)" (endAppLoad)="onEndAppLoad($event)" [orgtype]="type" [width]="620" [height]="415"></app-grid>
+        <app-grid [orgId]="orgId" (onSelectApp)="onSelectApp($event)" (endAppLoad)="onEndAppLoad($event)" [orgtype]="type" [width]="620"
+          [height]="415"></app-grid>
       </div>
     </div>
     <div style='margin-top: 2px; float:left;margin-left:2px;'>
       <div *ngIf="isEngineGrid">
-        <engines-grid [orgId]="orgId" [appIds]="appIds" (onEngineAssignDone)="onEngineAssignDone($event)" [orgtype]="type" [engines]="engines" [width]="164" [height]="415"></engines-grid>
+        <engines-grid [orgId]="orgId" [appIds]="appIds" (onEngineAssignDone)="onEngineAssignDone($event)" [orgtype]="type" [engines]="engines"
+          [width]="164" [height]="415"></engines-grid>
       </div>
     </div>
     <div style='margin-left:1px; margin-top: 5px;float:left;'>
       <div *ngIf="isAppGrid">
-        <location-grid [orgId]="orgId" [appId]="appId" [orgtype]="type" [width]="620" [height]="415"></location-grid>
+        <location-grid [orgId]="orgId" (onSelectLocation)="onSelectLocation($event)" [appId]="appId" [orgtype]="type" [width]="650"
+          [height]="350"></location-grid>
       </div>
     </div>
     <div style='margin-top: 5px; float:left;margin-left:2px;'>
       <div *ngIf="isAppGrid">
-        <integration-grid [orgId]="orgId" [orgtype]="type" [width]="620" [height]="415"></integration-grid>
+        <integration-grid [orgId]="orgId" [widgetIds]="widgetIds" (onSelectIntegration)="onSelectIntegration($event)" [orgtype]="type" [appId]="appId" [width]="375"
+          [height]="350"></integration-grid>
       </div>
     </div>
     <div style='margin-top: 5px; float:left;margin-left:2px;'>
       <div *ngIf="isAppGrid">
-        <integrationwidgets-grid [orgId]="orgId" [orgtype]="type" [width]="620" [height]="415"></integrationwidgets-grid>
+        <integrationwidgets-grid [appId]="appId" [integrationId]="integrationId" (onIntegrationWidgetDone)="onIntegrationWidgetDone($event)"
+          [widgetIds]="widgetIds" [orgId]="orgId" [orgtype]="type" [width]="164" [height]="350"></integrationwidgets-grid>
       </div>
     </div>
     <div style='margin-left: 1px; margin-top:5px;float:left;'>
       <div *ngIf="isAppGrid">
-        <stream-grid [orgId]="orgId" [orgtype]="type" [width]="620" [height]="415"></stream-grid>
+        <stream-grid [orgId]="orgId" [orgtype]="type" [width]="620" [height]="350"></stream-grid>
       </div>
     </div>
     <div style='margin-top:5px; float:left;margin-left:2px;'>
       <div *ngIf="isAppGrid">
-        <language-grid [orgId]="orgId" [orgtype]="type" [width]="620" [height]="415"></language-grid>
+        <language-grid [orgId]="orgId" [orgtype]="type" [width]="620" [height]="350"></language-grid>
       </div>
     </div>
   </div>
@@ -68,13 +73,13 @@
         </div>
         <div class="form-group">
           <label for="type">Type</label>
-          <select id="type" name="type" class="form-control input-sm" [(ngModel)]="org.type_id" #power="ngModel">
+          <select id="type" name="type" class="form-control input-sm" [(ngModel)]="org.type_id" #type_id="ngModel">
             <option *ngFor="let t of organizationTypes" [value]="t._id">{{t.name}}</option>
           </select>
         </div>
         <div class="form-group">
           <label for="package">Package</label>
-          <select id="package" name="package" class="form-control input-sm" [(ngModel)]="org.packageId" #power="ngModel">
+          <select id="package" name="package" class="form-control input-sm" [(ngModel)]="org.packageId" #packageId="ngModel">
             <option *ngFor="let p of packages" [value]="p._id">{{p.name}}</option>
           </select>
         </div>

@@ -26,7 +26,7 @@ export class AppgridComponent implements OnInit {
   @ViewChild('appWindow') appWindow: jqxWindowComponent;
   @ViewChild('appForm') appForm: NgForm;
   @Output('endAppLoad') onEndAppLoad = new EventEmitter();
-  @Output('onSelectApp') onSelectApp= new EventEmitter();
+  @Output('onSelectApp') onSelectApp = new EventEmitter();
   dataAdapter: any;
   source: any;
   rowIndex: number;
@@ -264,15 +264,16 @@ export class AppgridComponent implements OnInit {
     let args = event.args;
     this.rowIndex = args.rowindex;
     let datarow = this.appGrid.getrowdata(this.rowIndex);
-    this.assingDataToObject(datarow);
 
+    if (!this.utils.isEmptyObject(datarow)) {
+      this.assingDataToObject(datarow);
 
-
-    this.updateButtons('Edit');
-    this.appWindow.setTitle("Update App");
-    this.appWindow.position({ x: 600, y: 90 });
-    this.appWindow.open();
-    this.emitSelectEvent();
+      this.updateButtons('Edit');
+      this.appWindow.setTitle("Update App");
+      this.appWindow.position({ x: 600, y: 90 });
+      this.appWindow.open();
+      this.emitSelectEvent();
+    }
   };
 
   emitSelectEvent() {
@@ -289,8 +290,11 @@ export class AppgridComponent implements OnInit {
   onRowSelect(event: any): void {
     this.rowIndex = event.args.rowindex;
     let data = event.args.row;
-    this.assingDataToObject(data);
-    this.emitSelectEvent();
+
+    if (!this.utils.isEmptyObject(data)) {
+      this.assingDataToObject(data);
+      this.emitSelectEvent();
+    }
     // this.updateButtons('Select');
   };
 
@@ -357,23 +361,26 @@ export class AppgridComponent implements OnInit {
   };
 
   updateButtons(action: string): void {
-    switch (action) {
-      case 'Select':
-        this.myAddButton.setOptions({ disabled: false });
-        this.myDeleteButton.setOptions({ disabled: false });
-        break;
-      case 'Unselect':
-        this.myAddButton.setOptions({ disabled: false });
-        this.myDeleteButton.setOptions({ disabled: true });
-        break;
-      case 'Edit':
-        this.myAddButton.setOptions({ disabled: true });
-        this.myDeleteButton.setOptions({ disabled: true });
-        break;
-      case 'End Edit':
-        this.myAddButton.setOptions({ disabled: false });
-        this.myDeleteButton.setOptions({ disabled: false });
-        break;
+    if (this.myAddButton) {
+      switch (action) {
+        case 'Select':
+
+          this.myAddButton.setOptions({ disabled: false });
+          this.myDeleteButton.setOptions({ disabled: false });
+          break;
+        case 'Unselect':
+          this.myAddButton.setOptions({ disabled: false });
+          this.myDeleteButton.setOptions({ disabled: true });
+          break;
+        case 'Edit':
+          this.myAddButton.setOptions({ disabled: true });
+          this.myDeleteButton.setOptions({ disabled: true });
+          break;
+        case 'End Edit':
+          this.myAddButton.setOptions({ disabled: false });
+          this.myDeleteButton.setOptions({ disabled: false });
+          break;
+      }
     }
   };
 
