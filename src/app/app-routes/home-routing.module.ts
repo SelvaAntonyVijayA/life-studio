@@ -19,6 +19,7 @@ import { OrganizationsComponent } from '../components/organizations/organization
 import { StudiousersComponent } from '../components/studiousers/studiousers.component';
 import { SettingsComponent } from '../components/settings/settings.component';
 import { UserprofileComponent } from '../components/userprofile/userprofile.component';
+import { ProfilebuilderComponent } from '../components/profilebuilder/profilebuilder.component';
 
 const homeRoutes: Routes = [
   {
@@ -88,6 +89,10 @@ const homeRoutes: Routes = [
       {
         path: 'userprofile',
         component: UserprofileComponent
+      },
+      {
+        path: 'profilebuilder',
+        component: ProfilebuilderComponent
       }
     ]
   }
