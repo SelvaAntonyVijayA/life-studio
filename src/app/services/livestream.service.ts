@@ -43,6 +43,36 @@ export class LivestreamService {
       .catch(this.handleError);
   };
 
+  saveStream(obj: any) {
+    var url = '/livestream/save';
+
+    return this.http
+      .post(url, JSON.stringify({ "form_data": obj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  updateStream(id: string, obj: any) {
+    var url = "/livestream/update/" + id;
+
+    return this.http
+      .post(url, JSON.stringify({ "form_data": obj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  deleteStream(id: string) {
+    var url = '/livestream/remove/' + id;
+
+    return this.http
+      .get(url)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
 
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);

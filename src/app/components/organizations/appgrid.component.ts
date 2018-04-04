@@ -27,6 +27,7 @@ export class AppgridComponent implements OnInit {
   @ViewChild('appForm') appForm: NgForm;
   @Output('endAppLoad') onEndAppLoad = new EventEmitter();
   @Output('onSelectApp') onSelectApp = new EventEmitter();
+  @Input('languages') languages: any;
   dataAdapter: any;
   source: any;
   rowIndex: number;
@@ -195,9 +196,9 @@ export class AppgridComponent implements OnInit {
     { name: 'autoApprove', type: 'string' },
     { name: 'pin', type: 'string' },
     { name: 'googleAnalytics', type: 'string' },
-    { name: 'alerts', type: 'string' },
-    { name: 'languages', type: 'string' },
-    { name: 'publishing', type: 'string' }
+    { name: 'alerts' },
+    { name: 'languages' },
+    { name: 'publishing' }
   ];
 
   snorenderer = (row: number, column: any, value: string): string => {
@@ -272,17 +273,21 @@ export class AppgridComponent implements OnInit {
       this.appWindow.setTitle("Update App");
       this.appWindow.position({ x: 600, y: 90 });
       this.appWindow.open();
-      this.emitSelectEvent();
+      this.emitSelectEvent(datarow);
     }
   };
 
-  emitSelectEvent() {
+  emitSelectEvent(data) {
     let rowID = this.appGrid.getrowid(this.rowIndex);
     let appDatas = this.appGrid.getrows();
     let ids = _.pluck(appDatas, '_id');
     let obj = {};
     obj["_id"] = rowID;
     obj["ids"] = ids;
+    obj["name"] = data["name"];
+    obj["chat"] = (data["chat"] == "1" || data["chat"] == "2") ? true : false;
+    obj["languages"] = data["languages"];
+    this.languages = data["languages"];
 
     this.onSelectApp.emit(obj);
   }
@@ -293,7 +298,7 @@ export class AppgridComponent implements OnInit {
 
     if (!this.utils.isEmptyObject(data)) {
       this.assingDataToObject(data);
-      this.emitSelectEvent();
+      this.emitSelectEvent(data);
     }
     // this.updateButtons('Select');
   };
@@ -316,6 +321,7 @@ export class AppgridComponent implements OnInit {
     let obj = {};
     obj["_id"] = rowID;
     obj["ids"] = ids;
+
 
     this.onEndAppLoad.emit(obj);
   };
@@ -507,6 +513,24 @@ export class AppgridComponent implements OnInit {
         } else {
           this.appGrid.source(this.dataAdapter);
         }
+      }
+    }
+
+    if (cHObj.hasOwnProperty("languages") && cHObj["languages"]["currentValue"].length > 0) {
+      let widgetObj = cHObj["languages"];
+
+      if (!widgetObj["firstChange"] && this.utils.isArray(widgetObj["previousValue"]) && this.utils.isArray(widgetObj["currentValue"])) {
+        var prev = widgetObj["previousValue"];
+        var cur = widgetObj["currentValue"];
+        var isDiffer = this.utils.checkIfArraysEqual(this.languages, cur);
+
+        if (!isDiffer) {
+          this.languages = cur;
+          this.reloadGrid();
+        }
+      }
+
+      if (widgetObj["firstChange"] && this.utils.isArray(widgetObj["firstChange"]) && widgetObj["firstChange"].length > 0) {
       }
     }
   };

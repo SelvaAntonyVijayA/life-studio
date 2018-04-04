@@ -50,7 +50,8 @@ import { AlertService } from '../../services/alert.service';
 import { ImageService } from '../../services/image.service';
 import { OrganizationsService } from '../../services/organizations.service';
 import { AppsService } from '../../services/apps.service';
-
+import { LivestreamService } from '../../services/livestream.service';
+import { LanguageService } from '../../services/language.service';
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 //import { DragDropDirectiveModule} from "angular4-drag-drop";
 
@@ -78,6 +79,7 @@ import { jqxTooltipComponent } from '../../grid/jqwidgets-ts/angular_jqxtooltip'
 import { jqxButtonComponent } from '../../grid/jqwidgets-ts/angular_jqxbuttons';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
+
 @NgModule({
   imports: [
     CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule,
@@ -92,7 +94,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, UserprofileComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
     jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent, LanguageComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
-    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService]
+    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService, LivestreamService, LanguageService]
 })
 
 export class HomeModule { }

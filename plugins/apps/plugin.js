@@ -30,7 +30,6 @@ var save = function (req, res, next) {
       $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.apps, apps, function (result) {
         apps._id = result;
 
-        console.dir(apps)
         callback(null);
       });
     },
@@ -304,8 +303,6 @@ var remove = function (req, res, next) {
   if (!__util.isEmptyObject(req.body)) {
     query._id = req.body._id;
   }
-
-  console.dir(query)
 
   $db.remove(settingsConf.dbname.tilist_core, settingsConf.collections.apps, query, options, function (result) {
     let obj = {};

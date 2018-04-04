@@ -23,6 +23,7 @@ export class IntegrationComponent implements OnInit {
   @Input('height') height: string;
   @Input('width') width: string;
   @Input('widgetIds') widgetIds: any;
+  selectedWidgetIds: any;
   dataAdapter: any;
   source: any;
   typeSource: any;
@@ -205,12 +206,12 @@ export class IntegrationComponent implements OnInit {
     if (this.rowIndex != -1) {
       var datarow = this.integrationGrid.getrowdata(this.rowIndex);
       this.assingDataToObject(datarow);
+      this.emitSelectEvent();
+      this.updateButtons('Edit');
+      this.integrationWindow.setTitle("Update Integration");
+      this.integrationWindow.position({ x: 550, y: 160 });
+      this.integrationWindow.open();
     }
-    this.emitSelectEvent();
-    this.updateButtons('Edit');
-    this.integrationWindow.setTitle("Update Integration");
-    this.integrationWindow.position({ x: 550, y: 160 });
-    this.integrationWindow.open();
   };
 
   onRowSelect(event: any): void {
@@ -235,6 +236,7 @@ export class IntegrationComponent implements OnInit {
         let obj = {};
         obj["_id"] = rowID;
         obj["widgetIds"] = rowdata["widgetIds"];
+        this.selectedWidgetIds = rowdata["widgetIds"];
         this.integrationId = rowID;
 
         this.onSelectIntegration.emit(obj);
@@ -446,7 +448,6 @@ export class IntegrationComponent implements OnInit {
       }
 
       if (obj["firstChange"]) {
-
         this.typeSource =
           {
             datatype: 'json',
@@ -479,11 +480,21 @@ export class IntegrationComponent implements OnInit {
       }
     }
 
-    if (cHObj.hasOwnProperty("widgetIds") && !this.utils.isNullOrEmpty(cHObj["widgetIds"]["currentValue"])) {
-      let obj = cHObj["widgetIds"];
+    if (cHObj.hasOwnProperty("widgetIds") && cHObj["widgetIds"]["currentValue"].length > 0) {
+      let widgetObj = cHObj["widgetIds"];
 
-      if (!obj["firstChange"] && !this.utils.isNullOrEmpty(obj["previousValue"]) && obj["previousValue"] !== obj["currentValue"]) {
-      //  this.reloadGrid();
+      if (!widgetObj["firstChange"] && this.utils.isArray(widgetObj["previousValue"]) && this.utils.isArray(widgetObj["currentValue"])) {
+        var prev = widgetObj["previousValue"];
+        var cur = widgetObj["currentValue"];
+        var isDiffer = this.utils.checkIfArraysEqual(this.selectedWidgetIds, cur);
+
+        if (!isDiffer) {
+          this.selectedWidgetIds = cur;
+          this.reloadGrid();
+        }
+      }
+
+      if (widgetObj["firstChange"] && this.utils.isArray(widgetObj["firstChange"]) && widgetObj["firstChange"].length > 0) {
       }
     }
   }

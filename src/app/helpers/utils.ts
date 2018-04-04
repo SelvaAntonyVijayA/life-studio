@@ -339,6 +339,16 @@ export class Utils {
     this._alert.create(type, msg, title, this.alertSetting)
       .subscribe((ans: ResolveEmit) => cb(ans));
   };
+
+  
+  checkIfArraysEqual(arr1, arr2) {
+    if (arr1.length != arr2.length) {
+      return false;
+    }
+    //sort them first, then join them and just compare the strings
+    return arr1.sort().join() == arr2.sort().join();
+  }
+
 };
 
 

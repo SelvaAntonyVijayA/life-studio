@@ -1,3 +1,46 @@
 <mat-toolbar style="height:35px;color: #000000; padding: 0 10px;">
   <span>Languages</span>
 </mat-toolbar>
+
+<jqxGrid #langGrid [source]="dataAdapter" [width]="width" [altrows]="true" [height]="height" [columns]="columns" [toolbarheight]="35"
+  [pageable]="false" [sortable]="true" [showstatusbar]="false" [showheader]="true" [showtoolbar]="true" [rendertoolbar]="renderToolbar"
+  (onRowselect)="onRowSelect($event)" (onRowunselect)="onRowUnselect($event)" (onRowdoubleclick)="rowdoubleclick($event)" [selectionmode]="'checkbox'"
+  (onBindingcomplete)="onBindingComplete($event)">
+</jqxGrid>
+
+<jqxWindow #langWindow (onOpen)="addWindowOpen($event)" (onClose)="addWindowClose($event)" [minHeight]="220" [maxHeight]="500"
+  [width]="400" [resizable]="false" [isModal]="true" [autoOpen]="false" [modalOpacity]="'0.1'">
+  <div>Edit</div>
+  <div style="overflow: hidden;height:100%;">
+    <form (ngSubmit)="onSubmit()" #langForm="ngForm">
+      <div>
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input id="name" name="name" class="form-control input-sm" required minlength="2" [(ngModel)]="langObj.name" #name="ngModel">
+          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
+            <div *ngIf="name.errors.required">
+              Name is required.
+            </div>
+            <div *ngIf="name.errors.minlength">
+              Name must be at least 2 characters long.
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="code">Code</label>
+          <input id="code" name="code" class="form-control input-sm" [(ngModel)]="langObj.code" #code="ngModel">
+          <div *ngIf="code.invalid && (code.dirty || code.touched)" class="alert alert-danger">
+            <div *ngIf="code.errors.required">
+              Name is required.
+            </div>
+            <div *ngIf="code.errors.minlength">
+              Name must be at least 2 characters long.
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-default btn-xs" [disabled]="langForm.invalid">Submit</button>
+        <button type="button" class="btn btn-default btn-xs" (click)="onFormReset()">Reset</button>
+      </div>
+    </form>
+  </div>
+</jqxWindow>

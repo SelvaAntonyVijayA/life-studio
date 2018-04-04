@@ -254,23 +254,29 @@ export class LocationComponent implements OnInit {
     var args = event.args;
     this.rowIndex = args.rowindex;
     var datarow = this.locationGrid.getrowdata(this.rowIndex);
-    this.assingDataToObject(datarow);
-    this.emitSelectEvent();
-    this.updateButtons('Edit');
-    this.locationWindow.setTitle("Update Location");
-    this.locationWindow.position({ x: 150, y: 40 });
-    this.locationWindow.open();
+
+    if (!this.utils.isEmptyObject(datarow)) {
+      this.assingDataToObject(datarow);
+      this.emitSelectEvent();
+      this.updateButtons('Edit');
+      this.locationWindow.setTitle("Update Location");
+      this.locationWindow.position({ x: 150, y: 40 });
+      this.locationWindow.open();
+    }
   };
 
   onRowSelect(event: any): void {
     this.rowIndex = event.args.rowindex;
     var data = event.args.row;
-    this.assingDataToObject(data);
-    this.emitSelectEvent();
 
-    setTimeout(() => {
-      this.updateButtons('Select');
-    }, 0);
+    if (!this.utils.isEmptyObject(data)) {
+      this.assingDataToObject(data);
+      this.emitSelectEvent();
+
+      setTimeout(() => {
+        this.updateButtons('Select');
+      }, 0);
+    }
   };
 
   emitSelectEvent() {
@@ -300,8 +306,6 @@ export class LocationComponent implements OnInit {
     obj["_id"] = rowID;
     obj["ids"] = ids;
     this.locationGrid.selectrow(0);
-
-    //this.onEndAppLoad.emit(obj);
   };
 
   assingDataToObject(data: object) {

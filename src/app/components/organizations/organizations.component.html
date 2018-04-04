@@ -13,7 +13,7 @@
     <div style='margin-top: 2px; float:left;margin-left:2px;'>
       <div *ngIf="isOrgGrid">
         <app-grid [orgId]="orgId" (onSelectApp)="onSelectApp($event)" (endAppLoad)="onEndAppLoad($event)" [orgtype]="type" [width]="620"
-          [height]="415"></app-grid>
+          [languages]='languages' [height]="415"></app-grid>
       </div>
     </div>
     <div style='margin-top: 2px; float:left;margin-left:2px;'>
@@ -30,8 +30,8 @@
     </div>
     <div style='margin-top: 5px; float:left;margin-left:2px;'>
       <div *ngIf="isAppGrid">
-        <integration-grid [orgId]="orgId" [widgetIds]="widgetIds" (onSelectIntegration)="onSelectIntegration($event)" [orgtype]="type" [appId]="appId" [width]="375"
-          [height]="350"></integration-grid>
+        <integration-grid [orgId]="orgId" [widgetIds]="widgetIds" (onSelectIntegration)="onSelectIntegration($event)" [orgtype]="type"
+          [appId]="appId" [width]="375" [height]="350"></integration-grid>
       </div>
     </div>
     <div style='margin-top: 5px; float:left;margin-left:2px;'>
@@ -42,12 +42,14 @@
     </div>
     <div style='margin-left: 1px; margin-top:5px;float:left;'>
       <div *ngIf="isAppGrid">
-        <stream-grid [orgId]="orgId" [orgtype]="type" [width]="620" [height]="350"></stream-grid>
+        <stream-grid [appId]="appId" [isChat]='isChat' [appName]='appName' [locationId]="locationId" [orgId]="orgId" [orgtype]="type" [width]="900"
+          [height]="350"></stream-grid>
       </div>
     </div>
     <div style='margin-top:5px; float:left;margin-left:2px;'>
       <div *ngIf="isAppGrid">
-        <language-grid [orgId]="orgId" [orgtype]="type" [width]="620" [height]="350"></language-grid>
+        <language-grid (onLanguageAssignDone)="onLanguageAssignDone($event)" [appId]="appId" [languages]="languages" [orgId]="orgId"
+          [orgtype]="type" [width]="290" [height]="350"></language-grid>
       </div>
     </div>
   </div>

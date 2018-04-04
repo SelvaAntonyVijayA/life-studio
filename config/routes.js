@@ -151,7 +151,7 @@ module.exports = function (app) {
   router.all('/integrationwidgets/remove/:id*?', $integrationwidgets.remove);
 
   router.all('/language/save', $languages.save);
-  router.all('/language/update/:id*?', $languages.list);
+  router.all('/language/update/:id*?', $languages.update);
   router.all('/language/remove/:id*?', $languages.remove);
   router.get('/language/list', $languages.list);
 

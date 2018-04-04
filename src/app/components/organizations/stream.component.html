@@ -1,3 +1,58 @@
 <mat-toolbar style="height:35px;color: #000000; padding: 0 10px;">
   <span>Stream Studio</span>
 </mat-toolbar>
+
+<jqxGrid #streamGrid [source]="dataAdapter" [width]="width" [altrows]="true" [height]="height" [columns]="columns" [toolbarheight]="35"
+  [pageable]="false" [sortable]="true" [showstatusbar]="false" [showheader]="true" [showtoolbar]="true" [rendertoolbar]="renderToolbar"
+  (onRowselect)="onRowSelect($event)" (onRowunselect)="onRowUnselect($event)" (onRowdoubleclick)="rowdoubleclick($event)" [selectionmode]="'singlerow'"
+  (onBindingcomplete)="onBindingComplete($event)">
+</jqxGrid>
+
+<jqxWindow #streamWindow (onOpen)="addWindowOpen($event)" (onClose)="addWindowClose($event)" [minHeight]="320" [maxHeight]="600"
+  [width]="400" [resizable]="false" [isModal]="true" [autoOpen]="false" [modalOpacity]="'0.1'">
+  <div>Edit</div>
+  <div style="overflow: hidden;height:100%;">
+    <form (ngSubmit)="onSubmit()" #streamForm="ngForm">
+      <div>
+        <div class="form-group">
+          <label for="name">Title</label>
+          <input id="name" name="name" class="form-control input-sm" required minlength="2" [(ngModel)]="streamObj.name" #name="ngModel">
+          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
+            <div *ngIf="name.errors.required">
+              Name is required.
+            </div>
+            <div *ngIf="name.errors.minlength">
+              Name must be at least 2 characters long.
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="url">Stream Url</label>
+          <input id="url" name="url" class="form-control input-sm" [(ngModel)]="streamObj.url" #url="ngModel">
+        </div>
+
+        <div class="form-group">
+          <label for="urlAndroid">Andriod Stream Url</label>
+          <input id="urlAndroid" name="urlAndroid" class="form-control input-sm" [(ngModel)]="streamObj.urlAndroid" #urlAndroid="ngModel">
+        </div>
+
+        <div class="form-group">
+          <label for="urlWeb">Web Stream Url</label>
+          <input id="urlWeb" name="urlWeb" class="form-control input-sm" [(ngModel)]="streamObj.urlWeb" #urlWeb="ngModel">
+        </div>
+
+        <div class="form-group">
+          <label for="reportAbuse">Report Abuse</label>
+          <input id="reportAbuse" name="reportAbuse" class="form-control input-sm" [(ngModel)]="streamObj.reportAbuse" #reportAbuse="ngModel">
+        </div>
+
+        <div class="form-group">
+          <label for="isAdvanced">isAdvanced</label>
+        </div>
+
+        <button type="submit" class="btn btn-default btn-xs" [disabled]="streamForm.invalid">Submit</button>
+        <button type="button" class="btn btn-default btn-xs" (click)="onFormReset()">Reset</button>
+      </div>
+    </form>
+  </div>
+</jqxWindow>

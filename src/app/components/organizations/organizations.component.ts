@@ -15,6 +15,7 @@ import { LanguageService } from '../../services/language.service';
 import { EnginesService } from '../../services/engines.service';
 import { LocationService } from '../../services/location.service';
 import { IntegrationService } from '../../services/integration.service';
+import { LivestreamService } from '../../services/livestream.service';
 
 @Component({
   selector: 'app-organizations',
@@ -58,11 +59,14 @@ export class OrganizationsComponent implements OnInit {
   typeAdaptor: any;
   datafields: any;
   engines: Array<object> = [];
+  languages: Array<string> = [];
   widgetIds: Array<string> = [];
   appId: string = "";
+  appName: string = "";
   locationId: string = "";
   integrationId: string = "";
   appIds: Array<string> = [];
+  isChat: boolean = false;
   fields: any = [
     { name: '_id', type: 'string' },
     { name: 'name', type: 'string' }
@@ -274,6 +278,10 @@ export class OrganizationsComponent implements OnInit {
     this.orgGrid.source(this.dataAdapter);
   };
 
+  onLanguageAssignDone(languages: any): void {
+    this.languages = languages;
+  };
+
   onIntegrationWidgetDone(widgetIds: any): void {
     this.widgetIds = widgetIds;
   };
@@ -281,6 +289,9 @@ export class OrganizationsComponent implements OnInit {
   onSelectApp(appObj: any) {
     this.appIds = appObj["ids"];
     this.appId = appObj["_id"];
+    this.appName = appObj["name"];
+    this.isChat = appObj["chat"];
+    this.languages = appObj["languages"];
     this.isAppGrid = true;
   }
 

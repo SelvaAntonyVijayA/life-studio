@@ -34,7 +34,10 @@ var update = function (req, res, next) {
   query._id = req.params.id;
 
   $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.languages, query, options, languageToUpdate, function (result) {
-    res.send(result);
+    let obj = {};
+    obj._id = query._id;
+    
+    res.send(obj);
   });
 };
 
@@ -70,6 +73,7 @@ module.exports = {
   "list": list,
   "save": save,
   "remove": remove,
+  "update": update,
   "getLanguages": getLanguages,
   "_get": _get
 };
