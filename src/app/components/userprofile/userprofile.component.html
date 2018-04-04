@@ -1,0 +1,15 @@
+<div class="container userprofile_container">
+
+  <div style="padding-top: 10px; padding-bottom: 10px;">
+    <label style="color: #cecece; font-size: 12px; display: inline; margin-right: 5px">Select App :</label>
+    <select [ngModel]="selectedApp" (ngModelChange)="appChange($event)" class="form-control input-sm app-names" style="width: 200px; display: inline;">
+      <option *ngFor="let app of appList; let i = index" [value]="app?._id">{{app?.name}}</option>
+    </select>
+
+  </div>
+  <div style="height: 960px;" class="page_content">
+    <iframe class='holds-the-iframe' id='myIframe' name='myIframe' width='100%' allowtransparency='true' height='940px;' scrolling='auto'
+      frameborder=0></iframe>
+  </div>
+
+</div>

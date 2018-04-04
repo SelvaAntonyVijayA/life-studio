@@ -18,6 +18,7 @@ import { ImagelibraryComponent } from '../components/imagelibrary/imagelibrary.c
 import { OrganizationsComponent } from '../components/organizations/organizations.component';
 import { StudiousersComponent } from '../components/studiousers/studiousers.component';
 import { SettingsComponent } from '../components/settings/settings.component';
+import { UserprofileComponent } from '../components/userprofile/userprofile.component';
 
 const homeRoutes: Routes = [
   {
@@ -83,6 +84,10 @@ const homeRoutes: Routes = [
       {
         path: 'settings',
         component: SettingsComponent
+      },
+      {
+        path: 'userprofile',
+        component: UserprofileComponent
       }
     ]
   }

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
 import { Utils } from '../helpers/utils';
 
@@ -8,6 +9,7 @@ export class CommonService {
     public utils: Utils) {
   }
 
+  public authDomain: string = "http://staging.interactivelife.me";
   private appDatas: Object = {};
 
   setCms(option: string, value: any) {
@@ -36,5 +38,25 @@ export class CommonService {
         this.appDatas["scrollList"].splice(scrollIndex, 1);
       }
     }
+  };
+
+  loadAuthUrl(url, iframeName) {
+    var form = (<HTMLFormElement>document.getElementById(iframeName + "Form"));
+
+    if (!form) {
+      form = document.createElement('form');
+      document.body.appendChild(form);
+      var input = document.createElement('input');
+      input.name = 'studio_token';
+      input.type = 'hidden';
+      input.value = Cookie.get('token');
+      form.appendChild(input);
+    }
+
+    form.id = iframeName + "Form";
+    form.target = iframeName;
+    form.action = url;
+    form.method = "POST";
+    form.submit();
   };
 }
