@@ -30,8 +30,8 @@
     </div>
     <div style='margin-top: 5px; float:left;margin-left:2px;'>
       <div *ngIf="isAppGrid">
-        <integration-grid [orgId]="orgId" [widgetIds]="widgetIds" (onSelectIntegration)="onSelectIntegration($event)" [orgtype]="type"
-          [appId]="appId" [width]="375" [height]="350"></integration-grid>
+        <integration-grid [orgId]="orgId" [orgtype]="type" [widgetIds]="widgetIds" [appId]="appId" (onSelectIntegration)="onSelectIntegration($event)"
+          (onIntegrationloadComplete)="onIntegrationloadComplete($event)" [width]="375" [height]="350"></integration-grid>
       </div>
     </div>
     <div style='margin-top: 5px; float:left;margin-left:2px;'>

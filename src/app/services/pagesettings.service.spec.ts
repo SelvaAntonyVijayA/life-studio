@@ -1,15 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { PagesettingsService } from './pagesettings.service';
+import { PageSettingsService } from './pagesettings.service';
 
 describe('PagesettingsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [PagesettingsService]
+      providers: [PageSettingsService]
     });
   });
 
-  it('should be created', inject([PagesettingsService], (service: PagesettingsService) => {
+  it('should be created', inject([PageSettingsService], (service: PageSettingsService) => {
     expect(service).toBeTruthy();
   }));
 });

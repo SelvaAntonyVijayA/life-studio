@@ -27,9 +27,32 @@ export class IntegrationwidgetsComponent implements OnInit {
   @Output('onIntegrationWidgetDone') doneEvent = new EventEmitter();
   @ViewChild('iwGrid') iwGrid: jqxGridComponent;
   assignButton: jqwidgets.jqxButton;
-  dataAdapter: any;
-  source: any;
   rowIndex: number;
+  isLoadedGrid: boolean = false;
+  datafields: any = [
+    { name: '_id', type: 'string' },
+    { name: 'name', type: 'string' },
+  ];
+
+  columns: any[] =
+    [
+      {
+        text: '_id', hidden: true, datafield: '_id', sortable: false
+      },
+      {
+        text: 'Name', datafield: 'name', width: 132, sortable: true, editable: false,
+        cellsalign: 'left', align: 'center'
+      },
+    ];
+
+  source = {
+    datatype: "json",
+    id: '_id',
+    datafields: this.datafields,
+    url: '/integrationwidgets/list/',
+  };
+
+  dataAdapter = new jqx.dataAdapter(this.source);
 
   constructor(private route: ActivatedRoute,
     private cms: CommonService,
@@ -126,22 +149,6 @@ export class IntegrationwidgetsComponent implements OnInit {
     });
   };
 
-  datafields: any = [
-    { name: '_id', type: 'string' },
-    { name: 'name', type: 'string' },
-  ];
-
-  columns: any[] =
-    [
-      {
-        text: '_id', hidden: true, datafield: '_id', sortable: false
-      },
-      {
-        text: 'Name', datafield: 'name', width: 132, sortable: true, editable: false,
-        cellsalign: 'left', align: 'center'
-      },
-    ];
-
   rowdoubleclick(event: any): void {
     var args = event.args;
     this.rowIndex = args.rowindex;
@@ -159,26 +166,26 @@ export class IntegrationwidgetsComponent implements OnInit {
   };
 
   reloadGrid() {
-    let dataSource = {
-      datatype: "json",
-      id: '_id',
-      url: '/integrationwidgets/list/',
-      datafields: this.datafields,
+    if (this.isLoadedGrid) {
+      this.iwGrid.updatebounddata();
     }
 
-    let adapter = new jqx.dataAdapter(dataSource);
-
-    this.iwGrid.source(adapter);
+    this.setWidget();
   }
 
   onBindingComplete(event: any): void {
+    this.isLoadedGrid = true;
     this.setWidget();
   }
 
   setWidget() {
     var indexes = [];
-    this.iwGrid.clearselection();
     let length = this.widgetIds.length;
+
+    if (this.isLoadedGrid) {
+      this.iwGrid.selectrow(0);
+      this.iwGrid.clearselection();
+    }
 
     for (let i = 0; i < length; i++) {
       let id = this.widgetIds[i];
@@ -193,39 +200,25 @@ export class IntegrationwidgetsComponent implements OnInit {
   }
 
   ngOnChanges(cHObj: any) {
-    if (cHObj.hasOwnProperty("appId") && !this.utils.isNullOrEmpty(cHObj["appId"]["currentValue"])) {
-      let obj = cHObj["appId"];
-
-      if (!obj["firstChange"] && !this.utils.isNullOrEmpty(obj["previousValue"]) && obj["previousValue"] !== obj["currentValue"]) {
-        this.iwGrid.refreshdata();
-
-        this.reloadGrid();
-      }
-
-      if (obj["firstChange"]) {
-        this.source = {
-          datatype: "json",
-          id: '_id',
-          datafields: this.datafields,
-          url: '/integrationwidgets/list/',
-        };
-
-        if (!this.dataAdapter) {
-          this.dataAdapter = new jqx.dataAdapter(this.source);
-        } else {
-          this.iwGrid.source(this.dataAdapter);
-        }
-      }
-    }
-
-    if (cHObj.hasOwnProperty("integrationId") && !this.utils.isNullOrEmpty(cHObj["integrationId"]["currentValue"])) {
+    if (cHObj.hasOwnProperty("integrationId")) {
       let obj = cHObj["integrationId"];
+      var prev = obj["previousValue"];
+      var curr = obj["currentValue"];
 
-      if (!obj["firstChange"] && !this.utils.isNullOrEmpty(obj["previousValue"]) && obj["previousValue"] !== obj["currentValue"]) {
+      if (!obj["firstChange"] && !this.utils.isNullOrEmpty(prev) && prev !== curr) {
+        this.setWidget();
+      }
+
+      if (!obj["firstChange"] && this.utils.isNullOrEmpty(prev) && !this.utils.isNullOrEmpty(curr)) {
+        this.setWidget();
+      }
+
+      if (!obj["firstChange"] && this.utils.isNullOrEmpty(curr)) {
         this.setWidget();
       }
 
       if (obj["firstChange"]) {
+       // this.setWidget();
       }
     }
   };

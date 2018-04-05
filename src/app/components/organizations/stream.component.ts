@@ -33,7 +33,7 @@ export class StreamComponent implements OnInit {
   @ViewChild('streamForm') streamForm: NgForm;
   @Output('onSelectStream') onSelectStream = new EventEmitter();
   dataAdapter: any;
-
+  isAdvancedDisabled: boolean = false;
   source: any;
   rowIndex: number;
   streamObj: object = {
@@ -117,11 +117,27 @@ export class StreamComponent implements OnInit {
 
     this.myAddButton.addEventHandler('click', (event: any) => {
       if (!this.myAddButton.disabled) {
+        if (this.appId == "" || typeof this.appId == 'undefined' || this.appId == null) {
+          this.utils.iAlert('error', 'Error', 'No app is selected');
+          return false;
+        }
+
+        if (this.locationId == "" || typeof this.locationId == 'undefined' || this.locationId == null) {
+          this.utils.iAlert('error', 'Error', 'No location is selected');
+          return false;
+        }
+
         this.streamId = "";
         this.streamObj = {
           name: "", organizationId: "", locationId: "", url: "", urlAndroid: "", urlWeb: "",
           reportAbuse: "", isAdvanced: false, chat: false, createdApp: {}
         };
+
+        if (this.isAdvancedStream) {
+          this.isAdvancedDisabled = false;
+        } else {
+          this.isAdvancedDisabled = true;
+        }
 
         this.streamWindow.setTitle("Add Stream");
         //this.streamWindow.position({ x: 600, y: 90 });
@@ -160,7 +176,7 @@ export class StreamComponent implements OnInit {
     { name: 'urlAndroid', type: 'string' },
     { name: 'urlWeb', type: 'string' },
     { name: 'reportAbuse', type: 'string' },
-    { name: 'isAdvanced' },
+    { name: 'isAdvanced', type: 'boolean' },
     { name: 'organizationId', type: 'string' },
     { name: 'createdApp' },
     { name: 'createdBy' },
@@ -172,11 +188,6 @@ export class StreamComponent implements OnInit {
     var id = parseInt(value) + 1;
 
     return '<span style="margin-left: 4px; margin-top: 9px; float: left;">' + id + '</span>';
-  };
-
-  isAdvanceRenderer = (row: number, column: any, value: string): string => {
-
-    return '<span style="margin-left: 4px; margin-top: 9px; float: left;">' + value + '</span>';
   };
 
   columns: any[] =
@@ -204,14 +215,14 @@ export class StreamComponent implements OnInit {
         text: 'createdBy', hidden: true, datafield: 'createdBy', sortable: false
       },
       {
-        text: 'Title', datafield: 'name', width: 150, sortable: true, cellsalign: 'left', align: 'center'
+        text: 'Title', datafield: 'name', width: 140, sortable: true, cellsalign: 'left', align: 'center'
       },
       {
         text: 'Stream Url', width: 160, datafield: 'url', sortable: true, cellsalign: 'left',
         align: 'center'
       },
       {
-        text: 'Andriod Stream Url', Title: "", editable: false, datafield: 'urlAndroid', width: 155, sortable: true,
+        text: 'Andriod Stream Url', Title: "", editable: false, datafield: 'urlAndroid', width: 150, sortable: true,
         cellsalign: 'left', align: 'center'
       },
       {
@@ -224,7 +235,7 @@ export class StreamComponent implements OnInit {
       },
       {
         text: 'isAdvanced', datafield: 'isAdvanced', threestatecheckbox: true, columntype: 'checkbox', sortable: true, cellsalign: 'left',
-        align: 'center', width: 80
+        align: 'center', width: 75
       },
     ];
 
@@ -235,6 +246,12 @@ export class StreamComponent implements OnInit {
 
     if (!this.utils.isEmptyObject(datarow)) {
       this.assingDataToObject(datarow);
+
+      if (this.isAdvancedStream) {
+        this.isAdvancedDisabled = false;
+      } else {
+        this.isAdvancedDisabled = true;
+      }
 
       this.updateButtons('Edit');
       this.streamWindow.setTitle("Update stream");
@@ -262,8 +279,11 @@ export class StreamComponent implements OnInit {
     if (!this.utils.isEmptyObject(data)) {
       this.assingDataToObject(data);
       this.emitSelectEvent();
+
+      setTimeout(() => {
+        this.updateButtons('Edit');
+      }, 0);
     }
-    // this.updateButtons('Select');
   };
 
   onRowUnselect(event: any): void {
@@ -277,7 +297,7 @@ export class StreamComponent implements OnInit {
   };
 
   onBindingComplete(event: any): void {
-    this.streamGrid.selectrow(0);
+    /*this.streamGrid.selectrow(0);
     var rowID = this.streamGrid.getrowid(0);
     let streamDatas = this.streamGrid.getrows();
     let ids = _.pluck(streamDatas, '_id');
@@ -285,7 +305,7 @@ export class StreamComponent implements OnInit {
     obj["_id"] = rowID;
     obj["ids"] = ids;
 
-    // this.onEndAppLoad.emit(obj);
+     this.onEndAppLoad.emit(obj);*/
   };
 
   assingDataToObject(data: object) {
@@ -324,7 +344,7 @@ export class StreamComponent implements OnInit {
     if (!this.utils.isNullOrEmpty(data["isAdvanced"])) {
       this.streamObj["isAdvanced"] = data["isAdvanced"];
     } else {
-      this.streamObj["isAdvanced"] = "";
+      this.streamObj["isAdvanced"] = false;
     }
   };
 
@@ -372,6 +392,7 @@ export class StreamComponent implements OnInit {
     obj["organizationId"] = this.organizationId;
     obj["locationId"] = this.locationId;
     obj["chat"] = this.isChat;
+    obj["isAdvanced"] = streamObj["isAdvanced"];
 
     if (this.streamId.length > 12) {
       obj["updatedOn"] = (new Date()).toUTCString();
@@ -381,12 +402,6 @@ export class StreamComponent implements OnInit {
         "id": this.appId,
         "name": this.appName
       };
-    }
-
-    if (streamObj["isAdvanced"] != "-1") {
-      obj["isAdvanced"] = streamObj["url"];
-    } else {
-      obj["isAdvanced"] = "";
     }
 
     return obj;
@@ -425,6 +440,16 @@ export class StreamComponent implements OnInit {
   onSubmit() {
     var obj = this.streamObj;
 
+    if (this.appId == "" || typeof this.appId == 'undefined' || this.appId == null) {
+      this.utils.iAlert('error', 'Error', 'No app is selected');
+      return false;
+    }
+
+    if (this.locationId == "" || typeof this.locationId == 'undefined' || this.locationId == null) {
+      this.utils.iAlert('error', 'Error', 'No location is selected');
+      return false;
+    }
+
     this.saveStream(this.streamId, obj, (res) => {
       if (res) {
 
@@ -446,8 +471,8 @@ export class StreamComponent implements OnInit {
   reloadGrid() {
     var url = '/livestream/list/' + this.organizationId + "/" + this.appId
 
-    if (this.utils.isNullOrEmpty(this.locationId)) {
-      url + "/" + this.locationId;
+    if (!this.utils.isNullOrEmpty(this.locationId)) {
+      url += "/" + this.locationId;
     }
 
     let dataSource = {
@@ -472,20 +497,23 @@ export class StreamComponent implements OnInit {
 
   ngOnChanges(cHObj: any) {
     if (cHObj.hasOwnProperty("appId") && !this.utils.isNullOrEmpty(cHObj["appId"]["currentValue"])) {
-      let obj = cHObj["appId"];
+      let objApp = cHObj["appId"];
+      var prevAppId = objApp["previousValue"];
+      var curAppId = objApp["currentValue"];
 
-      if (!obj["firstChange"] && !this.utils.isNullOrEmpty(obj["previousValue"]) && obj["previousValue"] !== obj["currentValue"]) {
-        this.streamGrid.refreshdata();
-
+      if (!objApp["firstChange"] && !this.utils.isNullOrEmpty(prevAppId) && prevAppId !== curAppId) {
         this.reloadGrid();
       }
 
-      if (obj["firstChange"]) {
+      if (!objApp["firstChange"] && this.utils.isNullOrEmpty(prevAppId) && !this.utils.isNullOrEmpty(curAppId)) {
+        this.reloadGrid();
+      }
 
+      if (objApp["firstChange"]) {
         var url = '/livestream/list/' + this.organizationId + "/" + this.appId
 
-        if (this.utils.isNullOrEmpty(this.locationId)) {
-          url + "/" + this.locationId;
+        if (!this.utils.isNullOrEmpty(this.locationId)) {
+          url += "/" + this.locationId;
         }
 
         this.source = {
@@ -505,19 +533,24 @@ export class StreamComponent implements OnInit {
 
     if (cHObj.hasOwnProperty("locationId") && !this.utils.isNullOrEmpty(cHObj["locationId"]["currentValue"])) {
       let obj = cHObj["locationId"];
+      var prev = obj["previousValue"];
+      var cur = obj["currentValue"];
 
-      if (!obj["firstChange"] && !this.utils.isNullOrEmpty(obj["previousValue"]) && obj["previousValue"] !== obj["currentValue"]) {
-        this.streamGrid.refreshdata();
+      if (!obj["firstChange"] && !this.utils.isNullOrEmpty(prev) && prev !== cur) {
+        this.reloadGrid();
+      }
 
+      if (!obj["firstChange"] && this.utils.isNullOrEmpty(prev) && !this.utils.isNullOrEmpty(cur)) {
         this.reloadGrid();
       }
 
       if (obj["firstChange"]) {
+        this.locationId = cur;
 
         var url = '/livestream/list/' + this.organizationId + "/" + this.appId
 
-        if (this.utils.isNullOrEmpty(this.locationId)) {
-          url + "/" + this.locationId;
+        if (!this.utils.isNullOrEmpty(this.locationId)) {
+          url += "/" + this.locationId;
         }
 
         this.source = {

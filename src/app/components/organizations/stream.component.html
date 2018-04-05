@@ -44,7 +44,7 @@
         </div>
         <div class="form-group checkbox" style="line-height: 1.9;padding-left: 0px;font-weight: 700;">
           <label for="isAdvancedStream" style="font-weight: 700;">
-            <input name="isAdvancedStream" #isAdvancedStream="ngModel" type="checkbox" [disabled]="isAdvancedStream" [(ngModel)]="streamObj.isAdvanced">isAdvanced
+            <input name="isAdvancedStream" #isAdvancedStream="ngModel" type="checkbox" [disabled]="isAdvancedDisabled" [(ngModel)]="streamObj.isAdvanced">isAdvanced
           </label>
         </div>
         <button type="submit" class="btn btn-default btn-xs" [disabled]="streamForm.invalid">Submit</button>

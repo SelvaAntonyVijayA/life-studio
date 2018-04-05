@@ -67,7 +67,6 @@ export class OrganizationsComponent implements OnInit {
     { name: 'name', type: 'string' }
   ];
 
-
   packageSource = {
     datatype: 'json',
     datafields: this.fields,
@@ -138,6 +137,19 @@ export class OrganizationsComponent implements OnInit {
 
   ngAfterViewInit(): void {
   };
+
+  resetGrid() {
+    this.engines = [];
+    this.languages = [];
+    this.widgetIds = [];
+    this.appId = "";
+    this.appName = "";
+    this.locationId = "";
+    this.integrationId = "";
+    this.appIds = [];
+    this.isChat = false;
+    this.isAdvancedStream = false;
+  }
 
   snorenderer = (row: number, column: any, value: string): string => {
     let id = parseInt(value) + 1;
@@ -268,6 +280,10 @@ export class OrganizationsComponent implements OnInit {
 
               this.deleteOrganization(datarow["_id"], (res) => {
                 if (res) {
+                  this.resetGrid();
+                  this.isOrgGrid = false;
+                  this.isEngineGrid = false;
+                  this.isAppGrid = false;
                   this.orgId = "";
                   this.utils.iAlert('success', '', 'Organization deleted successfully');
                   this.orgGrid.source(this.orgAdaptor);
@@ -289,6 +305,7 @@ export class OrganizationsComponent implements OnInit {
     let data = event.args.row;
 
     if (!this.utils.isEmptyObject(data)) {
+      this.resetGrid();
       this.assignDataToObject(data);
       this.isOrgGrid = true;
       this.updateButtons('Select');
@@ -344,6 +361,16 @@ export class OrganizationsComponent implements OnInit {
 
   onEndAppLoad(appObj: any): void {
     this.appIds = appObj["ids"];
+
+    if (this.appIds.length == 0) {
+      this.appId = "";
+      this.appName = "";
+      this.integrationId = "";
+      this.widgetIds = [];
+      this.isChat = false;
+      this.languages = [];
+    }
+
     this.isEngineGrid = true;
   };
 
@@ -376,6 +403,15 @@ export class OrganizationsComponent implements OnInit {
   onSelectIntegration(obj: any) {
     this.integrationId = obj["_id"];
     this.widgetIds = obj["widgetIds"];
+  }
+
+  onIntegrationloadComplete(obj: any) {
+    let ids = obj["ids"];
+
+    if (ids.length == 0) {
+      this.integrationId = "";
+      this.widgetIds = [];
+    }
   }
 
   updateButtons(action: string): void {
@@ -481,10 +517,22 @@ export class OrganizationsComponent implements OnInit {
         if (this.orgId.length > 12) {
           this.utils.iAlert('success', '', 'Organization updated successfully!!!');
         } else {
+          this.resetGrid();
+          this.orgId = res._id;
+          this.orgGrid.clearselection();
+          this.isOrgGrid = false;
+          this.isEngineGrid = false;
+          this.isAppGrid = false;
+
+          let rIndex = this.orgGrid.getrowboundindexbyid(this.orgId);
+
+          if (rIndex != -1) {
+            this.orgGrid.selectrow(rIndex);
+          }
+
           this.utils.iAlert('success', '', 'Organization saved successfully!!!');
         }
 
-        this.orgId = res._id;
         this.orgGrid.source(this.orgAdaptor);
         this.addOrg.close();
       }

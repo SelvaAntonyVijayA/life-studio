@@ -38,6 +38,7 @@ export class IntegrationComponent implements OnInit {
   integrationId: string;
   integrationTypes: any;
   @Output('onSelectIntegration') onSelectIntegration = new EventEmitter();
+  @Output('onIntegrationloadComplete') onIntegrationloadComplete = new EventEmitter();
   fields: any = [
     { name: '_id', type: 'string' },
     { name: 'name', type: 'string' }
@@ -221,6 +222,7 @@ export class IntegrationComponent implements OnInit {
       var data = event.args.row;
       this.assingDataToObject(data);
       this.emitSelectEvent();
+
       setTimeout(() => {
         this.updateButtons('Select');
       }, 0);
@@ -255,15 +257,15 @@ export class IntegrationComponent implements OnInit {
   };
 
   onBindingComplete(event: any): void {
-    var rowID = this.integrationGrid.getrowid(0);
+    let obj = {};
     let appDatas = this.integrationGrid.getrows();
     let ids = _.pluck(appDatas, '_id');
-    let obj = {};
-    obj["_id"] = rowID;
     obj["ids"] = ids;
-    this.integrationGrid.selectrow(0);
 
-    //this.onEndAppLoad.emit(obj);
+    if (ids.length > 0) {
+      this.integrationGrid.selectrow(0);
+      this.onIntegrationloadComplete.emit(obj);
+    }
   };
 
   assingDataToObject(data: object) {
@@ -441,13 +443,19 @@ export class IntegrationComponent implements OnInit {
 
   ngOnChanges(cHObj: any) {
     if (cHObj.hasOwnProperty("appId") && !this.utils.isNullOrEmpty(cHObj["appId"]["currentValue"])) {
-      let obj = cHObj["appId"];
+      let objApp = cHObj["appId"];
+      var prevAppId = objApp["previousValue"];
+      var curAppId = objApp["currentValue"];
 
-      if (!obj["firstChange"] && !this.utils.isNullOrEmpty(obj["previousValue"]) && obj["previousValue"] !== obj["currentValue"]) {
+      if (!objApp["firstChange"] && !this.utils.isNullOrEmpty(prevAppId) && prevAppId !== curAppId) {
         this.reloadGrid();
       }
 
-      if (obj["firstChange"]) {
+      if (!objApp["firstChange"] && this.utils.isNullOrEmpty(prevAppId) && !this.utils.isNullOrEmpty(curAppId)) {
+        this.reloadGrid();
+      }
+
+      if (objApp["firstChange"]) {
         this.typeSource =
           {
             datatype: 'json',

@@ -27,7 +27,7 @@ export class AppgridComponent implements OnInit {
   @ViewChild('appForm') appForm: NgForm;
   @Output('endAppLoad') onEndAppLoad = new EventEmitter();
   @Output('onSelectApp') onSelectApp = new EventEmitter();
-  @Input('languages') languages: any;
+  @Input('languages') languages: any = [];
   dataAdapter: any;
   source: any;
   rowIndex: number;
@@ -286,8 +286,14 @@ export class AppgridComponent implements OnInit {
     obj["ids"] = ids;
     obj["name"] = data["name"];
     obj["chat"] = (data["chat"] == "1" || data["chat"] == "2") ? true : false;
-    obj["languages"] = data["languages"];
-    this.languages = data["languages"];
+
+    if (!this.utils.isNullOrEmpty(data["languages"])) {
+      this.languages = data["languages"];
+      obj["languages"] = data["languages"];
+    } else {
+      this.languages = [];
+      obj["languages"] = [];
+    }
 
     this.onSelectApp.emit(obj);
   }
@@ -299,8 +305,11 @@ export class AppgridComponent implements OnInit {
     if (!this.utils.isEmptyObject(data)) {
       this.assingDataToObject(data);
       this.emitSelectEvent(data);
+
+      setTimeout(() => {
+        this.updateButtons('Select');
+      }, 0);
     }
-    // this.updateButtons('Select');
   };
 
   onRowUnselect(event: any): void {
@@ -314,14 +323,19 @@ export class AppgridComponent implements OnInit {
   };
 
   onBindingComplete(event: any): void {
-    this.appGrid.selectrow(0);
-    var rowID = this.appGrid.getrowid(0);
     let appDatas = this.appGrid.getrows();
-    let ids = _.pluck(appDatas, '_id');
     let obj = {};
-    obj["_id"] = rowID;
-    obj["ids"] = ids;
 
+    if (appDatas.length > 0) {
+      this.appGrid.selectrow(0);
+      let rowID = this.appGrid.getrowid(0);
+      let ids = _.pluck(appDatas, '_id');
+
+      obj["_id"] = rowID;
+      obj["ids"] = ids;
+    } else {
+      obj["ids"] = [];
+    }
 
     this.onEndAppLoad.emit(obj);
   };
@@ -329,6 +343,12 @@ export class AppgridComponent implements OnInit {
   assingDataToObject(data: object) {
     this.appId = data["_id"];
     this.app = { name: data["name"] };
+
+    if (!this.utils.isNullOrEmpty(data["languages"])) {
+      this.languages = data["languages"];
+    } else {
+      this.languages = [];
+    }
 
     if (!this.utils.isNullOrEmpty(data["alerts"])) {
       this.app["alerts"] = data["alerts"];
@@ -392,7 +412,6 @@ export class AppgridComponent implements OnInit {
 
   geAppObject(appObj: object) {
     var obj = {};
-
     obj["name"] = appObj["name"];
 
     if (appObj["authenticated"] != "-1") {
@@ -411,6 +430,7 @@ export class AppgridComponent implements OnInit {
     obj["googleAnalytics"] = appObj["googleAnalytics"];
     obj["alerts"] = appObj["alerts"];
     obj["organizationId"] = this.organizationId;
+    obj["languages"] = [];
 
     if (obj["authenticated"] == "4") {
       obj["autoApprove"] = true;

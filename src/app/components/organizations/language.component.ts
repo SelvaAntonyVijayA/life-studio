@@ -408,17 +408,19 @@ export class LanguageComponent implements OnInit {
 
   ngOnChanges(cHObj: any) {
     if (cHObj.hasOwnProperty("appId") && !this.utils.isNullOrEmpty(cHObj["appId"]["currentValue"])) {
-      let obj = cHObj["appId"];
+      let objApp = cHObj["appId"];
+      var prevAppId = objApp["previousValue"];
+      var curAppId = objApp["currentValue"];
 
-      if (!obj["firstChange"] && !this.utils.isNullOrEmpty(obj["previousValue"]) && obj["previousValue"] !== obj["currentValue"]) {
-        //  this.langGrid.refreshdata();
-
-        // this.reloadGrid();
-
+      if (!objApp["firstChange"] && !this.utils.isNullOrEmpty(prevAppId) && prevAppId !== curAppId) {
         this.setAppLanguage();
       }
 
-      if (obj["firstChange"]) {
+      if (!objApp["firstChange"] && this.utils.isNullOrEmpty(prevAppId) && !this.utils.isNullOrEmpty(curAppId)) {
+        this.setAppLanguage();
+      }
+
+      if (objApp["firstChange"]) {
         this.source = {
           datatype: "json",
           id: '_id',

@@ -114,7 +114,7 @@ module.exports = function (app) {
   router.all('/pages/theme/update/:themeId', $page.pageThemeUpdate);
   router.all('/pages/theme/list/:appId/:locationId*?', $page.pageThemeList);
 
-  router.all('/livestream/save/:id*?', $livestream.byId);
+  router.all('/livestream/save?', $livestream.save);
   router.all('/livestream/list/:orgId*?/:appId*?/:locationId*?', $livestream.list);
   router.all('/livestream/update/:livestreamId/:appId*?', $livestream.update);
   router.all('/livestream/groupupdate/:id*?', $livestream.groupUpdate);

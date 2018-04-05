@@ -534,8 +534,9 @@ export class LocationComponent implements OnInit {
     }
 
     let adapter = new jqx.dataAdapter(dataSource);
-
+    this.locationId = "";
     this.locationGrid.source(adapter);
+    this.locationGrid.clearselection();
   }
 
   onFormReset() {
@@ -545,15 +546,19 @@ export class LocationComponent implements OnInit {
 
   ngOnChanges(cHObj: any) {
     if (cHObj.hasOwnProperty("appId") && !this.utils.isNullOrEmpty(cHObj["appId"]["currentValue"])) {
-      let obj = cHObj["appId"];
+      let objApp = cHObj["appId"];
+      var prevAppId = objApp["previousValue"];
+      var curAppId = objApp["currentValue"];
 
-      if (!obj["firstChange"] && !this.utils.isNullOrEmpty(obj["previousValue"]) && obj["previousValue"] !== obj["currentValue"]) {
-        this.locationGrid.refreshdata();
-
+      if (!objApp["firstChange"] && !this.utils.isNullOrEmpty(prevAppId) && prevAppId !== curAppId) {
         this.reloadGrid();
       }
 
-      if (obj["firstChange"]) {
+      if (!objApp["firstChange"] && this.utils.isNullOrEmpty(prevAppId) && !this.utils.isNullOrEmpty(curAppId)) {
+        this.reloadGrid();
+      }
+
+      if (objApp["firstChange"]) {
         this.source = {
           datatype: "json",
           id: '_id',
