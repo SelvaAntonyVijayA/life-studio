@@ -28,39 +28,39 @@
         </div>
         <div class="form-group">
           <label for="group">Group</label>
-          <input id="group" name="group" class="form-control input-sm" [(ngModel)]="locationObj.group" #name="ngModel">
+          <input id="group" name="group" class="form-control input-sm" [(ngModel)]="locationObj.group" #group="ngModel">
         </div>
         <div class="form-group">
           <label for="phone">Phone</label>
-          <input id="phone" name="phone" class="form-control input-sm" [(ngModel)]="locationObj.phone" #name="ngModel">
+          <input id="phone" name="phone" class="form-control input-sm" [(ngModel)]="locationObj.phone" #phone="ngModel">
         </div>
         <div class="form-group">
           <label for="address">Address</label>
-          <input id="address" name="address" class="form-control input-sm" [(ngModel)]="locationObj.address" #name="ngModel">
+          <input id="address" name="address" class="form-control input-sm" [(ngModel)]="locationObj.address" #address="ngModel">
         </div>
         <div class="form-group">
           <label for="city">City</label>
-          <input id="city" name="city" class="form-control input-sm" [(ngModel)]="locationObj.city" #name="ngModel">
+          <input id="city" name="city" class="form-control input-sm" [(ngModel)]="locationObj.city" #city="ngModel">
         </div>
         <div class="form-group">
           <label for="state">State</label>
-          <input id="state" name="state" class="form-control input-sm" [(ngModel)]="locationObj.state" #name="ngModel">
+          <input id="state" name="state" class="form-control input-sm" [(ngModel)]="locationObj.state" #state="ngModel">
         </div>
         <div class="form-group">
           <label for="longitude">Longitude</label>
-          <input id="longitude" name="longitude" class="form-control input-sm" [(ngModel)]="locationObj.longitude" #name="ngModel">
+          <input id="longitude" name="longitude" class="form-control input-sm" [(ngModel)]="locationObj.longitude" #longitude="ngModel">
         </div>
         <div class="form-group">
           <label for="latitude">Longitude</label>
-          <input id="latitude" name="latitude" class="form-control input-sm" [(ngModel)]="locationObj.latitude" #name="ngModel">
+          <input id="latitude" name="latitude" class="form-control input-sm" [(ngModel)]="locationObj.latitude" #latitude="ngModel">
         </div>
         <div class="form-group">
           <label for="radius">Radius</label>
-          <input id="radius" name="radius" class="form-control input-sm" [(ngModel)]="locationObj.radius" #name="ngModel">
+          <input id="radius" name="radius" class="form-control input-sm" [(ngModel)]="locationObj.radius" #radius="ngModel">
         </div>
         <div class="form-group">
           <label for="status">Status</label>
-          <select id="status" name="status" class="form-control input-sm" [(ngModel)]="locationObj.status" #power="ngModel">
+          <select id="status" name="status" class="form-control input-sm" [(ngModel)]="locationObj.status" #status="ngModel">
             <option *ngFor="let s of statusAdaptor.records" [value]="s.id">{{s.field}}</option>
           </select>
         </div>

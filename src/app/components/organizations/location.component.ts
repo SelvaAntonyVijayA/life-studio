@@ -304,8 +304,8 @@ export class LocationComponent implements OnInit {
     let ids = _.pluck(appDatas, '_id');
     let obj = {};
     obj["_id"] = rowID;
-    obj["ids"] = ids;
-    this.locationGrid.selectrow(0);
+    // obj["ids"] = ids;
+    // this.locationGrid.selectrow(0);
   };
 
   assingDataToObject(data: object) {

@@ -252,6 +252,10 @@ export class LanguageComponent implements OnInit {
   };
 
   onBindingComplete(event: any): void {
+    this.setAppLanguage();
+  };
+
+  setAppLanguage() {
     var indexes = [];
     var rowID = this.langGrid.getrowid(0);
     let langDatas = this.langGrid.getrows();
@@ -265,14 +269,14 @@ export class LanguageComponent implements OnInit {
       if (langData) {
         let rIndex = this.langGrid.getrowboundindexbyid(langData["_id"]);
 
-        if (rIndex > 0) {
+        if (rIndex != -1) {
           indexes.push(rIndex);
 
           this.langGrid.selectrow(rIndex);
         }
       }
     }
-  };
+  }
 
   assingDataToObject(data: object) {
     this.langId = data["_id"];
@@ -403,13 +407,15 @@ export class LanguageComponent implements OnInit {
   };
 
   ngOnChanges(cHObj: any) {
-    if (cHObj.hasOwnProperty("organizationId") && !this.utils.isNullOrEmpty(cHObj["organizationId"]["currentValue"])) {
-      let obj = cHObj["organizationId"];
+    if (cHObj.hasOwnProperty("appId") && !this.utils.isNullOrEmpty(cHObj["appId"]["currentValue"])) {
+      let obj = cHObj["appId"];
 
       if (!obj["firstChange"] && !this.utils.isNullOrEmpty(obj["previousValue"]) && obj["previousValue"] !== obj["currentValue"]) {
         //  this.langGrid.refreshdata();
 
         // this.reloadGrid();
+
+        this.setAppLanguage();
       }
 
       if (obj["firstChange"]) {

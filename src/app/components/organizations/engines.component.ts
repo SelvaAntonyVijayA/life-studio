@@ -206,22 +206,12 @@ export class EnginesComponent implements OnInit {
       let record = this.engines[i];
       let rIndex = this.engineGrid.getrowboundindexbyid(record["id"]);
 
-      if (rIndex > 0) {
+      if (rIndex != -1) {
         indexes.push(rIndex);
 
         this.engineGrid.selectrow(rIndex);
       }
     }
-
-    /*_.each(this.engines, function (data, index) {
-      let rIndex = this.engineGrid.getrowboundindexbyid(data["_id"]);
-
-       if (rIndex > 0) {
-       indexes.push(rIndex)
-      }
-    });
-
-    this.engineGrid.selectedrowindexes(indexes)*/
   }
 
   ngOnChanges(cHObj: any) {

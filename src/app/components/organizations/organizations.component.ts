@@ -49,15 +49,8 @@ export class OrganizationsComponent implements OnInit {
   org: object = { type: "", name: '', type_id: '', packageId: "" };
   myAddButton: jqwidgets.jqxButton;
   myDeleteButton: jqwidgets.jqxButton;
-  dataAdapter: any;
-  source: any;
   organizationTypes: any;
   packages: any;
-  packageSource: any;
-  typeSource: any;
-  packageAdaptor: any;
-  typeAdaptor: any;
-  datafields: any;
   engines: Array<object> = [];
   languages: Array<string> = [];
   widgetIds: Array<string> = [];
@@ -67,13 +60,83 @@ export class OrganizationsComponent implements OnInit {
   integrationId: string = "";
   appIds: Array<string> = [];
   isChat: boolean = false;
+  isAdvancedStream: boolean = false;
+  isLoadedGrid: boolean = false;
   fields: any = [
     { name: '_id', type: 'string' },
     { name: 'name', type: 'string' }
   ];
 
-  ngAfterViewInit(): void {
 
+  packageSource = {
+    datatype: 'json',
+    datafields: this.fields,
+    url: '/package/list',
+    async: false
+  };
+
+  typeSource = {
+    datatype: 'json',
+    datafields: this.fields,
+    url: '/organizationtype/list',
+    async: false
+  };
+
+  packageAdaptor = new jqx.dataAdapter(this.packageSource, {
+    autoBind: true,
+    beforeLoadComplete: (records: any[]): any[] => {
+      let pck = new Array();
+
+      for (let i = 0; i < records.length; i++) {
+        let pack = records[i];
+        pack.packageName = pack.name;
+        pack.packageId = pack._id;
+
+        pck.push(pack);
+      }
+
+      return pck;
+    }
+  });
+
+  typeAdaptor = new jqx.dataAdapter(this.typeSource, {
+    autoBind: true,
+    beforeLoadComplete: (records: any[]): any[] => {
+      let data = new Array();
+
+      for (let i = 0; i < records.length; i++) {
+        let typeObj = records[i];
+        typeObj.typeName = typeObj.name;
+        typeObj.type_id = typeObj._id;
+
+        data.push(typeObj);
+      }
+
+      return data;
+    }
+  });
+
+  datafields = [
+    { name: '_id', type: 'string' },
+    { name: 'type_id', type: 'string' },
+    { name: 'packageId', type: 'string' },
+    { name: 'name', type: 'string' },
+    { name: 'type', value: 'type_id', values: { source: this.typeAdaptor.records, value: 'type_id', name: 'typeName' } },
+    { name: 'package', value: 'packageId', values: { source: this.packageAdaptor.records, value: 'packageId', name: 'packageName' } },
+    { name: 'engines', type: 'string' },
+    { name: 'publishing', type: 'boolean' },
+  ];
+
+  source = {
+    datatype: "json",
+    id: '_id',
+    url: "/organization/list",
+    datafields: this.datafields
+  };
+
+  orgAdaptor = new jqx.dataAdapter(this.source);
+
+  ngAfterViewInit(): void {
   };
 
   snorenderer = (row: number, column: any, value: string): string => {
@@ -207,7 +270,7 @@ export class OrganizationsComponent implements OnInit {
                 if (res) {
                   this.orgId = "";
                   this.utils.iAlert('success', '', 'Organization deleted successfully');
-                  this.orgGrid.source(this.dataAdapter);
+                  this.orgGrid.source(this.orgAdaptor);
                   this.updateButtons('delete');
                   this.addOrg.close();
                 }
@@ -224,9 +287,12 @@ export class OrganizationsComponent implements OnInit {
   orgGridOnRowSelect(event: any): void {
     this.rowIndex = event.args.rowindex;
     let data = event.args.row;
-    this.assignDataToObject(data);
-    this.isOrgGrid = true;
-    this.updateButtons('Select');
+
+    if (!this.utils.isEmptyObject(data)) {
+      this.assignDataToObject(data);
+      this.isOrgGrid = true;
+      this.updateButtons('Select');
+    }
   };
 
   assignDataToObject(data: object) {
@@ -246,6 +312,9 @@ export class OrganizationsComponent implements OnInit {
     } else {
       this.org["type_id"] = "";
     }
+
+    let engineObj = _.findWhere(this.engines, { name: "Advanced Stream" });
+    this.isAdvancedStream = !this.utils.isEmptyObject(engineObj) ? true : false;
   };
 
   orgGridOnRowUnselect(event: any): void {
@@ -256,16 +325,21 @@ export class OrganizationsComponent implements OnInit {
     var args = event.args;
     this.rowIndex = args.rowindex;
     var datarow = this.orgGrid.getrowdata(this.rowIndex);
-    this.assignDataToObject(datarow);
-    this.isOrgGrid = true;
-    this.updateButtons('Edit');
-    this.addOrg.setTitle("Update Organization");
-    this.addOrg.position({ x: 85, y: 100 });
-    this.addOrg.open();
+
+    if (!this.utils.isEmptyObject(datarow)) {
+      this.assignDataToObject(datarow);
+      this.isOrgGrid = true;
+      this.updateButtons('Edit');
+      this.addOrg.setTitle("Update Organization");
+      this.addOrg.position({ x: 85, y: 100 });
+      this.addOrg.open();
+    }
   };
 
   onBindingComplete(event: any): void {
     let orgDatas = this.orgGrid.getrows();
+    this.isLoadedGrid = true;
+    this.loaderShared.showSpinner(false);
   };
 
   onEndAppLoad(appObj: any): void {
@@ -275,7 +349,7 @@ export class OrganizationsComponent implements OnInit {
 
   onEngineAssignDone(engines: any): void {
     this.engines = engines;
-    this.orgGrid.source(this.dataAdapter);
+    this.orgGrid.source(this.orgAdaptor);
   };
 
   onLanguageAssignDone(languages: any): void {
@@ -411,7 +485,7 @@ export class OrganizationsComponent implements OnInit {
         }
 
         this.orgId = res._id;
-        this.orgGrid.source(this.dataAdapter);
+        this.orgGrid.source(this.orgAdaptor);
         this.addOrg.close();
       }
     });
@@ -423,90 +497,17 @@ export class OrganizationsComponent implements OnInit {
   };
 
   pageLoad() {
-    this.packageSource =
-      {
-        datatype: 'json',
-        datafields: this.fields,
-        url: '/package/list',
-        async: false
-      };
-
-    this.typeSource =
-      {
-        datatype: 'json',
-        datafields: this.fields,
-        url: '/organizationtype/list',
-        async: false
-      };
-
-    if (!this.packageAdaptor) {
-      this.packageAdaptor = new jqx.dataAdapter(this.packageSource, {
-        autoBind: true,
-        beforeLoadComplete: (records: any[]): any[] => {
-          let pck = new Array();
-
-          for (let i = 0; i < records.length; i++) {
-            let pack = records[i];
-            pack.packageName = pack.name;
-            pack.packageId = pack._id;
-
-            pck.push(pack);
-          }
-
-          return pck;
-        }
-      });
-
+    if (this.isLoadedGrid) {
+      this.orgGrid.updatebounddata();
+    } else {
       this.packages = this.packageAdaptor.records;
       this.packages.unshift({ _id: "", name: "Select package" });
-    }
-
-    if (!this.typeAdaptor) {
-      this.typeAdaptor = new jqx.dataAdapter(this.typeSource, {
-        autoBind: true,
-        beforeLoadComplete: (records: any[]): any[] => {
-          let data = new Array();
-
-          for (let i = 0; i < records.length; i++) {
-            let typeObj = records[i];
-            typeObj.typeName = typeObj.name;
-            typeObj.type_id = typeObj._id;
-
-            data.push(typeObj);
-          }
-
-          return data;
-        }
-      });
 
       this.organizationTypes = this.typeAdaptor.records;
       this.organizationTypes.unshift({ _id: "", name: "Select type" });
     }
 
-    this.datafields = [
-      { name: '_id', type: 'string' },
-      { name: 'type_id', type: 'string' },
-      { name: 'packageId', type: 'string' },
-      { name: 'name', type: 'string' },
-      { name: 'type', value: 'type_id', values: { source: this.typeAdaptor.records, value: 'type_id', name: 'typeName' } },
-      { name: 'package', value: 'packageId', values: { source: this.packageAdaptor.records, value: 'packageId', name: 'packageName' } },
-      { name: 'engines', type: 'string' },
-      { name: 'publishing', type: 'boolean' },
-    ];
-
-    this.source = {
-      datatype: "json",
-      id: '_id',
-      url: "/organization/list",
-      datafields: this.datafields
-    };
-
-    if (!this.dataAdapter) {
-      this.orgGrid.source(this.source);
-    } else {
-      this.orgGrid.clearselection();
-      this.orgGrid.source(this.dataAdapter);
-    }
+    this.loaderShared.showSpinner(false);
   };
 
   ngOnInit() {
@@ -516,7 +517,6 @@ export class OrganizationsComponent implements OnInit {
       if (this.utils.isNullOrEmpty(loadTime) || (!this.utils.isNullOrEmpty(loadTime) && loadTime !== params["_dt"])) {
         Cookie.set('pageLoadTime', params["_dt"]);
         this.pageLoad();
-        this.loaderShared.showSpinner(false);
       }
     });
   };

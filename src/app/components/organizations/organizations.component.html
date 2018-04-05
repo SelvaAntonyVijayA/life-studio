@@ -7,7 +7,7 @@
       <jqxGrid #orgGrid [selectionmode]="'singlerow'" [width]="405" [height]="415" [toolbarheight]="35" [pageable]="false" [sortable]="true"
         [showstatusbar]="false" [showheader]="true" [showtoolbar]="true" [rendertoolbar]="renderToolbar" (onBindingcomplete)="onBindingComplete($event)"
         (rendered)="orgRendered($event)" [altrows]="true" (ready)="ready" (onRowselect)="orgGridOnRowSelect($event)" (onRowdoubleclick)="orgDoubleClick($event)"
-        (onRowunselect)="orgGridOnRowUnselect($event)" [source]="dataAdapter" [columns]="columns">
+        (onRowunselect)="orgGridOnRowUnselect($event)" [source]="orgAdaptor" [columns]="columns">
       </jqxGrid>
     </div>
     <div style='margin-top: 2px; float:left;margin-left:2px;'>
@@ -42,8 +42,8 @@
     </div>
     <div style='margin-left: 1px; margin-top:5px;float:left;'>
       <div *ngIf="isAppGrid">
-        <stream-grid [appId]="appId" [isChat]='isChat' [appName]='appName' [locationId]="locationId" [orgId]="orgId" [orgtype]="type" [width]="900"
-          [height]="350"></stream-grid>
+        <stream-grid [isAdvancedStream]='isAdvancedStream' [appId]="appId" [isChat]='isChat' [appName]='appName' [locationId]="locationId"
+          [orgId]="orgId" [orgtype]="type" [width]="900" [height]="350"></stream-grid>
       </div>
     </div>
     <div style='margin-top:5px; float:left;margin-left:2px;'>

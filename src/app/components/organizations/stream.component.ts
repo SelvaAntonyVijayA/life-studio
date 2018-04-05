@@ -27,6 +27,7 @@ export class StreamComponent implements OnInit {
   @Input('orgtype') orgType: string;
   @Input('height') height: string;
   @Input('width') width: string;
+  @Input('isAdvancedStream') isAdvancedStream: boolean = false;
   @ViewChild('streamGrid') streamGrid: jqxGridComponent;
   @ViewChild('streamWindow') streamWindow: jqxWindowComponent;
   @ViewChild('streamForm') streamForm: NgForm;
@@ -37,7 +38,7 @@ export class StreamComponent implements OnInit {
   rowIndex: number;
   streamObj: object = {
     name: "", organizationId: "", locationId: "", url: "", urlAndroid: "", urlWeb: "",
-    reportAbuse: "", isAdvanced: "", chat: false, createdApp: {}
+    reportAbuse: "", isAdvanced: false, chat: false, createdApp: {}
   };
   streamId: string;
   myAddButton: jqwidgets.jqxButton;
@@ -119,7 +120,7 @@ export class StreamComponent implements OnInit {
         this.streamId = "";
         this.streamObj = {
           name: "", organizationId: "", locationId: "", url: "", urlAndroid: "", urlWeb: "",
-          reportAbuse: "", isAdvanced: "", chat: false, createdApp: {}
+          reportAbuse: "", isAdvanced: false, chat: false, createdApp: {}
         };
 
         this.streamWindow.setTitle("Add Stream");
@@ -159,7 +160,7 @@ export class StreamComponent implements OnInit {
     { name: 'urlAndroid', type: 'string' },
     { name: 'urlWeb', type: 'string' },
     { name: 'reportAbuse', type: 'string' },
-    { name: 'isAdvanced', type: 'string' },
+    { name: 'isAdvanced' },
     { name: 'organizationId', type: 'string' },
     { name: 'createdApp' },
     { name: 'createdBy' },
@@ -222,8 +223,8 @@ export class StreamComponent implements OnInit {
         cellsalign: 'left', align: 'center'
       },
       {
-        text: 'isAdvanced', datafield: 'isAdvanced', sortable: true, cellsalign: 'left',
-        align: 'center', width: 80, cellsrenderer: this.isAdvanceRenderer
+        text: 'isAdvanced', datafield: 'isAdvanced', threestatecheckbox: true, columntype: 'checkbox', sortable: true, cellsalign: 'left',
+        align: 'center', width: 80
       },
     ];
 
@@ -330,7 +331,7 @@ export class StreamComponent implements OnInit {
   addWindowClose() {
     this.streamObj = {
       name: "", organizationId: "", locationId: "", url: "", urlAndroid: "", urlWeb: "",
-      reportAbuse: "", isAdvanced: "", chat: false, createdApp: {}
+      reportAbuse: "", isAdvanced: false, chat: false, createdApp: {}
     };
 
     this.updateButtons('End Edit');
@@ -443,10 +444,16 @@ export class StreamComponent implements OnInit {
   };
 
   reloadGrid() {
+    var url = '/livestream/list/' + this.organizationId + "/" + this.appId
+
+    if (this.utils.isNullOrEmpty(this.locationId)) {
+      url + "/" + this.locationId;
+    }
+
     let dataSource = {
       datatype: "json",
       id: '_id',
-      url: '/livestream/list/' + this.organizationId + "/" + this.appId + "/" + this.locationId,
+      url: url,
       datafields: this.datafields,
     }
 
@@ -459,7 +466,7 @@ export class StreamComponent implements OnInit {
     this.streamForm.resetForm();
     this.streamObj = {
       name: "", organizationId: "", locationId: "", url: "", urlAndroid: "", urlWeb: "",
-      reportAbuse: "", isAdvanced: "", chat: false, createdApp: {}
+      reportAbuse: "", isAdvanced: false, chat: false, createdApp: {}
     };
   };
 
@@ -474,11 +481,18 @@ export class StreamComponent implements OnInit {
       }
 
       if (obj["firstChange"]) {
+
+        var url = '/livestream/list/' + this.organizationId + "/" + this.appId
+
+        if (this.utils.isNullOrEmpty(this.locationId)) {
+          url + "/" + this.locationId;
+        }
+
         this.source = {
           datatype: "json",
           id: '_id',
           datafields: this.datafields,
-          url: '/livestream/list/' + this.organizationId + "/" + this.appId + "/" + this.locationId,
+          url: url,
         };
 
         if (!this.dataAdapter) {
@@ -499,11 +513,18 @@ export class StreamComponent implements OnInit {
       }
 
       if (obj["firstChange"]) {
+
+        var url = '/livestream/list/' + this.organizationId + "/" + this.appId
+
+        if (this.utils.isNullOrEmpty(this.locationId)) {
+          url + "/" + this.locationId;
+        }
+
         this.source = {
           datatype: "json",
           id: '_id',
           datafields: this.datafields,
-          url: '/livestream/list/' + this.organizationId + "/" + this.appId + "/" + this.locationId,
+          url: url,
         };
 
         if (!this.dataAdapter) {

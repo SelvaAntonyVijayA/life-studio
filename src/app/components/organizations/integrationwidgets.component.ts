@@ -184,7 +184,7 @@ export class IntegrationwidgetsComponent implements OnInit {
       let id = this.widgetIds[i];
       let rIndex = this.iwGrid.getrowboundindexbyid(id);
 
-      if (rIndex > 0) {
+      if (rIndex != -1) {
         indexes.push(rIndex);
 
         this.iwGrid.selectrow(rIndex);
@@ -218,10 +218,11 @@ export class IntegrationwidgetsComponent implements OnInit {
       }
     }
 
-    if (cHObj.hasOwnProperty("widgetIds") && !this.utils.isNullOrEmpty(cHObj["widgetIds"]["currentValue"])) {
-      let obj = cHObj["widgetIds"];
+    if (cHObj.hasOwnProperty("integrationId") && !this.utils.isNullOrEmpty(cHObj["integrationId"]["currentValue"])) {
+      let obj = cHObj["integrationId"];
 
       if (!obj["firstChange"] && !this.utils.isNullOrEmpty(obj["previousValue"]) && obj["previousValue"] !== obj["currentValue"]) {
+        this.setWidget();
       }
 
       if (obj["firstChange"]) {
