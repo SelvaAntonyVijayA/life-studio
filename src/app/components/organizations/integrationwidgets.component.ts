@@ -156,8 +156,15 @@ export class IntegrationwidgetsComponent implements OnInit {
   };
 
   onRowSelect(event: any): void {
-    this.rowIndex = event.args.rowindex;
-    let rowdata = this.iwGrid.getrowdata(this.rowIndex);
+    if (Array.isArray(event.args.rowindex)) {
+      if (event.args.rowindex.length > 0) {
+      }
+
+    } else {
+      this.rowIndex = event.args.rowindex;
+      let data = event.args.row;
+      let rowdata = this.iwGrid.getrowdata(this.rowIndex);
+    }
   };
 
   onRowUnselect(event: any): void {

@@ -253,11 +253,11 @@ export class AppgridComponent implements OnInit {
         cellsalign: 'left', align: 'center'
       },
       {
-        text: 'Alerts', datafield: 'alerts', width: 150, columntype: 'textbox', sortable: true, editable: true,
+        text: 'Alerts', datafield: 'alerts', width: 140, columntype: 'textbox', sortable: true, editable: true,
         cellsalign: 'left', align: 'center'
       },
       {
-        text: 'Chat', datafield: 'cname', sortable: true, cellsalign: 'left', align: 'center', width: 60
+        text: 'Chat', datafield: 'cname', sortable: true, cellsalign: 'left', align: 'center', width: 50
       },
     ];
 

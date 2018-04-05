@@ -232,13 +232,18 @@ export class LanguageComponent implements OnInit {
   };
 
   onRowSelect(event: any): void {
-    this.rowIndex = event.args.rowindex;
-    let data = event.args.row;
+    if (Array.isArray(event.args.rowindex)) {
+      if (event.args.rowindex.length > 0) {
+      } else {
+      }
+    } else {
+      this.rowIndex = event.args.rowindex;
+      let data = event.args.row;
 
-    if (!this.utils.isEmptyObject(data)) {
-      this.assingDataToObject(data);
+      if (!this.utils.isEmptyObject(data)) {
+        this.assingDataToObject(data);
+      }
     }
-    // this.updateButtons('Select');
   };
 
   onRowUnselect(event: any): void {

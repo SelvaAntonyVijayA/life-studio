@@ -156,13 +156,68 @@ export class EnginesComponent implements OnInit {
 
   onRowSelect(event: any): void {
     this.rowIndex = event.args.rowindex;
-    let rowdata = this.engineGrid.getrowdata(this.rowIndex);
+    if (Array.isArray(event.args.rowindex)) {
 
-    var engine = "";
-    if (rowdata["name"].toLowerCase() == "basic stream" || rowdata["name"].toLowerCase() == "advanced stream") {
-      engine = rowdata["name"].toLowerCase() == "basic stream" ? "Advanced Stream" : "Basic Stream";
+      if (event.args.rowindex.length > 0) {
+        this.processEngineRightsSelectAll(event.args.rowindex);
+      }
+    } else {
 
-      this.selectUnselectRowbyColumn(engine);
+      this.rowIndex = event.args.rowindex;
+      let data = event.args.row;
+      let rowdata = this.engineGrid.getrowdata(this.rowIndex);
+
+      var engine = "";
+      if (rowdata["name"].toLowerCase() == "basic stream" || rowdata["name"].toLowerCase() == "advanced stream") {
+        engine = rowdata["name"].toLowerCase() == "basic stream" ? "Advanced Stream" : "Basic Stream";
+
+        this.selectUnselectRowbyColumn(engine);
+      }
+    }
+  };
+
+  processEngineRightsSelectAll(indexes) {
+    let engineRowIds = [];
+    let engines = this.engines;
+    let basicChk = false;
+
+    if (Array.isArray(engines) && indexes && indexes.length > 0) {
+      var rowsCount = indexes.length;
+      
+      for (var i = 0; i < rowsCount; i++) {
+        let index = indexes[i];
+        let rowdata = this.engineGrid.getrowdata(index);
+
+        if (rowdata["name"].toLowerCase() == "advanced stream") {
+          let basicIndex = engines.map(function (e) {
+            return e['name'];
+          }).indexOf("Basic Stream");
+
+          if (basicIndex != -1) {
+            basicChk = true;
+            //this.engineGrid.selectrow(index);
+            this.engineGrid.unselectrow(index)
+          } else {
+            this.engineGrid.selectrow(index);
+          }
+        }
+
+        if (rowdata["name"].toLowerCase() == "basic stream") {
+          let advIndex = engines.map(function (e) {
+            return e['name'];
+          }).indexOf("Advanced Stream");
+
+          if (advIndex != -1 || !basicChk) {
+            // this.engineGrid.selectrow(index);
+            this.engineGrid.unselectrow(index)
+          }
+
+          if (basicChk) {
+
+          }
+        }
+
+      }
     }
   };
 
@@ -200,16 +255,19 @@ export class EnginesComponent implements OnInit {
   onBindingComplete(event: any): void {
     var indexes = [];
     this.engineGrid.clearselection();
-    let length = this.engines.length;
 
-    for (let i = 0; i < length; i++) {
-      let record = this.engines[i];
-      let rIndex = this.engineGrid.getrowboundindexbyid(record["id"]);
+    if (Array.isArray(this.engines)) {
+      let length = this.engines.length;
 
-      if (rIndex != -1) {
-        indexes.push(rIndex);
+      for (let i = 0; i < length; i++) {
+        let record = this.engines[i];
+        let rIndex = this.engineGrid.getrowboundindexbyid(record["id"]);
 
-        this.engineGrid.selectrow(rIndex);
+        if (rIndex != -1) {
+          indexes.push(rIndex);
+
+          this.engineGrid.selectrow(rIndex);
+        }
       }
     }
   }
