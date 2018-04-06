@@ -27,8 +27,8 @@
           <input id="code" name="code" class="form-control input-sm" [(ngModel)]="inteObj.code" #code="ngModel">
         </div>
         <div class="form-group">
-          <label for="type">Type</label>
-          <select id="type" name="type" class="form-control input-sm" [(ngModel)]="inteObj.typeId" #typeId="ngModel">
+          <label for="inteType">Type</label>
+          <select id="inteType" name="inteType" class="form-control input-sm" [(ngModel)]="inteObj.typeId" #inteType="ngModel">
             <option *ngFor="let s of integrationTypes" [value]="s._id">{{s.name}}</option>
           </select>
         </div>

@@ -15,25 +15,25 @@
     <form (ngSubmit)="onSubmit()" #langForm="ngForm">
       <div>
         <div class="form-group">
-          <label for="name">Name</label>
-          <input id="name" name="name" class="form-control input-sm" required minlength="2" [(ngModel)]="langObj.name" #name="ngModel">
-          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
-            <div *ngIf="name.errors.required">
+          <label for="language">Name</label>
+          <input id="language" name="language" class="form-control input-sm" required minlength="2" [(ngModel)]="langObj.name" #language="ngModel">
+          <div *ngIf="language.invalid && (language.dirty || language.touched)" class="alert alert-danger">
+            <div *ngIf="language.errors.required">
               Name is required.
             </div>
-            <div *ngIf="name.errors.minlength">
+            <div *ngIf="language.errors.minlength">
               Name must be at least 2 characters long.
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label for="code">Code</label>
-          <input id="code" name="code" class="form-control input-sm" [(ngModel)]="langObj.code" #code="ngModel">
-          <div *ngIf="code.invalid && (code.dirty || code.touched)" class="alert alert-danger">
-            <div *ngIf="code.errors.required">
+          <label for="langcode">Code</label>
+          <input id="langcode" name="langcode" class="form-control input-sm" [(ngModel)]="langObj.code" #langcode="ngModel">
+          <div *ngIf="langcode.invalid && (langcode.dirty || langcode.touched)" class="alert alert-danger">
+            <div *ngIf="langcode.errors.required">
               Name is required.
             </div>
-            <div *ngIf="code.errors.minlength">
+            <div *ngIf="langcode.errors.minlength">
               Name must be at least 2 characters long.
             </div>
           </div>

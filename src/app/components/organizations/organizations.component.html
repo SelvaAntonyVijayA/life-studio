@@ -55,7 +55,7 @@
   </div>
 </div>
 
-<jqxWindow #addOrg (onOpen)="addOpen($event)" (onClose)="addClose($event)" [minHeight]="320" [maxHeight]="400" [width]="400"
+<jqxWindow #addOrg (onOpen)="addOpen($event)" (onClose)="addClose($event)" [minHeight]="250" [maxHeight]="400" [width]="400"
   [resizable]="false" [isModal]="true" [autoOpen]="false" [modalOpacity]="'0.1'">
   <div>Edit</div>
   <div style="overflow: hidden;height:100%;">
@@ -75,15 +75,21 @@
         </div>
         <div class="form-group">
           <label for="type">Type</label>
-          <select id="type" name="type" class="form-control input-sm" [(ngModel)]="org.type_id" #type_id="ngModel">
+          <select id="type" required name="type" class="form-control input-sm" [(ngModel)]="org.type_id" #type="ngModel">
             <option *ngFor="let t of organizationTypes" [value]="t._id">{{t.name}}</option>
           </select>
+          <div [hidden]="type.valid || type.pristine" class="alert alert-danger">
+            Please select the Type
+          </div>
         </div>
         <div class="form-group">
           <label for="package">Package</label>
-          <select id="package" name="package" class="form-control input-sm" [(ngModel)]="org.packageId" #packageId="ngModel">
+          <select id="package" required name="package" class="form-control input-sm" [(ngModel)]="org.packageId" #package="ngModel">
             <option *ngFor="let p of packages" [value]="p._id">{{p.name}}</option>
           </select>
+          <div [hidden]="package.valid || package.pristine" class="alert alert-danger">
+            Please select the Package
+          </div>
         </div>
         <button type="submit" class="btn btn-default btn-xs" [disabled]="orgForm.invalid">Submit</button>
         <button type="button" class="btn btn-default btn-xs" (click)="onFormReset()">Reset</button>

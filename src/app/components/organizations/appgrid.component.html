@@ -14,13 +14,13 @@
     <form (ngSubmit)="onSubmit()" #appForm="ngForm">
       <div>
         <div class="form-group">
-          <label for="name">Name</label>
-          <input id="name" name="name" class="form-control input-sm" required minlength="2" [(ngModel)]="app.name" #name="ngModel">
-          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
-            <div *ngIf="name.errors.required">
+          <label for="appName">Name</label>
+          <input id="appName" name="appName" class="form-control input-sm" required minlength="2" [(ngModel)]="app.name" #appName="ngModel">
+          <div *ngIf="appName.invalid && (appName.dirty || appName.touched)" class="alert alert-danger">
+            <div *ngIf="appName.errors.required">
               Name is required.
             </div>
-            <div *ngIf="name.errors.minlength">
+            <div *ngIf="appName.errors.minlength">
               Name must be at least 2 characters long.
             </div>
           </div>
@@ -28,25 +28,28 @@
 
         <div class="form-group">
           <label for="authenticated">Secure Auth</label>
-          <select id="authenticated" name="authenticated" class="form-control input-sm" [(ngModel)]="app.authenticated" #power="ngModel">
-            <option *ngFor="let t of authAdaptor.records" [value]="t.authId">{{t.authName}}</option>
+          <select id="authenticated" required name="authenticated" class="form-control input-sm" [(ngModel)]="app.authenticated" #authenticated="ngModel">
+            <option *ngFor="let t of secureAuthList" [value]="t.authId">{{t.authName}}</option>
           </select>
+          <div [hidden]="authenticated.valid || authenticated.pristine" class="alert alert-danger">
+            Please select the Secure Auth
+          </div>
         </div>
 
         <div class="form-group">
           <label for="googleAnalytics">Google Analytics</label>
-          <input id="googleAnalytics" name="googleAnalytics" class="form-control input-sm" [(ngModel)]="app.googleAnalytics" #name="ngModel">
+          <input id="googleAnalytics" name="googleAnalytics" class="form-control input-sm" [(ngModel)]="app.googleAnalytics" #googleAnalytics="ngModel">
         </div>
 
         <div class="form-group">
           <label for="alerts">Alerts</label>
-          <input id="alerts" name="alerts" class="form-control input-sm" [(ngModel)]="app.alerts" #name="ngModel">
+          <input id="alerts" name="alerts" class="form-control input-sm" [(ngModel)]="app.alerts" #alerts="ngModel">
         </div>
 
         <div class="form-group">
           <label for="chat">Chat</label>
-          <select id="chat" name="chat" class="form-control input-sm" [(ngModel)]="app.chat" #power="ngModel">
-            <option *ngFor="let p of chatAdaptor.records" [value]="p.chatId">{{p.chatName}}</option>
+          <select id="chat" name="chat" class="form-control input-sm" [(ngModel)]="app.chat" #chat="ngModel">
+            <option *ngFor="let p of chatList" [value]="p.chatId">{{p.chatName}}</option>
           </select>
         </div>
 

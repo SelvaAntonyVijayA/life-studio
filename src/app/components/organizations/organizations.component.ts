@@ -356,7 +356,10 @@ export class OrganizationsComponent implements OnInit {
   onBindingComplete(event: any): void {
     let orgDatas = this.orgGrid.getrows();
     this.isLoadedGrid = true;
-    this.loaderShared.showSpinner(false);
+
+    setTimeout(() => {
+      this.loaderShared.showSpinner(false);
+    }, 0);
   };
 
   onEndAppLoad(appObj: any): void {
@@ -545,17 +548,22 @@ export class OrganizationsComponent implements OnInit {
   };
 
   pageLoad() {
+    this.packages = [];
+    this.organizationTypes = [];
+
     if (this.isLoadedGrid) {
       this.orgGrid.updatebounddata();
-    } else {
-      this.packages = this.packageAdaptor.records;
-      this.packages.unshift({ _id: "", name: "Select package" });
-
-      this.organizationTypes = this.typeAdaptor.records;
-      this.organizationTypes.unshift({ _id: "", name: "Select type" });
     }
 
-    this.loaderShared.showSpinner(false);
+    this.packages = this.packageAdaptor.records;
+    this.packages.unshift({ _id: "", name: "Select package" });
+
+    this.organizationTypes = this.typeAdaptor.records;
+    this.organizationTypes.unshift({ _id: "", name: "Select type" });
+
+    setTimeout(() => {
+      this.loaderShared.showSpinner(false);
+    }, 0);
   };
 
   ngOnInit() {

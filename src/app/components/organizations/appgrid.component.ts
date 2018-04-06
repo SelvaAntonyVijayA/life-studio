@@ -32,9 +32,11 @@ export class AppgridComponent implements OnInit {
   source: any;
   rowIndex: number;
   appId: string;
-  app: object = { name: "", authenticated: "-1", pin: "", googleAnalytics: "", alerts: "", chat: "-1" };
+  app: object = { name: "", authenticated: "", pin: "", googleAnalytics: "", alerts: "", chat: "" };
   myAddButton: jqwidgets.jqxButton;
   myDeleteButton: jqwidgets.jqxButton;
+  chatList: any = [];
+  secureAuthList: any = [];
 
   constructor(private route: ActivatedRoute,
     private cms: CommonService,
@@ -52,7 +54,6 @@ export class AppgridComponent implements OnInit {
         { name: 'sno' }
       ],
       localdata: [
-        { sno: 0, chatId: '-1', chatName: 'Select Chat' },
         { sno: 1, chatId: '0', chatName: 'Off' },
         { sno: 2, chatId: '1', chatName: 'On' },
         { sno: 3, chatId: '2', chatName: 'Private' }
@@ -67,7 +68,6 @@ export class AppgridComponent implements OnInit {
         { name: 'sno' }
       ],
       localdata: [
-        { sno: 0, authId: '-1', authName: 'Select Secure Auth.' },
         { sno: 1, authId: '0', authName: 'Pre-approved' },
         { sno: 2, authId: '1', authName: 'Email' },
         { sno: 3, authId: '4', authName: 'Email-Auto Approve' },
@@ -151,7 +151,7 @@ export class AppgridComponent implements OnInit {
     this.myAddButton.addEventHandler('click', (event: any) => {
       if (!this.myAddButton.disabled) {
         this.appId = "";
-        this.app = { name: "", authenticated: "-1", pin: "", googleAnalytics: "", alerts: "", chat: "-1" };
+        this.app = { name: "", authenticated: "", pin: "", googleAnalytics: "", alerts: "", chat: "" };
         this.appWindow.setTitle("Add Apps");
         this.appWindow.position({ x: 600, y: 90 });
         this.appWindow.open();
@@ -337,6 +337,7 @@ export class AppgridComponent implements OnInit {
       obj["ids"] = [];
     }
 
+    this.loadDropdownlist();
     this.onEndAppLoad.emit(obj);
   };
 
@@ -382,7 +383,7 @@ export class AppgridComponent implements OnInit {
   };
 
   addWindowClose() {
-    this.app = { name: "", authenticated: "-1", pin: "", googleAnalytics: "", alerts: "", chat: "-1" };
+    this.app = { name: "", authenticated: "", pin: "", googleAnalytics: "", alerts: "", chat: "" };
     this.updateButtons('End Edit');
   };
 
@@ -501,13 +502,37 @@ export class AppgridComponent implements OnInit {
     }
 
     let adapter = new jqx.dataAdapter(dataSource);
-
     this.appGrid.source(adapter);
+  }
+
+  loadDropdownlist() {
+    this.chatList = [];
+    this.secureAuthList = [];
+
+    this.chatList = this.chatAdaptor.records;
+
+    let chatIndex = this.chatList.map(function (e) {
+      return e['chatName'];
+    }).indexOf("Select Chat");
+
+    if (chatIndex == -1) {
+      this.chatList.unshift({ sno: 0, chatId: '', chatName: 'Select Chat' });
+    }
+
+    this.secureAuthList = this.authAdaptor.records;
+
+    let authIndex = this.secureAuthList.map(function (e) {
+      return e['chatName'];
+    }).indexOf("Select Secure Auth.");
+
+    if (authIndex == -1) {
+      this.secureAuthList.unshift({ sno: 0, authId: '', authName: 'Select Secure Auth.' });
+    }
   }
 
   onFormReset() {
     this.appForm.resetForm();
-    this.app = { name: "", authenticated: "-1", pin: "", googleAnalytics: "", alerts: "", chat: "-1" };
+    this.app = { name: "", authenticated: "", pin: "", googleAnalytics: "", alerts: "", chat: "" };
   };
 
   ngOnChanges(cHObj: any) {

@@ -2,10 +2,10 @@
   <span>Locations</span>
 </mat-toolbar>
 
-<jqxGrid #locationGrid [source]="dataAdapter" [width]="width" [altrows]="true" [height]="height"
-  [columns]="columns" [toolbarheight]="35" [pageable]="false" [sortable]="true" [showstatusbar]="false" [showheader]="true"
-  [showtoolbar]="true" [rendertoolbar]="renderToolbar" (onRowselect)="onRowSelect($event)" (onRowunselect)="onRowUnselect($event)"
-  (onRowdoubleclick)="rowdoubleclick($event)" [selectionmode]="'singlerow'" (onBindingcomplete)="onBindingComplete($event)">
+<jqxGrid #locationGrid [source]="dataAdapter" [width]="width" [altrows]="true" [height]="height" [columns]="columns" [toolbarheight]="35"
+  [pageable]="false" [sortable]="true" [showstatusbar]="false" [showheader]="true" [showtoolbar]="true" [rendertoolbar]="renderToolbar"
+  (onRowselect)="onRowSelect($event)" (onRowunselect)="onRowUnselect($event)" (onRowdoubleclick)="rowdoubleclick($event)" [selectionmode]="'singlerow'"
+  (onBindingcomplete)="onBindingComplete($event)">
 </jqxGrid>
 
 <jqxWindow #locationWindow (onOpen)="addWindowOpen($event)" (onClose)="addWindowClose($event)" [minHeight]="320" [maxHeight]="700"
@@ -15,13 +15,13 @@
     <form (ngSubmit)="onSubmit()" #locationForm="ngForm">
       <div>
         <div class="form-group">
-          <label for="name">Name</label>
-          <input id="name" name="name" class="form-control input-sm" required minlength="2" [(ngModel)]="locationObj.name" #name="ngModel">
-          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
-            <div *ngIf="name.errors.required">
+          <label for="locName">Name</label>
+          <input id="locName" name="locName" class="form-control input-sm" required minlength="2" [(ngModel)]="locationObj.name" #locName="ngModel">
+          <div *ngIf="locName.invalid && (locName.dirty || locName.touched)" class="alert alert-danger">
+            <div *ngIf="locName.errors.required">
               Name is required.
             </div>
-            <div *ngIf="name.errors.minlength">
+            <div *ngIf="locName.errors.minlength">
               Name must be at least 2 characters long.
             </div>
           </div>
