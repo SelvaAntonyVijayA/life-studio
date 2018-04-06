@@ -37,7 +37,9 @@ var plugins = {
   "pagesettings": "pagesettings",
   "log": "log",
   "datamigration": "datamigration",
-  "engines": "engines"
+  "engines": "engines",
+  "notification": "notification",
+  "smartengine": "smartengine"
 };
 
 module.exports = function (appPath, dirName, app) {

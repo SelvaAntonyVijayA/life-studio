@@ -258,7 +258,7 @@
           alt="" title="List" />
       </div>
 
-      <div id="main-container-groups" class="groups_list_show ">
+      <div id="main-container-groups" class="groups_list_show">
         <div class="group_list_single" [iliDraggable]="{data: grp, page: 'page'}" *ngFor="let grp of (groups | filterByText:'name': groupFilter['groupSearch'] | filterByText:'type': groupFilter['groupType'] | orderBy:groupFilter['sort']['isAsc']: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][0]: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
           <div *ngIf="((grp.hasOwnProperty('art') && !utils.isNullOrEmpty(grp['art'])) && (grp['art'].indexOf('tile_default.jpg') || grp['art'].indexOf('tilist_art.jpg')))"
             [ngClass]="groupType === 'list'? 'group-art' : 'group-art details'">

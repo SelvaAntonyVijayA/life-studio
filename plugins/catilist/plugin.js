@@ -166,10 +166,20 @@ var deleteCatilist = function (req, res, next) {
   }
 };
 
+var _getCatilists = function (ids, cb) {
+  options = {};
+
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.catilist, ids, options, function (result) {
+    cb(result);
+  });
+};
+
+
 module.exports = {
   "init": init,
   "save": save,
   "list": list,
   "updateCatilist": updateCatilist,
-  "deleteCatilist": deleteCatilist
+  "deleteCatilist": deleteCatilist,
+  "_getCatilists": _getCatilists
 };

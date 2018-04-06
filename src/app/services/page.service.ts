@@ -137,6 +137,14 @@ export class PageService {
       .catch(this.handleError);
   };
 
+  pageSquaresList(orgId: string, appId: string, locationId?: string) {
+    return this.http
+      .get("/pages/squares/" + orgId + "/" + appId + "/" + locationId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);

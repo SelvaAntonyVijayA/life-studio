@@ -219,11 +219,20 @@ var remove = function (req, res, next) {
   }
 };
 
+var _getTilists = function (ids, cb) {
+  options = {};
+
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.tilist, ids, options, function (result) {
+    cb(result);
+  });
+};
+
 module.exports = {
   "init": init,
   "save": save,
   "list": list,
   "remove": remove,
   "updateTilist": updateTilist,
-  "folderByTiles": folderByTiles
+  "folderByTiles": folderByTiles,
+  "_getTilists": _getTilists
 };

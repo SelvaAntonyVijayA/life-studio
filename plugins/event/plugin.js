@@ -472,6 +472,14 @@ var remove = function (req, res, next) {
   }
 };
 
+var _getEvents = function (ids, callback) {
+  options = {};
+
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.event, ids, options, function (result) {
+    callback(result);
+  });
+};
+
 module.exports = {
   "init": init,
   "save": save,
@@ -481,5 +489,6 @@ module.exports = {
   "updateEvent": updateEvent,
   "activate": activate,
   "deActivate": deActivate,
-  "remove": remove
+  "remove": remove,
+  "_getEvents": _getEvents
 };

@@ -1,3 +1,106 @@
-<p>
-  notifications works!
-</p>
+<div class="container notification_container">
+  <div class="page_block notification_block">
+    <div class="app_list_search">
+      <input [(ngModel)]="pageSearchText" class="form-control input-sm app_search_box" type="text" placeholder="Search Pages">
+    </div>
+
+    <div id="main-container-pages" class="pages_list_show">
+      <div class="page_list_single" [iliDraggable]="{data: mnu, page: 'notification'}" *ngFor="let mnu of (menus | filterByText:'title': pageSearchText | orderBy: true: 'position'); let i = index; trackBy: trackByIndex;">
+        <div [title]="mnu['title']" class="new_app_menu_page_label">
+          {{ mnu['title'] }}</div>
+        <span *ngIf="mnu['isNotification']" [title]="mnu['tileNotifications']" class="step noteicon" aria-hidden="true">
+          <i class="icon ion-android-notifications-none"></i>
+        </span>
+        <span *ngIf="mnu['isSmart']" title="mnu['tileSmart']" class='step smarticon' aria-hidden='true'>
+          <i class='icon ion-lightbulb'></i>
+        </span>
+        <span *ngIf="mnu['isRole']" title="mnu['tileApps']" class="step smart smarticon">
+          <i class="icon ion-android-person"></i>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="app_page_form">
+    <div class="page_block app_page_head">
+      <div class="app_form_btns">
+        <button class="ili-btn save_notification">
+          Save
+        </button>
+        <span class="notify_heading_txt">
+          Notifications apply only to Tiles or Groups that are already part of an application.
+        </span>
+      </div>
+
+      <div class="app_form">
+        <select [ngModel]="selectedApp" (ngModelChange)="appChange($event)" class="form-control input-sm app_box">
+          <option *ngFor="let app of appList; let i = index" [value]="app?._id">{{app?.name}}</option>
+        </select>
+
+        <select [ngModel]="selectedLocation" (ngModelChange)="locationChange($event)" class="form-control input-sm location_box">
+          <option *ngFor="let loc of locationList; let i = index" [value]="loc?._id">{{loc?.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="page_block drag_block">
+      <div class="app_page_items_container" id="main_notify_drag_container">
+        <div iliDropTarget (myDrop)="onDrop($event, false)" class="ili-panel main_notify_drag_content drop_target">
+          <div class="draggable_label">
+            Drag a Tile, an Event or a Page
+            <br>
+            <br> into this space</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page_block app_tilist_list">
+    <input [(ngModel)]="groupFilter['groupSearch']" class="form-control input-sm search_box tilist_search_box search_group_pages"
+      type="text" placeholder="Search Groups">
+
+    <select [ngModel]="groupFilter['groupType']" (ngModelChange)="filterChange($event, 'groupType')" class="form-control input-sm group_type">
+      <option [value]="'-1'">Show All Groups</option>
+      <option [value]="'event'">Events</option>
+      <option [value]="'tilist'">Catalogs</option>
+      <option [value]="'catilist'">Categories</option>
+      <option [value]="'livestream'">Live Stream</option>
+    </select>
+
+    <select [ngModel]="groupFilter['sort']['selected']" (ngModelChange)="filterChange($event, 'sort')" class="form-control input-sm sort_groups">
+      <option value="date_desc">Latest on top</option>
+      <option value="date_asc">Oldest on top</option>
+      <option value="name_asc">Name - A on top</option>
+      <option value="name_desc">Name - Z on top</option>
+    </select>
+
+    <div class="group-view-change">
+      <img class="img-event-view-group" *ngIf="groupType === 'list'" (click)="changeGroupView()" src="/img/details.png" alt=""
+        title="Details" />
+      <img class="img-event-view-group group-list-view" *ngIf="groupType === 'details'" (click)="changeGroupView()" src="/img/list.png"
+        alt="" title="List" />
+    </div>
+
+    <div id="main-container-groups" class="groups_list_show">
+      <div class="group_list_single" [iliDraggable]="{data: grp, page: 'notification'}" *ngFor="let grp of (groups | filterByText:'name': groupFilter['groupSearch'] | filterByText:'type': groupFilter['groupType'] | orderBy:groupFilter['sort']['isAsc']: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][0]: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
+        <div *ngIf="((grp.hasOwnProperty('art') && !utils.isNullOrEmpty(grp['art'])) && (grp['art'].indexOf('tile_default.jpg') || grp['art'].indexOf('tilist_art.jpg')))"
+          [ngClass]="groupType === 'list'? 'group-art' : 'group-art details'">
+          <img [ngClass]="groupType === 'list'? 'group_list_art' : 'group_list_art group-detail-content'" [src]="grp['art'] | safe">
+        </div>
+        <div [title]="grp?.name" class="group_list_title">{{getGroupName(grp?.name)}}</div>
+        <div class="group-notify-icons">
+          <span *ngIf="grp['isNotification']" class='step smart noteicon smarticon-groups' aria-hidden="true">
+            <i class='icon ion-android-notifications-none'></i>
+          </span>
+          <span *ngIf="grp['isSmart']" class="step smart smarticon smarticon-groups">
+            <i class="icon ion-lightbulb"></i>
+          </span>
+          <span *ngIf="grp['isRole']" class="step smart smarticon smarticon-groups">
+            <i class="icon ion-android-person"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <tiles-list class="dragItem" (tileContent)="getTileContent($event)" [tilesToUpdate]="tilesToUpdate" [isMerge]="isMerge" [draggedTiles]="draggedTiles"
+    [droppedTile]="droppedTile" [organizations]="organizations" [page]="'notifications'"></tiles-list>
+</div>

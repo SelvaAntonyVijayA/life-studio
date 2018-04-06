@@ -113,6 +113,7 @@ module.exports = function (app) {
   router.all('/pages/theme/save/', $page.pageThemeSave);
   router.all('/pages/theme/update/:themeId', $page.pageThemeUpdate);
   router.all('/pages/theme/list/:appId/:locationId*?', $page.pageThemeList);
+  router.all('/pages/squares/:orgId/:appId/:locationId*?', $page.squares);
 
   router.all('/livestream/save?', $livestream.save);
   router.all('/livestream/list/:orgId*?/:appId*?/:locationId*?', $livestream.list);

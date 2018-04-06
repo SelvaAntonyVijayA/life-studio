@@ -566,6 +566,263 @@ var getPageTheme = function (tQuery, tOptions, cb) {
   });
 };
 
+var squares = function (req, res, next) {
+  $async.waterfall([
+    function (callback) {
+      var options = {};
+      options.sort = [['position', 'asc']];
+
+      query = {};
+      query.orgId = req.params.orgId;
+      query.appId = req.params.appId;
+      query.deleted = {
+        $exists: false
+      };
+
+      if (!__util.isNullOrEmpty(req.params.locationId)) {
+        query.locationId = req.params.locationId;
+      }
+
+      _pageGroups(query, options, function (datas) {
+        callback(null, datas);
+      });
+    },
+
+    function (datas, callback) {
+      query = {};
+      query.appId = req.params.appId;
+
+      if (!__util.isNullOrEmpty(req.params.locationId)) {
+        query.locationId = req.params.locationId;
+      }
+
+      $notification._getNotificationList(query, function (notifications) {
+        callback(null, datas, notifications);
+      });
+    },
+
+    function (datas, notifications, callback) {
+      _groupDatas(datas, function (squareDatas) {
+        squareDatas.notifications = notifications;
+        callback(null, datas, squareDatas);
+      });
+    }], function (err, datas, squareDatas) {
+      query = {};
+      query.orgId = req.params.orgId;
+      query.appId = req.params.appId;
+      query.engineId = {};
+      var all = JSON.stringify(datas.allIds);
+      var ids = JSON.parse(all);
+
+      query.engineId.$in = ids;
+      query.type = {};
+      query.type.$in = ['menu', 'event', 'tilist', 'catilist', 'livestream'];
+      options = {};
+
+      $smartengine._get(query, options, function (smartTiles) {
+        squareDatas.smart = smartTiles;
+        var menus = datas.menu;
+
+        menus.forEach(function (menu) {
+          var id = JSON.stringify(menu._id);
+          id = JSON.parse(id);
+
+          var isRole = _.findWhere(datas.list, {
+            "linkTo": "menu",
+            "linkId": id,
+            "isPrivate": true
+          });
+
+          if (isRole) {
+            menu.isRoleBased = true;
+          } else {
+            menu.isRoleBased = false;
+          }
+        });
+
+        squareDatas.menu = menus;
+
+        res.send(squareDatas);
+      });
+    });
+};
+
+var _pageGroups = function (pQuery, pOptions, cb) {
+  var datas = {};
+
+  $async.waterfall([
+    function (callback) {
+      $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.page, pQuery, pOptions, function (pages) {
+        callback(null, pages);
+      });
+    },
+    function (pages, callback) {
+      _getPageSquareIds(pages, function (allIds) {
+        datas = allIds;
+
+        callback(null);
+      });
+    }], function (err) {
+      cb(datas);
+    });
+};
+
+var _getPageSquareIds = function (pages, cb) {
+  var list = [];
+  var datas = {};
+  datas.tileIds = [];
+  datas.eventIds = [];
+  datas.tilistIds = [];
+  datas.catilistIds = [];
+  datas.procedureIds = [];
+  datas.liveIds = [];
+  datas.allIds = [];
+  datas.pages = [];
+
+  _.each(pages, function (menu) {
+    datas.allIds.push(menu._id);
+
+    _.find(menu.menuTiles, function (square, index) {
+      if (square.linkTo && square.linkTo.toLowerCase() != 'menu') {
+        datas.allIds.push(square.linkId);
+      }
+
+      if (square.linkTo && square.linkTo.toLowerCase() == 'tile') {
+        datas.tileIds.push(square.linkId);
+      } else if (square.linkTo && square.linkTo.toLowerCase() == 'event') {
+        datas.eventIds.push(square.linkId);
+      } else if (square.linkTo && square.linkTo.toLowerCase() == 'tilist') {
+        datas.tilistIds.push(square.linkId);
+      } else if (square.linkTo && square.linkTo.toLowerCase() == 'catilist') {
+        datas.catilistIds.push(square.linkId);
+      } else if (square.linkTo && square.linkTo.toLowerCase() == 'livestream') {
+        datas.liveIds.push(square.linkId);
+      } else if (square.linkTo && square.linkTo.toLowerCase() == 'procedure') {
+        datas.procedureIds.push(square.linkId);
+      }
+
+      list.push(square);
+    });
+  });
+
+  datas.menu = pages;
+  datas.list = list;
+
+  cb(datas);
+};
+
+var _groupDatas = function (datas, cb) {
+  var eventIds = datas.eventIds, tilistIds = datas.tilistIds, catilistIds = datas.catilistIds, liveIds = datas.liveIds, squares = datas.list;
+  var data = {};
+  $async.parallel([
+    function (callback) {
+      query = {};
+      query._id = eventIds;
+
+      $event._getEvents(query, function (events) {
+        events.forEach(function (event) {
+          var id = JSON.stringify(event._id);
+          id = JSON.parse(id);
+
+          var isRole = _.findWhere(squares, {
+            "linkTo": "event",
+            "linkId": id,
+            "isPrivate": true
+          });
+
+          if (isRole) {
+            event.isRoleBased = true;
+          } else {
+            event.isRoleBased = false;
+          }
+        });
+
+        data.event = events;
+        callback(null);
+      });
+    },
+    function (callback) {
+      query = {};
+      query._id = tilistIds;
+
+      $tilist._getTilists(query, function (tilists) {
+        tilists.forEach(function (tilist) {
+          var id = JSON.stringify(tilist._id);
+          id = JSON.parse(id);
+
+          var isRole = _.findWhere(squares, {
+            "linkTo": "tilist",
+            "linkId": id,
+            "isPrivate": true
+          });
+
+          if (isRole) {
+            tilist.isRoleBased = true;
+          } else {
+            tilist.isRoleBased = false;
+          }
+        });
+
+        data.tilist = tilists;
+        callback(null);
+      });
+    },
+    function (callback) {
+      query = {};
+      query._id = catilistIds;
+
+      $catilist._getCatilists(query, function (catilists) {
+        catilists.forEach(function (catilist) {
+          var id = JSON.stringify(catilist._id);
+          id = JSON.parse(id);
+
+          var isRole = _.findWhere(squares, {
+            "linkTo": "catilist",
+            "linkId": id,
+            "isPrivate": true
+          });
+
+          if (isRole) {
+            catilist.isRoleBased = true;
+          } else {
+            catilist.isRoleBased = false;
+          }
+        });
+
+        data.catilist = catilists;
+        callback(null);
+      });
+    },
+    function (callback) {
+      query = {};
+      query._id = liveIds;
+
+      $livestream.get(query, function (livestreams) {
+        livestreams.forEach(function (live) {
+          var id = JSON.stringify(live._id);
+          id = JSON.parse(id);
+
+          var isRole = _.findWhere(squares, {
+            "linkTo": "livestream",
+            "linkId": id,
+            "isPrivate": true
+          });
+
+          if (isRole) {
+            live.isRoleBased = true;
+          } else {
+            live.isRoleBased = false;
+          }
+        });
+
+        data.livestream = livestreams;
+        callback(null);
+      });
+    }], function (err) {
+      cb(data);
+    });
+};
+
 module.exports = {
   "init": init,
   "save": save,
@@ -580,5 +837,6 @@ module.exports = {
   "pageThemeUpdate": pageThemeUpdate,
   "pageThemeList": pageThemeList,
   "getPageTheme": getPageTheme,
-  "remove": remove
+  "remove": remove,
+  "squares": squares
 };

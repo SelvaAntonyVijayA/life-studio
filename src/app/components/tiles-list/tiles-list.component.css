@@ -127,7 +127,7 @@
   border-radius: 0px;
 }
 
-.tiles_list_single:hover{
+.tiles_list_single:hover {
   background-color: #F2F2F2;
 }
 
@@ -168,6 +168,14 @@
 
 .tile_list_title.tile-content-title {
   width: 200px;
+}
+
+.notify_tile_list {
+  height: 915px;
+}
+
+.notify_show_tiles {
+  height: 761px
 }
 
 /* Tile Icons */

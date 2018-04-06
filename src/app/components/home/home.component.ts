@@ -13,8 +13,10 @@ export class HomeComponent implements OnInit {
     private loaderShared: LoaderSharedService
   ) {
     loaderShared.changeEmitted$.subscribe(
-      curstate => { 
-        this.status = curstate; 
+      curstate => {
+        setTimeout(() => {
+          this.status = curstate;
+        });
       });
   }
 

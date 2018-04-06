@@ -1684,6 +1684,15 @@ export class PagesComponent implements OnInit {
     this.imglibData = { index: currIdx };
   };
 
+  trackByIndex(index: number, obj: any): any {
+    return index;
+  };
+
+  /* Dragged tile by uniqueId */
+  trackByUniqueId(index: number, obj: any, currObj: any) {
+    return obj["uniqueId"];
+  };
+
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       let loadTime = Cookie.get('pageLoadTime');

@@ -1,0 +1,279 @@
+/* Notification Container*/
+
+.notification_container {
+  height: 920px;
+  position: relative;
+}
+
+.notification_block {
+  float: left;
+  width: 160px;
+  height: 915px;
+  position: relative;
+  left: 1px;
+  margin-top: 1px;
+}
+
+.notify_heading_txt {
+  float: right;
+  font-size: 11px;
+}
+
+.app_page_form {
+  float: left;
+  width: 588px;
+  margin-left: 2px;
+  margin-top: 1px;
+}
+
+.app_page_head {
+  float: left;
+  height: 70px;
+  padding-bottom: 5px;
+  margin-top: 0px;
+}
+
+.app_form_btns {
+  position: relative;
+  top: 5px;
+  margin-left: 10px;
+  width: 570px;
+  float: left;
+}
+
+.save_notification {
+  border-bottom-color: #1E90FF;
+  border-bottom-width: 3px;
+  float: left;
+}
+
+.app_form {
+  margin-top: 13px;
+  width: 582px;
+  float: left;
+}
+
+.app_box {
+  margin-left: 10px;
+  width: 231px;
+  float: left;
+}
+
+.location_box {
+  width: 212px;
+  margin-left: 7px;
+  float: left;
+}
+
+.drag_block {
+  padding-top: 10px;
+  margin-top: 1px;
+  height: 844px;
+  float: left;
+  width: 100%;
+}
+
+.main_notify_drag_content {
+  position: relative;
+  padding-bottom: 1px;
+  margin-left: 6px;
+  margin-right: 5px;
+  margin-top: 1px;
+  margin-bottom: 9px;
+  min-height: 190px;
+  max-height: 240px;
+  padding-top: 10px;
+  border-color: #ddd;
+  width: 97.8%;
+}
+
+.draggable_label {
+  font-size: 11px;
+  margin-top: 40px;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.app_page_items_container {
+  overflow: hidden;
+  width: 100%;
+  height: 823px;
+}
+
+.app_list_search {
+  position: relative;
+  text-align: center;
+  padding-bottom: 8px;
+  height: 37px;
+  float: left;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.page_search_box {
+  width: 94%;
+  margin-left: 4px;
+  float: left;
+}
+
+/* Groups */
+
+.app_tilist_list {
+  text-align: center;
+  float: left;
+  width: 168px;
+  height: 915px;
+  margin-left: 1px;
+  padding-top: 5px;
+}
+
+.search_group_pages {
+  margin-left: 14px;
+  width: 84%;
+}
+
+.group_type {
+  margin-top: 5px;
+  margin-left: 14px;
+  width: 84%;
+  float: left;
+}
+
+.sort_groups {
+  margin-top: 5px;
+  margin-left: 14px;
+  width: 84%;
+  float: left;
+}
+
+/* Group sort */
+
+group-view-change {
+  float: left;
+  margin-left: 14px;
+}
+
+.img-event-view-group {
+  float: left;
+  margin-top: 7px;
+  margin-left: 14px;
+  cursor: pointer;
+}
+
+.img-event-view-group.group-list-view {
+  margin-left: 14px;
+}
+
+.app_search_box {
+  width: 94%;
+  margin: 0 auto;
+}
+
+/* Groups Contents */
+
+.groups_list_show {
+  position: relative;
+  margin-top: 6px;
+  float: left;
+  width: 100%;
+  height: 796px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.group_list_single {
+  display: inline-block;
+  float: left;
+  position: relative;
+  margin-left: 15px;
+  margin-bottom: 4px;
+  background-color: #FFFFFF;
+  text-align: left;
+  width: 138px;
+  min-height: 42px;
+  color: #000000;
+  cursor: move;
+  border: 1px outset #F2F2F2;
+}
+
+.group_list_single:hover {
+  background-color: #F2F2F2;
+}
+
+.group-art {
+  width: 20%;
+  float: left;
+  text-align: left;
+  margin-left: 2px
+}
+
+.group-art.details {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.group_list_art {
+  float: left;
+  max-width: 30px;
+  max-height: 25px;
+  margin-top: 3px;
+  text-align: center;
+}
+
+.group_list_art.group-detail-content {
+  max-width: 110px;
+  max-height: 110px;
+}
+
+.group_list_title {
+  float: left;
+  margin-top: 3px;
+  margin-left: 8px;
+  width: 98px;
+  font-size: 11px;
+  text-align: left;
+  word-wrap: break-word;
+  text-overflow: ellipsis;
+}
+
+.group-notify-icons {
+  width: 100%;
+  float: right;
+}
+
+.pages_list_show {
+  float: left;
+  width: 150px;
+  height: 811px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 10px;
+  margin-left: 4px;
+}
+
+.page_list_single {
+  border: 1px solid rgb(138, 153, 162);
+  box-shadow: 0px 0px 0px rgb(138, 153, 162);
+  margin-left: 1px;
+  width: 150px;
+  height: 40px;
+  margin-bottom: 4px;
+  margin-top: 1px;
+  background-color: #ffffff;
+  color: #4a4a4a;
+  cursor: pointer;
+}
+
+.page_list_single:hover {
+  background-color: #F2F2F2;
+}
+
+.new_app_menu_page_label {
+  font-size: 11px;
+  float: left;
+  margin-top: 10px;
+  display: table-cell;
+  vertical-align: middle;
+  padding-left: 4px;
+}
