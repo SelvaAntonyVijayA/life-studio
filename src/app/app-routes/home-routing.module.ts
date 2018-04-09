@@ -20,6 +20,7 @@ import { StudiousersComponent } from '../components/studiousers/studiousers.comp
 import { SettingsComponent } from '../components/settings/settings.component';
 import { UserprofileComponent } from '../components/userprofile/userprofile.component';
 import { ProfilebuilderComponent } from '../components/profilebuilder/profilebuilder.component';
+import { AuthandsecurityComponent } from '../components/authandsecurity/authandsecurity.component';
 
 const homeRoutes: Routes = [
   {
@@ -93,6 +94,10 @@ const homeRoutes: Routes = [
       {
         path: 'profilebuilder',
         component: ProfilebuilderComponent
+      },
+      {
+        path: 'authsecurity',
+        component: AuthandsecurityComponent
       }
     ]
   }

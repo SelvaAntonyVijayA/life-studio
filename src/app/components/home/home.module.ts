@@ -36,6 +36,8 @@ import { LanguageComponent } from '../../components/organizations/language.compo
 import { UserprofileComponent } from '../../components/userprofile/userprofile.component';
 import { ProfilebuilderComponent } from '../../components/profilebuilder/profilebuilder.component';
 
+import { AuthandsecurityComponent } from '../../components/authandsecurity/authandsecurity.component';
+
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
@@ -92,7 +94,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent,
-    OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, UserprofileComponent, ProfilebuilderComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
+    OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, UserprofileComponent, 
+    ProfilebuilderComponent, AuthandsecurityComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
     jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent, LanguageComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService, LivestreamService, LanguageService]
