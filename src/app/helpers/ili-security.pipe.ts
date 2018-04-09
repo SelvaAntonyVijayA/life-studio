@@ -9,3 +9,12 @@ export class SafePipe implements PipeTransform {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }
+
+@Pipe({ name: 'safehtml' })
+
+export class SafeHtmlPipe implements PipeTransform {
+  constructor(private sanitized: DomSanitizer) { }
+  transform(value) {
+    return this.sanitized.bypassSecurityTrustHtml(value);
+  }
+}

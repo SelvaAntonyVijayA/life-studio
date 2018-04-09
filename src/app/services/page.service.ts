@@ -138,8 +138,14 @@ export class PageService {
   };
 
   pageSquaresList(orgId: string, appId: string, locationId?: string) {
+    let pgSquareUrl = "/pages/squares/" + orgId + "/" + appId;
+
+    if (!this.utils.isNullOrEmpty(locationId)) {
+      pgSquareUrl = pgSquareUrl + "/" + locationId;
+    }
+
     return this.http
-      .get("/pages/squares/" + orgId + "/" + appId + "/" + locationId)
+      .get(pgSquareUrl)
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);

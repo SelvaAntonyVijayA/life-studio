@@ -1,3 +1,89 @@
-<p>
-  smart works!
-</p>
+<div class="container smart_container">
+  <div class="page_block smart_group_block">
+    <div class="smart_group_search ">
+      <input [(ngModel)]="menuGroupSearch" class="form-control input-sm smart_search_box" type="text" placeholder="Search">
+    </div>
+    <div id="menu-group-list" class="smart_group_list">
+      <div class="group_list_single" *ngFor="let mnGrp of (menuGroups | filterByText: 'menuGroupTitle': menuGroupSearch); let i = index; trackBy: trackByIndex">
+        <div *ngIf="checkMenuGroupArt(mnGrp)" class="group-art">
+          <img class="group_list_art" [src]="mnGrp['type'] !== 'menu'? mnGrp['art'] : mnGrp['background'] | safe">
+        </div>
+        <div [title]="mnGrp['type'] !== 'menu'? 'name': 'title'" class="group_list_title">{{mnGrp!.menuGroupTitle}}</div>
+        <div class="group-notify-icons">
+          <span *ngIf="mnGrp['isNotification']" class='step smart noteicon smarticon-groups' aria-hidden="true">
+            <i class='icon ion-android-notifications-none'></i>
+          </span>
+          <span *ngIf="mnGrp['isSmart']" class="step smart smarticon smarticon-groups">
+            <i class="icon ion-lightbulb"></i>
+          </span>
+          <span *ngIf="mnGrp['isRole']" class="step smart smarticon smarticon-groups">
+            <i class="icon ion-android-person"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class=" smart_page_form ">
+    <div class="page_block smart_page_head ">
+      <select [ngModel]="selectedApp " (ngModelChange)="appChange($event) " class="form-control input-sm apps_list ">
+        <option *ngFor="let app of appList; let i= index " [value]="app?._id ">{{app?.name}}</option>
+      </select>
+      <div class="smart_form_btns ">
+        <button class="ili-btn save_smart ">
+          Save
+        </button>
+        <button class="ili-btn delete_smart ">
+          Delete
+        </button>
+      </div>
+    </div>
+    <div class="page_block smart_content_block ">
+
+    </div>
+  </div>
+  <div class="page_block smart_tiles_list ">
+    <div class="tiles_list_search ">
+      <input [(ngModel)]="tileSort[ 'tileSearchText']" class="form-control input-sm tile_search_box" type="text" placeholder="Search Tiles">
+      <select class="form-control input-sm tile_category_filter "></select>
+    </div>
+    <div class="tiles_sort ">
+      <label class="txt_arrange ">Sort by: </label>
+      <select [(ngModel)]="tileSort[ 'selectedOpt']" class="form-control input-sm sort_box" placeholder="Search ">
+        <option [value]="'date'">Date</option>
+        <option [value]="'title'">Title</option>
+        <option [value]="'category'">Category</option>
+        <option [value]="'author'">Author</option>
+      </select>
+      <div *ngIf="tileSort['selectedOpt'] === 'date'" class="do_sort">
+        <div *ngIf="tileSort['isAsc']" (click)="doSort(false)">
+          Oldest on top
+          <img class="sort_image" src='/img/sort_up.png' />
+        </div>
+        <div *ngIf="!tileSort[ 'isAsc']" (click)="doSort(true)">
+          Newest on top
+          <img class="sort_image" src="/img/sort_down.png" />
+        </div>
+      </div>
+      <div *ngIf="tileSort['selectedOpt'] !=='date'" class="do_sort">
+        <div *ngIf="tileSort['isAsc']" (click)="doSort(false)" class="text_asc">
+          A on top
+          <img class="sort_image" src="/img/sort_up.png" />
+        </div>
+        <div *ngIf="!tileSort['isAsc']" (click)="doSort(true)">
+          Z on top
+          <img class="sort_image" src="/img/sort_down.png" />
+        </div>
+      </div>
+
+      <div class='tiles_count_main'>
+        <div class="tile-view-change ">
+          <img *ngIf="tileSort['listType']==='list'" (click)="changeTileView('details')" src="/img/details.png" alt=" " title="Details"
+          />
+          <img *ngIf="tileSort['listType']==='details'" (click)="changeTileView('list')" src="/img/list.png " alt="" title="List" />
+        </div>
+        <div class='tiles_list_count'>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
