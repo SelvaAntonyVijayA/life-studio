@@ -6,11 +6,15 @@ import { Utils } from '../../helpers/utils';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { LoaderSharedService } from '../../services/loader-shared.service';
 import { PageService } from '../../services/page.service';
+import { TileService } from '../../services/tile.service';
+import { Observable } from 'rxjs';
+import 'rxjs/add/observable/forkJoin';
 
 @Component({
   selector: 'app-smart',
   templateUrl: './smart.component.html',
   styleUrls: ['./smart.component.css'],
+  encapsulation: ViewEncapsulation.None,
   providers: [PageService]
 })
 export class SmartComponent implements OnInit {
@@ -22,7 +26,8 @@ export class SmartComponent implements OnInit {
     private e1: ElementRef,
     private renderer: Renderer,
     public utils: Utils,
-    private pageService: PageService
+    private pageService: PageService,
+    private tileService: TileService
   ) { }
 
   oid: string = "";
@@ -44,6 +49,13 @@ export class SmartComponent implements OnInit {
   smart: any[] = [];
   notifications: any[] = [];
   menuGroupSearch: string = "";
+  selectedMenuGroup: string = "";
+  tileList: any[] = [];
+  selectedTile: string = "";
+  tileCategories: any[] = [];
+  selectedCategory: string = "-1";
+  tileSquares: any[] = [];
+  profileData: any[] = [];
 
   doSort(isVal: boolean) {
     this.tileSort["isAsc"] = isVal;
@@ -85,6 +97,12 @@ export class SmartComponent implements OnInit {
     this.smart = [];
     this.notifications = [];
     this.menuGroupSearch = "";
+    this.tileList = [];
+    this.tileCategories = [];
+    this.selectedCategory = "-1";
+    this.tileSquares = [];
+    this.profileData = [];
+
     this.tileSort = {
       "listType": "list",
       "tileSearchText": "",
@@ -98,7 +116,8 @@ export class SmartComponent implements OnInit {
   };
 
   smartReset() {
-
+    this.selectedMenuGroup = "";
+    this.selectedTile = "";
   };
 
   appChange(appId: string) {
@@ -108,17 +127,19 @@ export class SmartComponent implements OnInit {
   /* Intialize scroll bar for the component elements */
   setScrollList() {
     this.mScrollbarService.initScrollbar("#menu-group-list", this.scrollbarOptions);
+    this.mScrollbarService.initScrollbar("#tiles-list-show", this.scrollbarOptions);
 
     if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
       this.cms["appDatas"]["scrollList"].push("#menu-group-list");
+      this.cms["appDatas"]["scrollList"].push("#tiles-list-show");
     } else {
-      this.cms["appDatas"]["scrollList"] = ["#menu-group-list"];
+      this.cms["appDatas"]["scrollList"] = ["#menu-group-list", "#tiles-list-show"];
     }
   };
 
   /* Destroy Scroll */
   destroyScroll() {
-    this.cms.destroyScroll(["#menu-group-list"]);
+    this.cms.destroyScroll(["#menu-group-list", "#tiles-list-show"]);
   };
 
   getApps() {
@@ -129,11 +150,53 @@ export class SmartComponent implements OnInit {
             this.appList = apps;
             this.selectedApp = this.appList[0]["_id"];
             this.menuGroupsList();
-          }else{
+            this.setTileCategories();
+            this.getTileSquares();
+            this.getAppProfileData();
+          } else {
             this.loaderShared.showSpinner(false);
           }
         });
     }
+  };
+
+  setTileCategories() {
+    this.getTilesCategories().subscribe(tileCats => {
+      this.tileCategories = tileCats[0];
+      this.tileList = tileCats[1]["tiles"];
+      this.assignTileNoitfyIcons();
+    });
+  };
+
+  assignTileNoitfyIcons() {
+    for (let i = 0; i < this.tileList.length; i++) {
+      this.tileList[i] = this.tileNotifyIcons(this.tileList[i]);
+    }
+  };
+
+  getTilesCategories() {
+    let tileCategory = this.tileService.getTileCategory(this.oid);
+    let squareTiles = this.pageService.appPageTiles(this.oid, this.selectedApp);
+
+    return Observable.forkJoin([tileCategory, squareTiles]);;
+  };
+
+  getTileSquares() {
+    this.pageService.tileSquares(this.oid, this.selectedApp)
+      .then(tileSqrs => {
+        if (this.utils.isArray(tileSqrs) && tileSqrs.length > 0) {
+          this.tileSquares = tileSqrs;
+        }
+      });
+  };
+
+  getAppProfileData() {
+    this.pageService.appProfileData(this.selectedApp)
+      .then(prfDtas => {
+        if (this.utils.isArray(prfDtas) && prfDtas.length > 0) {
+          this.profileData = prfDtas;
+        }
+      });
   };
 
   menuGroupsList() {
@@ -224,7 +287,111 @@ export class SmartComponent implements OnInit {
   trackByUniqueId(index: number, obj: any, currObj: any) {
     return obj["uniqueId"];
   };
-  
+
+  /*Tile Notify Icons */
+  tileNotifyIcons(currTile: Object) {
+    var tileNotifications = "";
+    var tileSmart = "";
+    var pageApps = "";
+    var tileProcedure = "";
+    var tileRules = "";
+
+    if (!currTile.hasOwnProperty("isNotification")) {
+      if (currTile.hasOwnProperty("notification") && currTile["notification"].hasOwnProperty("apps") && currTile["notification"]["apps"].length > 0) {
+        for (let i = 0; i < currTile["notification"]["apps"].length; i++) {
+          var app = currTile["notification"]["apps"][i];
+          tileNotifications += i === 0 ? app.name : ", " + app.name;
+        }
+
+        currTile["isNotification"] = "block";
+      } else {
+        currTile["isNotification"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isSmart")) {
+      if (currTile.hasOwnProperty("smart") && currTile["smart"].hasOwnProperty("apps") && currTile["smart"]["apps"].length > 0) {
+        for (let i = 0; i < currTile["smart"]["apps"].length; i++) {
+          var smartApp = currTile["smart"]["apps"][i];
+          tileSmart += i == 0 ? smartApp.name : ", " + smartApp.name;
+        }
+
+        currTile["isSmart"] = "block";
+      } else {
+        currTile["isSmart"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("tileApps")) {
+      if (currTile.hasOwnProperty("Apps") && currTile["Apps"].length > 0) {
+        for (let i = 0; i < currTile["Apps"].length; i++) {
+          var app = currTile["Apps"][i];
+          pageApps += i === 0 ? app.appName : ", " + app.appName;
+        }
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isProcedure")) {
+      if (currTile.hasOwnProperty("Procedure") && currTile["Procedure"].length > 0) {
+        for (let i = 0; i < currTile["Procedure"].length; i++) {
+          var procedure = currTile["Procedure"][i];
+          tileProcedure += i === 0 ? procedure.name : ", " + procedure.name;
+        }
+
+        currTile["isProcedure"] = "block";
+      } else {
+        currTile["isProcedure"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isRules")) {
+      if (currTile.hasOwnProperty("hsrRuleEngine") && currTile["hsrRuleEngine"].length > 0) {
+        for (let i = 0; i < currTile["hsrRuleEngine"].length; i++) {
+          var hsr = currTile["hsrRuleEngine"][i];
+          tileRules += i === 0 ? hsr.ruleName : ", " + hsr.ruleName;
+        }
+
+        currTile["isRules"] = "block";
+      } else {
+        currTile["isRules"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isWgt")) {
+      currTile["isWgt"] = currTile.hasOwnProperty("isWeight") && currTile["isWeight"] ? "block" : "none";
+    }
+
+    if (!currTile.hasOwnProperty("isRole")) {
+      currTile["isRole"] = currTile.hasOwnProperty("isRoleBased") && currTile["isRoleBased"] ? "block" : "none";
+    }
+
+    if (!currTile.hasOwnProperty("tileNotifications")) {
+      currTile["tileNotifications"] = tileNotifications;
+    }
+
+    if (!currTile.hasOwnProperty("tileSmart")) {
+      currTile["tileSmart"] = tileSmart;
+    }
+
+    if (!currTile.hasOwnProperty("tileApps")) {
+      currTile["tileApps"] = pageApps;
+    }
+
+    if (!currTile.hasOwnProperty("tileProcedure")) {
+      currTile["tileProcedure"] = tileProcedure;
+    }
+
+    if (!currTile.hasOwnProperty("tileHealthStatusRules")) {
+      currTile["tileHealthStatusRules"] = tileRules;
+    }
+
+    return currTile;
+  };
+
+  /* Dragged tile by uniqueId */
+  trackByTileId(index: number, obj: any) {
+    return obj["_id"];
+  };
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {

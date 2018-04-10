@@ -365,6 +365,59 @@ var _removeTile = function (queryRemoveTile, options, cb) {
   });
 };
 
+var _getSquares = function (ids, tileType, blockType, cb) {
+  options = {};
+  
+  $async.waterfall([
+    function (callback) {
+      $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.tile, ids, options, function (result) {
+        callback(null, result);
+      });
+    },
+    function (result, callback) {
+      if (result.length > 0) {
+        _getBlockIds(result, tileType, function (blockIds) {
+          callback(null, blockIds);
+        });
+      } else {
+        callback(null, []);
+      }
+    },
+    function (blockIds, callback) {
+      if (blockIds.length > 0) {
+        $tileblock._getBlocks(blockIds, function (blocks) {
+          var getBlock = _.where(blocks, {
+            type: blockType
+          });
+
+          callback(null, getBlock);
+        });
+      } else {
+        callback(null, []);
+      }
+
+    }], function (err, result) {
+      cb(result);
+    });
+};
+
+var _getBlockIds = function (tiles, tileType, cb) {
+  var blockIds = [];
+
+  _.find(tiles, function (tile, index) {
+    if (tile.type.toLowerCase() == tileType) {
+      var blocks = tile.blocks ? tile.blocks : [];
+
+      if (blocks.length > 0) {
+        blockIds = blockIds.concat(blocks);
+      }
+    }
+  });
+
+  cb(blockIds);
+};
+
+
 module.exports = {
   "init": init,
   "save": save,
@@ -377,5 +430,6 @@ module.exports = {
   "update": update,
   "tileUpdate": tileUpdate,
   "updateTileBlocksTileId": updateTileBlocksTileId,
-  "updateTileWithBlocksData": updateTileWithBlocksData
+  "updateTileWithBlocksData": updateTileWithBlocksData,
+  "_getSquares": _getSquares
 };

@@ -267,6 +267,30 @@ var getObjectIdByQuery = function (memberObj) {
   return memberObj;
 };
 
+var profileDynamicFields = function (url, cb) {
+  var options = {
+    url: url,
+    method: "GET"
+  };
+
+  getUrlResponseWithSecurity(options, function (err, res, body) {
+    if (err) {
+      $log.error("procedure add patient fields request: " + JSON.stringify(err));
+
+      cb({});
+      return;
+    }
+
+    if (res.statusCode == 502) {
+      cb({});
+
+    } else if (res.statusCode == 200) {
+      var fieldData = JSON.parse(body);
+      cb(fieldData);
+    }
+  });
+};
+
 module.exports = {
   "init": init,
   "encrypt": encrypt,
@@ -278,6 +302,7 @@ module.exports = {
   "stringToDate": stringToDate,
   "getIsoDate": getIsoDate,
   "getDynamicPin": getDynamicPin,
-  "getObjectIdByQuery": getObjectIdByQuery
+  "getObjectIdByQuery": getObjectIdByQuery,
+  "profileDynamicFields": profileDynamicFields
 };
 

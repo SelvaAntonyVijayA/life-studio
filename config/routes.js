@@ -97,6 +97,7 @@ module.exports = function (app) {
   router.all("/cms/apps/list/:orgId/:isAdmin*?", $apps.list);
   router.all("/app/id/:pin*?", $apps.getAppByPin);
   router.all("/app/auth/:appid*?", $apps.auth);
+  router.all("/app/profiledata/:appId", $apps.appProfileData)
 
   router.all('/location/list/:appId*?', $location.list);
   router.all("/location/save/:name*?", $location.save);
@@ -114,6 +115,8 @@ module.exports = function (app) {
   router.all('/pages/theme/update/:themeId', $page.pageThemeUpdate);
   router.all('/pages/theme/list/:appId/:locationId*?', $page.pageThemeList);
   router.all('/pages/squares/:orgId/:appId/:locationId*?', $page.squares);
+  router.all('/pages/tile/:orgId/:appId/:locationId*?', $page.tile);
+  router.all('/pages/questionnaires/:orgId/:appId/:locationId*?', $page.questionnaires);
 
   router.all('/livestream/save?', $livestream.save);
   router.all('/livestream/list/:orgId*?/:appId*?/:locationId*?', $livestream.list);

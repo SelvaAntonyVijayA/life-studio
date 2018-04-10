@@ -823,6 +823,202 @@ var _groupDatas = function (datas, cb) {
     });
 };
 
+var tile = function (req, res, next) {
+  query = {};
+
+  $async.waterfall([
+    function (callback) {
+      var options = {};
+      options.sort = [['position', 'asc']];
+
+      query = {};
+      query.orgId = req.params.orgId;
+      query.appId = req.params.appId;
+      query.deleted = {
+        $exists: false
+      };
+
+      if (!__util.isNullOrEmpty(req.params.locationId)) {
+        query.locationId = req.params.locationId;
+      }
+
+      _pageGroups(query, options, function (datas) {
+        callback(null, datas);
+      });
+    },
+    function (datas, callback) {
+      _groups(datas, function (squareTileIds) {
+        var allTilesIds = datas.tileIds.concat(squareTileIds);
+        callback(null, datas, allTilesIds);
+      });
+    },
+    function (datas, allTilesIds, callback) {
+      query = {};
+      query._id = allTilesIds;
+
+      $tile._getTiles(query, function (tileDatas) {
+        callback(null, datas, allTilesIds, tileDatas);
+      });
+    }], function (err, datas, tileIds, tileDatas) {
+      query = {};
+      query.orgId = req.params.orgId;
+      query.appId = req.params.appId;
+      query.engineId = {};
+      query.engineId.$in = tileIds;
+      query.type = "tile";
+      options = {};
+
+      $smartengine._get(query, options, function (smartTiles) {
+        var result = {};
+        var menus = datas.menu;
+
+        tileDatas.forEach(function (tile) {
+          var id = JSON.stringify(tile._id);
+          id = JSON.parse(id);
+
+          var isRole = _.findWhere(datas.list, {
+            "linkTo": "tile",
+            "linkId": id,
+            "isPrivate": true
+          });
+
+          if (isRole) {
+            tile.isRoleBased = true;
+          } else {
+            tile.isRoleBased = false;
+          }
+        });
+
+        result.smart = smartTiles;
+        result.tiles = tileDatas;
+
+        res.send(result);
+      });
+    });
+};
+
+var _groups = function (datas, cb) {
+  var tileIds = [];
+  var eventIds = datas.eventIds, tilistIds = datas.tilistIds, catilistIds = datas.catilistIds, liveIds = datas.liveIds, procedureIds = datas.procedureIds;
+
+  $async.parallel([
+    function (callback) {
+      query = {};
+      query._id = eventIds;
+
+      $event._getEvents(query, function (events) {
+        _.each(events, function (event) {
+          _.find(event.tiles, function (tile, index) {
+            tileIds.push(tile._id);
+          });
+        });
+
+        callback(null);
+      });
+    },
+    function (callback) {
+      query = {};
+      query._id = tilistIds;
+
+      $tilist._getTilists(query, function (tilists) {
+        _.each(tilists, function (tilist) {
+          _.find(tilist.tiles, function (tile, index) {
+            tileIds.push(tile._id);
+          });
+        });
+
+        callback(null);
+      });
+    },
+    function (callback) {
+      query = {};
+      query._id = catilistIds;
+
+      $catilist._getCatilists(query, function (catilists) {
+        _.each(catilists, function (catilist) {
+          _.find(catilist.tiles, function (tile, index) {
+            tileIds.push(tile._id);
+          });
+        });
+
+        callback(null);
+      });
+    },
+    function (callback) {
+      query = {};
+      query._id = procedureIds;
+
+      $procedure._getProcedure(query, {}, function (procedures) {
+        _.each(procedures, function (procedure) {
+          _.find(procedure.tiles, function (tile, index) {
+            tileIds.push(tile._id);
+          });
+        });
+
+        callback(null);
+      });
+    },
+    function (callback) {
+      query = {};
+      query._id = liveIds;
+
+      $livestream.get(query, function (liveSteams) {
+        _.each(liveSteams, function (livestream) {
+          _.find(livestream.streamSquare, function (square, index) {
+            if (square.type == 'tile') {
+              tileIds.push(square.id);
+            }
+          });
+        });
+
+        callback(null);
+      });
+    }], function (err) {
+      cb(tileIds);
+    });
+};
+
+var questionnaires = function (req, res, next) {
+  query = {};
+
+  $async.waterfall([
+    function (callback) {
+      var options = {};
+      options.sort = [['position', 'asc']];
+
+      query = {};
+      query.orgId = req.params.orgId;
+      query.appId = req.params.appId;
+      query.deleted = {
+        $exists: false
+      };
+
+      if (!__util.isNullOrEmpty(req.params.locationId)) {
+        query.locationId = req.params.locationId;
+      }
+
+      _pageGroups(query, options, function (datas) {
+        callback(null, datas);
+      });
+    },
+    function (datas, callback) {
+      _groups(datas, function (groupIds) {
+        var allTilesIds = datas.tileIds.concat(groupIds);
+        callback(null, allTilesIds);
+      });
+    },
+    function (allTilesIds, callback) {
+      query = {};
+      query._id = allTilesIds;
+
+      $tile._getSquares(query, 'content', "survey", function (tileDatas) {
+        callback(null, tileDatas);
+      });
+    }], function (err, tileDatas) {
+      res.send(tileDatas);
+    });
+};
+
 module.exports = {
   "init": init,
   "save": save,
@@ -838,5 +1034,7 @@ module.exports = {
   "pageThemeList": pageThemeList,
   "getPageTheme": getPageTheme,
   "remove": remove,
-  "squares": squares
+  "squares": squares,
+  "tile": tile,
+  "questionnaires": questionnaires
 };

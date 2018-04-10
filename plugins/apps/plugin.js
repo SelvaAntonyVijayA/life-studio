@@ -312,6 +312,14 @@ var remove = function (req, res, next) {
   });
 };
 
+var appProfileData = function (req, res, next) {
+  var url = settingsConf.authDomain + "/migrate/get_app_structure/" + req.params.appId;
+
+  $general.profileDynamicFields(url, function (fieldData) {
+    res.send(fieldData);
+  });
+};
+
 module.exports = {
   "init": init,
   "list": list,
@@ -323,5 +331,6 @@ module.exports = {
   "getAppByPin": getAppByPin,
   "auth": auth,
   "_get": _get,
-  "getAppsByIds": getAppsByIds
+  "getAppsByIds": getAppsByIds,
+  "appProfileData": appProfileData
 }

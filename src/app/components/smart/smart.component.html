@@ -44,7 +44,10 @@
   <div class="page_block smart_tiles_list ">
     <div class="tiles_list_search ">
       <input [(ngModel)]="tileSort[ 'tileSearchText']" class="form-control input-sm tile_search_box" type="text" placeholder="Search Tiles">
-      <select class="form-control input-sm tile_category_filter "></select>
+      <select [(ngModel)]="selectedCategory" class="form-control input-sm tile_category_filter ">
+        <option [value]="-1">All Categories</option>
+        <option *ngFor="let tileCat of tileCategories; let i = index" [value]="tileCat?._id">{{tileCat?.name}}</option>
+      </select>
     </div>
     <div class="tiles_sort ">
       <label class="txt_arrange ">Sort by: </label>
@@ -85,5 +88,36 @@
         </div>
       </div>
     </div>
+
+    <div id="tiles-list-show" class="tiles_list_panel">
+      <div [ngClass]="!utils.isEmptyObject(selectedTile) && selectedTile.hasOwnProperty('_id') && !utils.isNullOrEmpty(selectedTile['_id']) && selectedTile['_id'] === tile['_id'] ? 'tiles_list_single selected' : 'tiles_list_single'"
+        *ngFor="let tile of (tileList | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1]); let i = index; trackBy: trackByTileId">
+        <img [ngClass]="tileSort['listType'] === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
+        <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
+        <div *ngIf="tile" class="tile_icons">
+          <span [title]="tile!.tileApps" [style.display]="tile!.isWgt" class="step weight"></span>
+          <span [title]="tile!.tileHealthStatusRules" [style.display]="tile!.isRules" class="step smart smarticon report-rule-tile">
+            <i class="icon ion-heart"></i>
+          </span>
+          <span [title]="tile!.tileProcedure" [style.display]="tile!.isProcedure" class="step smart smarticon smarticon-tile">
+            <i class="icon ion-medkit"></i>
+          </span>
+          <span [title]="tile!.tileSmart" [style.display]="tile!.isSmart" class="step smart smarticon smarticon-tile">
+            <i class="icon ion-lightbulb"></i>
+          </span>
+          <span [title]="tile!.tileNotifications" [style.display]="tile!.isNotification" class="step smart noteicon smarticon-tile"
+            style="display: block;" aria-hidden="true">
+            <i class="icon ion-android-notifications-none"></i>
+          </span>
+          <span [title]="tile!.tileApps" [style.display]="tile!.isRole" class="step smart smarticon smarticon-tile">
+            <i class="icon ion-android-person"></i>
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+<link rel="stylesheet" href="/css/ti_icons.css">

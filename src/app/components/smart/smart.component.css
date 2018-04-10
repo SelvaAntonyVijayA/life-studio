@@ -111,6 +111,7 @@
 }
 
 /* Tiles Sort */
+
 .tiles_sort {
   float: left;
   width: 284px;
@@ -188,7 +189,7 @@
   width: 158px;
   min-height: 48px;
   color: #000000;
-  cursor: move;
+  cursor: pointer;
   border: 1px outset #F2F2F2;
 }
 
@@ -223,6 +224,96 @@
 }
 
 .group-notify-icons {
+  width: 100%;
+  float: right;
+}
+
+.tiles_list_panel {
+  text-align: left;
+  position: relative;
+  padding-top: 1px;
+  padding-left: 8px;
+  height: 795px;
+  overflow: hidden;
+  margin-top: 110px;
+}
+
+/* Tiles */
+
+.tiles_list_single {
+  float: left;
+  display: table;
+  position: relative;
+  text-align: left;
+  margin-left: 7px;
+  margin-bottom: 4px;
+  width: 257px;
+  min-height: 32px;
+  padding-bottom: 2px;
+  color: #000000;
+  border: 2px outset rgba(255, 255, 255, .5);
+  background-color: #FFFFFF;
+  border-radius: 0px;
+  cursor: pointer;
+}
+
+.tiles_list_single:hover {
+  background-color: #F2F2F2;
+}
+
+.tiles_list_single.selected {
+  background-color: #3c3c3c;
+  color: #FFFFFF;
+}
+
+.tile_list_art {
+  max-width: 240px;
+  margin-top: 8px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  margin-right: 4px;
+  float: left;
+}
+
+.tile_list_art.tile-content-img {
+  max-width: 30px;
+  max-height: 25px;
+  margin-top: 3px;
+}
+
+.tile_list_art.tile-details-img {
+  max-width: 240px;
+  max-height: none;
+}
+
+.tile_list_title {
+  float: left;
+  width: 235px;
+  margin-top: 2px;
+  margin-left: 5px;
+  font-size: 11px;
+  text-align: justify;
+  word-wrap: break-word;
+}
+
+.tile_list_title.tile-content-title {
+  width: 200px;
+}
+
+.notify_tile_list {
+  height: 915px;
+}
+
+.notify_show_tiles {
+  height: 761px
+}
+
+/* Tile Icons */
+
+.tile_icons {
+  position: relative;
+  right: 0;
+  bottom: 2px;
   width: 100%;
   float: right;
 }

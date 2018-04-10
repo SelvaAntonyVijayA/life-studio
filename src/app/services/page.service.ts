@@ -151,6 +151,42 @@ export class PageService {
       .catch(this.handleError);
   };
 
+  appPageTiles(orgId: string, appId: string, locationId?: string) {
+    let pgTileUrl = "/pages/tile/" + orgId + "/" + appId;
+
+    if (!this.utils.isNullOrEmpty(locationId)) {
+      pgTileUrl = pgTileUrl + "/" + locationId;
+    }
+
+    return this.http
+      .get(pgTileUrl)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  tileSquares(orgId: string, appId: string, locationId?: string) {
+    let tileSquareUrl = "/pages/questionnaires/" + orgId + "/" + appId;
+
+    if (!this.utils.isNullOrEmpty(locationId)) {
+      tileSquareUrl = tileSquareUrl + "/" + locationId;
+    }
+
+    return this.http
+      .get(tileSquareUrl)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  appProfileData(appId: string) {
+    return this.http
+      .get("/app/profiledata/" + appId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);
