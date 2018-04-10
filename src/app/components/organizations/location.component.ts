@@ -11,6 +11,7 @@ import * as _ from 'underscore';
 import { LoaderSharedService } from '../../services/loader-shared.service';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormControl, Validators, FormBuilder, NgForm } from '@angular/forms';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { GeoValidator } from '../../helpers/geo.validator';
 
 @Component({
   selector: 'location-grid',
@@ -32,6 +33,7 @@ export class LocationComponent implements OnInit {
   @ViewChild('locationWindow') locationWindow: jqxWindowComponent;
   @ViewChild('locationForm') locationForm: NgForm;
   locationId: string;
+  statusList: any = [];
   @Output('onSelectLocation') onSelectLocation = new EventEmitter();
 
   statusSource: any =
@@ -41,7 +43,6 @@ export class LocationComponent implements OnInit {
         { name: 'field', type: 'string' }
       ],
       localdata: [
-        { id: '', field: 'Select Status' },
         { id: 'yes', field: 'Yes' },
         { id: 'No', field: 'No' },
       ]
@@ -130,7 +131,7 @@ export class LocationComponent implements OnInit {
         this.locationId = "";
         this.locationObj = { name: "", group: "", phone: "", address: "", city: "", state: "", longitude: "", latitude: "", radius: "", status: "", appId: "" };
         this.locationWindow.setTitle("Add Location");
-        this.locationWindow.position({ x: 150, y: 60 });
+        //this.locationWindow.position({ x: 150, y: 60 });
         this.locationWindow.open();
       }
     });
@@ -260,7 +261,7 @@ export class LocationComponent implements OnInit {
       this.emitSelectEvent();
       this.updateButtons('Edit');
       this.locationWindow.setTitle("Update Location");
-      this.locationWindow.position({ x: 150, y: 40 });
+      // this.locationWindow.position({ x: 150, y: 40 });
       this.locationWindow.open();
     }
   };
@@ -304,6 +305,8 @@ export class LocationComponent implements OnInit {
     let ids = _.pluck(appDatas, '_id');
     let obj = {};
     obj["_id"] = rowID;
+
+    this.loadDropdownlist();
     // obj["ids"] = ids;
     // this.locationGrid.selectrow(0);
   };
@@ -544,6 +547,19 @@ export class LocationComponent implements OnInit {
     this.locationObj = { name: "", authenticated: "-1", pin: "", googleAnalytics: "", alerts: "", chat: "-1" };
   };
 
+  loadDropdownlist() {
+    this.statusList = [];
+    this.statusList = this.statusAdaptor.records;
+
+    let index = this.statusList.map(function (e) {
+      return e['field'];
+    }).indexOf("Select Status");
+
+    if (index == -1) {
+      this.statusList.unshift({ id: '', field: 'Select Status' });
+    }
+  }
+
   ngOnChanges(cHObj: any) {
     if (cHObj.hasOwnProperty("appId") && !this.utils.isNullOrEmpty(cHObj["appId"]["currentValue"])) {
       let objApp = cHObj["appId"];
@@ -571,6 +587,8 @@ export class LocationComponent implements OnInit {
         } else {
           this.locationGrid.source(this.dataAdapter);
         }
+
+        this.loadDropdownlist();
       }
     }
   }

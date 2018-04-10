@@ -225,7 +225,7 @@ export class IntegrationwidgetsComponent implements OnInit {
       }
 
       if (obj["firstChange"]) {
-       // this.setWidget();
+        // this.setWidget();
       }
     }
   };

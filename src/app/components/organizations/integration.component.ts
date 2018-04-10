@@ -124,7 +124,7 @@ export class IntegrationComponent implements OnInit {
         this.integrationId = "";
         this.inteObj = { userName: "", password: "", code: "", typeId: "", appId: "" };
         this.integrationWindow.setTitle("Add integration");
-        this.integrationWindow.position({ x: 550, y: 160 });
+        //this.integrationWindow.position({ x: 550, y: 160 });
         this.integrationWindow.open();
       }
     });
@@ -210,7 +210,7 @@ export class IntegrationComponent implements OnInit {
       this.emitSelectEvent();
       this.updateButtons('Edit');
       this.integrationWindow.setTitle("Update Integration");
-      this.integrationWindow.position({ x: 550, y: 160 });
+      // this.integrationWindow.position({ x: 550, y: 160 });
       this.integrationWindow.open();
     }
   };

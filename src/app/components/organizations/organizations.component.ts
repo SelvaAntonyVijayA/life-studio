@@ -266,7 +266,7 @@ export class OrganizationsComponent implements OnInit {
         this.orgId = "";
         this.org = { name: '', packageId: '', type_id: '' };
         this.addOrg.setTitle("Add Organization");
-        this.addOrg.position({ x: 85, y: 100 });
+        //this.addOrg.position({ x: 85, y: 100 });
         this.addOrg.open();
       }
     });
@@ -348,7 +348,7 @@ export class OrganizationsComponent implements OnInit {
       this.isOrgGrid = true;
       this.updateButtons('Edit');
       this.addOrg.setTitle("Update Organization");
-      this.addOrg.position({ x: 85, y: 100 });
+      //this.addOrg.position({ x: 85, y: 100 });
       this.addOrg.open();
     }
   };

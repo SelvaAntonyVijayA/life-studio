@@ -153,7 +153,7 @@ export class AppgridComponent implements OnInit {
         this.appId = "";
         this.app = { name: "", authenticated: "", pin: "", googleAnalytics: "", alerts: "", chat: "" };
         this.appWindow.setTitle("Add Apps");
-        this.appWindow.position({ x: 600, y: 90 });
+        //this.appWindow.position({ x: 600, y: 90 });
         this.appWindow.open();
       }
     });
@@ -271,7 +271,7 @@ export class AppgridComponent implements OnInit {
 
       this.updateButtons('Edit');
       this.appWindow.setTitle("Update App");
-      this.appWindow.position({ x: 600, y: 90 });
+      //this.appWindow.position({ x: 600, y: 90 });
       this.appWindow.open();
       this.emitSelectEvent(datarow);
     }
@@ -522,8 +522,8 @@ export class AppgridComponent implements OnInit {
     this.secureAuthList = this.authAdaptor.records;
 
     let authIndex = this.secureAuthList.map(function (e) {
-      return e['chatName'];
-    }).indexOf("Select Secure Auth.");
+      return e['authId'];
+    }).indexOf("");
 
     if (authIndex == -1) {
       this.secureAuthList.unshift({ sno: 0, authId: '', authName: 'Select Secure Auth.' });

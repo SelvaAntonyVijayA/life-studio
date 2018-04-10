@@ -48,20 +48,46 @@
         </div>
         <div class="form-group">
           <label for="longitude">Longitude</label>
-          <input id="longitude" name="longitude" class="form-control input-sm" [(ngModel)]="locationObj.longitude" #longitude="ngModel">
+          <input id="longitude" geo name="longitude" class="form-control input-sm" [(ngModel)]="locationObj.longitude" #longitude="ngModel">
+          <div *ngIf="longitude.invalid && (longitude.dirty || longitude.touched)" class="alert alert-danger">
+            <div *ngIf="longitude.errors.required">
+              Name is required.
+            </div>
+            <div *ngIf="longitude.errors.geo">
+              Please enter the valid longitude value
+            </div>
+          </div>
         </div>
         <div class="form-group">
-          <label for="latitude">Longitude</label>
-          <input id="latitude" name="latitude" class="form-control input-sm" [(ngModel)]="locationObj.latitude" #latitude="ngModel">
+          <label for="latitude">Latitude</label>
+          <input id="latitude" geo name="latitude" class="form-control input-sm" [(ngModel)]="locationObj.latitude" #latitude="ngModel">
+
+          <div *ngIf="latitude.invalid && (latitude.dirty || latitude.touched)" class="alert alert-danger">
+            <div *ngIf="latitude.errors.required">
+              Name is required.
+            </div>
+            <div *ngIf="latitude.errors.geo">
+              Please enter the valid latitude value
+            </div>
+          </div>
         </div>
         <div class="form-group">
           <label for="radius">Radius</label>
-          <input id="radius" name="radius" class="form-control input-sm" [(ngModel)]="locationObj.radius" #radius="ngModel">
+          <input id="radius" geo name="radius" class="form-control input-sm" [(ngModel)]="locationObj.radius" #radius="ngModel">
+
+          <div *ngIf="radius.invalid && (radius.dirty || radius.touched)" class="alert alert-danger">
+            <div *ngIf="radius.errors.required">
+              Name is required.
+            </div>
+            <div *ngIf="radius.errors.geo">
+              Please enter the valid latitude value
+            </div>
+          </div>
         </div>
         <div class="form-group">
           <label for="status">Status</label>
           <select id="status" name="status" class="form-control input-sm" [(ngModel)]="locationObj.status" #status="ngModel">
-            <option *ngFor="let s of statusAdaptor.records" [value]="s.id">{{s.field}}</option>
+            <option *ngFor="let s of statusList" [value]="s.id">{{s.field}}</option>
           </select>
         </div>
         <button type="submit" class="btn btn-default btn-xs" [disabled]="locationForm.invalid">Submit</button>

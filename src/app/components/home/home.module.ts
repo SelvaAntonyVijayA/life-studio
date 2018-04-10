@@ -81,7 +81,7 @@ import { jqxExpanderComponent } from '../../grid/jqwidgets-ts/angular_jqxexpande
 import { jqxTooltipComponent } from '../../grid/jqwidgets-ts/angular_jqxtooltip';
 import { jqxButtonComponent } from '../../grid/jqwidgets-ts/angular_jqxbuttons';
 import { MatToolbarModule } from '@angular/material/toolbar';
-
+import { GeoValidator } from '../../helpers/geo.validator';
 
 @NgModule({
   imports: [
@@ -94,9 +94,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent,
-    OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, UserprofileComponent, 
+    OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, UserprofileComponent,
     ProfilebuilderComponent, AuthandsecurityComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
-    jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent, LanguageComponent],
+    jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent, LanguageComponent, GeoValidator],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService, LivestreamService, LanguageService]
 })
