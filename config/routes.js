@@ -175,5 +175,7 @@ module.exports = function (app) {
   router.get('/engine/list/', $engines.list);
   router.all('/engine/save?', $engines.save);
 
+  router.all('/smartengine/save', $smartengine.save)
+
   app.use('/', router);
 };

@@ -56,6 +56,9 @@ export class SmartComponent implements OnInit {
   selectedCategory: string = "-1";
   tileSquares: any[] = [];
   profileData: any[] = [];
+  smartData: Object = {
+    "squares": []
+  };
 
   doSort(isVal: boolean) {
     this.tileSort["isAsc"] = isVal;
@@ -128,12 +131,14 @@ export class SmartComponent implements OnInit {
   setScrollList() {
     this.mScrollbarService.initScrollbar("#menu-group-list", this.scrollbarOptions);
     this.mScrollbarService.initScrollbar("#tiles-list-show", this.scrollbarOptions);
+    this.mScrollbarService.initScrollbar("#main-squares-area", this.scrollbarOptions);
 
     if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
       this.cms["appDatas"]["scrollList"].push("#menu-group-list");
       this.cms["appDatas"]["scrollList"].push("#tiles-list-show");
+      this.cms["appDatas"]["scrollList"].push("#main-squares-area");
     } else {
-      this.cms["appDatas"]["scrollList"] = ["#menu-group-list", "#tiles-list-show"];
+      this.cms["appDatas"]["scrollList"] = ["#menu-group-list", "#tiles-list-show", "#main-squares-area"];
     }
   };
 
@@ -186,6 +191,7 @@ export class SmartComponent implements OnInit {
       .then(tileSqrs => {
         if (this.utils.isArray(tileSqrs) && tileSqrs.length > 0) {
           this.tileSquares = tileSqrs;
+          this.setSmartSquares();
         }
       });
   };
@@ -197,6 +203,42 @@ export class SmartComponent implements OnInit {
           this.profileData = prfDtas;
         }
       });
+  };
+
+  setSmartSquares() {
+    this.smartData["squares"] = [];
+    let squares = this.tileSquares.map(s => Object.assign({}, s));
+
+    for (let i = 0; i < squares.length; i++) {
+      let sqr = squares[i];
+      let sqrSmart = {
+        "_id": sqr["_id"],
+        "type": sqr["type"],
+        "ifNotAnswered": false
+      };
+
+      if (sqr.hasOwnProperty("data")) {
+        sqrSmart["questionText"] = sqr["data"].hasOwnProperty("questionText") && !this.utils.isNullOrEmpty(sqr["data"]["questionText"]) ? sqr["data"]["questionText"] : "";
+
+        if (sqr["data"].hasOwnProperty("questions") && this.utils.isArray(sqr["data"]["questions"]) && sqr["data"]["questions"].length > 0) {
+          let questions = sqr["data"]["questions"];
+          sqrSmart["questions"] = [];
+
+          for (let j = 0; j < questions.length; j++) {
+            let ques = {
+              "text": questions[j],
+              "assigned": false
+            }
+
+            sqrSmart["questions"].push(ques);
+          }
+        }
+      }
+
+      if (sqrSmart.hasOwnProperty("questions")) {
+        this.smartData["squares"].push(sqrSmart);
+      }
+    }
   };
 
   menuGroupsList() {

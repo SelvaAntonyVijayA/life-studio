@@ -317,3 +317,111 @@
   width: 100%;
   float: right;
 }
+
+/* Profile Container */
+
+.profile_container {
+  float: left;
+  width: 100%;
+  margin-top: 1px;
+}
+
+.profile_if_not_answered {
+  float: right;
+  margin-right: 25px;
+  margin-top: -3px;
+}
+
+.square_if_not_answered {
+  float: right;
+  width: 30%;
+  margin-bottom: 0px;
+  min-height: 0px;
+  margin-top: 0px;
+}
+
+.profile_label {
+  float: left;
+  padding: 4px 40px 0 0;
+  font-size: 12px;
+}
+
+.profile_input {
+  width: 260px;
+  float: left;
+}
+
+.profile_gender {
+  display: block;
+  float: left;
+  font-size: 14px;
+  line-height: 1.42857143;
+}
+
+.label_gender {
+  font-size: 12px;
+}
+
+.label_gender>input[type=radio] {
+  margin-top: 2px;
+}
+
+.profile_month {
+  width: 108px;
+  float: left;
+}
+
+.profile_day {
+  width: 95px;
+  float: left;
+  margin-left: 5px;
+}
+
+.year_option {
+  width: 108px;
+  float: left;
+}
+
+.profile_year {
+  width: 95px;
+  float: left;
+  margin-left: 5px;
+}
+
+/* Main Square Area Layout */
+
+.squares_panel {
+  text-align: left;
+  position: relative;
+  padding-top: 1px;
+  padding-left: 15px;
+  height: 620px;
+  overflow: hidden;
+}
+
+.square_block {
+  float: left;
+  width: 100%;
+}
+
+.sur_main_ques {
+  float: left;
+  width: 70%;
+}
+
+.squares_main_text {
+  float: left;
+  width: 100%;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.ques_app_not_ans {
+  float: left;
+  width: 100%;
+}
+
+.ques_opt_group {
+  float: left;
+  width: 100%;
+}

@@ -1019,6 +1019,30 @@ var questionnaires = function (req, res, next) {
     });
 };
 
+var smartUpdate = function (obj, cb) {
+  query = {};
+  options = {};
+
+  query = {
+    "menuTiles.linkId": obj.engineId,
+    "menuTiles.linkTo": obj.type
+  };
+
+  query.appId = obj.appId;
+
+  var data = {
+    dateUpdated: (new Date((new Date()).toUTCString()))
+  };
+
+  options.multi = true;
+
+  _update(query, options, data, function (result) {
+    if (cb) {
+      cb(result);
+    }
+  });
+};
+
 module.exports = {
   "init": init,
   "save": save,
@@ -1036,5 +1060,6 @@ module.exports = {
   "remove": remove,
   "squares": squares,
   "tile": tile,
-  "questionnaires": questionnaires
+  "questionnaires": questionnaires,
+  "smartUpdate": smartUpdate
 };
