@@ -226,6 +226,10 @@
 .group-notify-icons {
   width: 100%;
   float: right;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .tiles_list_panel {
@@ -395,8 +399,8 @@
   position: relative;
   padding-top: 1px;
   padding-left: 15px;
-  height: 620px;
   overflow: hidden;
+  min-height: 633px;
 }
 
 .square_block {
@@ -425,3 +429,4 @@
   float: left;
   width: 100%;
 }
+

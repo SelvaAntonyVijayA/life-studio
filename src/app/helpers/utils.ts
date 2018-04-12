@@ -270,7 +270,11 @@ export class Utils {
 
   trim(str: any) {
     if (!this.isNullOrEmpty(str)) {
-      str.replace(/^\s+|\s+$/gm, '');
+      str = str.replace(/^\s+|\s+$/gm, "")
+      str = str.replace(/\s/g, "");
+      str = str.replace(/ /g,'');
+
+      str = str.trim();
     }
 
     return str;
@@ -340,7 +344,7 @@ export class Utils {
       .subscribe((ans: ResolveEmit) => cb(ans));
   };
 
-  
+
   checkIfArraysEqual(arr1, arr2) {
     if (arr1.length != arr2.length) {
       return false;

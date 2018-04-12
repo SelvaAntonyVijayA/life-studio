@@ -25,11 +25,11 @@
   </div>
   <div class="smart_page_form">
     <div class="page_block smart_page_head ">
-      <select [ngModel]="selectedApp " (ngModelChange)="appChange($event) " class="form-control input-sm apps_list ">
+      <select [ngModel]="selectedApp " (ngModelChange)="appChange($event)" class="form-control input-sm apps_list">
         <option *ngFor="let app of appList; let i= index " [value]="app?._id ">{{app?.name}}</option>
       </select>
-      <div class="smart_form_btns ">
-        <button class="ili-btn save_smart ">
+      <div class="smart_form_btns">
+        <button (click)="saveSmart($event)" class="ili-btn save_smart">
           Save
         </button>
         <button class="ili-btn delete_smart ">
@@ -44,13 +44,13 @@
       <div class="profile_container">
         <div class="profile_if_not_answered checkbox">
           <label style="line-height: 1.95;">
-            <input value="0" type="checkbox"> Show in app if not answered</label>
+            <input value="true" type="checkbox"> Show in app if not answered</label>
         </div>
         <p style="margin-left: 10px">
           Profile:
         </p>
         <table style="margin-left: 20px;">
-          <tr style="height:30px">
+          <tr *ngIf="profileObj.hasOwnProperty('firstName')" style="height:30px">
             <td>
               <span class="profile_label">First Name</span>
             </td>
@@ -59,7 +59,7 @@
             </td>
           </tr>
 
-          <tr style="height:30px">
+          <tr *ngIf="profileObj.hasOwnProperty('lastName')" style="height:30px">
             <td>
               <span class="profile_label">Last Name</span>
             </td>
@@ -69,96 +69,61 @@
             </td>
           </tr>
 
-          <tr style="height:30px">
+          <tr *ngIf="profileObj.hasOwnProperty('gender')" style="height:30px">
             <td>
               <span class="profile_label">Gender</span>
             </td>
             <td>
               <div class="profile_gender">
                 <label class="radio-inline label_gender">
-                  <input type="radio" value="male" name="sex"> Male
+                  <input type="radio" [(ngModel)]="profileObj['gender']" value="male" name="sex"> Male
                 </label>
                 <label class="radio-inline label_gender">
-                  <input type="radio" value="female" name="sex"> Female
+                  <input type="radio" [(ngModel)]="profileObj['gender']" value="female" name="sex"> Female
                 </label>
                 <label class="radio-inline label_gender">
-                  <input type="radio" value="both" name="sex"> All
+                  <input type="radio" [(ngModel)]="profileObj['gender']" value="both" name="sex"> All
                 </label>
               </div>
             </td>
           </tr>
-          <tr style="height:30px">
+          <tr *ngIf="profileObj.hasOwnProperty('birthday')" style="height:30px">
             <td>
               <span class="profile_label">Birth Date</span>
             </td>
             <td>
-              <select name="month" id="month" class="form-control input-sm profile_month">
-                <option value="">Select Month</option>
-                <option value="01">January</option>
-                <option value="02">February</option>
-                <option value="03">March</option>
-                <option value="04">April</option>
-                <option value="05">May</option>
-                <option value="06">June</option>
-                <option value="07">July</option>
-                <option value="08">August</option>
-                <option value="09">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
+              <select [(ngModel)]="profileObj['birthmonth']" class="form-control input-sm profile_month">
+                <option [value]="''">Select Month</option>
+                <option *ngFor="let mnName of monthNames; let i = index" [value]="i + 1">{{mnName}}</option>
               </select>
-              <select name="day" id="day" class="form-control input-sm profile_day">
-                <option value="">Select Date</option>
-                <option value="01">01</option>
-                <option value="02">02</option>
-                <option value="03">03</option>
-                <option value="04">04</option>
-                <option value="05">05</option>
-                <option value="06">06</option>
-                <option value="07">07</option>
-                <option value="08">08</option>
-                <option value="09">09</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-                <option value="13">13</option>
-                <option value="14">14</option>
-                <option value="15">15</option>
-                <option value="16">16</option>
-                <option value="17">17</option>
-                <option value="18">18</option>
-                <option value="19">19</option>
-                <option value="20">20</option>
-                <option value="21">21</option>
-                <option value="22">22</option>
-                <option value="23">23</option>
-                <option value="24">24</option>
-                <option value="25">25</option>
-                <option value="26">26</option>
-                <option value="27">27</option>
-                <option value="28">28</option>
-                <option value="29">29</option>
-                <option value="30">30</option>
-                <option value="31">31</option>
+              <select [(ngModel)]="profileObj['birthday']" class="form-control input-sm profile_day">
+                <option [value]="''">Select Date</option>
+                <option *ngFor="let dy of monthDays; let i = index" [value]="dy">{{dy}}</option>
               </select>
             </td>
           </tr>
-          <tr style="height:30px">
+          <tr *ngIf="profileObj.hasOwnProperty('birthday')" style="height:30px">
             <td>
               <span class="profile_label">Birth Year</span>
             </td>
             <td>
-              <select name="year-option" id="year-option" class="form-control input-sm year_option">
-                <option value="">Select</option>
-                <option value="1">Year</option>
-                <option value="2">Born before</option>
-                <option value="3">Born after</option>
-                <option value="4">Born Between</option>
+              <select [(ngModel)]="profileObj['birthyearoption']" class="form-control input-sm year_option">
+                <option [value]="''">Select</option>
+                <option [value]="1">Year</option>
+                <option [value]="2">Born before</option>
+                <option [value]="3">Born after</option>
+                <option [value]="4">Born Between</option>
               </select>
-              <select name="year" id="year" class="form-control input-sm profile_year year"></select>
-              <div id="dvYearUntil" style="display: none; float:left;">
-                <span class="lblyear"> and </span>
-                <select name="year-until" id="year-until" class="form-control input-sm profile_year year-until"></select>
+              <select [(ngModel)]="profileObj['birthyear']" class="form-control input-sm profile_year year">
+                <option [value]="''">Select Year</option>
+                <option *ngFor="let yr of yearList; let i= index" [value]="yr">{{yr}}</option>
+              </select>
+              <div *ngIf="!utils.isNullOrEmpty(profileObj['birthyearoption']) && profileObj['birthyearoption'] === '4'" style="float:left;">
+                <span style="float: left; margin: 4px 4px 0px 11px;"> and </span>
+                <select [(ngModel)]="profileObj['birthyearuntil']" class="form-control input-sm profile_year year-until">
+                  <option [value]="''">Select Year</option>
+                  <option *ngFor="let yr of yearList; let i= index" [value]="yr">{{yr}}</option>
+                </select>
               </div>
             </td>
           </tr>
@@ -167,8 +132,9 @@
       <div class="squares_main_text">
         <label style="float: left;margin-left: 9px;">Questionnaires : </label>
       </div>
-      <div class="squares_panel" id="main-squares-area">
+      <div [style.height]="squaresPanelHgt + 'px'" class="squares_panel" id="main-squares-area">
         <div *ngFor="let sqr of smartData['squares']; let i = index; trackBy: trackByIndex" class="square_block">
+
           <div class="ques_app_not_ans">
             <div class="sur_main_ques">
               <label style="margin-bottom: 0px;">{{ sqr!.questionText }}</label>
@@ -191,15 +157,16 @@
       </div>
     </div>
   </div>
-  <div class="page_block smart_tiles_list ">
-    <div class="tiles_list_search ">
+  <div class="page_block smart_tiles_list">
+
+    <div class="tiles_list_search">
       <input [(ngModel)]="tileSort[ 'tileSearchText']" class="form-control input-sm tile_search_box" type="text" placeholder="Search Tiles">
       <select [(ngModel)]="selectedCategory" class="form-control input-sm tile_category_filter ">
         <option [value]="-1">All Categories</option>
         <option *ngFor="let tileCat of tileCategories; let i = index" [value]="tileCat?._id">{{tileCat?.name}}</option>
       </select>
     </div>
-    <div class="tiles_sort ">
+    <div class="tiles_sort">
       <label class="txt_arrange ">Sort by: </label>
       <select [(ngModel)]="tileSort[ 'selectedOpt']" class="form-control input-sm sort_box" placeholder="Search ">
         <option [value]="'date'">Date</option>
@@ -228,7 +195,7 @@
         </div>
       </div>
 
-      <div class='tiles_count_main'>
+      <div class="tiles_count_main">
         <div class="tile-view-change ">
           <img *ngIf="tileSort['listType']==='list'" (click)="changeTileView('details')" src="/img/details.png" alt=" " title="Details"
           />
