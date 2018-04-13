@@ -7,6 +7,7 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { LoaderSharedService } from '../../services/loader-shared.service';
 import { PageService } from '../../services/page.service';
 import { TileService } from '../../services/tile.service';
+import { SmartService } from '../../services/smart.service';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/forkJoin';
 
@@ -15,7 +16,7 @@ import 'rxjs/add/observable/forkJoin';
   templateUrl: './smart.component.html',
   styleUrls: ['./smart.component.css'],
   encapsulation: ViewEncapsulation.None,
-  providers: [PageService]
+  providers: [PageService, SmartService]
 })
 export class SmartComponent implements OnInit {
 
@@ -27,7 +28,8 @@ export class SmartComponent implements OnInit {
     private renderer: Renderer,
     public utils: Utils,
     private pageService: PageService,
-    private tileService: TileService
+    private tileService: TileService,
+    private smartService: SmartService
   ) { }
 
   oid: string = "";
@@ -49,17 +51,17 @@ export class SmartComponent implements OnInit {
   smart: any[] = [];
   notifications: any[] = [];
   menuGroupSearch: string = "";
-  selectedMenuGroup: string = "";
+  selectedMenuGroup: Object = {};
   tileList: any[] = [];
-  selectedTile: string = "";
+  selectedTile: Object = {};
   tileCategories: any[] = [];
   selectedCategory: string = "-1";
   tileSquares: any[] = [];
   profileData: any[] = [];
-  smartData: Object = {
+  /*smartData: Object = {
     "squares": []
-  };
-  profileObj: Object = {};
+  };*/
+  profileObj: Object = { "ifNotAnswered": false };
   yearList: any[] = [];
   monthDays: any[] = [];
   monthNames: any[] = [];
@@ -116,10 +118,12 @@ export class SmartComponent implements OnInit {
   };
 
   smartReset() {
-    this.selectedMenuGroup = "";
-    this.selectedTile = "";
-    this.profileObj = {};
-    this.smartData["squares"] = [];
+    this.selectedMenuGroup = {};
+    this.selectedTile = {};
+
+    this.profileReset();
+    this.resetSmartSquaresDatas();
+    //this.smartData["squares"] = [];
   };
 
   resetAppData() {
@@ -131,6 +135,7 @@ export class SmartComponent implements OnInit {
 
     this.tileSquares = [];
     this.profileData = [];
+    this.profileObj = { "ifNotAnswered": false };
     this.squaresPanelHgt = 633;
 
     this.tileSort = {
@@ -145,6 +150,28 @@ export class SmartComponent implements OnInit {
     };
   };
 
+  resetSmartSquaresDatas() {
+    if (this.tileSquares.length > 0) {
+      for (let i = 0; i < this.tileSquares.length; i++) {
+        let tileSqr = this.tileSquares[i];
+        tileSqr["ifNotAnswered"] = false;
+
+        if (tileSqr["questions"].length > 0) {
+          for (let j = 0; j < tileSqr["questions"].length; j++) {
+            let ques = tileSqr["questions"][j];
+            ques["assigned"] = false;
+          }
+        }
+      }
+    }
+  };
+
+  profileReset() {
+    for (let ky in this.profileObj) {
+      this.profileObj[ky] = "";
+    }
+  }
+
   appChange(appId: string) {
     this.loaderShared.showSpinner(true);
     this.selectedApp = appId;
@@ -152,7 +179,7 @@ export class SmartComponent implements OnInit {
     this.resetAppData();
 
     this.loadSmartDatas(true).subscribe(tileCats => {
-      this.setSmartData(tileCats, true);
+      this.setSmartData(tileCats, false);
     });
   };
 
@@ -207,7 +234,7 @@ export class SmartComponent implements OnInit {
     this.loaderShared.showSpinner(false);
   };
 
-  setTileCategories(tileCats: any[], isInitial?: boolean) {
+  setTileCategories(tileCats: any, isInitial?: boolean) {
     /*this.getTilesCategories().subscribe(tileCats => {
       this.tileCategories = tileCats[0];
       this.tileList = tileCats[1]["tiles"];
@@ -226,15 +253,15 @@ export class SmartComponent implements OnInit {
 
   loadSmartDatas(isInitial: boolean) {
     let tileCatData: any;
-    let menuGroupList = this.pageService.pageSquaresList(this.oid, this.selectedApp);
+    let menuGroupList = this.getMenuGroupList();
 
     if (isInitial) {
       tileCatData = this.getTilesCategories();
     } else {
-      tileCatData = this.pageService.appPageTiles(this.oid, this.selectedApp);
+      tileCatData = this.getAppPageTiles();
     }
 
-    let tileSquares = this.pageService.tileSquares(this.oid, this.selectedApp);
+    let tileSquares = this.getTileSquareList();
     let profileData = this.pageService.appProfileData(this.selectedApp);
 
     return Observable.forkJoin([menuGroupList, tileCatData, tileSquares, profileData]);
@@ -248,10 +275,27 @@ export class SmartComponent implements OnInit {
 
   getTilesCategories() {
     let tileCategory = this.tileService.getTileCategory(this.oid);
-    let squareTiles = this.pageService.appPageTiles(this.oid, this.selectedApp);
+    let squareTiles = this.getAppPageTiles();
 
     return Observable.forkJoin([tileCategory, squareTiles]);
   };
+
+  getAppPageTiles() {
+    let pageTile = this.pageService.appPageTiles(this.oid, this.selectedApp);
+    return pageTile;
+  };
+
+  getMenuGroupList() {
+    let listMenuGroup = this.pageService.pageSquaresList(this.oid, this.selectedApp);
+
+    return listMenuGroup
+  };
+
+  getTileSquareList() {
+    let tileSqrs = this.pageService.tileSquares(this.oid, this.selectedApp);
+
+    return tileSqrs;
+  }
 
   setTileSquares(tileSqrs: any[]) {
     /* this.pageService.tileSquares(this.oid, this.selectedApp)
@@ -263,7 +307,7 @@ export class SmartComponent implements OnInit {
 
     if (this.utils.isArray(tileSqrs) && tileSqrs.length > 0) {
       this.tileSquares = tileSqrs;
-      this.setSmartSquares();
+      this.setSmartSquares(tileSqrs);
     }
   };
 
@@ -296,9 +340,10 @@ export class SmartComponent implements OnInit {
     }
   };
 
-  setSmartSquares() {
-    this.smartData["squares"] = [];
-    let squares = this.tileSquares.map(s => Object.assign({}, s));
+  setSmartSquares(squares: any[]) {
+    //this.smartData["squares"] = [];
+    //let squares = this.tileSquares.map(s => Object.assign({}, s));
+    this.tileSquares = [];
 
     for (let i = 0; i < squares.length; i++) {
       let sqr = squares[i];
@@ -327,7 +372,7 @@ export class SmartComponent implements OnInit {
       }
 
       if (sqrSmart.hasOwnProperty("questions")) {
-        this.smartData["squares"].push(sqrSmart);
+        this.tileSquares.push(sqrSmart);
       }
     }
   };
@@ -520,6 +565,8 @@ export class SmartComponent implements OnInit {
       currTile["tileHealthStatusRules"] = tileRules;
     }
 
+    currTile["type"] = "tile";
+
     return currTile;
   };
 
@@ -581,8 +628,159 @@ export class SmartComponent implements OnInit {
     }
   };
 
+  getProfile() {
+    var profile = {};
+
+    profile["firstname"] = this.profileObj.hasOwnProperty("firstname") ? this.profileObj["firstname"] : "";
+    profile["lastname"] = this.profileObj.hasOwnProperty("lastname") ? this.profileObj["lastname"] : "";
+    profile["gender"] = this.profileObj.hasOwnProperty("gender") ? this.profileObj["gender"] : "";
+    profile["birthmonth"] = this.profileObj.hasOwnProperty("birthmonth") ? this.profileObj["birthmonth"] : "";
+    profile["birthday"] = this.profileObj.hasOwnProperty("birthday") ? this.profileObj["birthday"] : "";
+    profile["birthyearoption"] = this.profileObj.hasOwnProperty("birthyearoption") ? this.profileObj["birthyearoption"] : "";
+    profile["birthyear"] = this.profileObj.hasOwnProperty("birthyear") ? this.profileObj["birthyear"] : "";
+    profile["birthyearuntil"] = this.profileObj.hasOwnProperty("birthyearuntil") ? this.profileObj["birthyearuntil"] : "";
+
+    profile["ifNotAnswered"] = this.profileObj["ifNotAnswered"];
+
+    return profile
+  };
+
+  getSquares() {
+    var assignedSquares = [];
+
+    for (let i = 0; i < this.tileSquares.length; i++) {
+      let sqr = this.tileSquares[i];
+      let answer = [];
+      let square = { "blockId": sqr["_id"] };
+
+      for (let j = 0; j < sqr["questions"].length; j++) {
+        let ques = sqr["questions"][j];
+
+        if (ques["assigned"]) {
+          answer.push(j);
+        }
+      }
+
+      if (answer.length > 0) {
+        square["ifNotAnswered"] = sqr["ifNotAnswered"];
+        square["answer"] = answer;
+        assignedSquares.push(square);
+      }
+    }
+
+    return assignedSquares;
+  };
+
   saveSmart(e: any) {
-    var prof = this.profileObj;
+    e.preventDefault();
+    e.stopPropagation();
+
+    let smrtObj = !this.utils.isEmptyObject(this.selectedMenuGroup) ? this.selectedMenuGroup : !this.utils.isEmptyObject(this.selectedTile) ? this.selectedTile : {};
+
+    if (!this.utils.isEmptyObject(smrtObj)) {
+      this.loaderShared.showSpinner(true);
+      var obj = {};
+      obj["appId"] = this.selectedApp;
+      obj["orgId"] = this.oid;
+      obj["profiles"] = this.getProfile();
+      obj["squares"] = this.getSquares();
+      obj["type"] = smrtObj["type"];
+      obj["engineId"] = smrtObj["_id"];
+      obj["dateCreated"] = (new Date()).toUTCString();
+      obj["dateUpdated"] = (new Date()).toUTCString();
+
+      this.smartService.saveSmart(obj)
+        .then(menuResObj => {
+          this.getGroupTilesSquares().subscribe(smrtDatas => {
+            this.setMenuGroupList(smrtDatas[0]);
+            this.setTileCategories(smrtDatas[1], false);
+            this.setTileSquares(smrtDatas[2]);
+            this.loaderShared.showSpinner(false);
+            this.utils.iAlert('success', '', 'Smart engine updated successfully');
+          });
+        });
+    } else {
+      this.utils.iAlert('error', 'Information', 'You must at least select a square for smart engine!!!');
+    }
+  };
+
+  setProfileObj(profObj: Object) {
+    if (!this.utils.isEmptyObject(profObj)) {
+      for (let fieldName in profObj) {
+        if (this.profileObj.hasOwnProperty(fieldName)) {
+          this.profileObj[fieldName] = profObj[fieldName];
+        }
+      }
+    }
+  };
+
+  setSquares(sqrs: any[]) {
+    if (this.utils.isArray(sqrs) && sqrs.length > 0) {
+      for (let i = 0; i < sqrs.length; i++) {
+        let square = sqrs[i];
+
+        if (square.hasOwnProperty("blockId") && !this.utils.isNullOrEmpty(square['blockId'])) {
+          let squareExists = this.tileSquares.find(t => t['_id'] === square['blockId']);
+
+          if (!this.utils.isEmptyObject(squareExists)) {
+            if (square.hasOwnProperty("answer") && square["answer"].length > 0 && squareExists["questions"].length > 0) {
+              let totalIndex = squareExists["questions"].length - 1;
+              for (let j = 0; j < square["answer"].length; j++) {
+                let answered = !this.utils.isNullOrEmpty(square["answer"][j]) ? parseInt(square["answer"][j]) : "";
+
+                if (!this.utils.isNullOrEmpty(answered) && totalIndex >= answered) {
+                  squareExists["questions"][answered]["assigned"] = true;
+                }
+              }
+            }
+
+            if (square.hasOwnProperty("ifNotAnswered")) {
+              squareExists["ifNotAnswered"] = this.utils.convertToBoolean(squareExists["ifNotAnswered"]);
+            }
+          }
+        }
+      }
+    }
+  };
+
+  selectMenuGroupTile(e: any, obj: Object) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.loaderShared.showSpinner(true);
+    this.smartReset();
+
+    if (!this.utils.isEmptyObject(obj)) {
+      if (obj["type"] !== "tile") {
+        this.selectedMenuGroup = obj;
+      } else {
+        this.selectedTile = obj;
+      }
+
+      this.getSmartEngine(obj);
+    }
+  };
+
+  getSmartEngine(obj: Object) {
+    let smrtObj = { "type": obj["type"], "engineId": obj["_id"] };
+
+    this.smartService.smartList(this.oid, this.selectedApp, smrtObj)
+      .then(smrtDatas => {
+        if (smrtDatas.length > 0) {
+          this.setProfileObj(smrtDatas[0].profiles);
+          this.setSquares(smrtDatas[0].squares);
+        }
+
+        this.loaderShared.showSpinner(false);
+      });
+  };
+
+  getGroupTilesSquares() {
+    let menuGroupList = this.getMenuGroupList();
+    let squareData = this.getAppPageTiles();
+    let tileSquares = this.getTileSquareList();
+
+    return Observable.forkJoin([menuGroupList, squareData, tileSquares]);
   };
 
   ngOnInit() {

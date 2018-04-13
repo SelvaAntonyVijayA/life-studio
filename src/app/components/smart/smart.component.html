@@ -4,7 +4,7 @@
       <input [(ngModel)]="menuGroupSearch" class="form-control input-sm smart_search_box" type="text" placeholder="Search">
     </div>
     <div id="menu-group-list" class="smart_group_list">
-      <div class="group_list_single" *ngFor="let mnGrp of (menuGroups | filterByText: 'menuGroupTitle': menuGroupSearch); let i = index; trackBy: trackByIndex">
+      <div (click)="selectMenuGroupTile($event, mnGrp)" [ngClass]="!utils.isEmptyObject(selectedMenuGroup) && selectedMenuGroup.hasOwnProperty('_id') && !utils.isNullOrEmpty(selectedMenuGroup['_id']) && selectedMenuGroup['_id'] === mnGrp['_id'] ? 'group_list_single selected' : 'group_list_single'" *ngFor="let mnGrp of (menuGroups | filterByText: 'menuGroupTitle': menuGroupSearch); let i = index; trackBy: trackByIndex">
         <div *ngIf="checkMenuGroupArt(mnGrp)" class="group-art">
           <img class="group_list_art" [src]="mnGrp['type'] !== 'menu'? mnGrp['art'] : mnGrp['background'] | safe">
         </div>
@@ -44,7 +44,7 @@
       <div class="profile_container">
         <div class="profile_if_not_answered checkbox">
           <label style="line-height: 1.95;">
-            <input value="true" type="checkbox"> Show in app if not answered</label>
+            <input value="true" [(ngModel)]="profileObj['ifNotAnswered']" type="checkbox"> Show in app if not answered</label>
         </div>
         <p style="margin-left: 10px">
           Profile:
@@ -55,7 +55,7 @@
               <span class="profile_label">First Name</span>
             </td>
             <td>
-              <input type="text" class="form-control input-sm profile_input" value="" placeholder="First Name">
+              <input type="text" [(ngModel)]="profileObj['firstName']" class="form-control input-sm profile_input" value="" placeholder="First Name">
             </td>
           </tr>
 
@@ -65,7 +65,7 @@
             </td>
 
             <td>
-              <input type="text" class="form-control input-sm profile_input" value="" placeholder="Last Name">
+              <input type="text" [(ngModel)]="profileObj['lastName']" class="form-control input-sm profile_input" value="" placeholder="Last Name">
             </td>
           </tr>
 
@@ -87,6 +87,7 @@
               </div>
             </td>
           </tr>
+
           <tr *ngIf="profileObj.hasOwnProperty('birthday')" style="height:30px">
             <td>
               <span class="profile_label">Birth Date</span>
@@ -102,6 +103,7 @@
               </select>
             </td>
           </tr>
+
           <tr *ngIf="profileObj.hasOwnProperty('birthday')" style="height:30px">
             <td>
               <span class="profile_label">Birth Year</span>
@@ -133,7 +135,7 @@
         <label style="float: left;margin-left: 9px;">Questionnaires : </label>
       </div>
       <div [style.height]="squaresPanelHgt + 'px'" class="squares_panel" id="main-squares-area">
-        <div *ngFor="let sqr of smartData['squares']; let i = index; trackBy: trackByIndex" class="square_block">
+        <div *ngFor="let sqr of tileSquares; let i = index; trackBy: trackByIndex" class="square_block">
 
           <div class="ques_app_not_ans">
             <div class="sur_main_ques">
@@ -207,7 +209,7 @@
     </div>
 
     <div id="tiles-list-show" class="tiles_list_panel">
-      <div [ngClass]="!utils.isEmptyObject(selectedTile) && selectedTile.hasOwnProperty('_id') && !utils.isNullOrEmpty(selectedTile['_id']) && selectedTile['_id'] === tile['_id'] ? 'tiles_list_single selected' : 'tiles_list_single'"
+      <div (click)="selectMenuGroupTile($event, tile)" [ngClass]="!utils.isEmptyObject(selectedTile) && selectedTile.hasOwnProperty('_id') && !utils.isNullOrEmpty(selectedTile['_id']) && selectedTile['_id'] === tile['_id'] ? 'tiles_list_single selected' : 'tiles_list_single'"
         *ngFor="let tile of (tileList | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1]); let i = index; trackBy: trackByTileId">
         <img [ngClass]="tileSort['listType'] === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
         <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
@@ -232,6 +234,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
