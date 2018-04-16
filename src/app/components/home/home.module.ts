@@ -35,6 +35,7 @@ import { StreamComponent } from '../../components/organizations/stream.component
 import { LanguageComponent } from '../../components/organizations/language.component';
 import { UserprofileComponent } from '../../components/userprofile/userprofile.component';
 import { ProfilebuilderComponent } from '../../components/profilebuilder/profilebuilder.component';
+import { HealthStatusRulesComponent } from '../../components/health-status-rules/health-status-rules.component'
 
 import { AuthandsecurityComponent } from '../../components/authandsecurity/authandsecurity.component';
 
@@ -100,7 +101,7 @@ import { GeoValidator } from '../../helpers/geo.validator';
     OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, UserprofileComponent,
     ProfilebuilderComponent, AuthandsecurityComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
     jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent,
-    LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent],
+    LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService, LivestreamService, LanguageService]
 })

@@ -178,7 +178,7 @@ export class SmartComponent implements OnInit {
     this.smartReset();
     this.resetAppData();
 
-    this.loadSmartDatas(true).subscribe(tileCats => {
+    this.loadSmartDatas(false).subscribe(tileCats => {
       this.setSmartData(tileCats, false);
     });
   };
@@ -488,7 +488,7 @@ export class SmartComponent implements OnInit {
         currTile["isNotification"] = "none";
       }
     }
-
+    
     if (!currTile.hasOwnProperty("isSmart")) {
       if (currTile.hasOwnProperty("smart") && currTile["smart"].hasOwnProperty("apps") && currTile["smart"]["apps"].length > 0) {
         for (let i = 0; i < currTile["smart"]["apps"].length; i++) {
@@ -691,10 +691,13 @@ export class SmartComponent implements OnInit {
 
       this.smartService.saveSmart(obj)
         .then(menuResObj => {
-          this.getGroupTilesSquares().subscribe(smrtDatas => {
-            this.setMenuGroupList(smrtDatas[0]);
-            this.setTileCategories(smrtDatas[1], false);
-            this.setTileSquares(smrtDatas[2]);
+          this.getMenuGroupList().then(mnuGrpObj => {
+            this.setMenuGroupList(mnuGrpObj);
+
+            this.getAppPageTiles().then(appPgTiles => {
+              this.setTileCategories(appPgTiles, false);
+            });
+
             this.loaderShared.showSpinner(false);
             this.utils.iAlert('success', '', 'Smart engine updated successfully');
           });
@@ -775,12 +778,45 @@ export class SmartComponent implements OnInit {
       });
   };
 
-  getGroupTilesSquares() {
-    let menuGroupList = this.getMenuGroupList();
-    let squareData = this.getAppPageTiles();
-    let tileSquares = this.getTileSquareList();
+  /*getGroupTilesSquares() {
+      let menuGroupList = this.getMenuGroupList();
+      //let squareData = this.getAppPageTiles();
+      let tileSquares = this.getTileSquareList();
+  
+      return Observable.forkJoin([menuGroupList, tileSquares]);
+    };*/
 
-    return Observable.forkJoin([menuGroupList, squareData, tileSquares]);
+  deleteSmart(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let smrtObj = !this.utils.isEmptyObject(this.selectedMenuGroup) ? this.selectedMenuGroup : !this.utils.isEmptyObject(this.selectedTile) ? this.selectedTile : {};
+
+    if (!this.utils.isEmptyObject(smrtObj)) {
+      this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Smart Engine??", "Delete", "Cancel", (r) => {
+        if (r["resolved"]) {
+          this.loaderShared.showSpinner(true);
+
+          var deleteObj = { "appId": this.selectedApp, "orgId": this.oid, "type": smrtObj["type"], "engineId": smrtObj["_id"] };
+
+          this.smartService.removeSmart(deleteObj).then(deleteStatus => {
+            this.getMenuGroupList().then(mnuGrpObj => {
+              this.setMenuGroupList(mnuGrpObj);
+              this.getAppPageTiles().then(appPgTiles => {
+                this.setTileCategories(appPgTiles, false);
+              });
+
+              this.profileReset();
+              this.resetSmartSquaresDatas();
+              this.loaderShared.showSpinner(false);
+              this.utils.iAlert('success', '', 'Smart engine deleted successfully');
+            });
+          });
+        }
+      });
+    } else {
+      this.utils.iAlert('error', 'Information', 'Please select a Square!!!');
+    }
   };
 
   ngOnInit() {

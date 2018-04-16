@@ -11,12 +11,13 @@ export class DomainPageLib {
   Photos: string = '/photos';
   Videos: string = '/videos';
   In_app_Membership: string = '/inappmembership';
+  Status_Rules: string = '/healthstatusrules'
   Health_Status_Rules: string = '/healthstatusrules';
   Settings: string = '/settings';
   Activity_Reports: string = '/activityreports';
   End_Users: string = '/endusers';
   Registration: string = '/registration';
-  End_User_Roles: string = '/enduserroles';
+  Role_based_in_app_visibility: string = '/roleappvisibility';
   SMART: string = '/smart';
   Notifications: string = '/notifications';
   Push_Notifications: string = '/pushnotifications';
@@ -39,8 +40,11 @@ export class DomainPageLib {
   Profile_Builder: string = "/profilebuilder";
   Standalone_Chat: string = "/standalonechat";
   Clinics_and_Physicians: string = "/clinicphysicians";
-  QA_Weights: string = "/qaweights";
+  Locations_and_Managers : string = "/clinicphysicians"
+  QA_Weights: string = "/qaweights"
   Processes: string = "/processes";
+  Team_Management: string = "/teammanagement";
+  Moderator_Access: string = "/moderatoraccess"
 };
 
 export class DomainTools {
@@ -55,3 +59,9 @@ export class DomainTools {
   MailTo: string = 'mailto:support@interactivelife.com';
   Terms: string = 'http://www.interactivelife.com/terms';
 };
+
+
+
+
+
+

@@ -1,0 +1,42 @@
+<div class="container status_rules_container">
+  <div class="hsr_main_panel">
+    <div class="page_block hsr_page_head">
+      <input class="form-control input-sm rule_name" type="text" placeholder="Rule name">
+      <select class="form-control input-sm hsr_box">
+        <option value="-1">Select Status Color</option>
+        <option style="color:green;" value="green"> Green</option>
+        <option style="color:orange;" value="orange"> Orange</option>
+        <option style="color:red;" value="red"> Red</option>
+        <option style="color:gray;" value="purple">🎗 Gray</option>
+      </select>
+      <select class="form-control input-sm hsr_box">
+        <option [value]="''">Filter by app - All</option>
+
+      </select>
+      <div class="hsr_form_btns">
+        <button class="ili-btn status_new">
+          New
+        </button>
+        <button class="ili-btn status_save">
+          Save
+        </button>
+        <button class="ili-btn status_delete">
+          Delete
+        </button>
+      </div>
+    </div>
+    <div class="page_block hsr_list_panel">
+      <div class="hsr_search">
+        <input class="form-control input-sm hsr_search_box" placeholder="Search" type="text">
+      </div>
+      <div class="hsr_group_list">
+      </div>
+    </div>
+    <div class="page_block hsr_main_content_panel">
+    </div>
+  </div>
+  <div class="page_block hsr_tiles_panel">
+
+  </div>
+
+</div>

@@ -21,6 +21,7 @@ import { SettingsComponent } from '../components/settings/settings.component';
 import { UserprofileComponent } from '../components/userprofile/userprofile.component';
 import { ProfilebuilderComponent } from '../components/profilebuilder/profilebuilder.component';
 import { AuthandsecurityComponent } from '../components/authandsecurity/authandsecurity.component';
+import { HealthStatusRulesComponent } from '../components/health-status-rules/health-status-rules.component';
 
 const homeRoutes: Routes = [
   {
@@ -98,6 +99,10 @@ const homeRoutes: Routes = [
       {
         path: 'authsecurity',
         component: AuthandsecurityComponent
+      },
+      {
+        path: 'healthstatusrules',
+        component: HealthStatusRulesComponent
       }
     ]
   }
