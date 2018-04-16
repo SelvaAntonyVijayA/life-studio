@@ -1513,12 +1513,12 @@ declare module jqwidgets {
     export interface DropDownListOptions {
         // DropDownListOptions properties
         autoOpen?: undefined;
-        autoDropDownHeight?: undefined;
+        autoDropDownHeight?: undefined | string;
         animationType?: string;
         checkboxes?: undefined;
         closeDelay?: undefined;
         disabled?: undefined;
-        displayMember?: undefined;
+        displayMember?: undefined | string;
         dropDownHorizontalAlignment?: string;
         dropDownVerticalAlignment?: string;
         dropDownHeight?: number | string;
@@ -1535,18 +1535,18 @@ declare module jqwidgets {
         incrementalSearchDelay?: undefined;
         itemHeight?: number;
         openDelay?: undefined;
-        placeHolder?: undefined;
-        popupZIndex?: undefined;
+        placeHolder?: undefined | string;
+        popupZIndex?: undefined | string;
         rtl?: undefined;
         renderer?: (index: number, label?: string, value?: any) => string;
         selectionRenderer?: (object?: any, index?: number, label?: string) => string;
         searchMode?: string;
         scrollBarSize?: number | string;
         source?: Array<any>;
-        selectedIndex?: undefined;
+        selectedIndex?: undefined | number | string;
         theme?: undefined;
         template?: undefined;
-        valueMember?: undefined;
+        valueMember?: undefined | string;
         width?: number | string;
     }// DropDownListOptions
 
@@ -2332,20 +2332,20 @@ declare module jqwidgets {
         displayMember?: undefined;
         height?: string | number;
         items?: undefined;
-        minLength?: undefined;
-        maxLength?: undefined;
+        minLength?: undefined | number;
+        maxLength?: undefined | number;
         opened?: undefined;
-        placeHolder?: undefined;
+        placeHolder?: undefined | string;
         popupZIndex?: undefined;
         query?: undefined;
         renderer?: (itemValue?: string, inputValue?: string) => string;
         rtl?: undefined;
         searchMode?: string;
         source?: any;
-        theme?: undefined;
-        valueMember?: undefined;
+        theme?: undefined | string;
+        valueMember?: undefined | string;
         width?: string | number;
-        value?: number | string;
+        value?: number | string | undefined;
     }// InputOptions
 
     export interface jqxInput extends widget, InputOptions {
@@ -2354,7 +2354,7 @@ declare module jqwidgets {
         destroy(): void;
         focus(): void;
         selectAll(): void;
-        val(value: number | string): undefined;
+        val(value?: number | string | undefined): undefined;
     }// jqxInput
 
     export interface KanbanColumns {

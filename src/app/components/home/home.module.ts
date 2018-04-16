@@ -80,6 +80,9 @@ import { jqxWindowComponent } from '../../grid/jqwidgets-ts/angular_jqxwindow';
 import { jqxExpanderComponent } from '../../grid/jqwidgets-ts/angular_jqxexpander';
 import { jqxTooltipComponent } from '../../grid/jqwidgets-ts/angular_jqxtooltip';
 import { jqxButtonComponent } from '../../grid/jqwidgets-ts/angular_jqxbuttons';
+import { jqxInputComponent } from '../../grid/jqwidgets-ts/angular_jqxinput';
+import { jqxDropDownListComponent } from '../../grid/jqwidgets-ts/angular_jqxdropdownlist';
+import { jqxComboBoxComponent } from '../../grid/jqwidgets-ts/angular_jqxcombobox';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { GeoValidator } from '../../helpers/geo.validator';
 
@@ -96,7 +99,8 @@ import { GeoValidator } from '../../helpers/geo.validator';
     ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent,
     OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, UserprofileComponent,
     ProfilebuilderComponent, AuthandsecurityComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
-    jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent, LanguageComponent, GeoValidator],
+    jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent,
+    LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService, LivestreamService, LanguageService]
 })

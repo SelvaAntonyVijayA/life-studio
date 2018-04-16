@@ -7,6 +7,9 @@ import { OrganizationsService } from '../../services/organizations.service';
 import { jqxGridComponent } from '../../grid/jqwidgets-ts/angular_jqxgrid';
 import { jqxWindowComponent } from '../../grid/jqwidgets-ts/angular_jqxwindow';
 import { jqxExpanderComponent } from '../../grid/jqwidgets-ts/angular_jqxexpander';
+import { jqxInputComponent } from '../../grid/jqwidgets-ts/angular_jqxinput';
+import { jqxDropDownListComponent } from '../../grid/jqwidgets-ts/angular_jqxdropdownlist';
+import { jqxComboBoxComponent } from '../../grid/jqwidgets-ts/angular_jqxcombobox';
 import * as _ from 'underscore';
 import { LoaderSharedService } from '../../services/loader-shared.service';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormControl, Validators, FormBuilder, NgForm } from '@angular/forms';
@@ -47,8 +50,10 @@ export class OrganizationsComponent implements OnInit {
   orgId: string;
   type: string;
   org: object = { type: "", name: '', type_id: '', packageId: "" };
-  myAddButton: jqwidgets.jqxButton;
-  myDeleteButton: jqwidgets.jqxButton;
+  gridAddButton: jqwidgets.jqxButton;
+  gridDeleteButton: jqwidgets.jqxButton;
+  searchDropdown: jqwidgets.jqxDropDownList;
+  searchInput: jqwidgets.jqxInput;
   organizationTypes: any;
   packages: any;
   engines: Array<object> = [];
@@ -62,6 +67,7 @@ export class OrganizationsComponent implements OnInit {
   isChat: boolean = false;
   isAdvancedStream: boolean = false;
   isLoadedGrid: boolean = false;
+  dropDownSource: Object[] = [{ name: 'Name', id: "name" }, { name: 'Type', id: "type" }, { name: 'Package', id: "package" }];
   fields: any = [
     { name: '_id', type: 'string' },
     { name: 'name', type: 'string' }
@@ -209,6 +215,7 @@ export class OrganizationsComponent implements OnInit {
 
     container.style.cssText = 'overflow: hidden; position: hidden; height: "100%"; width: "100%"'
 
+
     let createButtons = (name: string, cssClass: string): any => {
       this[name] = document.createElement('div');
       this[name].style.cssText = 'cursor: pointer; padding: 3px; margin: 2px; float: left; border: none'
@@ -221,9 +228,46 @@ export class OrganizationsComponent implements OnInit {
       return this[name];
     }
 
+    let createControls = (name: string, id: string): any => {
+      this[name] = document.createElement('div');
+      this[name].style.cssText = 'cursor: pointer; margin-top: 5px; float: left;'
+
+      let iconDiv = document.createElement('div');
+      iconDiv.id = id;
+      iconDiv.style.cssText = 'margin: 4px; width: 16px; height: 16px;'
+
+      this[name].appendChild(iconDiv);
+
+      return this[name];
+    }
+
+    let createInput = (name: string, id: string): any => {
+      this[name] = document.createElement('input');
+      this[name].id = id;
+      this[name].style.cssText = 'margin-left:10px; padding-left: 5px; margin-top: 5px; float: left;'
+
+      return this[name];
+    }
+
+    let createLabel = (name: string, text: string): any => {
+
+      this[name] = document.createElement('div');
+      this[name].style.cssText = 'cursor: pointer; margin-right:5px;  margin-top: 11px; float: left;'
+
+      let sp = document.createElement('span');
+      sp.textContent = text;
+
+      this[name].appendChild(sp);
+
+      return this[name];
+    }
+
     let buttons = [
       createButtons('addButton', toTheme('jqx-icon-plus')),
       createButtons('deleteButton', toTheme('jqx-icon-delete')),
+      createLabel('searchlabel', 'Look in'),
+      createControls('search', 'drpSearch'),
+      createInput('inputsearch', 'inputSearch')
     ];
 
     for (let i = 0; i < buttons.length; i++) {
@@ -240,14 +284,33 @@ export class OrganizationsComponent implements OnInit {
       {
         height: 25, width: 25
       }
+
     let otherButtonsOptions: jqwidgets.ButtonOptions =
       {
         disabled: true, height: 25, width: 25
       }
 
-    this.myAddButton = jqwidgets.createInstance(buttons[0], 'jqxButton', addButtonOptions);
-    this.myDeleteButton = jqwidgets.createInstance(buttons[1], 'jqxButton', otherButtonsOptions);
+    let drpoptions: jqwidgets.DropDownListOptions =
+      {
+        source: this.dropDownSource,
+        displayMember: "name",
+        valueMember: "id",
+        dropDownHeight: "80",
+        selectedIndex: "0",
+        placeHolder: "Look in",
+        width: 80,
+        height: 23
+      }
 
+    let inputOptions: jqwidgets.InputOptions =
+      {
+        placeHolder: 'Search...', height: 25, width: 160
+      }
+
+    this.gridAddButton = jqwidgets.createInstance(buttons[0], 'jqxButton', addButtonOptions);
+    this.gridDeleteButton = jqwidgets.createInstance(buttons[1], 'jqxButton', otherButtonsOptions);
+    this.searchDropdown = jqwidgets.createInstance(buttons[3], "jqxDropDownList", drpoptions);
+    this.searchInput = jqwidgets.createInstance(buttons[4], "jqxInput", inputOptions)
     let addTooltopOptions: jqwidgets.TooltipOptions =
       {
         position: 'bottom', content: 'Add'
@@ -261,8 +324,27 @@ export class OrganizationsComponent implements OnInit {
     let myAddToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[0], 'jqxTooltip', addTooltopOptions);
     let myDeleteToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[1], 'jqxTooltip', deleteTooltopOptions);
 
-    this.myAddButton.addEventHandler('click', (event: any) => {
-      if (!this.myAddButton.disabled) {
+    this.searchDropdown.addEventHandler('change', (event) => {
+      let args = event.args;
+
+      if (args) {
+        let label = args.item.value;
+
+        this.applyFilter(this.searchInput.val());
+      }
+    });
+
+    this.searchInput.addEventHandler('input', (event) => {
+      let args = event.args;
+      this.orgGrid.clearfilters();
+
+      if (event.target.value.length >= 2) {
+        this.applyFilter(this.searchInput.val());
+      }
+    });
+
+    this.gridAddButton.addEventHandler('click', (event: any) => {
+      if (!this.gridAddButton.disabled) {
         this.orgId = "";
         this.org = { name: '', packageId: '', type_id: '' };
         this.addOrg.setTitle("Add Organization");
@@ -271,8 +353,8 @@ export class OrganizationsComponent implements OnInit {
       }
     });
 
-    this.myDeleteButton.addEventHandler('click', (event: any) => {
-      if (!this.myDeleteButton.disabled) {
+    this.gridDeleteButton.addEventHandler('click', (event: any) => {
+      if (!this.gridDeleteButton.disabled) {
         if (this.rowIndex != -1) {
           this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Organization?", "Yes", "No", (res) => {
             if (res.hasOwnProperty("resolved") && res["resolved"] == true) {
@@ -299,6 +381,34 @@ export class OrganizationsComponent implements OnInit {
       }
     });
   };
+
+
+  applyFilter(searchText?: string) {
+    this.orgGrid.clearfilters();
+    let searchColumnIndex = parseInt(this.searchDropdown.getSelectedIndex());
+    let datafield = '';
+
+    switch (searchColumnIndex) {
+      case 0:
+        datafield = 'name';
+        break;
+      case 1:
+        datafield = 'type';
+        break;
+      case 2:
+        datafield = 'package';
+        break;
+    }
+
+    let filtergroup = new jqx.filter();
+    let filter_or_operator = 1;
+    let filtervalue = searchText;
+    let filtercondition = 'contains';
+    let filter = filtergroup.createfilter('stringfilter', filtervalue, filtercondition);
+    filtergroup.addfilter(filter_or_operator, filter);
+    this.orgGrid.addfilter(datafield, filtergroup);
+    this.orgGrid.applyfilters();
+  }
 
   orgGridOnRowSelect(event: any): void {
     this.rowIndex = event.args.rowindex;
@@ -420,20 +530,20 @@ export class OrganizationsComponent implements OnInit {
   updateButtons(action: string): void {
     switch (action) {
       case 'Select':
-        this.myAddButton.setOptions({ disabled: false });
-        this.myDeleteButton.setOptions({ disabled: false });
+        this.gridAddButton.setOptions({ disabled: false });
+        this.gridDeleteButton.setOptions({ disabled: false });
         break;
       case 'Unselect':
-        this.myAddButton.setOptions({ disabled: false });
-        this.myDeleteButton.setOptions({ disabled: true });
+        this.gridAddButton.setOptions({ disabled: false });
+        this.gridDeleteButton.setOptions({ disabled: true });
         break;
       case 'Edit':
-        this.myAddButton.setOptions({ disabled: true });
-        this.myDeleteButton.setOptions({ disabled: true });
+        this.gridAddButton.setOptions({ disabled: true });
+        this.gridDeleteButton.setOptions({ disabled: true });
         break;
       case 'End Edit':
-        this.myAddButton.setOptions({ disabled: false });
-        this.myDeleteButton.setOptions({ disabled: false });
+        this.gridAddButton.setOptions({ disabled: false });
+        this.gridDeleteButton.setOptions({ disabled: false });
         break;
     }
   };
