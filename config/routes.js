@@ -176,8 +176,10 @@ module.exports = function (app) {
   router.all('/engine/save?', $engines.save);
 
   router.all('/smartengine/save', $smartengine.save)
-  router.all('/smartengine/list/:orgId/:appId',  $smartengine.list);
+  router.all('/smartengine/list/:orgId/:appId', $smartengine.list);
   router.all('/smartengine/remove', $smartengine.remove);
+
+  router.all('/hsrengine/list/:orgId', $healthstatusrules.list);
 
   app.use('/', router);
 };

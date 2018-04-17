@@ -97,7 +97,7 @@
 }
 
 .hsr_tiles_panel {
-  width: 284px;
+  width: 285px;
   height: 952px;
   margin-left: 1px;
   margin-top: 1px;
@@ -109,4 +109,27 @@
   float: left;
   width: 914px;
   height: 916px;
+}
+
+.hsr_group_list ul {
+  list-style-type: none;
+  font-size: 15px;
+  margin-left: -28px;
+  cursor: pointer;
+}
+
+.lbl_hsr_title {
+  float: left;
+  width: 87%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+.lbl_hsr_title:hover {
+  font-size: 13px;
+  text-decoration: underline;
 }

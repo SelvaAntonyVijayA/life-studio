@@ -2,16 +2,16 @@
   <div class="hsr_main_panel">
     <div class="page_block hsr_page_head">
       <input class="form-control input-sm rule_name" type="text" placeholder="Rule name">
-      <select class="form-control input-sm hsr_box">
-        <option value="-1">Select Status Color</option>
-        <option style="color:green;" value="green"> Green</option>
-        <option style="color:orange;" value="orange"> Orange</option>
-        <option style="color:red;" value="red"> Red</option>
-        <option style="color:gray;" value="purple">🎗 Gray</option>
+      <select style="font-family: 'FontAwesome', Helvetica;" class="form-control input-sm hsr_box">
+        <option [value]="'-1'">Select Status Color</option>
+        <option style="color:green;" [value]="'green'">&#xf004; Green</option>
+        <option style="color:orange;" [value]="'orange'">&#xf004; Orange</option>
+        <option style="color:red;" [value]="'red'">&#xf004; Red</option>
+        <option style="color:gray;" [value]="'purple'">&#127895; Gray</option>
       </select>
-      <select class="form-control input-sm hsr_box">
+      <select [ngModel]="selectedApp " (ngModelChange)="appChange($event)" class="form-control input-sm hsr_box">
         <option [value]="''">Filter by app - All</option>
-
+        <option *ngFor="let app of appList; let i= index " [value]="app?._id ">{{app?.name}}</option>
       </select>
       <div class="hsr_form_btns">
         <button class="ili-btn status_new">
@@ -29,7 +29,20 @@
       <div class="hsr_search">
         <input class="form-control input-sm hsr_search_box" placeholder="Search" type="text">
       </div>
-      <div class="hsr_group_list">
+      <div id="hsr_group_main" class="hsr_group_list">
+        <ul>
+          <li *ngFor="let hsrObj of hsrList; let idx = index; trackBy: trackByIndex">
+            <span [style.color]="getStatusColor(hsrObj)">
+              <div style="float: left; width: 11%;" *ngIf="getRuleStatus(hsrObj)">
+                  &#127895;
+              </div>
+              <div style="float: left; width: 11%;" *ngIf="!getRuleStatus(hsrObj)">
+                <i class="ion-heart"></i>
+              </div>
+            </span>
+            <label class="lbl_hsr_title">{{hsrObj!.name}}</label>
+          </li>
+        </ul>
       </div>
     </div>
     <div class="page_block hsr_main_content_panel">
@@ -38,5 +51,8 @@
   <div class="page_block hsr_tiles_panel">
 
   </div>
-
 </div>
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+<link rel="stylesheet" href="/css/ti_icons.css">
