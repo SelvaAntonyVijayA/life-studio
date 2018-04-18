@@ -39,7 +39,8 @@ var plugins = {
   "datamigration": "datamigration",
   "engines": "engines",
   "notification": "notification",
-  "smartengine": "smartengine"
+  "smartengine": "smartengine",
+  "media": "media"
 };
 
 module.exports = function (appPath, dirName, app) {

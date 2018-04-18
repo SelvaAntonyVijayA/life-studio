@@ -298,7 +298,7 @@ var updateTileWithBlocksData = function (tileId, blockIds) {
 
           _.each(blockIds, function (blkId, index) {
             var obj = _.findWhere(blocks, { "_id": blkId });
-            
+
             if (!__util.isEmptyObject(obj) && obj.hasOwnProperty("_id") && !__util.isNullOrEmpty(obj._id)) {
               obj._id = $db.objectId(obj._id);
 
@@ -367,7 +367,7 @@ var _removeTile = function (queryRemoveTile, options, cb) {
 
 var _getSquares = function (ids, tileType, blockType, cb) {
   options = {};
-  
+
   $async.waterfall([
     function (callback) {
       $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.tile, ids, options, function (result) {
@@ -417,6 +417,126 @@ var _getBlockIds = function (tiles, tileType, cb) {
   cb(blockIds);
 };
 
+var blockByQuery = function (req, res, next) {
+  $async.waterfall([
+    function (callback) {
+
+      if (__util.isNullOrEmpty(req.params.all)) {
+        var tquery = {};
+        var tokenObj = $authtoken.get(req.cookies.token);
+
+        tquery["organizationId"] = req.params.organizationId;
+        tquery["userId"] = tokenObj.uid;
+
+        _getModeratorTilesMapping(tquery, {}, function (mtiles) {
+          if (mtiles.length > 0 && mtiles[0].moderatorTiles && mtiles[0].moderatorTiles.length > 0) {
+            callback(null, mtiles[0].moderatorTiles);
+
+          } else {
+            callback(null, []);
+          }
+
+        });
+
+      } else {
+        callback(null, []);
+      }
+
+    },
+    function (tileIds, callback) {
+      var tileFields = { _id: 1, art: 1, title: 1, userId: 1, dateCreated: 1, lastUpdatedOn: 1, category: 1, categoryName: 1, lastUpdatedBy: 1, blocksData: 1 };
+      var query = {};
+
+      if (!__util.isNullOrEmpty(req.params.all) || !__util.isEmptyObject(tileIds)) {
+
+        if (!__util.isEmptyObject(tileIds)) {
+          query._id = tileIds;
+        }
+
+        if (!__util.isNullOrEmpty(req.params.organizationId)) {
+          query.organizationId = {
+            $in: [req.params.organizationId]
+          };
+        }
+
+        if (!__util.isNullOrEmpty(req.params.type)) {
+          query['blocksData.type'] = req.params.type;
+          query.$or = [{ 'blocksData.data.moderated': "true" }, { 'blocksData.data.videoModerated': "true" }];
+        }
+
+        var options = {};
+        options.sort = [['_id', 'desc']];
+
+        $tile.getSpecificFields(tileFields, query, options, function (tiles) {
+          callback(null, tiles);
+        });
+
+      } else {
+        callback(null, []);
+      }
+
+    },
+    function (tiles, callback) {
+      if (tiles.length > 0) {
+
+        _getUserIds(tiles, function (userIds) {
+          callback(null, tiles, userIds);
+        });
+
+      } else {
+        callback(null, tiles, []);
+      }
+
+    },
+    function (tiles, userIds, callback) {
+      if (userIds.length > 0) {
+
+        $user.getList(userIds, function (users) {
+          var list = {};
+          users = JSON.stringify(users);
+          users = JSON.parse(users);
+
+          tiles.forEach(function (tile) {
+            var id = JSON.stringify(tile._id);
+            id = JSON.parse(id);
+
+            var user = _.findWhere(users, {
+              "_id": tile.userId
+            });
+
+            var updatedUser = _.findWhere(users, {
+              "_id": tile.lastUpdatedBy
+            });
+
+            if (user) {
+              tile.userName = user.name;
+            }
+
+            if (updatedUser) {
+              tile.lastUpdatedUser = updatedUser.name;
+            }
+          });
+
+          callback(null, tiles);
+        });
+
+      } else {
+        callback(null, tiles);
+      }
+
+    }], function (err, result) {
+      res.send(result);
+    });
+};
+
+var _getModeratorTilesMapping = function (tquery, toptions, cb) {
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.moderatortilemapping, tquery, toptions, function (result) {
+
+    if (cb) {
+      cb(result);
+    }
+  });
+};
 
 module.exports = {
   "init": init,
@@ -431,5 +551,6 @@ module.exports = {
   "tileUpdate": tileUpdate,
   "updateTileBlocksTileId": updateTileBlocksTileId,
   "updateTileWithBlocksData": updateTileWithBlocksData,
-  "_getSquares": _getSquares
+  "_getSquares": _getSquares,
+  "blockByQuery": blockByQuery
 };

@@ -1,0 +1,93 @@
+<div class="container photos_container" style="padding-top: 15px;">
+
+	<div *ngIf="moderatorList">
+
+		<div *ngFor="let tile of setTileHtml; let i = index" class="text-center moderator-list" [title]=" toHTML(tile.tileToolTip)"
+		 attr.index="{{i}}" attr._id="{{tile._id}}" (click)="showModeratorPhotos(tile._id, tile.title, i)">
+
+			<div class="row">
+				<div class="col-sm-2" style="margin-top: 0px;">
+					<img src="{{tile.art}}" style="width:100px; height:100px;" />
+				</div>
+				<div class="col-sm-9">
+					<div class="row">
+						<div class="col-sm-12">
+							<h4> {{tile.title}} </h4>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-2"> </div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+	<div *ngIf="!moderatorList">
+
+		<label style="color: #cecece; font-size: 12px; display: inline;">Tile Moderated Photos Approval - " {{selectedTileTitle}} "</label>
+
+		<div id="app" style="padding-left: 25px; padding-top: 10px; padding-bottom: 10px;">
+			<label style="color: #cecece; font-size: 12px; display: inline; margin-right: 5px">Select App :</label>
+			<select [ngModel]="selectedApp" (ngModelChange)="appChange($event)" class="form-control input-sm app-names" style="width: 200px; display: inline;">
+				<option *ngFor="let app of appList; let i = index" [value]="app?._id">{{app?.name}}</option>
+			</select>
+
+			<select class="form-control input-sm new-filter" style="width: 200px; margin-left: 17px; display: inline;">
+				<option value="0">Show All Photos</option>
+				<option value="1">Show New Photos Only</option>
+			</select>
+
+			<button type="button" style="float: right;" class="btn btn-primary btn-xs" (click)="backToList()">
+				&nbsp;&nbsp;Back&nbsp;&nbsp;
+			</button>
+		</div>
+
+		<div>
+
+			<div id="activateAll" class="row bg-default">
+				<div class="col-md-6">
+					<div class="row" style="margin-bottom: 25px;">
+						<div class="col-xs-1">
+							<input type="checkbox" class="chkInactiveAll" />
+						</div>
+						<div class="col-xs-5">
+							<label style="color: #cecece;">Select all inactive</label>
+						</div>
+						<button class="btn btn-activeAll btn-success btn_block_activateAll" style="height: 40px;  width: 153px;">Activate All</button>
+					</div>
+				</div>
+			</div>
+
+			<div id="deActivateAll" class="row bg-default">
+				<div class="col-md-6">
+					<div class="row" style="margin-bottom: 25px;">
+						<div class="col-xs-1">
+							<input type="checkbox" class="chkActivatedAll" />
+						</div>
+						<div class="col-xs-5">
+							<label style="color: #cecece;">Select all activated</label>
+						</div>
+						<button class="btn btn-activeAll btn-danger btn_block_deActivateAll" style="height: 40px; width: 153px;">DeActivate All</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="videosearch" style="width:240px; margin-bottom: 10px;">
+				<div class="input-group">
+					<input placeholder="Search" type="text" class="form-control input-sm search-video">
+					<span class="input-group-addon input-sm">
+						<span class="glyphicon glyphicon-search"></span>
+					</span>
+				</div>
+			</div>
+			<hr style="height:1px; margin-bottom:5px;margin-right:2px; margin-top:0px;border:none;color:#B8B4B4;background-color:#B8B4B4;"
+			/>
+
+		</div>
+
+	</div>
+
+</div>

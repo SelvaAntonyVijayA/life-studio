@@ -152,6 +152,14 @@ export class TileService {
       }).catch(this.handleError);
   };
 
+  getTileBlockByType(organizationId, type) {
+    return this.http
+      .get("/tile/blockbytype/" + organizationId + "/" + type)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);

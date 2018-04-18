@@ -22,6 +22,7 @@ import { UserprofileComponent } from '../components/userprofile/userprofile.comp
 import { ProfilebuilderComponent } from '../components/profilebuilder/profilebuilder.component';
 import { AuthandsecurityComponent } from '../components/authandsecurity/authandsecurity.component';
 import { HealthStatusRulesComponent } from '../components/health-status-rules/health-status-rules.component';
+import { PhotosComponent } from '../components/photos/photos.component';
 
 const homeRoutes: Routes = [
   {
@@ -103,6 +104,10 @@ const homeRoutes: Routes = [
       {
         path: 'healthstatusrules',
         component: HealthStatusRulesComponent
+      },
+      {
+        path: 'photos',
+        component: PhotosComponent
       }
     ]
   }

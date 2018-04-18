@@ -39,6 +39,8 @@ import { HealthStatusRulesComponent } from '../../components/health-status-rules
 
 import { AuthandsecurityComponent } from '../../components/authandsecurity/authandsecurity.component';
 
+import { PhotosComponent } from '../../components/photos/photos.component';
+
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
@@ -99,7 +101,7 @@ import { GeoValidator } from '../../helpers/geo.validator';
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent,
     OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, UserprofileComponent,
-    ProfilebuilderComponent, AuthandsecurityComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
+    ProfilebuilderComponent, AuthandsecurityComponent, PhotosComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
     jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent,
     LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,

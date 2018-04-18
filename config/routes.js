@@ -13,6 +13,8 @@ module.exports = function (app) {
   router.post('/tile/tilebyids/', $tile.tileByIds);
   router.all('/tile/update/:tileId', $tile.update);
   router.get('/tile/remove/:tileId', $tile.remove);
+  router.get('/tile/blockbytype/:organizationId/:type/:all*?', $tile.blockByQuery);
+
   router.post('/tileblock/save', $tileblock.save);
   router.all('/tileblock/tile/:tileId*?', $tileblock.getBlocks);
   router.get('/tileblock/getprofile/:orgId/:language*?', $tileblock.getProfile);
@@ -180,6 +182,7 @@ module.exports = function (app) {
   router.all('/smartengine/remove', $smartengine.remove);
 
   router.all('/hsrengine/list/:orgId', $healthstatusrules.list);
+  router.get('/media/list/:appId/:tileId/:type', $media.list);
 
   app.use('/', router);
 };

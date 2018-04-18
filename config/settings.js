@@ -98,7 +98,8 @@ module.exports = {
     "video": "video",
     "vimeoLog": "vimeolog",
     "widgets": "widgets",
-    "newjobs": "newjobs"
+    "newjobs": "newjobs",
+    "moderatortilemapping": "moderatortilemapping"
   },
   "email": {
     "smtpserver": "smtp.emailsrvr.com",
