@@ -1043,6 +1043,67 @@ var smartUpdate = function (obj, cb) {
   });
 };
 
+var getAllTileIdsAssignedToApp = function (organizationId, cb) {
+  query = {};
+  var tilesIdsByApp;
+
+  $async.waterfall([
+    function (callback) {
+      var options = {};
+      options.sort = [['position', 'asc']];
+
+      query = {};
+      query.orgId = organizationId;
+      query.deleted = {
+        $exists: false
+      };
+
+      $page.getAppMenu(query, options, function (pages) {
+        callback(null, pages);
+      });
+    },
+    function (pages, callback) {
+      var groupbyAppId = _.groupBy(pages, 'appId');
+      var appKeys = _.keys(groupbyAppId);
+      var appSquareIds = [];
+
+      $async.each(appKeys, function (key, loop) {
+        var appPages = groupbyAppId[key];
+
+        _getPageSquareIds(appPages, function (allIds) {
+          appSquareIds[key] = allIds;
+
+          loop();
+        });
+
+      }, function () {
+        callback(null, appKeys, appSquareIds);
+      });
+
+    },
+    function (appKeys, appSquareDatas, callback) {
+      var appTileSquareIds = {};
+
+      $async.each(appKeys, function (key, loop) {
+        var datas = appSquareDatas[key];
+
+        _groups(datas, function (squareTileIds) {
+          var allTilesIds = datas.tileIds.concat(squareTileIds);
+          appTileSquareIds[key] = allTilesIds;
+
+          loop();
+        });
+
+      }, function () {
+        callback(null, appTileSquareIds);
+      });
+
+    }], function (err, allTilesIds) {
+      cb(allTilesIds);
+    });
+};
+
+
 module.exports = {
   "init": init,
   "save": save,
@@ -1061,5 +1122,6 @@ module.exports = {
   "squares": squares,
   "tile": tile,
   "questionnaires": questionnaires,
-  "smartUpdate": smartUpdate
+  "smartUpdate": smartUpdate,
+  "getAllTileIdsAssignedToApp": getAllTileIdsAssignedToApp
 };

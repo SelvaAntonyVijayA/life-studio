@@ -10,7 +10,7 @@
         <option style="color:gray;" [value]="'purple'">&#127895; Gray</option>
       </select>
       <select [ngModel]="selectedApp " (ngModelChange)="appChange($event)" class="form-control input-sm hsr_box">
-        <option [value]="''">Filter by app - All</option>
+        <option [value]="'-1'">Filter by app - All</option>
         <option *ngFor="let app of appList; let i= index " [value]="app?._id ">{{app?.name}}</option>
       </select>
       <div class="hsr_form_btns">
@@ -27,14 +27,14 @@
     </div>
     <div class="page_block hsr_list_panel">
       <div class="hsr_search">
-        <input class="form-control input-sm hsr_search_box" placeholder="Search" type="text">
+        <input [(ngModel)]="ruleTextSearch" class="form-control input-sm hsr_search_box" placeholder="Search" type="text">
       </div>
       <div id="hsr_group_main" class="hsr_group_list">
         <ul>
-          <li *ngFor="let hsrObj of hsrList; let idx = index; trackBy: trackByIndex">
+          <li *ngFor="let hsrObj of (hsrList | filterByText:'name': ruleTextSearch); let idx = index; trackBy: trackByIndex">
             <span [style.color]="getStatusColor(hsrObj)">
               <div style="float: left; width: 11%;" *ngIf="getRuleStatus(hsrObj)">
-                  &#127895;
+                &#1F397;
               </div>
               <div style="float: left; width: 11%;" *ngIf="!getRuleStatus(hsrObj)">
                 <i class="ion-heart"></i>
@@ -46,10 +46,195 @@
       </div>
     </div>
     <div class="page_block hsr_main_content_panel">
+      <div class="profile_container">
+        <p class="main_profile_text">
+          Profile:
+        </p>
+
+        <input type="text" class="form-control input-sm square_search_tile" [(ngModel)]="squareTileSearch" placeholder="Search tile">
+        <table style="float:left; margin-left: 20px;">
+          <tr *ngIf="profileObj.hasOwnProperty('firstname')" style="height:30px">
+            <td>
+              <span class="profile_label">First Name</span>
+            </td>
+            <td>
+              <input type="text" [(ngModel)]="profileObj['firstname']" class="form-control input-sm profile_input" value="" placeholder="First Name">
+            </td>
+          </tr>
+
+          <tr *ngIf="profileObj.hasOwnProperty('lastname')" style="height:30px">
+            <td>
+              <span class="profile_label">Last Name</span>
+            </td>
+
+            <td>
+              <input type="text" [(ngModel)]="profileObj['lastname']" class="form-control input-sm profile_input" value="" placeholder="Last Name">
+            </td>
+          </tr>
+
+          <tr *ngIf="profileObj.hasOwnProperty('gender')" style="height:30px">
+            <td>
+              <span class="profile_label">Gender</span>
+            </td>
+            <td>
+              <div class="profile_gender">
+                <label class="radio-inline label_gender">
+                  <input type="radio" [(ngModel)]="profileObj['gender']" value="male" name="sex"> Male
+                </label>
+                <label class="radio-inline label_gender">
+                  <input type="radio" [(ngModel)]="profileObj['gender']" value="female" name="sex"> Female
+                </label>
+                <label class="radio-inline label_gender">
+                  <input type="radio" [(ngModel)]="profileObj['gender']" value="both" name="sex"> All
+                </label>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="profileObj.hasOwnProperty('birthday')" style="height:30px">
+            <td>
+              <span class="profile_label">Birth Date</span>
+            </td>
+            <td>
+              <select [(ngModel)]="profileObj['birthmonth']" class="form-control input-sm profile_month">
+                <option [value]="''">Select Month</option>
+                <option *ngFor="let mnName of monthNames; let i = index" [value]="i + 1">{{mnName}}</option>
+              </select>
+              <select [(ngModel)]="profileObj['birthday']" class="form-control input-sm profile_day">
+                <option [value]="''">Select Date</option>
+                <option *ngFor="let dy of monthDays; let i = index" [value]="dy">{{dy}}</option>
+              </select>
+            </td>
+          </tr>
+
+          <tr *ngIf="profileObj.hasOwnProperty('birthday')" style="height:30px">
+            <td>
+              <span class="profile_label">Birth Year</span>
+            </td>
+            <td>
+              <select [(ngModel)]="profileObj['birthyearoption']" class="form-control input-sm year_option">
+                <option [value]="''">Select</option>
+                <option [value]="1">Year</option>
+                <option [value]="2">Born before</option>
+                <option [value]="3">Born after</option>
+                <option [value]="4">Born Between</option>
+              </select>
+              <select [(ngModel)]="profileObj['birthyear']" class="form-control input-sm profile_year year">
+                <option [value]="''">Select Year</option>
+                <option *ngFor="let yr of yearList; let i= index" [value]="yr">{{yr}}</option>
+              </select>
+              <div *ngIf="!utils.isNullOrEmpty(profileObj['birthyearoption']) && profileObj['birthyearoption'] === '4'" style="float:left;">
+                <span style="float: left; margin: 4px 4px 0px 11px;"> and </span>
+                <select [(ngModel)]="profileObj['birthyearuntil']" class="form-control input-sm profile_year year-until">
+                  <option [value]="''">Select Year</option>
+                  <option *ngFor="let yr of yearList; let i= index" [value]="yr">{{yr}}</option>
+                </select>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="square_container">
+        <p style="font-weight: 700;">
+          Questionnaires:
+        </p>
+
+        <!--     <div class="square-tiles">
+          <p style="cursor: pointer;" data-toggle="collapse" [data-target]="'#''">
+            <u>tile.title </u>
+          </p>
+          <div class='collapse in'>
+            <div class="block_main">
+              <label class="sur_main_ques">
+              </label>
+              <div class="form-group">
+                <div class='survey_answers checkbox'>
+                  <label style="line-height: 1.95;">
+                    <input name="answers" value=" " type="checkbox">
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+      </div>
     </div>
   </div>
   <div class="page_block hsr_tiles_panel">
+    <div class="tiles_list_search">
+      <input [(ngModel)]="tileSort[ 'tileSearchText']" class="form-control input-sm tile_search_box" type="text" placeholder="Search Tiles">
+      <select [(ngModel)]="selectedCategory" class="form-control input-sm tile_category_filter ">
+        <option [value]="'-1'">All Categories</option>
+        <option *ngFor="let tileCat of tileCategories; let i = index" [value]="tileCat?._id">{{tileCat?.name}}</option>
+      </select>
+    </div>
 
+    <div class="tiles_sort">
+      <label class="txt_arrange ">Sort by: </label>
+      <select [(ngModel)]="tileSort[ 'selectedOpt']" class="form-control input-sm sort_box" placeholder="Search ">
+        <option [value]="'date'">Date</option>
+        <option [value]="'title'">Title</option>
+        <option [value]="'category'">Category</option>
+        <option [value]="'author'">Author</option>
+      </select>
+      <div *ngIf="tileSort['selectedOpt'] === 'date'" class="do_sort">
+        <div *ngIf="tileSort['isAsc']" (click)="doSort(false)">
+          Oldest on top
+          <img class="sort_image" src='/img/sort_up.png' />
+        </div>
+        <div *ngIf="!tileSort[ 'isAsc']" (click)="doSort(true)">
+          Newest on top
+          <img class="sort_image" src="/img/sort_down.png" />
+        </div>
+      </div>
+      <div *ngIf="tileSort['selectedOpt'] !=='date'" class="do_sort">
+        <div *ngIf="tileSort['isAsc']" (click)="doSort(false)" class="text_asc">
+          A on top
+          <img class="sort_image" src="/img/sort_up.png" />
+        </div>
+        <div *ngIf="!tileSort['isAsc']" (click)="doSort(true)">
+          Z on top
+          <img class="sort_image" src="/img/sort_down.png" />
+        </div>
+      </div>
+
+      <div class="tiles_count_main">
+        <div class="tile-view-change ">
+          <img *ngIf="tileSort['listType']==='list'" (click)="changeTileView('details')" src="/img/details.png" alt=" " title="Details"
+          />
+          <img *ngIf="tileSort['listType']==='details'" (click)="changeTileView('list')" src="/img/list.png " alt="" title="List" />
+        </div>
+        <div class='tiles_list_count'>
+        </div>
+      </div>
+
+      <div id="tiles-list-show" class="tiles_list_panel">
+        <div (click)="selectTiles($event, tile)" [ngClass]="checkSelectedExists(tile)? 'tiles_list_single selected' : 'tiles_list_single'"
+          *ngFor="let tile of (tileList | filterByText:'appId': selectedApp | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1]); let i = index; trackBy: trackByTileId">
+          <img [ngClass]="tileSort['listType'] === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
+          <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
+          <div *ngIf="tile" class="tile_icons">
+            <span [title]="tile!.tileApps" [style.display]="tile!.isWgt" class="step weight"></span>
+            <span [title]="tile!.tileHealthStatusRules" [style.display]="tile!.isRules" class="step smart smarticon report-rule-tile">
+              <i class="icon ion-heart"></i>
+            </span>
+            <span [title]="tile!.tileProcedure" [style.display]="tile!.isProcedure" class="step smart smarticon smarticon-tile">
+              <i class="icon ion-medkit"></i>
+            </span>
+            <span [title]="tile!.tileSmart" [style.display]="tile!.isSmart" class="step smart smarticon smarticon-tile">
+              <i class="icon ion-lightbulb"></i>
+            </span>
+            <span [title]="tile!.tileNotifications" [style.display]="tile!.isNotification" class="step smart noteicon smarticon-tile"
+              style="display: block;" aria-hidden="true">
+              <i class="icon ion-android-notifications-none"></i>
+            </span>
+            <span [title]="tile!.tileApps" [style.display]="tile!.isRole" class="step smart smarticon smarticon-tile">
+              <i class="icon ion-android-person"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

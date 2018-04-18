@@ -182,6 +182,8 @@ module.exports = function (app) {
   router.all('/smartengine/remove', $smartengine.remove);
 
   router.all('/hsrengine/list/:orgId', $healthstatusrules.list);
+  router.all('/hsrengine/getall/:orgId', $healthstatusrules.getall);
+  
   router.get('/media/list/:appId/:tileId/:type', $media.list);
 
   app.use('/', router);

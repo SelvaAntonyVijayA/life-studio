@@ -327,7 +327,7 @@ export class SmartComponent implements OnInit {
 
   setSquaresPanelHeight() {
     let profiles = Object.keys(this.profileObj);
-    let profFields = ["firstName", "lastName", "gender", "birthday"];
+    let profFields = ["firstname", "lastname", "gender", "birthday"];
 
     if (profiles.length > 0) {
       for (let i = 0; i < profFields.length; i++) {
@@ -585,11 +585,11 @@ export class SmartComponent implements OnInit {
           let type = profData['type'];
 
           if (this.utils.trim(name) === "firstname" && type === "text") {
-            this.profileObj["firstName"] = "";
+            this.profileObj["firstname"] = "";
           }
 
           if (this.utils.trim(name) === "lastname" && type === "text") {
-            this.profileObj["lastName"] = "";
+            this.profileObj["lastname"] = "";
           }
 
           if (this.utils.trim(name) === "gender" && type === "select") {

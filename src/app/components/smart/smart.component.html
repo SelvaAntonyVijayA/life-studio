@@ -51,22 +51,22 @@
           Profile:
         </p>
         <table style="margin-left: 20px;">
-          <tr *ngIf="profileObj.hasOwnProperty('firstName')" style="height:30px">
+          <tr *ngIf="profileObj.hasOwnProperty('firstname')" style="height:30px">
             <td>
               <span class="profile_label">First Name</span>
             </td>
             <td>
-              <input type="text" [(ngModel)]="profileObj['firstName']" class="form-control input-sm profile_input" value="" placeholder="First Name">
+              <input type="text" [(ngModel)]="profileObj['firstname']" class="form-control input-sm profile_input" value="" placeholder="First Name">
             </td>
           </tr>
 
-          <tr *ngIf="profileObj.hasOwnProperty('lastName')" style="height:30px">
+          <tr *ngIf="profileObj.hasOwnProperty('lastname')" style="height:30px">
             <td>
               <span class="profile_label">Last Name</span>
             </td>
 
             <td>
-              <input type="text" [(ngModel)]="profileObj['lastName']" class="form-control input-sm profile_input" value="" placeholder="Last Name">
+              <input type="text" [(ngModel)]="profileObj['lastname']" class="form-control input-sm profile_input" value="" placeholder="Last Name">
             </td>
           </tr>
 
