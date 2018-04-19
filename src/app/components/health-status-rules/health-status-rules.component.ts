@@ -74,12 +74,14 @@ export class HealthStatusRulesComponent implements OnInit {
   setScrollList() {
     this.mScrollbarService.initScrollbar("#hsr_group_main", this.scrollbarOptions);
     this.mScrollbarService.initScrollbar("#tiles-list-show", this.scrollbarOptions);
+    this.mScrollbarService.initScrollbar("#main-tile_squares", this.scrollbarOptions);
 
     if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
       this.cms["appDatas"]["scrollList"].push("#hsr_group_main");
       this.cms["appDatas"]["scrollList"].push("#tiles-list-show");
+      this.cms["appDatas"]["scrollList"].push("#main-tile_squares");
     } else {
-      this.cms["appDatas"]["scrollList"] = ["#hsr_group_main", "#tiles-list-show"];
+      this.cms["appDatas"]["scrollList"] = ["#hsr_group_main", "#tiles-list-show", "#main-tile_squares"];
     }
   };
 
@@ -173,7 +175,7 @@ export class HealthStatusRulesComponent implements OnInit {
       }
     }
 
-    //this.setSquareTiles(tileSqrsObj);
+    this.setSquareTiles(tileSqrsObj);
   };
 
   trackByIndex(index: number, obj: any): any {
@@ -396,8 +398,8 @@ export class HealthStatusRulesComponent implements OnInit {
 
       for (let i = 0; i < tileSqrsObj["tiles"]["data"].length; i++) {
         let currTile = tileSqrsObj["tiles"]["data"][i];
-        let squareObj = { "tileId": currTile["_id"] };
-        let appTiles = tileSqrsObj["apptiles"]
+        let squareObj: any = { "tileId": currTile["_id"], "title": currTile["title"], "options": [] };
+        let appTiles = tileSqrsObj["apptiles"];
 
         if (currTile.hasOwnProperty("blocks")) {
           for (let j = 0; j < currTile["blocks"].length; j++) {
@@ -420,70 +422,150 @@ export class HealthStatusRulesComponent implements OnInit {
               }
 
               if (tileBlock["type"] === "painlevel") {
-                squareObj["options"] = [];
-                squareObj["questionText"] = !this.utils.isNullOrEmpty(tileBlock["data"]["question"]) ? tileBlock["data"]["question"] : "";
-
-                for (let k = 0; k < 11; k++) {
-                  let opt = {
-                    "name": k,
-                    "assigned": false
-                  };
-
-                  squareObj["options"].push(opt);
-                }
+                squareObj = this.setPainLevel(tileBlock, squareObj);
               } else if (tileBlock["type"] === "questionnaire") {
-                let level1 = [];
-                let level2 = [];
-                let level3 = [];
-                let quesOpts = tileBlock["data"]["options"];
-                let questionText = !this.utils.isNullOrEmpty(tileBlock["data"]["questionText"]) ? tileBlock["data"]["questionText"] : "";
-                let survey_1 = {
-                  questionText: questionText,
-                  options: [],
-                  index: 0
-                };
-
-                quesOpts.forEach((opt1: any, key1: number) => {
-                  survey_1.options.push(opt1["option"]);
-
-                  opt1["subQuestions"].forEach((ques1: any, key2: number) => {
-                    if (ques1["type"] === "questions") {
-                      let survey_2 = {
-                        questionText: ques1["questionText"],
-                        options: [],
-                        index: key1 + "_" + key2
-                      };
-
-                      ques1["options"].forEach((opt2: any, key3: number) => {
-                        survey_2.options.push(opt2["option"]);
-
-                        opt2["subQuestions"].forEach((ques2: any, key4: number) => {
-                          if (ques2["type"] == "questions") {
-                            var survey_3 = {
-                              questionText: ques2["questionText"],
-                              options: [],
-                              index: key1 + "_" + key2 + "_" + key3
-                            };
-    
-                            ques2["options"].forEach((opt3: any, key5: number) => {
-                              survey_3.options.push(opt3["option"]);
-                            });
-                          }
-                        });
-
-                      });
-                    }
-                  });
-                });
-
-              } else {
-
+                squareObj = this.setQuestionnaire(tileBlock, squareObj);
+              } else if (tileBlock["type"] === "survey") {
+                squareObj = this.setSurvey(tileBlock, squareObj);
               }
             }
           }
         }
+
+        if (squareObj.hasOwnProperty("blockId")) {
+          this.tileSquares.push(squareObj);
+        }
       }
     }
+  };
+
+  setPainLevel(tileBlock: Object, squareObj: Object) {
+    let currOpt = {
+      "questionText": !this.utils.isNullOrEmpty(tileBlock["data"]["question"]) ? tileBlock["data"]["question"] : "",
+      "datas": []
+    }
+
+    for (let k = 0; k < 11; k++) {
+      let opt = {
+        "value": k,
+        "text": k,
+        "assigned": false
+      };
+
+      currOpt["datas"].push(opt);
+    }
+
+    squareObj["options"].push(currOpt);
+
+    return squareObj;
+  };
+
+  setQuestionnaire(tileBlock: Object, squareObj: Object) {
+    let level1 = [];
+    let level2 = [];
+    let level3 = [];
+    let quesOpts = tileBlock["data"]["options"];
+    let questionText = !this.utils.isNullOrEmpty(tileBlock["data"]["questionText"]) ? tileBlock["data"]["questionText"] : "";
+    let survey_1 = {
+      questionText: questionText,
+      options: [],
+      index: 0
+    };
+
+    quesOpts.forEach((opt1: any, key1: number) => {
+      survey_1.options.push(opt1["option"]);
+
+      if (opt1.hasOwnProperty("subQuestions")) {
+        opt1["subQuestions"].forEach((ques1: any, key2: number) => {
+          if (ques1["type"] === "questions") {
+            let survey_2 = {
+              questionText: ques1["questionText"],
+              options: [],
+              index: key1 + "_" + key2
+            };
+
+            if (ques1.hasOwnProperty("options")) {
+              ques1["options"].forEach((opt2: any, key3: number) => {
+                survey_2.options.push(opt2["option"]);
+
+                if (opt2.hasOwnProperty("subQuestions")) {
+                  opt2["subQuestions"].forEach((ques2: any, key4: number) => {
+                    if (ques2["type"] == "questions") {
+                      var survey_3 = {
+                        questionText: ques2["questionText"],
+                        options: [],
+                        index: key1 + "_" + key2 + "_" + key3
+                      };
+
+                      if (ques2.hasOwnProperty("options")) {
+                        ques2["options"].forEach((opt3: any, key5: number) => {
+                          survey_3.options.push(opt3["option"]);
+                        });
+                      }
+
+                      level3.push(survey_3);
+                    }
+                  });
+                }
+              });
+            }
+
+            level2.push(survey_2);
+          }
+        });
+      }
+    });
+
+    level1.push(survey_1);
+    level1 = level1.concat(level2, level3);
+
+    for (let k = 0; k < level1.length; k++) {
+      let opt = level1[k];
+
+      let currOpt = {
+        "questionText": !this.utils.isNullOrEmpty(opt["questionText"]) ? opt["questionText"] : "",
+        "datas": []
+      }
+
+      if (opt.hasOwnProperty("options")) {
+        for (let l = 0; l < opt["options"].length; l++) {
+          let option = {
+            "text": opt["options"][l],
+            "value": l,
+            "assigned": false
+          };
+
+          currOpt["datas"].push(option);
+        }
+      }
+
+      squareObj["options"].push(currOpt);
+    }
+
+    return squareObj;
+  };
+
+  setSurvey(tileBlock: Object, squareObj: Object) {
+    let currOpt = {
+      "questionText": !this.utils.isNullOrEmpty(tileBlock["data"]["questionText"]) ? tileBlock["data"]["questionText"] : "",
+      "datas": []
+    }
+
+    if (this.utils.isArray(tileBlock["data"]["questions"])) {
+      for (let k = 0; k < tileBlock["data"]["questions"].length; k++) {
+        let opt = {
+          "value": k,
+          "text": tileBlock["data"]["questions"][k],
+          "assigned": false
+        };
+
+        currOpt["datas"].push(opt);
+      }
+    }
+
+    squareObj["options"].push(currOpt);
+
+    return squareObj;
   };
 
   ngOnInit() {

@@ -6,6 +6,50 @@ var init = function (app) {
   settingsConf = app.get('settings');
 };
 
+var save = function (req, res, next) {
+  var obj = req.body.form_data;
+  var tokenObj = $authtoken.get(req.cookies.token);
+
+  if (__util.isNullOrEmpty(obj._id)) {
+    obj["createdBy"] = tokenObj.uid;
+
+    _saveEngine(obj, function (result) {
+      _updateRuleInTile(obj.tileId, result.toString(), obj.name);
+      $tilestatus.saveHsrByOrg(req.cookies.oid);
+
+      res.send({ "_id": result });
+    });
+  } else {
+    options = {};
+    var updateQuery = {};
+    updateQuery._id = obj._id;
+    delete obj["_id"];
+
+    $healthstatusrules._update(updateQuery, options, obj, function (result) {
+      _updateRuleInTile(obj.tileId, updateQuery._id, obj.name);
+      $tilestatus.saveHsrByOrg(req.cookies.oid);
+
+      res.send({ "_id": updateQuery["_id"] });
+    });
+  }
+};
+
+var _update = function (where, condition, data, cb) {
+  $db.update(settingsConf.dbname.tilist_core, settingsConf.collections.hsrengine, where, condition, data, function (result) {
+    cb(result);
+  });
+};
+
+var _saveEngine = function (obj, cb) {
+  if (!__util.isNullOrEmpty(obj)) {
+    obj = _setEngineObj(obj);
+  }
+
+  $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.hsrengine, obj, function (result) {
+    cb(result);
+  });
+};
+
 var list = function (req, res, next) {
   query = { "orgId": req.params.orgId };
   options = {};
@@ -100,8 +144,57 @@ var _getBlockIds = function (tiles, tileType, cb) {
   cb(blockIds);
 };
 
+var _updateRuleInTile = function (tileIds, ruleId, ruleName) {
+  var ruleObj = {
+    "ruleId": ruleId.toString(),
+    "ruleName": ruleName
+  };
+
+  $async.waterfall([
+    function (callback) {
+      var tileQuery = {
+        "_id": tileIds
+      };
+
+      $tile._getTiles(tileQuery, function (tiles) {
+        tiles = $general.convertToJsonObject(tiles);
+
+        callback(null, tiles);
+      });
+    }], function (err, tiles) {
+      tiles.forEach(function (tileObj) {
+        var tileData = {};
+
+        if (__util.isNullOrEmpty(tileObj.hsrRuleEngine)) {
+          tileData = {
+            "hsrRuleEngine": [ruleObj]
+          };
+        } else {
+          var ruleExists = _.findWhere(tileObj.hsrRuleEngine, {
+            ruleId: ruleObj.ruleId
+          });
+
+          if (!ruleExists) {
+            tileObj.hsrRuleEngine.push(ruleObj);
+
+            tileData = {
+              "hsrRuleEngine": tileObj.hsrRuleEngine
+            };
+          }
+        }
+
+        $tile.tileUpdate({
+          _id: tileObj._id
+        }, tileData, tileData, function (result) {
+        });
+      });
+    });
+};
+
+
 module.exports = {
   "init": init,
+  "save": save,
   "list": list,
   "_get": _get,
   "getall": getall

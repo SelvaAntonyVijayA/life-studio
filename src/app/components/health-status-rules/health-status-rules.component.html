@@ -135,28 +135,32 @@
         </table>
       </div>
       <div class="square_container">
-        <p style="font-weight: 700;">
+        <p style="font-weight: 700; margin-top: 10px; margin-left: 16px;">
           Questionnaires:
         </p>
 
-        <!--     <div class="square-tiles">
-          <p style="cursor: pointer;" data-toggle="collapse" [data-target]="'#''">
-            <u>tile.title </u>
-          </p>
-          <div class='collapse in'>
-            <div class="block_main">
-              <label class="sur_main_ques">
-              </label>
-              <div class="form-group">
-                <div class='survey_answers checkbox'>
-                  <label style="line-height: 1.95;">
-                    <input name="answers" value=" " type="checkbox">
-                  </label>
+        <div id="main-tile_squares" class="squares_main_content">
+          <div *ngFor="let sqr of tileSquares; let i = index" class="square-tiles">
+            <p style="cursor: pointer; float: left; width: 97%; margin-left: 3%;" data-toggle="collapse" [attr.data-target]="'#' + sqr.tileId">
+              <u>{{sqr.title}} </u>
+            </p>
+
+            <div [attr.id]="sqr.tileId" class='collapse in'>
+              <div *ngFor="let opt of sqr['options']; let i = index" class="block_main">
+                <label class="sur_main_ques">
+                  {{opt!.questionText}}
+                </label>
+                <div class="form-group">
+                  <div *ngFor="let optDt of opt['datas']; let i = index" class='survey_answers checkbox'>
+                    <label style="line-height: 1.95;">
+                      <input name="answers" value="true" [(ngModel)]="optDt['assigned']" type="checkbox"> {{optDt!.text}}
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div> -->
+        </div>
       </div>
     </div>
   </div>
