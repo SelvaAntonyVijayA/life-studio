@@ -31,7 +31,7 @@
       </div>
       <div id="hsr_group_main" class="hsr_group_list">
         <ul>
-          <li *ngFor="let hsrObj of (hsrList | filterByText:'name': ruleTextSearch); let idx = index; trackBy: trackByIndex">
+          <li (click)="selectHsr($event, hsrObj)" *ngFor="let hsrObj of (hsrList | filterByText:'name': ruleTextSearch); let idx = index; trackBy: trackByIndex">
             <span [style.color]="getStatusColor(hsrObj)">
               <div style="float: left; width: 11%;" *ngIf="getRuleStatus(hsrObj)">
                 &#1F397;
@@ -40,7 +40,7 @@
                 <i class="ion-heart"></i>
               </div>
             </span>
-            <label class="lbl_hsr_title">{{hsrObj!.name}}</label>
+            <label [ngClass]="!utils.isEmptyObject(selectedHsr) && selectedHsr['_id'] === hsrObj['_id']? 'lbl_hsr_title selected': 'lbl_hsr_title'">{{hsrObj!.name}}</label>
           </li>
         </ul>
       </div>
@@ -140,7 +140,8 @@
         </p>
 
         <div id="main-tile_squares" class="squares_main_content">
-          <div *ngFor="let sqr of tileSquares; let i = index" class="square-tiles">
+          <div *ngFor="let sqr of (tileSquares | filterByText:'title': squareTileSearch | filterByText:'appId': selectedApp); let i = index"
+            class="square-tiles">
             <p style="cursor: pointer; float: left; width: 97%; margin-left: 3%;" data-toggle="collapse" [attr.data-target]="'#' + sqr.tileId">
               <u>{{sqr.title}} </u>
             </p>

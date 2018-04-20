@@ -116,7 +116,6 @@ var getall = function (req, res, next) {
 
           cb(null, data);
         });
-
     },
     apptiles: function (cb) {
       $page.getAllTileIdsAssignedToApp(req.params.orgId, function (pages) {
@@ -191,12 +190,26 @@ var _updateRuleInTile = function (tileIds, ruleId, ruleName) {
     });
 };
 
+var remove = function (req, res, next) {
+  query = { "_id": req.params.ruleId };
+  options = {};
+
+  $db.remove(settingsConf.dbname.tilist_core, settingsConf.collections.hsrengine, query, options, function (result) {
+    var obj = {};
+    obj.deleted = result;
+
+    $tilestatus.saveHsrByOrg(req.cookies.oid);
+
+    res.send(obj);
+  });
+};
 
 module.exports = {
   "init": init,
   "save": save,
   "list": list,
   "_get": _get,
-  "getall": getall
+  "getall": getall,
+  "remove": remove
 };
 

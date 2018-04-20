@@ -8,6 +8,8 @@ import { LoaderSharedService } from '../../services/loader-shared.service';
 import { TileService } from '../../services/tile.service';
 import { MediaService } from "../../services/media.service";
 
+declare let $: any;
+
 @Component({
   selector: 'app-photos',
   templateUrl: './photos.component.html',
@@ -175,5 +177,4 @@ export class PhotosComponent implements OnInit {
       }
     });
   }
-
 }

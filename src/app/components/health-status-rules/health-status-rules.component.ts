@@ -38,7 +38,7 @@ export class HealthStatusRulesComponent implements OnInit {
   appList: any[] = [];
   selectedApp: string = "-1";
   hsrList: any[] = [];
-  selectedHsr: string = "";
+  selectedHsr: Object = {};
   tileCategories: any[] = [];
   selectedCategory: string = "-1";
   tileList: any[] = [];
@@ -49,6 +49,8 @@ export class HealthStatusRulesComponent implements OnInit {
   monthDays: any[] = [];
   monthNames: any[] = [];
   ruleTextSearch: string = "";
+  squareTileSearch: string = "";
+  ruleName: string = "";
   profileObj: Object = {
     "firstname": "",
     "lastname": "",
@@ -100,6 +102,7 @@ export class HealthStatusRulesComponent implements OnInit {
     this.tileList = [];
     this.selectedTiles = [];
     this.ruleTextSearch = "";
+    this.squareTileSearch = "";
 
     this.yearList = [];
     this.monthDays = [];
@@ -111,8 +114,10 @@ export class HealthStatusRulesComponent implements OnInit {
   };
 
   statusReset() {
-    this.selectedHsr = "";
+    this.selectedHsr = {};
+    this.ruleName = "";
     this.resetProfile();
+    this.resetSquares();
   };
 
   resetProfile() {
@@ -524,6 +529,7 @@ export class HealthStatusRulesComponent implements OnInit {
 
       let currOpt = {
         "questionText": !this.utils.isNullOrEmpty(opt["questionText"]) ? opt["questionText"] : "",
+        "index": opt["index"],
         "datas": []
       }
 
@@ -566,6 +572,106 @@ export class HealthStatusRulesComponent implements OnInit {
     squareObj["options"].push(currOpt);
 
     return squareObj;
+  };
+
+  selectHsr(e: any, hsrObj: Object) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (this.utils.isEmptyObject(this.selectedHsr) || (!this.utils.isEmptyObject(this.selectedHsr) && this.selectedHsr["_id"] !== hsrObj["_id"])) {
+      this.statusReset();
+      this.selectedHsr = hsrObj;
+      let profileData = hsrObj.hasOwnProperty("profiles") ? hsrObj["profiles"] : {};
+      this.ruleName = hsrObj.hasOwnProperty("name") && !this.utils.isNullOrEmpty(hsrObj["name"]) ? hsrObj["name"] : "";
+      this.setProfileObj(profileData);
+
+      let allsquares: any[] = [];
+
+      if (hsrObj.hasOwnProperty("squares") && !this.utils.isEmptyObject(hsrObj["squares"])) {
+        for (var key in hsrObj["squares"]) {
+          allsquares = allsquares.concat(hsrObj["squares"][key]);
+        }
+      }
+
+      if (allsquares.length > 0) {
+        this.setSquares(allsquares);
+      }
+    }
+  };
+
+  setSquares(sqrs: any[]) {
+    if (this.tileSquares.length > 0) {
+
+      for (let i = 0; i < this.tileSquares.length; i++) {
+        let tileSqr = this.tileSquares[i];
+        let sqrObj = {};
+
+        if (tileSqr['type'] === "questionnaire" || tileSqr['type'] === "survey" || tileSqr['type'] === "painlevel") {
+          for (let j = 0; j < tileSqr["options"].length; j++) {
+
+            let currOpt = tileSqr["options"][j];
+            let quesIdx = currOpt.hasOwnProperty("index") ? currOpt["index"] : "-1";
+
+            for (let k = 0; k < currOpt["datas"].length; k++) {
+              let currData = currOpt["datas"][k];
+
+
+              if (this.squareCheck(tileSqr["blockId"], sqrs, currData["value"], quesIdx)) {
+                currData["assigned"] = true;
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+
+  squareCheck(blockId: string, squares: any[], answer: number, index?: string) {
+    let result = false;
+    let currAnswer = answer.toString();
+
+    for (let m = 0; m < squares.length; m++) {
+      let sqr = squares[m];
+
+      if (sqr.hasOwnProperty("answer")) {
+        if (this.utils.isArray(sqr["answer"])) {
+          if (sqr["blockId"] == blockId && squares["answer"].indexOf(currAnswer) > -1) {
+            result = true;
+          }
+        } else if (index !== "-1" && sqr["blockId"] === blockId && squares["answer"][index].indexOf(currAnswer) > -1) {
+          result = true;
+        }
+      }
+    }
+
+    return result;
+  };
+
+  setProfileObj(profObj: Object) {
+    if (!this.utils.isEmptyObject(profObj)) {
+      for (let fieldName in profObj) {
+        if (this.profileObj.hasOwnProperty(fieldName)) {
+          this.profileObj[fieldName] = profObj[fieldName];
+        }
+      }
+    }
+  };
+
+  resetSquares() {
+    if (this.tileSquares.length > 0) {
+      for (let i = 0; i < this.tileSquares.length; i++) {
+        let tileSqr = this.tileSquares[i];
+
+        for (let j = 0; j < tileSqr["options"].length; j++) {
+          let currOpt = tileSqr["options"][j];
+
+          for (let k = 0; k < currOpt["datas"].length; k++) {
+            let currData = currOpt["datas"][k];
+            currData["assigned"] = false;
+          }
+        }
+      }
+    }
   };
 
   ngOnInit() {

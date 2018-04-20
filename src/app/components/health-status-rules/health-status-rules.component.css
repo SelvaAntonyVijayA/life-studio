@@ -134,6 +134,12 @@
   text-decoration: underline;
 }
 
+.lbl_hsr_title.selected {
+  font-size: 14px;
+  text-decoration: underline;
+  text-decoration-color: #f5deb3;
+}
+
 /*Tiles List */
 
 .tiles_list_search {
