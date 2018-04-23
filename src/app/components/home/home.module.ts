@@ -64,7 +64,7 @@ import { TileBlocksDirective } from '../../components/widgets/tileblocks.directi
 //import { SlimScrollModule } from 'ng2-slimscroll';
 //import { VirtualScrollModule } from 'angular2-virtual-scroll';
 
-import { FilterByTextPipe, OrderByPipe, ReversePipe } from '../../helpers/filters.pipe';
+import { FilterByTextPipe, OrderByPipe, ReversePipe, FilterInByArray } from '../../helpers/filters.pipe';
 import { SafePipe, SafeHtmlPipe } from '../../helpers/ili-security.pipe';
 import { MalihuScrollbarModule } from 'ngx-malihu-scrollbar';
 import { DraggableDirective } from '../../helpers/draggable.directive';
@@ -73,6 +73,7 @@ import { OnlyNumbersDirective } from '../../helpers/only-numbers.directive';
 import { DateTimePickerDirective } from '../../helpers/date-time-picker.directive';
 import 'hammerjs';
 import 'mousetrap';
+
 //import { GalleryModule } from '../../module/gallery.module';
 import { NgSelectModule } from '../../ng-select';
 import { ModalModule } from 'ngx-bootstrap';
@@ -96,7 +97,7 @@ import { GeoValidator } from '../../helpers/geo.validator';
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
-    TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, TilesComponent, TileBlocksComponents, SafePipe, SafeHtmlPipe,
+    TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, FilterInByArray, TilesComponent, TileBlocksComponents, SafePipe, SafeHtmlPipe,
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent,

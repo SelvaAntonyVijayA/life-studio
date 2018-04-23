@@ -140,22 +140,24 @@
         </p>
 
         <div id="main-tile_squares" class="squares_main_content">
-          <div *ngFor="let sqr of (tileSquares | filterByText:'title': squareTileSearch | filterByText:'appId': selectedApp); let i = index"
+          <div *ngFor="let sqr of (tileSquares | filterByText:'title': squareTileSearch | filterByText:'appId': selectedApp | filterInByArray: 'tileId': selectedTiles); let i = index"
             class="square-tiles">
             <p style="cursor: pointer; float: left; width: 97%; margin-left: 3%;" data-toggle="collapse" [attr.data-target]="'#' + sqr.tileId">
               <u>{{sqr.title}} </u>
             </p>
 
             <div [attr.id]="sqr.tileId" class='collapse in'>
-              <div *ngFor="let opt of sqr['options']; let i = index" class="block_main">
-                <label class="sur_main_ques">
-                  {{opt!.questionText}}
-                </label>
-                <div class="form-group">
-                  <div *ngFor="let optDt of opt['datas']; let i = index" class='survey_answers checkbox'>
-                    <label style="line-height: 1.95;">
-                      <input name="answers" value="true" [(ngModel)]="optDt['assigned']" type="checkbox"> {{optDt!.text}}
-                    </label>
+              <div *ngFor="let blk of sqr['blocks']; let j = index" class="block_main">
+                <div *ngFor="let opt of blk['options']; let k = index">
+                  <label class="smart_main_ques">
+                    {{opt!.questionText}}
+                  </label>
+                  <div class="form-group">
+                    <div *ngFor="let optDt of opt['datas']; let i = index" class='survey_answers checkbox'>
+                      <label style="line-height: 1.95;">
+                        <input name="answers" value="true" [(ngModel)]="optDt['assigned']" type="checkbox"> {{optDt!.text}}
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -403,8 +403,18 @@ export class HealthStatusRulesComponent implements OnInit {
 
       for (let i = 0; i < tileSqrsObj["tiles"]["data"].length; i++) {
         let currTile = tileSqrsObj["tiles"]["data"][i];
-        let squareObj: any = { "tileId": currTile["_id"], "title": currTile["title"], "options": [] };
+        let squareObj: any = { "tileId": currTile["_id"], "title": currTile["title"], "blocks": [] };
         let appTiles = tileSqrsObj["apptiles"];
+
+        for (let appId in appTiles) {
+          if (appTiles[appId].indexOf(currTile["_id"]) > -1) {
+            squareObj["appId"] = appId;
+          }
+        }
+
+        if (!squareObj.hasOwnProperty("appId")) {
+          squareObj["appId"] = "-1";
+        }
 
         if (currTile.hasOwnProperty("blocks")) {
           for (let j = 0; j < currTile["blocks"].length; j++) {
@@ -413,38 +423,30 @@ export class HealthStatusRulesComponent implements OnInit {
             let tileBlock = blocks.find(b => b['_id'] === blkId);
 
             if (!this.utils.isEmptyObject(tileBlock)) {
-              squareObj["blockId"] = blkId;
-              squareObj["type"] = tileBlock["type"];
+              let currBlock = { "blockId": blkId, "type": tileBlock["type"] }
+              //squareObj["blockId"] = blkId;
+              //squareObj["type"] = tileBlock["type"];
 
-              for (let appId in appTiles) {
-                if (appTiles[appId].indexOf(currTile["_id"]) > -1) {
-                  squareObj["appId"] = appId;
-                }
-              }
-
-              if (!squareObj.hasOwnProperty("appId")) {
-                squareObj["appId"] = "-1";
-              }
 
               if (tileBlock["type"] === "painlevel") {
-                squareObj = this.setPainLevel(tileBlock, squareObj);
+                squareObj = this.setPainLevel(tileBlock, squareObj, currBlock);
               } else if (tileBlock["type"] === "questionnaire") {
-                squareObj = this.setQuestionnaire(tileBlock, squareObj);
+                squareObj = this.setQuestionnaire(tileBlock, squareObj, currBlock);
               } else if (tileBlock["type"] === "survey") {
-                squareObj = this.setSurvey(tileBlock, squareObj);
+                squareObj = this.setSurvey(tileBlock, squareObj, currBlock);
               }
             }
           }
         }
 
-        if (squareObj.hasOwnProperty("blockId")) {
+        if (squareObj["blocks"].length > 0) {
           this.tileSquares.push(squareObj);
         }
       }
     }
   };
 
-  setPainLevel(tileBlock: Object, squareObj: Object) {
+  setPainLevel(tileBlock: Object, squareObj: Object, currBlk: Object) {
     let currOpt = {
       "questionText": !this.utils.isNullOrEmpty(tileBlock["data"]["question"]) ? tileBlock["data"]["question"] : "",
       "datas": []
@@ -460,12 +462,14 @@ export class HealthStatusRulesComponent implements OnInit {
       currOpt["datas"].push(opt);
     }
 
-    squareObj["options"].push(currOpt);
+    currBlk["options"] = [currOpt];
+
+    squareObj["blocks"].push(currBlk);
 
     return squareObj;
   };
 
-  setQuestionnaire(tileBlock: Object, squareObj: Object) {
+  setQuestionnaire(tileBlock: Object, squareObj: Object, currBlk: Object) {
     let level1 = [];
     let level2 = [];
     let level3 = [];
@@ -524,6 +528,8 @@ export class HealthStatusRulesComponent implements OnInit {
     level1.push(survey_1);
     level1 = level1.concat(level2, level3);
 
+    currBlk["options"] = [];
+
     for (let k = 0; k < level1.length; k++) {
       let opt = level1[k];
 
@@ -545,13 +551,16 @@ export class HealthStatusRulesComponent implements OnInit {
         }
       }
 
-      squareObj["options"].push(currOpt);
+      currBlk["options"].push(currOpt);
+
     }
+
+    squareObj["blocks"].push(currBlk);
 
     return squareObj;
   };
 
-  setSurvey(tileBlock: Object, squareObj: Object) {
+  setSurvey(tileBlock: Object, squareObj: Object, currBlk: Object) {
     let currOpt = {
       "questionText": !this.utils.isNullOrEmpty(tileBlock["data"]["questionText"]) ? tileBlock["data"]["questionText"] : "",
       "datas": []
@@ -569,7 +578,9 @@ export class HealthStatusRulesComponent implements OnInit {
       }
     }
 
-    squareObj["options"].push(currOpt);
+    currBlk["options"] = [currOpt];
+
+    squareObj["blocks"].push(currBlk);
 
     return squareObj;
   };
@@ -606,18 +617,21 @@ export class HealthStatusRulesComponent implements OnInit {
         let tileSqr = this.tileSquares[i];
         let sqrObj = {};
 
-        if (tileSqr['type'] === "questionnaire" || tileSqr['type'] === "survey" || tileSqr['type'] === "painlevel") {
-          for (let j = 0; j < tileSqr["options"].length; j++) {
+        for (let j = 0; j < tileSqr["blocks"].length; j++) {
+          let currBlock = tileSqr["blocks"][j];
 
-            let currOpt = tileSqr["options"][j];
-            let quesIdx = currOpt.hasOwnProperty("index") ? currOpt["index"] : "-1";
+          if (currBlock['type'] === "questionnaire" || currBlock['type'] === "survey" || currBlock['type'] === "painlevel") {
 
-            for (let k = 0; k < currOpt["datas"].length; k++) {
-              let currData = currOpt["datas"][k];
+            for (let k = 0; k < currBlock["options"].length; k++) {
+              let currOpt = currBlock["options"][k];
+              let quesIdx = currOpt.hasOwnProperty("index") ? currOpt["index"] : "-1";
 
+              for (let l = 0; l < currOpt["datas"].length; l++) {
+                let currData = currOpt["datas"][l];
 
-              if (this.squareCheck(tileSqr["blockId"], sqrs, currData["value"], quesIdx)) {
-                currData["assigned"] = true;
+                if (this.squareCheck(currBlock["blockId"], sqrs, currData["value"], quesIdx)) {
+                  currData["assigned"] = true;
+                }
               }
             }
           }
@@ -635,10 +649,10 @@ export class HealthStatusRulesComponent implements OnInit {
 
       if (sqr.hasOwnProperty("answer")) {
         if (this.utils.isArray(sqr["answer"])) {
-          if (sqr["blockId"] == blockId && squares["answer"].indexOf(currAnswer) > -1) {
+          if (sqr["blockId"] == blockId && sqr["answer"].indexOf(currAnswer) > -1) {
             result = true;
           }
-        } else if (index !== "-1" && sqr["blockId"] === blockId && squares["answer"][index].indexOf(currAnswer) > -1) {
+        } else if (index !== "-1" && sqr["blockId"] === blockId && sqr["answer"][index].indexOf(currAnswer) > -1) {
           result = true;
         }
       }
@@ -662,16 +676,26 @@ export class HealthStatusRulesComponent implements OnInit {
       for (let i = 0; i < this.tileSquares.length; i++) {
         let tileSqr = this.tileSquares[i];
 
-        for (let j = 0; j < tileSqr["options"].length; j++) {
-          let currOpt = tileSqr["options"][j];
+        for (let j = 0; j < tileSqr["blocks"].length; j++) {
+          let currBlock = tileSqr["blocks"][j];
 
-          for (let k = 0; k < currOpt["datas"].length; k++) {
-            let currData = currOpt["datas"][k];
-            currData["assigned"] = false;
+          for (let k = 0; k < currBlock["options"].length; k++) {
+            let currOpt = currBlock["options"][k];
+
+            for (let l = 0; l < currOpt["datas"].length; l++) {
+              let currData = currOpt["datas"][l];
+              currData["assigned"] = false;
+            }
           }
         }
       }
     }
+  };
+
+  saveHsr(e: any) {
+    e.preventDefault();
+    let hsrObj: Object = {};
+
   };
 
   ngOnInit() {
