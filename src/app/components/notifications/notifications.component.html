@@ -100,7 +100,84 @@
       </div>
     </div>
   </div>
+  <div class="page_block tiles_list">
+    <div class="tiles_list_search">
+      <input [(ngModel)]="tileSort['tileSearchText']" class="form-control input-sm search_box tile_search_box" type="text" placeholder="Search Tiles">
+      <select [(ngModel)]="selectedCategory" class="form-control input-sm filter_select_box category_box ">
+        <option [value]="-1">All Categories</option>
+        <option *ngFor="let tileCat of tileCategories; let i = index" [value]="tileCat?._id">{{tileCat?.name}}</option>
+      </select>
+    </div>
+    <div class="tiles_sort">
+      <label class="txt_arrange ">Sort by: </label>
+      <select [(ngModel)]="tileSort['selectedOpt']" class="form-control input-sm sort_box" placeholder="Search ">
+        <option [value]="'date'">Date</option>
+        <option [value]="'title'">Title</option>
+        <option [value]="'category'">Category</option>
+        <option [value]="'author'">Author</option>
+      </select>
+      <div *ngIf="tileSort['selectedOpt'] === 'date'" class="do_sort">
+        <div *ngIf="tileSort['isAsc']" (click)="doSort(false)">
+          Oldest on top
+          <img class="sort_image" src='/img/sort_up.png' />
+        </div>
+        <div *ngIf="!tileSort[ 'isAsc']" (click)="doSort(true)">
+          Newest on top
+          <img class="sort_image" src="/img/sort_down.png" />
+        </div>
+      </div>
+      <div *ngIf="tileSort['selectedOpt'] !=='date'" class="do_sort">
+        <div *ngIf="tileSort['isAsc']" (click)="doSort(false)" class="text_asc">
+          A on top
+          <img class="sort_image" src="/img/sort_up.png" />
+        </div>
+        <div *ngIf="!tileSort['isAsc']" (click)="doSort(true)">
+          Z on top
+          <img class="sort_image" src="/img/sort_down.png" />
+        </div>
+      </div>
 
-  <tiles-list class="dragItem" (tileContent)="getTileContent($event)" [tilesToUpdate]="tilesToUpdate" [isMerge]="isMerge" [draggedTiles]="draggedTiles"
-    [droppedTile]="droppedTile" [organizations]="organizations" [page]="'notifications'"></tiles-list>
+      <div class="tiles_count_main">
+        <div class="tile-view-change ">
+          <img *ngIf="tileSort['listType']==='list'" (click)="changeTileView('details')" src="/img/details.png" alt=" " title="Details"
+          />
+          <img *ngIf="tileSort['listType']==='details'" (click)="changeTileView('list')" src="/img/list.png " alt="" title="List" />
+        </div>
+        <div class='tiles_list_count'>
+        </div>
+      </div>
+    </div>
+
+    <div id="tiles-list-show" class="tiles_list_panel">
+      <div class="tiles_list_single" *ngFor="let tile of (tileList | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1]); let i = index; trackBy: trackByTileId">
+        <img [ngClass]="tileSort['listType'] === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
+        <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
+        <div *ngIf="tile" class="tile_icons">
+          <span [title]="tile!.tileApps" [style.display]="tile!.isWgt" class="step weight"></span>
+          <span [title]="tile!.tileHealthStatusRules" [style.display]="tile!.isRules" class="step smart smarticon report-rule-tile">
+            <i class="icon ion-heart"></i>
+          </span>
+          <span [title]="tile!.tileProcedure" [style.display]="tile!.isProcedure" class="step smart smarticon smarticon-tile">
+            <i class="icon ion-medkit"></i>
+          </span>
+          <span [title]="tile!.tileSmart" [style.display]="tile!.isSmart" class="step smart smarticon smarticon-tile">
+            <i class="icon ion-lightbulb"></i>
+          </span>
+          <span [title]="tile!.tileNotifications" [style.display]="tile!.isNotification" class="step smart noteicon smarticon-tile"
+            style="display: block;" aria-hidden="true">
+            <i class="icon ion-android-notifications-none"></i>
+          </span>
+          <span [title]="tile!.tileApps" [style.display]="tile!.isRole" class="step smart smarticon smarticon-tile">
+            <i class="icon ion-android-person"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
 </div>
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+<link rel="stylesheet" href="/css/ti_icons.css">

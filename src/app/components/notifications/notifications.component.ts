@@ -6,6 +6,10 @@ import { Utils } from '../../helpers/utils';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { LoaderSharedService } from '../../services/loader-shared.service';
 import { PageService } from '../../services/page.service';
+import { TileService } from '../../services/tile.service';
+import { Observable } from 'rxjs';
+import 'rxjs/add/observable/forkJoin';
+import * as moment from 'moment-timezone';
 
 @Component({
   selector: 'app-notifications',
@@ -15,12 +19,14 @@ import { PageService } from '../../services/page.service';
   providers: [PageService]
 })
 export class NotificationsComponent implements OnInit {
+ 
 
   constructor(
     private route: ActivatedRoute,
     private cms: CommonService,
     private mScrollbarService: MalihuScrollbarService,
     private pageService: PageService,
+    private tileService: TileService,
     private loaderShared: LoaderSharedService,
     private e1: ElementRef,
     private renderer: Renderer,
@@ -43,6 +49,7 @@ export class NotificationsComponent implements OnInit {
   //events: any[] = [];
   //tilists: any[] = [];
   //catilists: any[] = [];
+  tileList: any[] = [];
   smart: any[] = [];
   notifications: any[] = [];
   //liveStreams: any[] = [];
@@ -57,12 +64,165 @@ export class NotificationsComponent implements OnInit {
       }
     },
   };
+
+  selectedCategory: string = "-1";
+  tileCategories: any[] = [];
+  tileSort: Object = {
+    "listType": "list",
+    "tileSearchText": "",
+    "selectedOpt": "date", "isAsc": false, "values": {
+      "date": ["lastUpdatedOn", "dateCreated"],
+      "title": ["title"],
+      "category": ["categoryName"],
+      "author": ["userName"]
+    }
+  };
+
+  doSort(isVal: boolean) {
+    this.tileSort["isAsc"] = isVal;
+  };
+
+  changeTileView(viewName: string) {
+    this.tileSort["listType"] = viewName;
+  };
+
   groups: any[] = [];
   pageSearchText: string = "";
 
   /* Detail and short view change for events */
   changeGroupView() {
     this.groupType = this.groupType === "list" ? "details" : "list";
+  };
+
+  resetAppData() {
+    //this.menuGroups = [];
+    this.smart = [];
+    this.notifications = [];
+    //this.menuGroupSearch = "";
+    this.tileList = [];
+    this.tileSort = {
+      "listType": "list",
+      "tileSearchText": "",
+      "selectedOpt": "date", "isAsc": false, "values": {
+        "date": ["lastUpdatedOn", "dateCreated"],
+        "title": ["title"],
+        "category": ["categoryName"],
+        "author": ["userName"]
+      }
+    };
+  };
+
+  assignTileNoitfyIcons() {
+    for (let i = 0; i < this.tileList.length; i++) {
+      //let smart = this.getSmartObj(this.tileList[i]["_id"], "tile");
+      //let notificationSquares = this.utils.isArray(this.notifications) && this.notifications.length > 0 && this.notifications[0].hasOwnProperty("notificationTiles") && this.notifications[0]["notificationTiles"].length > 0 ? this.notifications[0]["notificationTiles"] : [];
+      //this.tileList[i]["isSmart"] = this.checkSmartEngine(smart, true);
+      // this.tileList[i]["isNotification"] = this.checkNotification(this.tileList[i]["_id"], smart["type"], notificationSquares);
+
+      this.tileList[i] = this.tileNotifyIcons(this.tileList[i]);
+    }
+  };
+
+  /*Tile Notify Icons */
+  tileNotifyIcons(currTile: Object) {
+    var tileNotifications = "";
+    var tileSmart = "";
+    var pageApps = "";
+    var tileProcedure = "";
+    var tileRules = "";
+
+    if (!currTile.hasOwnProperty("isNotification")) {
+      if (currTile.hasOwnProperty("notification") && currTile["notification"].hasOwnProperty("apps") && currTile["notification"]["apps"].length > 0) {
+        for (let i = 0; i < currTile["notification"]["apps"].length; i++) {
+          var app = currTile["notification"]["apps"][i];
+          tileNotifications += i === 0 ? app.name : ", " + app.name;
+        }
+
+        currTile["isNotification"] = "block";
+      } else {
+        currTile["isNotification"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isSmart")) {
+      if (currTile.hasOwnProperty("smart") && currTile["smart"].hasOwnProperty("apps") && currTile["smart"]["apps"].length > 0) {
+        for (let i = 0; i < currTile["smart"]["apps"].length; i++) {
+          var smartApp = currTile["smart"]["apps"][i];
+          tileSmart += i == 0 ? smartApp.name : ", " + smartApp.name;
+        }
+
+        currTile["isSmart"] = "block";
+      } else {
+        currTile["isSmart"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("tileApps")) {
+      if (currTile.hasOwnProperty("Apps") && currTile["Apps"].length > 0) {
+        for (let i = 0; i < currTile["Apps"].length; i++) {
+          var app = currTile["Apps"][i];
+          pageApps += i === 0 ? app.appName : ", " + app.appName;
+        }
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isProcedure")) {
+      if (currTile.hasOwnProperty("Procedure") && currTile["Procedure"].length > 0) {
+        for (let i = 0; i < currTile["Procedure"].length; i++) {
+          var procedure = currTile["Procedure"][i];
+          tileProcedure += i === 0 ? procedure.name : ", " + procedure.name;
+        }
+
+        currTile["isProcedure"] = "block";
+      } else {
+        currTile["isProcedure"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isRules")) {
+      if (currTile.hasOwnProperty("hsrRuleEngine") && currTile["hsrRuleEngine"].length > 0) {
+        for (let i = 0; i < currTile["hsrRuleEngine"].length; i++) {
+          var hsr = currTile["hsrRuleEngine"][i];
+          tileRules += i === 0 ? hsr.ruleName : ", " + hsr.ruleName;
+        }
+
+        currTile["isRules"] = "block";
+      } else {
+        currTile["isRules"] = "none";
+      }
+    }
+
+    if (!currTile.hasOwnProperty("isWgt")) {
+      currTile["isWgt"] = currTile.hasOwnProperty("isWeight") && currTile["isWeight"] ? "block" : "none";
+    }
+
+    if (!currTile.hasOwnProperty("isRole")) {
+      currTile["isRole"] = currTile.hasOwnProperty("isRoleBased") && currTile["isRoleBased"] ? "block" : "none";
+    }
+
+    if (!currTile.hasOwnProperty("tileNotifications")) {
+      currTile["tileNotifications"] = tileNotifications;
+    }
+
+    if (!currTile.hasOwnProperty("tileSmart")) {
+      currTile["tileSmart"] = tileSmart;
+    }
+
+    if (!currTile.hasOwnProperty("tileApps")) {
+      currTile["tileApps"] = pageApps;
+    }
+
+    if (!currTile.hasOwnProperty("tileProcedure")) {
+      currTile["tileProcedure"] = tileProcedure;
+    }
+
+    if (!currTile.hasOwnProperty("tileHealthStatusRules")) {
+      currTile["tileHealthStatusRules"] = tileRules;
+    }
+
+    currTile["type"] = "tile";
+
+    return currTile;
   };
 
   getTileContent(tileObj: any) {
@@ -82,6 +242,8 @@ export class NotificationsComponent implements OnInit {
     this.selectedApp = "";
     this.locationList = [];
     this.selectedLocation = "";
+    this.tileList = [];
+    this.tileCategories = [];
     //this.events = [];
     //this.tilists = [];
     //this.catilists = [];
@@ -134,17 +296,34 @@ export class NotificationsComponent implements OnInit {
     return splittedVal[0];
   };
 
+  getTilesCategories() {
+    this.tileService.getTileCategory(this.oid)
+      .then(tileCategory => {
+        this.tileCategories = tileCategory;
+      });
+  };
+
+  getAppPageTiles() {
+    this.pageService.appPageTiles(this.oid, this.selectedApp, this.selectedLocation)
+      .then(pageTile => {
+        this.tileList = pageTile["tiles"];
+        this.assignTileNoitfyIcons();
+        //this.tilesSmart = pageTile["smart"];
+      });
+  };
+
   getApps() {
     if (this.appList.length === 0) {
       this.pageService.getApps(this.oid)
         .then(apps => {
           if (this.utils.isArray(apps) && apps.length > 0) {
             this.appList = apps;
-            this.selectedApp = this.appList[0]["_id"];
+            this.appChange(this.appList[0]["_id"]);
 
-            if (!this.utils.isNullOrEmpty(this.selectedApp)) {
-              this.getLocations(this.selectedApp);
-            }
+            this.selectedApp = this.appList[0]["_id"];
+            this.getLocations(this.selectedApp, true);
+          } else {
+            this.loaderShared.showSpinner(false);
           }
         });
     }
@@ -165,15 +344,20 @@ export class NotificationsComponent implements OnInit {
 
         if (!this.utils.isNullOrEmpty(this.selectedLocation)) {
           this.squaresList();
+          this.getAppPageTiles();
+
         }
+
+        this.loaderShared.showSpinner(false);
       });
   };
 
-  appChange(appId: string) {
+  appChange(appId?: string) {
     this.loaderShared.showSpinner(true);
     this.selectedApp = appId;
     this.getLocations(appId, true);
     this.notifyReset("merge");
+    this.loaderShared.showSpinner(false);
   };
 
   locationChange(locId: string) {
@@ -181,6 +365,8 @@ export class NotificationsComponent implements OnInit {
     this.selectedLocation = locId;
     this.notifyReset("merge");
     this.squaresList();
+    this.getAppPageTiles();
+    this.loaderShared.showSpinner(false);
   };
 
   squaresList() {
@@ -319,11 +505,13 @@ export class NotificationsComponent implements OnInit {
   /* Intialize scroll bar for the component elements */
   setScrollList() {
     this.mScrollbarService.initScrollbar("#main-container-groups", this.scrollbarOptions);
+    this.mScrollbarService.initScrollbar("#tiles-list-show", this.scrollbarOptions);
 
     if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
       this.cms["appDatas"]["scrollList"].push("#main-container-groups");
+      this.cms["appDatas"]["scrollList"].push("#tiles-list-show");
     } else {
-      this.cms["appDatas"]["scrollList"] = ["#main-container-groups"];
+      this.cms["appDatas"]["scrollList"] = ["#main-container-groups", "#tiles-list-show"];
     }
   };
 
@@ -341,16 +529,29 @@ export class NotificationsComponent implements OnInit {
     return obj["uniqueId"];
   };
 
+  /* Dragged tile by uniqueId */
+  trackByTileId(index: number, obj: any) {
+    return obj["_id"];
+  };
+
+  /* Getting unique Id */
+  getUniqueId() {
+    var uniqueId = Date.now() + Math.floor(1000 + Math.random() * 9000);
+
+    return uniqueId;
+  };
+
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
+      console.dir(moment.tz.names())
       let loadTime = Cookie.get('pageLoadTime');
-
       if (this.utils.isNullOrEmpty(loadTime) || (!this.utils.isNullOrEmpty(loadTime) && loadTime !== params["_dt"])) {
         Cookie.set('pageLoadTime', params["_dt"]);
         this.notifyDataReset();
         this.setScrollList();
         this.setOrganizations();
         this.oid = Cookie.get('oid');
+        this.getTilesCategories();
         this.getApps();
       }
     });

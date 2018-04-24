@@ -36,12 +36,11 @@ import { LanguageComponent } from '../../components/organizations/language.compo
 import { UserprofileComponent } from '../../components/userprofile/userprofile.component';
 import { ProfilebuilderComponent } from '../../components/profilebuilder/profilebuilder.component';
 import { HealthStatusRulesComponent } from '../../components/health-status-rules/health-status-rules.component'
-
 import { AuthandsecurityComponent } from '../../components/authandsecurity/authandsecurity.component';
-
 import { PhotosComponent } from '../../components/photos/photos.component';
-
+import { RecurrenceComponent } from '../../components/recurrence/recurrence.component';
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
+
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
 import { CommonService } from '../../services/common.service';
@@ -89,11 +88,13 @@ import { jqxDropDownListComponent } from '../../grid/jqwidgets-ts/angular_jqxdro
 import { jqxComboBoxComponent } from '../../grid/jqwidgets-ts/angular_jqxcombobox';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { GeoValidator } from '../../helpers/geo.validator';
+import { DndModule } from 'ng2-dnd';
 
 @NgModule({
   imports: [
     CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule,
-    ColorPickerModule, CKEditorModule, NgSelectModule, MatIconModule, MatToolbarModule, ProgressHttpModule, ModalModule.forRoot()
+    ColorPickerModule, CKEditorModule, NgSelectModule, MatIconModule, MatToolbarModule,
+    ProgressHttpModule, ModalModule.forRoot(), DndModule.forRoot()
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
@@ -104,7 +105,7 @@ import { GeoValidator } from '../../helpers/geo.validator';
     OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, UserprofileComponent,
     ProfilebuilderComponent, AuthandsecurityComponent, PhotosComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
     jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent,
-    LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent],
+    LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent, RecurrenceComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService, LivestreamService, LanguageService]
 })
