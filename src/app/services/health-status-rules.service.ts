@@ -16,9 +16,23 @@ export class HealthStatusRulesService {
     'charset': 'UTF-8'
   });
 
-  hsrList(orgId: string) {
+  saveHsr(hsrData: Object) {
     return this.http
-      .get("/hsrengine/list/" + orgId)
+      .post("/hsrengine/save", JSON.stringify({ "form_data": hsrData }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  hsrList(orgId: string, ruleId?: string) {
+    let hsrListUrl: string = "/hsrengine/list/" + orgId;
+
+    if (!this.utils.isNullOrEmpty(ruleId)) {
+      hsrListUrl = hsrListUrl + "/" + ruleId;
+    }
+
+    return this.http
+      .get(hsrListUrl)
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);

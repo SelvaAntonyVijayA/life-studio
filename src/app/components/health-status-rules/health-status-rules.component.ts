@@ -51,6 +51,7 @@ export class HealthStatusRulesComponent implements OnInit {
   ruleTextSearch: string = "";
   squareTileSearch: string = "";
   ruleName: string = "";
+  ruleColor: string = "-1";
   profileObj: Object = {
     "firstname": "",
     "lastname": "",
@@ -100,8 +101,7 @@ export class HealthStatusRulesComponent implements OnInit {
     this.tileSquares = [];
     this.profileData = [];
     this.tileList = [];
-    this.selectedTiles = [];
-    this.ruleTextSearch = "";
+
     this.squareTileSearch = "";
 
     this.yearList = [];
@@ -115,7 +115,10 @@ export class HealthStatusRulesComponent implements OnInit {
 
   statusReset() {
     this.selectedHsr = {};
+    this.selectedTiles = [];
+    this.ruleTextSearch = "";
     this.ruleName = "";
+    this.ruleColor = "-1";
     this.resetProfile();
     this.resetSquares();
   };
@@ -217,8 +220,8 @@ export class HealthStatusRulesComponent implements OnInit {
     return apps;
   };
 
-  getRules() {
-    let rules = this.healthStatusRulesService.hsrList(this.oid);
+  getRules(ruleId?: string) {
+    let rules = this.healthStatusRulesService.hsrList(this.oid, ruleId);
 
     return rules;
   };
@@ -590,6 +593,7 @@ export class HealthStatusRulesComponent implements OnInit {
     e.stopPropagation();
 
     if (this.utils.isEmptyObject(this.selectedHsr) || (!this.utils.isEmptyObject(this.selectedHsr) && this.selectedHsr["_id"] !== hsrObj["_id"])) {
+      this.loaderShared.showSpinner(true);
       this.statusReset();
       this.selectedHsr = hsrObj;
       let profileData = hsrObj.hasOwnProperty("profiles") ? hsrObj["profiles"] : {};
@@ -606,6 +610,8 @@ export class HealthStatusRulesComponent implements OnInit {
 
       if (allsquares.length > 0) {
         this.setSquares(allsquares);
+      } else {
+        this.loaderShared.showSpinner(false);
       }
     }
   };
@@ -638,6 +644,8 @@ export class HealthStatusRulesComponent implements OnInit {
         }
       }
     }
+
+    this.loaderShared.showSpinner(false);
   };
 
   squareCheck(blockId: string, squares: any[], answer: number, index?: string) {
@@ -692,10 +700,167 @@ export class HealthStatusRulesComponent implements OnInit {
     }
   };
 
+  getProfile() {
+    var profile = {};
+
+    profile["firstname"] = this.profileObj.hasOwnProperty("firstname") ? this.profileObj["firstname"] : "";
+    profile["lastname"] = this.profileObj.hasOwnProperty("lastname") ? this.profileObj["lastname"] : "";
+    profile["gender"] = this.profileObj.hasOwnProperty("gender") ? this.profileObj["gender"] : "";
+    profile["birthmonth"] = this.profileObj.hasOwnProperty("birthmonth") ? this.profileObj["birthmonth"] : "";
+    profile["birthday"] = this.profileObj.hasOwnProperty("birthday") ? this.profileObj["birthday"] : "";
+    profile["birthyearoption"] = this.profileObj.hasOwnProperty("birthyearoption") ? this.profileObj["birthyearoption"] : "";
+    profile["birthyear"] = this.profileObj.hasOwnProperty("birthyear") ? this.profileObj["birthyear"] : "";
+    profile["birthyearuntil"] = this.profileObj.hasOwnProperty("birthyearuntil") ? this.profileObj["birthyearuntil"] : "";
+
+    return profile
+  };
+
+  getSquaresAndTiles() {
+    var selectedSquareTiles = {};
+    selectedSquareTiles["squareIds"] = [];
+    selectedSquareTiles["squareTileIds"] = [];
+    selectedSquareTiles["squaresByTiles"] = {};
+
+    for (let i = 0; i < this.tileSquares.length; i++) {
+      let tileSqr = this.tileSquares[i];
+      let square: Object = {};
+      let tileId = tileSqr["tileId"];
+
+      for (let j = 0; j < tileSqr["blocks"].length; j++) {
+        let currBlock = tileSqr["blocks"][j];
+        square["blockId"] = currBlock["blockId"];
+        let type = currBlock["type"];
+
+        let quesAnswer: Object = {};
+        let answer: any[] = [];
+
+        for (let k = 0; k < currBlock["options"].length; k++) {
+          let currOpt = currBlock["options"][k];
+          let index = type == "questionnaire" ? currOpt["index"] : "-1";
+
+          for (let l = 0; l < currOpt["datas"].length; l++) {
+            let currData = currOpt["datas"][l];
+
+            if (currData["assigned"] && selectedSquareTiles["squareTileIds"].indexOf(tileId) === -1) {
+              selectedSquareTiles["squareTileIds"].push(tileId);
+              selectedSquareTiles["squareTileIds"][tileId] = [];
+            }
+
+            if (currData["assigned"]) {
+              if (type == "questionnaire") {
+                quesAnswer[index].push(currData["value"]);
+              } else {
+                answer.push(currData["value"]);
+              }
+            }
+          }
+        }
+
+        if (answer.length > 0 || !this.utils.isEmptyObject(quesAnswer)) {
+          square["answer"] = type === "questionnaire" ? quesAnswer : answer;
+          selectedSquareTiles["squareIds"].push(square);
+        }
+      }
+    }
+
+    return selectedSquareTiles;
+  };
+
   saveHsr(e: any) {
     e.preventDefault();
+    e.stopPropagation();
+
     let hsrObj: Object = {};
 
+    if (!this.utils.isEmptyObject(this.selectedHsr)) {
+      hsrObj["_id"] = this.selectedHsr["_id"];
+    }
+
+    this.loaderShared.showSpinner(true);
+    hsrObj["orgId"] = this.oid;
+    hsrObj["name"] = this.ruleName;
+    hsrObj["ruleStatusColor"] = this.ruleColor;
+    hsrObj["profiles"] = this.getProfile();
+
+    let selectedSquareTiles: Object = this.getSquaresAndTiles();
+    hsrObj["squares"] = selectedSquareTiles["squaresByTiles"];
+    hsrObj["tileId"] = selectedSquareTiles["squareTileIds"];
+    //engine.squaresByTiles = selectedSquareTiles.squaresByTiles;
+    //engine.createdBy = userId;
+    hsrObj["dateCreated"] = (new Date()).toUTCString();
+    hsrObj["dateUpdated"] = (new Date()).toUTCString();
+
+    if (this.utils.isNullOrEmpty(hsrObj["name"])) {
+      this.loaderShared.showSpinner(false);
+      this.utils.iAlert('error', 'Information', 'You must enter the Rule name');
+    }
+
+    if (hsrObj["ruleStatusColor"] === "-1") {
+      this.loaderShared.showSpinner(false);
+      this.utils.iAlert('error', 'Information', 'Please select Status Color');
+    }
+
+    if (this.utils.isArray(hsrObj["tileId"]) && hsrObj["tileId"].length === 0) {
+      this.loaderShared.showSpinner(false);
+      this.utils.iAlert('error', 'Information', 'You must select a Square');
+    }
+
+    /*this.healthStatusRulesService.saveHsr(hsrObj).then(hsrRes => {
+      let id: string = hsrObj.hasOwnProperty("_id") ? hsrObj["_id"] : hsrRes["_id"];
+
+      this.getRules(id).then(rulesRes => {
+        if (this.utils.isArray(rulesRes) && rulesRes.length > 0) {
+          if (hsrObj.hasOwnProperty("_id")) {
+            var hsrIdx = this.hsrList.map(hsrl => { return hsrl['_id']; }).indexOf(id);
+            this.hsrList[hsrIdx] = rulesRes[0];
+          } else {
+            this.hsrList.push(rulesRes[0]);
+          }
+        }
+      });
+      
+      this.loaderShared.showSpinner(false);
+      this.utils.iAlert("success", "", "Rule updated successfully");
+    });*/
+  };
+
+  deleteHsr(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!this.utils.isEmptyObject(this.selectedHsr)) {
+      this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Rule??", "Delete", "Cancel", (r) => {
+        if (r["resolved"]) {
+          this.loaderShared.showSpinner(true);
+
+          this.healthStatusRulesService.removeHsr(this.selectedHsr["_id"]).then(deleteStatus => {
+            var hsrIdx = this.hsrList.map(hsrl => { return hsrl['_id']; }).indexOf(this.selectedHsr["_id"]);
+            this.hsrList.splice(hsrIdx, 1);
+            this.loaderShared.showSpinner(false);
+
+            this.utils.iAlert('success', '', 'Rule deleted successfully');
+          });
+        }
+      });
+    } else {
+      this.utils.iAlert('error', 'Information', 'Please select a Rule!!!');
+    }
+  };
+
+  newHsr(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    this.statusReset();
+  };
+
+  /* Dragged tile by uniqueId */
+  trackByTileId(index: number, obj: any) {
+    return obj["tileId"];
+  };
+
+  trackByBlockId(index: number, obj: any) {
+    return obj["blockId"];
   };
 
   ngOnInit() {

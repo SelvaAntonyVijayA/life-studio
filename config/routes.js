@@ -181,7 +181,7 @@ module.exports = function (app) {
   router.all('/smartengine/list/:orgId/:appId', $smartengine.list);
   router.all('/smartengine/remove', $smartengine.remove);
 
-  router.all('/hsrengine/list/:orgId', $healthstatusrules.list);
+  router.all('/hsrengine/list/:orgId/:ruleId*?', $healthstatusrules.list);
   router.all('/hsrengine/getall/:orgId', $healthstatusrules.getall);
   router.all('/hsrengine/save', $healthstatusrules.save);
   router.all('/hsrengine/remove/:ruleId', $healthstatusrules.save);

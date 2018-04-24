@@ -54,7 +54,9 @@ var list = function (req, res, next) {
   query = { "orgId": req.params.orgId };
   options = {};
 
-  console.dir(query);
+  if (!__util.isNullOrEmpty(req.params.ruleId)) {
+    query["_id"] = req.params.ruleId;
+  }
 
   _get(query, options, function (result) {
     var hsrResult = result.length > 0 ? result : [];
