@@ -25,7 +25,7 @@ var save = function (req, res, next) {
     updateQuery._id = obj._id;
     delete obj["_id"];
 
-    $healthstatusrules._update(updateQuery, options, obj, function (result) {
+    _update(updateQuery, options, obj, function (result) {
       _updateRuleInTile(obj.tileId, updateQuery._id, obj.name);
       $tilestatus.saveHsrByOrg(req.cookies.oid);
 
@@ -50,6 +50,18 @@ var _saveEngine = function (obj, cb) {
   });
 };
 
+var _setEngineObj = function (obj) {
+  if (!__util.isNullOrEmpty(obj.dateCreated)) {
+    obj.dateCreated = $general.stringToDate(obj.dateCreated);
+  }
+
+  if (!__util.isNullOrEmpty(obj.dateUpdated)) {
+    obj.dateUpdated = $general.stringToDate(obj.dateUpdated);
+  }
+
+  return obj;
+};
+
 var list = function (req, res, next) {
   query = { "orgId": req.params.orgId };
   options = {};
@@ -57,6 +69,8 @@ var list = function (req, res, next) {
   if (!__util.isNullOrEmpty(req.params.ruleId)) {
     query["_id"] = req.params.ruleId;
   }
+
+  console.dir(query);
 
   _get(query, options, function (result) {
     var hsrResult = result.length > 0 ? result : [];
@@ -212,6 +226,7 @@ module.exports = {
   "list": list,
   "_get": _get,
   "getall": getall,
-  "remove": remove
+  "remove": remove,
+  "_update": _update
 };
 

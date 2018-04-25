@@ -2,7 +2,7 @@
   <div class="hsr_main_panel">
     <div class="page_block hsr_page_head">
       <input [(ngModel)]="ruleName" class="form-control input-sm rule_name" type="text" placeholder="Rule name">
-      <select style="font-family: 'FontAwesome', Helvetica;" class="form-control input-sm hsr_box">
+      <select [(ngModel)]="ruleColor" style="font-family: 'FontAwesome', Helvetica;" class="form-control input-sm hsr_box">
         <option [value]="'-1'">Select Status Color</option>
         <option style="color:green;" [value]="'green'">&#xf004; Green</option>
         <option style="color:orange;" [value]="'orange'">&#xf004; Orange</option>
@@ -31,7 +31,7 @@
       </div>
       <div id="hsr_group_main" class="hsr_group_list">
         <ul>
-          <li (click)="selectHsr($event, hsrObj)" *ngFor="let hsrObj of (hsrList | filterByText:'name': ruleTextSearch); let idx = index; trackBy: trackByIndex">
+          <li (click)="selectHsr($event, hsrObj)" *ngFor="let hsrObj of (hsrList | filterByText:'name': ruleTextSearch | orderBy: false: 'dateUpdated' : 'dateCreated'); let idx = index; trackBy: trackByIndex">
             <span [style.color]="getStatusColor(hsrObj)">
               <div style="float: left; width: 11%;" *ngIf="getRuleStatus(hsrObj)">
                 &#1F397;
@@ -140,15 +140,15 @@
         </p>
 
         <div id="main-tile_squares" class="squares_main_content">
-          <div *ngFor="let sqr of (tileSquares | filterByText:'title': squareTileSearch | filterByText:'appId': selectedApp | filterInByArray: 'tileId': selectedTiles | orderBy: false: 'dateUpdated' : 'dateCreated'); let i = index; trackBy: trackByTileId"
+          <div *ngFor="let sqr of (tileSquares | filterByText:'title': squareTileSearch | filterByText:'appId': selectedApp | filterInByArray: 'tileId': selectedTiles); let i = index; trackBy: trackByUniqueId"
             class="square-tiles">
             <p style="cursor: pointer; float: left; width: 97%; margin-left: 3%;" data-toggle="collapse" [attr.data-target]="'#' + sqr.tileId">
               <u>{{sqr.title}} </u>
             </p>
 
             <div [attr.id]="sqr.tileId" class='collapse in'>
-              <!--   <div *ngFor="let blk of sqr['blocks']; let j = index; trackBy: trackByBlockId" class="block_main"> -->
-              <form [attr.id]="blk['blockId']" *ngFor="let blk of sqr['blocks']; let j = index; trackBy: trackByBlockId" role="form">
+              <div *ngFor="let blk of sqr['blocks']; let j = index; trackBy: trackByBlockId" class="block_main">
+
                 <div style="float:left; width:100%;" *ngFor="let opt of blk['options']; let k = index;">
                   <label class="smart_main_ques">
                     {{opt!.questionText}}
@@ -161,7 +161,7 @@
                     </div>
                   </div>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>
@@ -216,7 +216,7 @@
         </div>
       </div>
 
-      <div id="tiles-list-show" class="tiles_list_panel">
+      <div id="tiles-list-show" class="hsr_tiles_list_panel">
         <div (click)="selectTiles($event, tile)" [ngClass]="checkSelectedExists(tile)? 'tiles_list_single selected' : 'tiles_list_single'"
           *ngFor="let tile of (tileList | filterByText:'appId': selectedApp | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1]); let i = index; trackBy: trackByTileId">
           <img [ngClass]="tileSort['listType'] === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">

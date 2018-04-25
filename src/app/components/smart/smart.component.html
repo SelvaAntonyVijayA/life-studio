@@ -209,7 +209,7 @@
       </div>
     </div>
 
-    <div id="tiles-list-show" class="tiles_list_panel">
+    <div id="tiles-list-show" class="smart_tiles_list_panel">
       <div (click)="selectMenuGroupTile($event, tile)" [ngClass]="!utils.isEmptyObject(selectedTile) && selectedTile.hasOwnProperty('_id') && !utils.isNullOrEmpty(selectedTile['_id']) && selectedTile['_id'] === tile['_id'] ? 'tiles_list_single selected' : 'tiles_list_single'"
         *ngFor="let tile of (tileList | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1]); let i = index; trackBy: trackByTileId">
         <img [ngClass]="tileSort['listType'] === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
