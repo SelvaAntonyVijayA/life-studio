@@ -41,7 +41,7 @@ export class DomainPageLib {
   Standalone_Chat: string = "/standalonechat";
   Clinics_and_Physicians: string = "/clinicphysicians";
   Locations_and_Managers : string = "/clinicphysicians"
-  QA_Weights: string = "/qaweights"
+  QA_Scores: string = "/qascores"
   Processes: string = "/processes";
   Team_Management: string = "/teammanagement";
   Moderator_Access: string = "/moderatoraccess"

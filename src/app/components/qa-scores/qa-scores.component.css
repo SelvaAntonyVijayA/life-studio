@@ -1,0 +1,237 @@
+/* QA Scores  Container*/
+
+.qa_scores_container {
+  height: 920px;
+  position: relative;
+}
+
+/* Main Container QA Scores */
+
+.qa_weight_list_show {
+  float: left;
+  width: 169px;
+  height: 915px;
+  position: relative;
+  text-align: left;
+  overflow: hidden;
+  margin-top: 1px;
+  margin-left: 1px;
+}
+
+.qa_weight_main_container {
+  width: 744px;
+  height: 915px;
+  margin-left: 1px;
+  margin-top: 1px;
+  float: left;
+}
+
+/*Tiles List */
+
+.tiles_list_search {
+  position: relative;
+  top: 5px;
+  padding-left: 9px;
+  text-align: center;
+  float: left;
+  width: 100%;
+}
+
+.tile_search_box {
+  width: 265px;
+  margin: 0 auto;
+  margin-bottom: 6px;
+}
+
+.qascores_tile_category_filter {
+  width: 265px;
+  margin: 0 auto;
+}
+
+/* Tiles Sort */
+
+.tiles_sort {
+  float: left;
+  width: 284px;
+  margin-top: 4%;
+}
+
+.txt_arrange {
+  font-size: 11px;
+  float: left;
+  margin-top: 4px;
+  margin-left: 13px;
+}
+
+.sort_box {
+  float: left;
+  margin-left: 5px;
+  width: 87.5px;
+}
+
+.do_sort {
+  margin-right: 11px;
+  margin-top: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  float: right;
+}
+
+.tiles_count_main {
+  width: 100%;
+  font-size: 12px;
+  float: left;
+  height: 1.5%;
+  margin-top: 3%;
+}
+
+.tile-view-change {
+  float: left;
+  margin-left: 15px;
+}
+
+.sort_image {
+  margin-left: 5px;
+}
+
+.tile-view-change img {
+  cursor: pointer;
+  padding-right: 2px;
+}
+
+.tiles_list_count {
+  float: right;
+  font-size: 80%;
+  padding-right: 7%;
+  padding-top: 5px;
+}
+
+/* Tiles Panel Main */
+
+.qa_scores_tiles_panel {
+  width: 284px;
+  height: 915px;
+  margin-left: 1px;
+  margin-top: 1px;
+  float: left
+}
+
+.qa_scores_tiles_list_panel {
+  text-align: left;
+  position: relative;
+  padding-top: 1px;
+  padding-left: 8px;
+  height: 788px;
+  overflow: hidden;
+  margin-top: 57px;
+}
+
+/* Tiles */
+
+.tiles_list_single {
+  float: left;
+  display: table;
+  position: relative;
+  text-align: left;
+  margin-left: 7px;
+  margin-bottom: 4px;
+  width: 257px;
+  min-height: 32px;
+  padding-bottom: 2px;
+  color: #000000;
+  border: 2px outset rgba(255, 255, 255, .5);
+  background-color: #FFFFFF;
+  border-radius: 0px;
+  cursor: pointer;
+}
+
+.tiles_list_single:hover {
+  background-color: #F2F2F2;
+}
+
+.tiles_list_single.selected {
+  background-color: #3c3c3c;
+  color: #FFFFFF;
+}
+
+.tile_list_art {
+  max-width: 240px;
+  margin-top: 8px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  margin-right: 4px;
+  float: left;
+}
+
+.tile_list_art.tile-content-img {
+  max-width: 30px;
+  max-height: 25px;
+  margin-top: 3px;
+}
+
+.tile_list_art.tile-details-img {
+  max-width: 240px;
+  max-height: none;
+}
+
+.tile_list_title {
+  float: left;
+  width: 235px;
+  margin-top: 2px;
+  margin-left: 5px;
+  font-size: 11px;
+  text-align: justify;
+  word-wrap: break-word;
+}
+
+.tile_list_title.tile-content-title {
+  width: 200px;
+}
+
+/* Qa Weights Header Panel */
+
+.qa_score_header_content {
+  float: left;
+  width: 100%;
+  height: 40px;
+  margin-top: 12px;
+}
+
+.title-qa-scores {
+  float: left;
+  width: 257px;
+  margin-left: 14px;
+}
+
+.filter_procedure {
+  float: left;
+  width: 160px;
+  margin-left: 3px;
+}
+
+.qa_scores_form_btns {
+  float: right;
+  width: 37%;
+}
+
+/* Qa Scores buttons */
+
+.qa_score_new {
+  border-bottom-color: #228B22;
+  border-bottom-width: 3px;
+  float: left;
+  margin-right: 4px;
+  margin-left: 27px;
+}
+
+.qa_score_save {
+  border-bottom-color: #1E90FF;
+  border-bottom-width: 3px;
+  float: left;
+  margin-right: 4px;
+}
+
+.qa_score_delete {
+  border-bottom-color: #FF0000;
+  border-bottom-width: 3px;
+}

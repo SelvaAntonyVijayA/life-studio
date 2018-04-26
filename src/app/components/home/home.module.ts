@@ -40,6 +40,7 @@ import { AuthandsecurityComponent } from '../../components/authandsecurity/autha
 import { PhotosComponent } from '../../components/photos/photos.component';
 import { RecurrenceComponent } from '../../components/recurrence/recurrence.component';
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
+import { QaScoresComponent } from '../../components/qa-scores/qa-scores.component';
 
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
@@ -105,7 +106,7 @@ import { DndModule } from 'ng2-dnd';
     OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, UserprofileComponent,
     ProfilebuilderComponent, AuthandsecurityComponent, PhotosComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
     jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent,
-    LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent, RecurrenceComponent],
+    LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent, RecurrenceComponent, QaScoresComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService, LivestreamService, LanguageService]
 })

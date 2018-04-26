@@ -200,7 +200,7 @@ export class SmartComponent implements OnInit {
 
   /* Destroy Scroll */
   destroyScroll() {
-    this.cms.destroyScroll(["#menu-group-list", "#tiles-list-show"]);
+    this.cms.destroyScroll(["#menu-group-list", "#tiles-list-show", "#main-squares-area"]);
   };
 
   getApps() {
@@ -835,5 +835,6 @@ export class SmartComponent implements OnInit {
 
   ngOnDestroy() {
     this.orgChangeDetect.unsubscribe();
+    this.destroyScroll();
   }
 }

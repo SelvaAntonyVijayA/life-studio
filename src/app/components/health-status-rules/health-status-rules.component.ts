@@ -908,6 +908,11 @@ export class HealthStatusRulesComponent implements OnInit {
     return uniqueId;
   };
 
+  /* Destroy Scroll */
+  destroyScroll() {
+    this.cms.destroyScroll(["#hsr_group_main", "#tiles-list-show", "#main-tile_squares"]);
+  };
+
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       let loadTime = Cookie.get('pageLoadTime');
@@ -924,5 +929,6 @@ export class HealthStatusRulesComponent implements OnInit {
 
   ngOnDestroy() {
     this.orgChangeDetect.unsubscribe();
+    this.destroyScroll();
   };
 }

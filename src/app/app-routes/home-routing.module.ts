@@ -23,6 +23,7 @@ import { ProfilebuilderComponent } from '../components/profilebuilder/profilebui
 import { AuthandsecurityComponent } from '../components/authandsecurity/authandsecurity.component';
 import { HealthStatusRulesComponent } from '../components/health-status-rules/health-status-rules.component';
 import { PhotosComponent } from '../components/photos/photos.component';
+import { QaScoresComponent } from '../components/qa-scores/qa-scores.component';
 
 const homeRoutes: Routes = [
   {
@@ -108,6 +109,10 @@ const homeRoutes: Routes = [
       {
         path: 'photos',
         component: PhotosComponent
+      },
+      {
+        path: 'qascores',
+        component: QaScoresComponent
       }
     ]
   }
