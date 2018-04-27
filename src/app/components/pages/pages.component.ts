@@ -997,7 +997,6 @@ export class PagesComponent implements OnInit {
         }
       }
     }
-
     if (!this.utils.isEmptyObject(streamImageToUpdate)) {
       var streamUpdate = {};
       streamUpdate["linkId"] = "streamToUpdate";

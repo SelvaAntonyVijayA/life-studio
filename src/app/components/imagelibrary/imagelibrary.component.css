@@ -158,31 +158,36 @@ div.jcrop-holder {
     line-height: 1.75;
     color: #333;
     background-color: #fff;
-    border-color: #ccc
+    border-color: #ccc;
+    width: 24px;
 }
 
 .btn-home.focus, .btn-home:focus {
     color: #333;
     background-color: #e6e6e6;
-    border-color: #8c8c8c
+    border-color: #8c8c8c;
+    width: 24px;
 }
 
 .btn-home:hover {
     color: #333;
     background-color: #e6e6e6;
-    border-color: #adadad
+    border-color: #adadad;
+    width: 24px;
 }
 
 .btn-home.active, .btn-home:active, .open>.dropdown-toggle.btn-home {
     color: #333;
     background-color: #e6e6e6;
-    border-color: #adadad
+    border-color: #adadad;
+    width: 24px;
 }
 
 .btn-home.active.focus, .btn-home.active:focus, .btn-homeactive:hover, .btn-home:active.focus, .btn-home:active:focus, .btn-home:active:hover, .open>.dropdown-toggle.btn-home.focus, .open>.dropdown-toggle.btn-home:focus, .open>.dropdown-toggle.btn-home:hover {
     color: #333;
     background-color: #d4d4d4;
-    border-color: #8c8c8c
+    border-color: #8c8c8c;
+    width: 24px;
 }
 
 .btn-home.active, .btn-home:active, .open>.dropdown-toggle.btn-home {

@@ -90,6 +90,7 @@ import { jqxComboBoxComponent } from '../../grid/jqwidgets-ts/angular_jqxcombobo
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { GeoValidator } from '../../helpers/geo.validator';
 import { DndModule } from 'ng2-dnd';
+import { MomentData } from '../../helpers/momentdata';
 
 @NgModule({
   imports: [
@@ -108,7 +109,7 @@ import { DndModule } from 'ng2-dnd';
     jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent,
     LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent, RecurrenceComponent, QaScoresComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
-    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService, LivestreamService, LanguageService]
+    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService, LivestreamService, MomentData, LanguageService]
 })
 
 export class HomeModule { }

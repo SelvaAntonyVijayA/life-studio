@@ -5,8 +5,8 @@
     </div>
 
     <div id="main-container-pages" class="pages_list_show">
-      <div class="page_list_single" [iliDraggable]="{data: mnu, page: 'notification'}" *ngFor="let mnu of (menus | filterByText:'title': pageSearchText | orderBy: true: 'position'); let i = index; trackBy: trackByIndex;">
-        <div [title]="mnu['title']" class="new_app_menu_page_label">
+      <div class="notify_page_list_single" [iliDraggable]="{data: mnu, page: 'notification'}" *ngFor="let mnu of (menus | filterByText:'title': pageSearchText | orderBy: true: 'position'); let i = index; trackBy: trackByIndex;">
+        <div [title]="mnu['title']" class="new_app_notify_page_label">
           {{ mnu['title'] }}</div>
         <span *ngIf="mnu['isNotification']" [title]="mnu['tileNotifications']" class="step noteicon" aria-hidden="true">
           <i class="icon ion-android-notifications-none"></i>
@@ -44,11 +44,131 @@
     </div>
     <div class="page_block drag_block">
       <div class="app_page_items_container" id="main_notify_drag_container">
-        <div iliDropTarget (myDrop)="onDrop($event, false)" class="ili-panel main_notify_drag_content drop_target">
+        <div dnd-droppable (onDropSuccess)="onDrop($event)" [dropZones]="['notification']" class="ili-panel main_notify_drag_content drop_target">
           <div class="draggable_label">
             Drag a Tile, an Event or a Page
             <br>
             <br> into this space</div>
+        </div>
+
+        <div *ngFor="let dragObj of notification!.dragged | reverse; let i = index; trackBy: trackByUniqueId" class="ili-panel notify_item_container page_block drag_cursor">
+          <div *ngIf="!dragObj.hasOwnProperty('pageDragContainer')" class="notificationform">
+            <div class="notify_content_right">
+              <div class="notify_drag_buttons">
+                <button (click)="imageArt($event, i)" class="trigger_btn" title="Add Icon">
+                  <span class="glyphicon glyphicon-upload"></span>
+                </button>
+                <button (click)="replicateDragged(dragObj)" class="trigger_btn" title="Replicate">
+                  <span class="glyphicon glyphicon-retweet"></span>
+                </button>
+                <button (click)="deleteDragged(dragObj, i)" class="trigger_btn" title="Remove">
+                  <span class="glyphicon glyphicon-remove"></span>
+                </button>
+                <button [ngClass]="dragObj['activate']? 'trigger_btn activate': 'trigger_btn deactivate'" (click)="draggedActivateDeactivate($event, dragObj)"
+                  class='trigger_btn' [title]="dragObj['activate']? 'Deactivate': 'Activate'">
+                  <span class='glyphicon glyphicon-off'></span>
+                </button>
+              </div>
+
+              <div class="notify_item_dragged">
+                <div *ngIf="dragObj['linkTo'] === 'menu'" style="float: right;" class="notify_page_list_single notify_dragged_list_single">
+                  <div [title]="dragObj['obj']['title']" class="new_app_notify_label">
+                    {{ setPageTitle(dragObj['obj']) }}</div>
+                  <span *ngIf="dragObj['obj']['isNotification']" [title]="dragObj['obj']['tileNotifications']" class="step noteicon" aria-hidden="true">
+                    <i class="icon ion-android-notifications-none"></i>
+                  </span>
+                  <span *ngIf="dragObj['obj']['isSmart']" title="dragObj['obj']['tileSmart']" class='step smarticon' aria-hidden='true'>
+                    <i class='icon ion-lightbulb'></i>
+                  </span>
+                  <span *ngIf="dragObj['obj']['isRole']" title="dragObj['obj']['tileApps']" class="step smart smarticon">
+                    <i class="icon ion-android-person"></i>
+                  </span>
+                </div>
+
+                <div *ngIf="dragObj['linkTo'] !== 'menu' && dragObj['linkTo'] !== 'tile'" style="float: right;" class="notify_group_list_single">
+                  <div *ngIf="((dragObj['obj'].hasOwnProperty('art') && !utils.isNullOrEmpty(dragObj['obj']['art'])) && (dragObj['obj']['art'].indexOf('tile_default.jpg') || dragObj['obj']['art'].indexOf('tilist_art.jpg')))"
+                    [ngClass]="groupType === 'list'? 'group-art' : 'group-art details'">
+                    <img [ngClass]="groupType === 'list'? 'group_list_art' : 'group_list_art group-detail-content'" [src]="dragObj['obj']['art'] | safe">
+                  </div>
+                  <div [title]="dragObj['obj']?.name" class="group_list_title">{{getGroupName(dragObj['obj']?.name)}}</div>
+                  <div class="group-notify-icons">
+                    <span *ngIf="dragObj['obj']['isNotification']" [title]="dragObj['obj']['tileNotifications']" class='step smart noteicon smarticon-groups'
+                      aria-hidden="true">
+                      <i class='icon ion-android-notifications-none'></i>
+                    </span>
+                    <span *ngIf="dragObj['obj']['isSmart']" title="dragObj['obj']['tileSmart']" class="step smart smarticon smarticon-groups">
+                      <i class="icon ion-lightbulb"></i>
+                    </span>
+                    <span *ngIf="dragObj['obj']['isRole']" title="dragObj['obj']['tileApps']" class="step smart smarticon smarticon-groups">
+                      <i class="icon ion-android-person"></i>
+                    </span>
+                  </div>
+                </div>
+
+                <div *ngIf="dragObj['linkTo'] === 'tile'" class="notify_tile_block notify_tiles_list_single">
+                  <img class="notify_tile_list_art notify-tile-content-img" [src]="dragObj['obj']?.art | safe">
+                  <div class="notify_tile_list_title notify-tile-content-title">{{dragObj['obj']?.title}}</div>
+                  <div *ngIf="!this.utils.isEmptyObject(dragObj['obj'])" class="notify_tile_icons">
+                    <span [title]="dragObj['obj']!.tileApps" [style.display]="dragObj['obj']!.isWgt" class="step weight"></span>
+                    <span [title]="dragObj['obj']!.tileHealthStatusRules" [style.display]="dragObj['obj']!.isRules" class="step smart smarticon report-rule-tile">
+                      <i class="icon ion-heart"></i>
+                    </span>
+                    <span [title]="dragObj['obj']!.tileProcedure" [style.display]="dragObj['obj']!.isProcedure" class="step smart smarticon smarticon-tile">
+                      <i class="icon ion-medkit"></i>
+                    </span>
+                    <span [title]="dragObj['obj']!.tileSmart" [style.display]="dragObj['obj']!.isSmart" class="step smart smarticon smarticon-tile">
+                      <i class="icon ion-lightbulb"></i>
+                    </span>
+                    <span [title]="dragObj['obj']!.tileNotifications" [style.display]="dragObj['obj']!.isNotification" class="step smart noteicon smarticon-tile"
+                      aria-hidden="true">
+                      <i class="icon ion-android-notifications-none"></i>
+                    </span>
+                    <span [title]="dragObj['obj']!.tileApps" [style.display]="dragObj['obj']!.isRole" class="step smart smarticon smarticon-tile">
+                      <i class="icon ion-android-person"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="notify_content_left">
+              <div class="notify_title">
+                <label class=" tile_notify_name "> {{dragObj?.title}} </label>
+              </div>
+              <div class="notify_icon_img">
+                <img class="notify_item_art notify_v_align" [src]="dragObj[ 'imageUrl'] | safe ">
+              </div>
+              <div class="notify-dragged-item-inputs ">
+                  <select [ngModel]="dragObj?.type" (ngModelChange)="setTriggeType($event, dragObj)" class='form-control input-sm trigger_type_option'>
+                      <option value='date'>At a specific date and time</option>
+                      <option value='manual'>Manually</option>";
+                      <option value='trigger'>When Tile is triggered</option>
+                    </select>
+                    
+                    <div *ngIf="dragObj['dateVisibility']" style='width:100%;'>
+                      <input type='text' class='triggertime form-control input-sm notification_date_time' placeholder='DateTime' />
+                      <br/>
+                      <select data-show-subtext='true' data-live-search="'true'" class='form-control input-sm timezone '>
+                      </select>
+                    </div>
+                    
+                    <div *ngIf="dragObj['isZoneLocalTime']" style='margin-top:3px; width:50%; color:silver; float:left; font-size:11px;'>
+                      {{ setZoneTime(dragObj['zoneLocalTime']) }}
+                    </div>
+                    
+                    <div *ngIf="dragObj['type'] !== 'manual'" class='push_notification_now' style='margin-top:10px;'>
+                      <button type='button' [ngClass]="dragObj['isPushed']? 'btn-info': 'btn-success'" class='btn btn-xs'>Push Now</button>
+                      <span style="margin-left: 5px;">
+                        {{ setPushedDate(dragObj['pusheddatetime']) }}</span>
+                    </div>
+                    
+                    <div *ngIf="dragObj['isGroup']" class='under-group'>Under Group :
+                      <span>{{ dragObj['groupName'] }}</span>
+                    </div>
+              </div>
+            </div>
+            <input type='text' class='form-control input-sm notification_text' [(ngModel)]="dragObj.notificationText" placeholder='Notification Text' />
+          </div>
         </div>
       </div>
     </div>
@@ -80,8 +200,10 @@
     </div>
 
     <div id="main-container-groups" class="groups_list_show">
-      <div class="group_list_single" [iliDraggable]="{data: grp, page: 'notification'}" *ngFor="let grp of (groups | filterByText:'name': groupFilter['groupSearch'] | filterByText:'type': groupFilter['groupType'] | orderBy:groupFilter['sort']['isAsc']: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][0]: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
-        <div *ngIf="((grp.hasOwnProperty('art') && !utils.isNullOrEmpty(grp['art'])) && (grp['art'].indexOf('tile_default.jpg') || grp['art'].indexOf('tilist_art.jpg')))"
+      <div class="notify_group_list_single" [iliDraggable]="{data: grp, page: 'notification'}" 
+      *ngFor="let grp of (groups | filterByText:'name': groupFilter['groupSearch'] | filterByText:'type': groupFilter['groupType'] | orderBy:groupFilter['sort']['isAsc']: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][0]: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
+        <div 
+        *ngIf="((grp.hasOwnProperty('art') && !utils.isNullOrEmpty(grp['art'])) && (grp['art'].indexOf('tile_default.jpg') || grp['art'].indexOf('tilist_art.jpg')))"
           [ngClass]="groupType === 'list'? 'group-art' : 'group-art details'">
           <img [ngClass]="groupType === 'list'? 'group_list_art' : 'group_list_art group-detail-content'" [src]="grp['art'] | safe">
         </div>
@@ -103,7 +225,7 @@
   <div class="page_block tiles_list">
     <div class="tiles_list_search">
       <input [(ngModel)]="tileSort['tileSearchText']" class="form-control input-sm search_box tile_search_box" type="text" placeholder="Search Tiles">
-      <select [(ngModel)]="selectedCategory" class="form-control input-sm filter_select_box category_box ">
+      <select [(ngModel)]="selectedCategory" class="form-control input-sm n_category_box category_box ">
         <option [value]="-1">All Categories</option>
         <option *ngFor="let tileCat of tileCategories; let i = index" [value]="tileCat?._id">{{tileCat?.name}}</option>
       </select>
@@ -137,7 +259,7 @@
         </div>
       </div>
 
-      <div class="tiles_count_main">
+      <div class="n_tile_count_main">
         <div class="tile-view-change ">
           <img *ngIf="tileSort['listType']==='list'" (click)="changeTileView('details')" src="/img/details.png" alt=" " title="Details"
           />
@@ -149,7 +271,8 @@
     </div>
 
     <div id="tiles-list-show" class="tiles_list_panel">
-      <div class="tiles_list_single" *ngFor="let tile of (tileList | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1]); let i = index; trackBy: trackByTileId">
+      <div class="tiles_list_single" dnd-draggable [dragEnabled]="true" [dragData]="tile" (onDragSuccess)="draggedTile($event)"
+        [dropZones]="['notification']" *ngFor="let tile of (tileList | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1]); let i = index; trackBy: trackByTileId">
         <img [ngClass]="tileSort['listType'] === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
         <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
         <div *ngIf="tile" class="tile_icons">
