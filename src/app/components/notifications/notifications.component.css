@@ -625,13 +625,13 @@ group-view-change {
 }
 
 .notification_date_time {
-  width: 180px;
+  width: 170px;
   margin-top: 4px;
 }
 
 .timezone {
   float: left;
-  width: 180px;
+  width: 170px;
   margin-right: 10px;
   margin-top: 4px;
 }

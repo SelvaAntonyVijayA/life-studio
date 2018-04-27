@@ -678,7 +678,7 @@ export class NotificationsComponent implements OnInit {
 
     dragged["timeZoneName"] = squareObj && squareObj["timeZoneName"] ? squareObj["timeZoneName"] : this.momentData.getCurrenTimeZone();
     dragged["zoneLocalTime"] = !this.utils.isEmptyObject(squareObj) && squareObj.hasOwnProperty("triggerTime") && !this.utils.isNullOrEmpty(squareObj["triggerTime"]) ? this.utils.toLocalDateTime(squareObj["triggerTime"]) : "";
-    dragged["dateVisibility"] = dragged["type"] == "date" ? "block" : "none";
+    dragged["dateVisibility"] = dragged["type"] == "date" ? true : false;
     dragged["triggerIsDisable"] = dragged["triggerTime"] != "" ? '' : 'disabled';
 
     if (!this.utils.isEmptyObject(squareObj) && squareObj.hasOwnProperty("triggerTime") && !this.utils.isNullOrEmpty(squareObj["triggerTime"])) {
