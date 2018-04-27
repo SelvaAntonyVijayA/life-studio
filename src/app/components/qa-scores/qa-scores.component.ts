@@ -196,22 +196,18 @@ export class QaScoresComponent implements OnInit {
       currTile["tileHealthStatusRules"] = tileRules;
     }
 
+    currTile["appId"] = [];
+
     for (let appId in appTiles) {
       if (appTiles[appId].indexOf(currTile["_id"]) > -1) {
-        currTile["appId"] = appId;
+
+        if (currTile["appId"].indexOf(appId) === -1) {
+          currTile["appId"].push(appId);
+        }
       }
     }
 
-    if (!currTile.hasOwnProperty("appId")) {
-      currTile["appId"] = "-1";
-    }
-
     return currTile;
-  };
-
-  /* Track a tile by index */
-  trackByIndex(index: number, obj: any): any {
-    return index;
   };
 
   getTileCategories() {
@@ -228,11 +224,13 @@ export class QaScoresComponent implements OnInit {
 
   setScrollList() {
     this.mScrollbarService.initScrollbar("#tiles-list-show", this.scrollbarOptions);
+    this.mScrollbarService.initScrollbar("#main-tile_squares", this.scrollbarOptions);
 
     if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
       this.cms["appDatas"]["scrollList"].push("#tiles-list-show");
+      this.cms["appDatas"]["scrollList"].push("#main-tile_squares");
     } else {
-      this.cms["appDatas"]["scrollList"] = ["#tiles-list-show"];
+      this.cms["appDatas"]["scrollList"] = ["#tiles-list-show", "#main-tile_squares"];
     }
   };
 
@@ -259,6 +257,8 @@ export class QaScoresComponent implements OnInit {
   };
 
   setTileSquares(tileSqrsObj: Object) {
+    this.setSquares(tileSqrsObj["tiles"]);
+
     if (!this.utils.isEmptyObject(tileSqrsObj)) {
       for (let i = 0; i < tileSqrsObj["tiles"].length; i++) {
         let tile = this.tileNotifyIcons(tileSqrsObj["tiles"][i], tileSqrsObj["apptiles"]);
@@ -268,13 +268,217 @@ export class QaScoresComponent implements OnInit {
     }
   };
 
+  setSquares(tiles: any[]) {
+    if (this.utils.isArray(tiles) && tiles.length > 0) {
+      let blockIds: string[] = [];
+
+      for (let i = 0; i < tiles.length; i++) {
+        let currTile: Object = tiles[i];
+        let squareObj: Object = { "uniqueId": this.getUniqueId(), "tileId": currTile["_id"], "title": currTile["title"], "blocks": [] }
+        let blocksData: any[] = currTile.hasOwnProperty("blocksData") && currTile["blocksData"].length > 0 ? currTile["blocksData"] : [];
+
+        if (blocksData.length > 0) {
+          let blks: any[] = blocksData.filter(blk => {
+            return blk["type"] === 'survey' || blk["type"] === 'painlevel' || blk["type"] === 'questionnaire';
+          });
+
+          for (let j = 0; j < blks.length; j++) {
+            let blkData = blks[j];
+
+            let currBlock = { "blockId": blkData["_id"], "type": blkData["type"] };
+
+            if (currBlock["type"] === "painlevel") {
+              squareObj = this.setPainLevel(blkData, squareObj, currBlock, blockIds);
+            } else if (currBlock["type"] === "questionnaire") {
+              squareObj = this.setQuestionnaire(blkData, squareObj, currBlock, blockIds);
+            } else {
+              squareObj = this.setSurvey(blkData, squareObj, currBlock, blockIds);
+            }
+          }
+        }
+
+        if (squareObj["blocks"].length > 0) {
+          this.tileSquares.push(squareObj);
+        }
+      }
+    }
+  };
+
+  setPainLevel(tileBlock: Object, squareObj: Object, currBlk: Object, blockIds: string[]) {
+    let currOpt = {
+      "questionText": !this.utils.isNullOrEmpty(tileBlock["data"]["question"]) ? tileBlock["data"]["question"] : "",
+      "datas": []
+    }
+
+    for (let k = 0; k < 11; k++) {
+      let opt = {
+        "value": "",
+        "text": k
+      };
+
+      currOpt["datas"].push(opt);
+    }
+
+    currBlk["options"] = [currOpt];
+
+    if (blockIds.indexOf(currBlk["blockId"]) === -1) {
+      blockIds.push(currBlk["blockId"]);
+      squareObj["blocks"].push(currBlk);
+    }
+
+    return squareObj;
+  };
+
+  setQuestionnaire(tileBlock: Object, squareObj: Object, currBlk: Object, blockIds: string[]) {
+    let level1 = [];
+    let level2 = [];
+    let level3 = [];
+    let quesOpts = tileBlock["data"]["options"];
+    let questionText = !this.utils.isNullOrEmpty(tileBlock["data"]["questionText"]) ? tileBlock["data"]["questionText"] : "";
+    let survey_1 = {
+      questionText: questionText,
+      options: [],
+      index: 0
+    };
+
+    quesOpts.forEach((opt1: any, key1: number) => {
+      survey_1.options.push(opt1["option"]);
+
+      if (opt1.hasOwnProperty("subQuestions")) {
+        opt1["subQuestions"].forEach((ques1: any, key2: number) => {
+          if (ques1["type"] === "questions") {
+            let survey_2 = {
+              questionText: ques1["questionText"],
+              options: [],
+              index: key1 + "_" + key2
+            };
+
+            if (ques1.hasOwnProperty("options")) {
+              ques1["options"].forEach((opt2: any, key3: number) => {
+                survey_2.options.push(opt2["option"]);
+
+                if (opt2.hasOwnProperty("subQuestions")) {
+                  opt2["subQuestions"].forEach((ques2: any, key4: number) => {
+                    if (ques2["type"] == "questions") {
+                      var survey_3 = {
+                        questionText: ques2["questionText"],
+                        options: [],
+                        index: key1 + "_" + key2 + "_" + key3
+                      };
+
+                      if (ques2.hasOwnProperty("options")) {
+                        ques2["options"].forEach((opt3: any, key5: number) => {
+                          survey_3.options.push(opt3["option"]);
+                        });
+                      }
+
+                      level3.push(survey_3);
+                    }
+                  });
+                }
+              });
+            }
+
+            level2.push(survey_2);
+          }
+        });
+      }
+    });
+
+    level1.push(survey_1);
+    level1 = level1.concat(level2, level3);
+
+    currBlk["options"] = [];
+
+    for (let k = 0; k < level1.length; k++) {
+      let opt = level1[k];
+
+      let currOpt = {
+        "questionText": !this.utils.isNullOrEmpty(opt["questionText"]) ? opt["questionText"] : "",
+        "index": opt["index"],
+        "datas": []
+      }
+
+      if (opt.hasOwnProperty("options")) {
+        for (let l = 0; l < opt["options"].length; l++) {
+          let option = {
+            "text": opt["options"][l],
+            "value": ""
+          };
+
+          currOpt["datas"].push(option);
+        }
+      }
+
+      currBlk["options"].push(currOpt);
+
+    }
+
+    if (blockIds.indexOf(currBlk["blockId"]) === -1) {
+      blockIds.push(currBlk["blockId"]);
+      squareObj["blocks"].push(currBlk);
+    }
+
+    return squareObj;
+  };
+
+  setSurvey(tileBlock: Object, squareObj: Object, currBlk: Object, blockIds: string[]) {
+    let currOpt = {
+      "questionText": !this.utils.isNullOrEmpty(tileBlock["data"]["questionText"]) ? tileBlock["data"]["questionText"] : "",
+      "datas": []
+    }
+
+    if (this.utils.isArray(tileBlock["data"]["questions"])) {
+      for (let k = 0; k < tileBlock["data"]["questions"].length; k++) {
+        let opt = {
+          "value": "",
+          "text": tileBlock["data"]["questions"][k]
+        };
+
+        currOpt["datas"].push(opt);
+      }
+    }
+
+    currBlk["options"] = [currOpt];
+
+    if (blockIds.indexOf(currBlk["blockId"]) === -1) {
+      blockIds.push(currBlk["blockId"]);
+      squareObj["blocks"].push(currBlk);
+    }
+
+    return squareObj;
+  };
+
   checkSelectedExists(currTile: Object) {
     return this.selectedTiles.indexOf(currTile["_id"]) > -1 ? true : false;
   };
 
   /* Destroy Scroll */
   destroyScroll() {
-    this.cms.destroyScroll(["#tiles-list-show"]);
+    this.cms.destroyScroll(["#tiles-list-show", "#main-tile_squares"]);
+  };
+
+  /* Getting unique Id */
+  getUniqueId() {
+    var uniqueId = Date.now() + Math.floor(1000 + Math.random() * 9000);
+
+    return uniqueId;
+  };
+
+  trackByUniqueId(index: number, obj: any, currObj: any) {
+    return obj["uniqueId"];
+  };
+
+  trackByTileId(index: number, obj: any): any {
+    return obj["tileId"];
+  };
+
+  trackByIndex(index: number, obj: any): any {
+    return index;
+  };
+
+  trackByBlockId(index: number, obj: any): any {
+    return obj["blockId"];
   };
 
   ngOnInit() {

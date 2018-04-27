@@ -1,4 +1,4 @@
-import { FilterByTextPipe, OrderByPipe, ReversePipe, FilterInByArray } from './filters.pipe';
+import { FilterByTextPipe, OrderByPipe, ReversePipe, FilterInByArray, FilterByArrayProperty } from './filters.pipe';
 
 describe('FilterByTextPipe', () => {
   it('create an instance', () => {
@@ -24,6 +24,13 @@ describe('ReversePipe', () => {
 describe('FilterInByArray', () => {
   it('create an instance', () => {
     const pipe = new FilterInByArray();
+    expect(pipe).toBeTruthy();
+  });
+});
+
+describe('FilterByArrayProperty', () => {
+  it('create an instance', () => {
+    const pipe = new FilterByArrayProperty();
     expect(pipe).toBeTruthy();
   });
 });

@@ -140,7 +140,7 @@
         </p>
 
         <div id="main-tile_squares" class="squares_main_content">
-          <div *ngFor="let sqr of (tileSquares | filterByText:'title': squareTileSearch | filterByText:'appId': selectedApp | filterInByArray: 'tileId': selectedTiles); let i = index; trackBy: trackByUniqueId"
+          <div *ngFor="let sqr of (tileSquares | filterByText:'title': squareTileSearch | filterByArrayProperty: 'appId': selectedApp | filterInByArray: 'tileId': selectedTiles); let i = index; trackBy: trackByUniqueId"
             class="square-tiles">
             <p style="cursor: pointer; float: left; width: 97%; margin-left: 3%;" data-toggle="collapse" [attr.data-target]="'#' + sqr.tileId">
               <u>{{sqr.title}} </u>
@@ -218,7 +218,7 @@
 
       <div id="tiles-list-show" class="hsr_tiles_list_panel">
         <div (click)="selectTiles($event, tile)" [ngClass]="checkSelectedExists(tile)? 'tiles_list_single selected' : 'tiles_list_single'"
-          *ngFor="let tile of (tileList | filterByText:'appId': selectedApp | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1]); let i = index; trackBy: trackByTileId">
+          *ngFor="let tile of (tileList | filterByArrayProperty: 'appId': selectedApp | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1]); let i = index; trackBy: trackByTileId">
           <img [ngClass]="tileSort['listType'] === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
           <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
           <div *ngIf="tile" class="tile_icons">

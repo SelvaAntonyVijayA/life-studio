@@ -66,4 +66,26 @@ export class FilterInByArray implements PipeTransform {
   };
 };
 
+@Pipe({
+  name: 'filterByArrayProperty',
+  pure: false
+})
+export class FilterByArrayProperty implements PipeTransform {
+  constructor(public utils?: Utils) {
+  }
+
+  transform(reqArray: any[], propName?: string, searchTxt?: string): any {
+    if (this.utils.isArray(reqArray) && reqArray.length > 0 && !this.utils.isNullOrEmpty(propName) && !this.utils.isNullOrEmpty(searchTxt) && searchTxt !== "-1") {
+
+      return reqArray.filter(obj => {
+        return this.utils.isArray(obj[propName]) && obj[propName].indexOf(searchTxt) > -1;
+      });
+    } else {
+      return reqArray;
+    }
+  };
+};
+
+
+
 

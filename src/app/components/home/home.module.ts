@@ -64,7 +64,7 @@ import { TileBlocksDirective } from '../../components/widgets/tileblocks.directi
 //import { SlimScrollModule } from 'ng2-slimscroll';
 //import { VirtualScrollModule } from 'angular2-virtual-scroll';
 
-import { FilterByTextPipe, OrderByPipe, ReversePipe, FilterInByArray } from '../../helpers/filters.pipe';
+import { FilterByTextPipe, OrderByPipe, ReversePipe, FilterInByArray, FilterByArrayProperty } from '../../helpers/filters.pipe';
 import { SafePipe, SafeHtmlPipe } from '../../helpers/ili-security.pipe';
 import { MalihuScrollbarModule } from 'ngx-malihu-scrollbar';
 import { DraggableDirective } from '../../helpers/draggable.directive';
@@ -99,7 +99,7 @@ import { DndModule } from 'ng2-dnd';
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,
-    TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, FilterInByArray, TilesComponent, TileBlocksComponents, SafePipe, SafeHtmlPipe,
+    TilesListComponent, FilterByTextPipe, OrderByPipe, ReversePipe, FilterInByArray, FilterByArrayProperty, TilesComponent, TileBlocksComponents, SafePipe, SafeHtmlPipe,
     TileBlocksDirective, DateTimePickerDirective, DraggableDirective, DropTargetDirective, EventsComponent,
     FoldersComponent, AccountComponent, CategoriesComponent, ThemeComponent, ProceduresComponent, OnlyNumbersDirective,
     ProcessesComponent, PagesComponent, DemoComponent, NotificationsComponent, SmartComponent, ImagelibraryComponent,

@@ -323,14 +323,14 @@ export class HealthStatusRulesComponent implements OnInit {
       currTile["tileHealthStatusRules"] = tileRules;
     }
 
+    currTile["appId"] = [];
+
     for (let appId in appTiles) {
       if (appTiles[appId].indexOf(currTile["_id"]) > -1) {
-        currTile["appId"] = appId;
+        if (currTile["appId"].indexOf(appId) === -1) {
+          currTile["appId"].push(appId);
+        }
       }
-    }
-
-    if (!currTile.hasOwnProperty("appId")) {
-      currTile["appId"] = "-1";
     }
 
     return currTile;
@@ -412,14 +412,14 @@ export class HealthStatusRulesComponent implements OnInit {
         let squareObj: any = { "uniqueId": this.getUniqueId(), "tileId": currTile["_id"], "title": currTile["title"], "blocks": [] };
         let appTiles = tileSqrsObj["apptiles"];
 
+        squareObj["appId"] = [];
+
         for (let appId in appTiles) {
           if (appTiles[appId].indexOf(currTile["_id"]) > -1) {
-            squareObj["appId"] = appId;
+            if (squareObj["appId"].indexOf(appId) === "-1") {
+              squareObj["appId"].push(appId);
+            }
           }
-        }
-
-        if (!squareObj.hasOwnProperty("appId")) {
-          squareObj["appId"] = "-1";
         }
 
         if (currTile.hasOwnProperty("blocks")) {

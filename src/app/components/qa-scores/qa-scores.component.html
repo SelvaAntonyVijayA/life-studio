@@ -22,6 +22,37 @@
         </button>
       </div>
     </div>
+
+    <div id="main-tile_squares" class="squares_main_content">
+      <div *ngFor="let sqr of (tileSquares | filterInByArray: 'tileId': selectedTiles); let i = index; trackBy: trackByUniqueId"
+        class="square-tiles">
+        <p style="cursor: pointer; float: left; width: 97%; margin-left: 3%;" data-toggle="collapse" [attr.data-target]="'#' + sqr.tileId">
+          <u>{{sqr.title}} </u>
+        </p>
+
+        <div [attr.id]="sqr.tileId" class='collapse in'>
+          <div *ngFor="let blk of sqr['blocks']; let j = index; trackBy: trackByBlockId" class="block_main">
+
+            <div style="float:left; width:100%;" *ngFor="let opt of blk['options']; let k = index;">
+              <div class="select-main-block">
+                <input value="true" id="selected-blocks" type="checkbox">
+              </div>
+              <label class="qa_scores_main_ques">
+                {{opt!.questionText}}
+              </label>
+              <div style="float: left; width: 14%; font-weight: 500; color: #fff;">In-app answers</div>
+              <div class="form-group">
+                <div *ngFor="let dt of opt['datas']; let l = index" class='survey_answers'>
+                  <label style="line-height: 1.95;">
+                    <input name="answers" class="wgt_score_val" [(ngModel)]="dt['value']" type="text"> {{dt!.text}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="page_block qa_scores_tiles_panel">
