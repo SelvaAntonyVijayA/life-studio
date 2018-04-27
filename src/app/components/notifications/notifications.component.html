@@ -147,6 +147,7 @@
                     <div *ngIf="dragObj['dateVisibility']" style='width:100%;'>
                       <input type='text' class='triggertime form-control input-sm notification_date_time' placeholder='DateTime' />
                       <select data-show-subtext='true' data-live-search="'true'" class='form-control input-sm timezone '>
+                          <option *ngFor="let zone of timeZones; let i = index" [value]="zone?.name">{{zone?.text}}</option>
                       </select>
                     <div *ngIf="dragObj['isZoneLocalTime']" style='margin-top:3px; width:50%; color:silver; float:left; font-size:11px;'>
                       {{ setZoneTime(dragObj['zoneLocalTime']) }}

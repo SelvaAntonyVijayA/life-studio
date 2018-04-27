@@ -15,9 +15,11 @@ export class MomentData {
             var timeZoneOffset = moment.tz(name).format('Z');
             var offSet = timeZoneOffset.split(":");
             var offSetValue = parseFloat(offSet[0]) + parseFloat(offSet[1]) * (1 / 60);
+            var text = "(GMT " + timeZoneOffset + ") " + name;
 
             timeZones.push({
                 name: name,
+                text: text,
                 offset: timeZoneOffset,
                 offSetValue: offSetValue
             });
@@ -34,7 +36,7 @@ export class MomentData {
         return moment.tz.guess();
     }
 
-   
+
     getLocalDateToTimeZoneDate(date: string, timeZoneName: string) {
         return moment(Date.parse(date)).tz(timeZoneName).format("MM/DD/YYYY h:mm A");
     }
