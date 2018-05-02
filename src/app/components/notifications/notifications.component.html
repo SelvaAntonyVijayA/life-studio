@@ -139,31 +139,44 @@
                 <img class="notify_item_art notify_v_align" [src]="dragObj[ 'imageUrl'] | safe ">
               </div>
               <div class="notify-dragged-item-inputs ">
-                  <select [ngModel]="dragObj?.type" (ngModelChange)="setTriggeType($event, dragObj)" class='form-control input-sm trigger_type_option'>
-                      <option value='date'>At a specific date and time</option>
-                      <option value='manual'>Manually</option>";
-                      <option value='trigger'>When Tile is triggered</option>
-                    </select>
-                    <div *ngIf="dragObj['dateVisibility']" style='width:100%;'>
-                      <input type='text' class='triggertime form-control input-sm notification_date_time' placeholder='DateTime' />
-                      <select data-show-subtext='true' data-live-search="'true'" class='form-control input-sm timezone '>
-                          <option *ngFor="let zone of timeZones; let i = index" [value]="zone?.name">{{zone?.text}}</option>
-                      </select>
-                    <div *ngIf="dragObj['isZoneLocalTime']" style='margin-top:3px; width:50%; color:silver; float:left; font-size:11px;'>
-                      {{ setZoneTime(dragObj['zoneLocalTime']) }}
+                <select [ngModel]="dragObj?.type" (ngModelChange)="setTriggeType($event, dragObj)" class='form-control input-sm trigger_type_option'>
+                  <option value='date'>At a specific date and time</option>
+                  <option value='manual'>Manually</option>";
+                  <option value='trigger'>When Tile is triggered</option>
+                </select>
+                <div *ngIf="dragObj['dateVisibility']" style='width:100%;'>
+                  <input type='text' [ngModel]="dragObj?.triggerTime" class='triggertime form-control input-sm notification_date_time' placeholder='DateTime'
+                  />
+                  <select [ngModel]="dragObj?.timeZoneName" data-show-subtext='true' data-live-search="'true'" class='form-control input-sm timezone '>
+                    <option *ngFor="let zone of timeZones; let i = index" [value]="zone?.name">{{zone?.text}}</option>
+                  </select>
+
+                  <div class="ridisplay">
+                    <div class="rimain">
+                      <a href="#" name="riedit">Edit</a>
+                      <a href="#" name="ridelete" style="display: inline;">Delete</a>
+                      <input type="hidden" class="cron" value="0 */1 * * * *">
+                      <label class="ridisplay">Repeats every 1 Minute(s), ends on 04/22/2018 2:55 AM</label>
                     </div>
+                    <div class="rioccurrences" style="display:none"></div>
                   </div>
-                    <div *ngIf="dragObj['type'] == 'manual'" class='push_notification_now' style='margin-top:10px;'>
-                      <button type='button' [ngClass]="dragObj['isPushed']? 'btn-info': 'btn-success'" class='btn btn-xs'>Push Now</button>
-                      <span style="margin-left: 5px;">
-                        {{ setPushedDate(dragObj['pusheddatetime']) }}</span>
-                    </div>
-                    <div *ngIf="dragObj['isGroup']" class='under-group'>Under Group :
-                      <span>{{ dragObj['groupName'] }}</span>
-                    </div>
+
+                  <div *ngIf="dragObj['isZoneLocalTime']" style='margin-top:3px; width:50%; color:silver; float:left; font-size:11px;'>
+                    {{ setZoneTime(dragObj['zoneLocalTime']) }}
+                  </div>
+                </div>
+                <div *ngIf="dragObj['type'] == 'manual'" class='push_notification_now' style='margin-top:10px;'>
+                  <button type='button' [ngClass]="dragObj['isPushed']? 'btn-info': 'btn-success'" class='btn btn-xs'>Push Now</button>
+                  <span style="margin-left: 5px;">
+                    {{ setPushedDate(dragObj['pusheddatetime']) }}</span>
+                </div>
+                <div *ngIf="dragObj['isGroup']" class='under-group'>Under Group :
+                  <span>{{ dragObj['groupName'] }}</span>
+                </div>
               </div>
             </div>
-            <input type='text' class='form-control input-sm notification_text' [(ngModel)]="dragObj.notificationText" placeholder='Notification Text' />
+            <input type='text' class='form-control input-sm notification_text' [(ngModel)]="dragObj.notificationText" placeholder='Notification Text'
+            />
           </div>
         </div>
       </div>
@@ -196,10 +209,8 @@
     </div>
 
     <div id="main-container-groups" class="groups_list_show">
-      <div class="notify_group_list_single" [iliDraggable]="{data: grp, page: 'notification'}" 
-      *ngFor="let grp of (groups | filterByText:'name': groupFilter['groupSearch'] | filterByText:'type': groupFilter['groupType'] | orderBy:groupFilter['sort']['isAsc']: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][0]: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
-        <div 
-        *ngIf="((grp.hasOwnProperty('art') && !utils.isNullOrEmpty(grp['art'])) && (grp['art'].indexOf('tile_default.jpg') || grp['art'].indexOf('tilist_art.jpg')))"
+      <div class="notify_group_list_single" [iliDraggable]="{data: grp, page: 'notification'}" *ngFor="let grp of (groups | filterByText:'name': groupFilter['groupSearch'] | filterByText:'type': groupFilter['groupType'] | orderBy:groupFilter['sort']['isAsc']: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][0]: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
+        <div *ngIf="((grp.hasOwnProperty('art') && !utils.isNullOrEmpty(grp['art'])) && (grp['art'].indexOf('tile_default.jpg') || grp['art'].indexOf('tilist_art.jpg')))"
           [ngClass]="groupType === 'list'? 'group-art' : 'group-art details'">
           <img [ngClass]="groupType === 'list'? 'group_list_art' : 'group_list_art group-detail-content'" [src]="grp['art'] | safe">
         </div>

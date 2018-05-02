@@ -482,13 +482,11 @@ group-view-change {
 .notify_content_right {
   width: 45%;
   float: right;
-  height: 150px;
 }
 
 .notify_content_left {
   width: 55%;
   float: right;
-  height: 150px;
 }
 
 .notificationform {
@@ -533,15 +531,15 @@ group-view-change {
 
 .notify_icon_img {
   float: left;
-  height: 98px;
-  width: 98px;
+  height: 115px;
+  width: 105px;
   text-align: center;
   border: 1px solid #D0CBCB;
 }
 
 .notify_item_art {
   max-width: 96px;
-  max-height: 96px;
+  max-height: 80px;
 }
 
 .notify_v_align {
@@ -736,4 +734,10 @@ group-view-change {
 .deactivate:hover {
   color: #F2F2F2;
   background-color: #2e8a19;
+}
+
+div.ridisplay {
+  float: left;
+  width: 400px;
+  margin-top: 2px;
 }
