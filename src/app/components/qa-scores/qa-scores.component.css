@@ -252,7 +252,7 @@
 
 .qa_scores_main_ques {
   font-weight: 200;
-  width: 45%;
+  width: 93%;
   margin-top: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -274,6 +274,68 @@
   margin-bottom: 8px;
 }
 
-.wgt_score_val{
+.wgt_score_val {
   margin-right: 189px;
+}
+
+.lbl_weight {
+  float: left;
+  width: 40%;
+  margin-top: 3px;
+  margin-left: 38px;
+}
+
+/*Weight list Panel */
+
+.wgt_group_list ul {
+  list-style-type: none;
+  font-size: 15px;
+  margin-left: -28px;
+  cursor: pointer;
+}
+
+.lbl_wgt_title {
+  float: left;
+  width: 87%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+.lbl_wgt_title:hover {
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+.lbl_wgt_title.selected {
+  font-size: 14px;
+  text-decoration: underline;
+  text-decoration-color: #f5deb3;
+}
+
+.wgt_search {
+  position: relative;
+  text-align: center;
+  height: 37px;
+  float: left;
+  width: 100%;
+}
+
+.wgt_search_box {
+  margin: 0 auto;
+  width: 94%;
+  margin-top: 12px;
+  height: 25px;
+}
+
+.wgt_group_list {
+  float: left;
+  width: 100%;
+  height: 875px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 9px;
 }

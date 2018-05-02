@@ -7,6 +7,7 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { LoaderSharedService } from '../../services/loader-shared.service';
 import { TileService } from '../../services/tile.service';
 import { QaScoresService } from '../../services/qa-scores.service';
+import { ProcedureService } from '../../services/procedure.service';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/forkJoin';
 
@@ -27,6 +28,7 @@ export class QaScoresComponent implements OnInit {
     private renderer: Renderer,
     public utils: Utils,
     private tileService: TileService,
+    private procedureService: ProcedureService,
     private qaScoresService: QaScoresService
   ) { }
 
@@ -38,6 +40,11 @@ export class QaScoresComponent implements OnInit {
   tileList: any[] = [];
   selectedTiles: string[] = [];
   tileSquares: any[] = [];
+  weightList: any[] = [];
+  selectedWeight: Object = {};
+  weightTextSearch: string = "";
+  proceduresList: any[] = [];
+  selectedProcedure: string = "";
 
   tileSort: Object = {
     "listType": "list",
@@ -57,10 +64,15 @@ export class QaScoresComponent implements OnInit {
     this.tileSquares = [];
     this.tileList = [];
     this.tileCategories = [];
+    this.weightList = [];
+    this.proceduresList = [];
   };
 
   qaScoresReset() {
     this.selectedTiles = [];
+    this.selectedWeight = {};
+    this.weightTextSearch = "";
+    this.selectedProcedure = "";
   };
 
   resetByTilesData() {
@@ -106,6 +118,7 @@ export class QaScoresComponent implements OnInit {
     var pageApps = "";
     var tileProcedure = "";
     var tileRules = "";
+    currTile["procedureIds"] = [];
 
     if (!currTile.hasOwnProperty("isNotification")) {
       if (currTile.hasOwnProperty("notification") && currTile["notification"].hasOwnProperty("apps") && currTile["notification"]["apps"].length > 0) {
@@ -147,6 +160,8 @@ export class QaScoresComponent implements OnInit {
         for (let i = 0; i < currTile["Procedure"].length; i++) {
           var procedure = currTile["Procedure"][i];
           tileProcedure += i === 0 ? procedure.name : ", " + procedure.name;
+
+          currTile["procedureIds"].push(procedure["procId"]);
         }
 
         currTile["isProcedure"] = "block";
@@ -207,6 +222,12 @@ export class QaScoresComponent implements OnInit {
       }
     }
 
+    let sqrTile = this.tileSquares.find(s => s['tileId'] === currTile["_id"]);
+
+    if (!this.utils.isEmptyObject(sqrTile)) {
+      sqrTile["procedureIds"] = currTile["procedureIds"];
+    }
+
     return currTile;
   };
 
@@ -222,6 +243,18 @@ export class QaScoresComponent implements OnInit {
     return tilesAndSquares;
   };
 
+  getWeightList() {
+    let qaWeights = this.qaScoresService.getQaScores(this.oid);
+
+    return qaWeights;
+  };
+
+  getProcedures() {
+    let procedures = this.procedureService.procedureList(this.oid, "", "procedure");
+
+    return procedures;
+  };
+
   setScrollList() {
     this.mScrollbarService.initScrollbar("#tiles-list-show", this.scrollbarOptions);
     this.mScrollbarService.initScrollbar("#main-tile_squares", this.scrollbarOptions);
@@ -229,8 +262,9 @@ export class QaScoresComponent implements OnInit {
     if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
       this.cms["appDatas"]["scrollList"].push("#tiles-list-show");
       this.cms["appDatas"]["scrollList"].push("#main-tile_squares");
+      this.cms["appDatas"]["scrollList"].push("#wgt_group_main");
     } else {
-      this.cms["appDatas"]["scrollList"] = ["#tiles-list-show", "#main-tile_squares"];
+      this.cms["appDatas"]["scrollList"] = ["#tiles-list-show", "#main-tile_squares", "#wgt_group_main"];
     }
   };
 
@@ -238,6 +272,8 @@ export class QaScoresComponent implements OnInit {
     this.getQaScoreDatas().subscribe(qaScoreDatas => {
       this.setTileCategories(qaScoreDatas[0]);
       this.setTileSquares(qaScoreDatas[1]);
+      this.setWeightList(qaScoreDatas[2]);
+      this.setProcedures(qaScoreDatas[3]);
 
       this.loaderShared.showSpinner(false);
     });
@@ -246,8 +282,14 @@ export class QaScoresComponent implements OnInit {
   getQaScoreDatas() {
     let tileCats = this.getTileCategories();
     let tilesAndSquares = this.getAppTileSquares();
+    let weightList = this.getWeightList();
+    let procedureList = this.getProcedures();
 
-    return Observable.forkJoin([tileCats, tilesAndSquares]);
+    return Observable.forkJoin([tileCats, tilesAndSquares, weightList, procedureList]);
+  };
+
+  setProcedures(procList: any[]) {
+    this.proceduresList = procList;
   };
 
   setTileCategories(tileCats: any[]) {
@@ -257,18 +299,27 @@ export class QaScoresComponent implements OnInit {
   };
 
   setTileSquares(tileSqrsObj: Object) {
-    this.setSquares(tileSqrsObj["tiles"]);
+    let tileIds: string[] = this.setSquares(tileSqrsObj["tiles"]);
 
     if (!this.utils.isEmptyObject(tileSqrsObj)) {
       for (let i = 0; i < tileSqrsObj["tiles"].length; i++) {
-        let tile = this.tileNotifyIcons(tileSqrsObj["tiles"][i], tileSqrsObj["apptiles"]);
 
-        this.tileList.push(tile);
+        if (tileIds.indexOf(tileSqrsObj["tiles"][i]["_id"]) > -1) {
+          let tile = this.tileNotifyIcons(tileSqrsObj["tiles"][i], tileSqrsObj["apptiles"]);
+
+          this.tileList.push(tile);
+        }
       }
     }
   };
 
+  setWeightList(wghtlist: any[]) {
+    this.weightList = wghtlist;
+  };
+
   setSquares(tiles: any[]) {
+    let tileIds: string[] = [];
+
     if (this.utils.isArray(tiles) && tiles.length > 0) {
       let blockIds: string[] = [];
 
@@ -298,10 +349,13 @@ export class QaScoresComponent implements OnInit {
         }
 
         if (squareObj["blocks"].length > 0) {
+          tileIds.push(squareObj["tileId"]);
           this.tileSquares.push(squareObj);
         }
       }
     }
+
+    return tileIds;
   };
 
   setPainLevel(tileBlock: Object, squareObj: Object, currBlk: Object, blockIds: string[]) {
@@ -312,6 +366,7 @@ export class QaScoresComponent implements OnInit {
 
     for (let k = 0; k < 11; k++) {
       let opt = {
+        "index": k,
         "value": "",
         "text": k
       };
@@ -402,6 +457,7 @@ export class QaScoresComponent implements OnInit {
       if (opt.hasOwnProperty("options")) {
         for (let l = 0; l < opt["options"].length; l++) {
           let option = {
+            "index": l,
             "text": opt["options"][l],
             "value": ""
           };
@@ -431,6 +487,7 @@ export class QaScoresComponent implements OnInit {
     if (this.utils.isArray(tileBlock["data"]["questions"])) {
       for (let k = 0; k < tileBlock["data"]["questions"].length; k++) {
         let opt = {
+          "index": k,
           "value": "",
           "text": tileBlock["data"]["questions"][k]
         };
@@ -455,7 +512,7 @@ export class QaScoresComponent implements OnInit {
 
   /* Destroy Scroll */
   destroyScroll() {
-    this.cms.destroyScroll(["#tiles-list-show", "#main-tile_squares"]);
+    this.cms.destroyScroll(["#tiles-list-show", "#main-tile_squares", "#wgt_group_main"]);
   };
 
   /* Getting unique Id */
@@ -479,6 +536,18 @@ export class QaScoresComponent implements OnInit {
 
   trackByBlockId(index: number, obj: any): any {
     return obj["blockId"];
+  };
+
+  selectWeight(e: any, wgtObj: Object) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (this.utils.isEmptyObject(this.selectedWeight) || (!this.utils.isEmptyObject(this.selectedWeight) && this.selectedWeight["_id"] !== wgtObj["_id"])) {
+      this.loaderShared.showSpinner(true);
+      this.qaScoresReset();
+      this.selectedWeight = wgtObj;
+      this.loaderShared.showSpinner(false);
+    }
   };
 
   ngOnInit() {

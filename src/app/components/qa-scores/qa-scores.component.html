@@ -1,13 +1,26 @@
 <div class="container qa_scores_container">
   <div class="page_block qa_weight_list_show">
+    <div class="wgt_search">
+      <input [(ngModel)]="weightTextSearch" class="form-control input-sm wgt_search_box" placeholder="Search" type="text">
+    </div>
 
+    <div id="wgt_group_main" class="wgt_group_list">
+      <ul>
+        <li (click)="selectWeight($event, wgtObj)" *ngFor="let wgtObj of (weightList | filterByText:'title': weightTextSearch | orderBy: false: 'dateUpdated' : 'dateCreated'); let idx = index; trackBy: trackByIndex">
+
+          <label [ngClass]="!utils.isEmptyObject(selectedWeight) && selectedWeight['_id'] === wgtObj['_id']? 'lbl_wgt_title selected': 'lbl_wgt_title'">{{wgtObj!.title}}</label>
+        </li>
+      </ul>
+    </div>
   </div>
+
   <div class="page_block qa_weight_main_container">
     <div class="qa_score_header_content">
       <input class="form-control input-sm title-qa-scores" type="text" placeholder="Report Name">
 
-      <select class="form-control input-sm filter_procedure">
-        <option value="-1">All Procedure</option>
+      <select [(ngModel)]="selectedProcedure" class="form-control input-sm filter_procedure">
+        <option [value]="''">All Procedure</option>
+        <option *ngFor="let proc of proceduresList; let i = index" [value]="proc['_id']">{{proc!.name}}</option>
       </select>
 
       <div class="qa_scores_form_btns">
@@ -24,7 +37,7 @@
     </div>
 
     <div id="main-tile_squares" class="squares_main_content">
-      <div *ngFor="let sqr of (tileSquares | filterInByArray: 'tileId': selectedTiles); let i = index; trackBy: trackByUniqueId"
+      <div *ngFor="let sqr of (tileSquares | filterInByArray: 'tileId': selectedTiles : true | filterByArrayProperty: 'procedureIds': selectedProcedure); let i = index; trackBy: trackByUniqueId"
         class="square-tiles">
         <p style="cursor: pointer; float: left; width: 97%; margin-left: 3%;" data-toggle="collapse" [attr.data-target]="'#' + sqr.tileId">
           <u>{{sqr.title}} </u>
@@ -37,14 +50,21 @@
               <div class="select-main-block">
                 <input value="true" id="selected-blocks" type="checkbox">
               </div>
+
               <label class="qa_scores_main_ques">
                 {{opt!.questionText}}
               </label>
-              <div style="float: left; width: 14%; font-weight: 500; color: #fff;">In-app answers</div>
+              <label class="lbl_weight">
+                Weight
+              </label>
+              <div style="float: left; width: 14%; font-weight: 800; color: #fff;">
+                In-app answers
+              </div>
+
               <div class="form-group">
                 <div *ngFor="let dt of opt['datas']; let l = index" class='survey_answers'>
                   <label style="line-height: 1.95;">
-                    <input name="answers" class="wgt_score_val" [(ngModel)]="dt['value']" type="text"> {{dt!.text}}
+                    <input OnlyNumbers="true" name="answers" class="wgt_score_val" [(ngModel)]="dt['value']" type="text"> {{dt!.text}}
                   </label>
                 </div>
               </div>
@@ -105,7 +125,7 @@
 
       <div id="tiles-list-show" class="qa_scores_tiles_list_panel">
         <div (click)="selectTiles($event, tile)" [ngClass]="checkSelectedExists(tile)? 'tiles_list_single selected' : 'tiles_list_single'"
-          *ngFor="let tile of (tileList | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1]); let i = index; trackBy: trackByTileId">
+          *ngFor="let tile of (tileList | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1] | filterByArrayProperty: 'procedureIds': selectedProcedure); let i = index; trackBy: trackByTileId">
           <img [ngClass]="tileSort['listType'] === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
           <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
           <div *ngIf="tile" class="tile_icons">

@@ -187,6 +187,9 @@ module.exports = function (app) {
   router.all('/hsrengine/remove/:ruleId', $healthstatusrules.remove);
 
   router.all('/qaweights/getapptilessquares/:orgId', $qaweights.getAppTilesSquares);
+  router.all('/qaweights/saveweight/', $qaweights.saveWeight);
+  router.all('/qaweights/getweight/:orgId', $qaweights.getWeight);
+  router.all('/qaweights/removeweight/:weightId*?', $qaweights.removeWeight);
 
   router.get('/media/list/:appId/:tileId/:type', $media.list);
 

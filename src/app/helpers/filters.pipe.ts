@@ -54,8 +54,8 @@ export class FilterInByArray implements PipeTransform {
   constructor(public utils?: Utils) {
   }
 
-  transform(reqArray: any[], propName?: string, reqArrayIn?: any[]): any {
-    if (this.utils.isArray(reqArray) && reqArray.length > 0 && !this.utils.isNullOrEmpty(propName) && this.utils.isArray(reqArrayIn) && reqArrayIn.length > 0) {
+  transform(reqArray: any[], propName?: string, reqArrayIn?: any[], isEmptyArrayCheck?: boolean): any {
+    if (this.utils.isArray(reqArray) && reqArray.length > 0 && !this.utils.isNullOrEmpty(propName) && ((this.utils.isArray(reqArrayIn) && reqArrayIn.length > 0) || isEmptyArrayCheck)) {
 
       return reqArray.filter(obj => {
         return reqArrayIn.indexOf(obj[propName]) > -1;
