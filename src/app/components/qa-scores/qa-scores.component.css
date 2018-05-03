@@ -261,7 +261,7 @@
 }
 
 .survey_answers {
-  width: 100%;
+  width: 99%;
   float: left;
   margin-left: 22px;
 }
@@ -275,12 +275,12 @@
 }
 
 .wgt_score_val {
-  margin-right: 189px;
+  margin-right: 77px;
 }
 
 .lbl_weight {
   float: left;
-  width: 40%;
+  width: 24%;
   margin-top: 3px;
   margin-left: 38px;
 }

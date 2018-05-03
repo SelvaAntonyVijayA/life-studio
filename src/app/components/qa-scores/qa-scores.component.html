@@ -7,7 +7,6 @@
     <div id="wgt_group_main" class="wgt_group_list">
       <ul>
         <li (click)="selectWeight($event, wgtObj)" *ngFor="let wgtObj of (weightList | filterByText:'title': weightTextSearch | orderBy: false: 'dateUpdated' : 'dateCreated'); let idx = index; trackBy: trackByIndex">
-
           <label [ngClass]="!utils.isEmptyObject(selectedWeight) && selectedWeight['_id'] === wgtObj['_id']? 'lbl_wgt_title selected': 'lbl_wgt_title'">{{wgtObj!.title}}</label>
         </li>
       </ul>
@@ -48,7 +47,7 @@
 
             <div style="float:left; width:100%;" *ngFor="let opt of blk['options']; let k = index;">
               <div class="select-main-block">
-                <input value="true" id="selected-blocks" type="checkbox">
+                <input value="true" [(ngModel)]="opt['assigned']" id="selected-blocks" type="checkbox">
               </div>
 
               <label class="qa_scores_main_ques">

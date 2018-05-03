@@ -45,6 +45,7 @@ export class QaScoresComponent implements OnInit {
   weightTextSearch: string = "";
   proceduresList: any[] = [];
   selectedProcedure: string = "";
+  weightTitle: string = "";
 
   tileSort: Object = {
     "listType": "list",
@@ -73,6 +74,8 @@ export class QaScoresComponent implements OnInit {
     this.selectedWeight = {};
     this.weightTextSearch = "";
     this.selectedProcedure = "";
+    this.weightTitle = "";
+    this.resetAssignedScores();
   };
 
   resetByTilesData() {
@@ -361,6 +364,8 @@ export class QaScoresComponent implements OnInit {
   setPainLevel(tileBlock: Object, squareObj: Object, currBlk: Object, blockIds: string[]) {
     let currOpt = {
       "questionText": !this.utils.isNullOrEmpty(tileBlock["data"]["question"]) ? tileBlock["data"]["question"] : "",
+      "index": "-1",
+      "assigned": false,
       "datas": []
     }
 
@@ -451,6 +456,7 @@ export class QaScoresComponent implements OnInit {
       let currOpt = {
         "questionText": !this.utils.isNullOrEmpty(opt["questionText"]) ? opt["questionText"] : "",
         "index": opt["index"],
+        "assigned": false,
         "datas": []
       }
 
@@ -481,6 +487,8 @@ export class QaScoresComponent implements OnInit {
   setSurvey(tileBlock: Object, squareObj: Object, currBlk: Object, blockIds: string[]) {
     let currOpt = {
       "questionText": !this.utils.isNullOrEmpty(tileBlock["data"]["questionText"]) ? tileBlock["data"]["questionText"] : "",
+      "index": "-1",
+      "assigned": false,
       "datas": []
     }
 
@@ -545,9 +553,167 @@ export class QaScoresComponent implements OnInit {
     if (this.utils.isEmptyObject(this.selectedWeight) || (!this.utils.isEmptyObject(this.selectedWeight) && this.selectedWeight["_id"] !== wgtObj["_id"])) {
       this.loaderShared.showSpinner(true);
       this.qaScoresReset();
+      let wgtTitle: string = wgtObj.hasOwnProperty("title") && !this.utils.isNullOrEmpty(wgtObj["title"]) ? wgtObj["title"] : "";
+      this.weightTitle = wgtTitle;
       this.selectedWeight = wgtObj;
+      this.assignSquaresScores(wgtObj);
       this.loaderShared.showSpinner(false);
     }
+  };
+
+  assignSquaresScores(wgtObj: Object) {
+    if (!this.utils.isEmptyObject(wgtObj)) {
+      if (wgtObj.hasOwnProperty("weight")) {
+        for (let tileId in wgtObj["weight"]) {
+          let sqrTile: Object = this.tileSquares.find(s => s['tileId'] === tileId);
+
+          if (this.selectedTiles.indexOf(tileId) === -1) {
+            this.selectedTiles.push(tileId);
+          }
+
+          if (!this.utils.isEmptyObject(sqrTile) && wgtObj["weight"].hasOwnProperty(tileId)) {
+            let blocksObjs: Object = wgtObj["weight"][tileId];
+
+            if (!this.utils.isEmptyObject(blocksObjs)) {
+              for (let blkId in blocksObjs) {
+                let blkObj: Object = sqrTile["blocks"].find(s => s['blockId'] === blkId);
+                let wgtBlk = wgtObj["weight"][tileId][blkId];
+
+                if (!this.utils.isEmptyObject(blkObj) && blkObj["options"].length > 0) {
+                  for (let i = 0; i < blkObj["options"].length; i++) {
+                    let currOpt: Object = blkObj["options"][i];
+
+                    for (let idx in wgtBlk) {
+                      if (currOpt["index"] === "-1") {
+                        let weightValues: any[] = wgtBlk[idx];
+                        currOpt["assigned"] = true;
+
+                        for (let j = 0; j < currOpt["datas"].length; j++) {
+                          let currData = currOpt["datas"][j];
+
+                          var currVal = !this.utils.isNullOrEmpty(weightValues[j]) ? weightValues[j] : "";
+                          currData["value"] = currVal;
+                        }
+
+                      } else {
+                        let idxBlk: Object = blkObj["options"].find(b => b['index'] === idx);
+
+                        if (!this.utils.isEmptyObject(idxBlk)) {
+                          let weightValues: any[] = wgtBlk[idx];
+                          idxBlk["assigned"] = true;
+
+                          for (let j = 0; j < idxBlk["datas"].length; j++) {
+                            let currData = idxBlk["datas"][j];
+
+                            var currVal = !this.utils.isNullOrEmpty(weightValues[j]) ? weightValues[j] : "";
+                            currData["value"] = currVal;
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+
+  resetAssignedScores() {
+    if (this.tileSquares.length > 0) {
+      for (let i = 0; i < this.tileSquares.length; i++) {
+        let currSqr: Object = this.tileSquares[i];
+
+        for (let j = 0; j < currSqr["blocks"].length; j++) {
+          let blk: Object = currSqr["blocks"][j];
+
+          for (let k = 0; k < blk["options"].length; k++) {
+            let opt: Object = blk["options"][k];
+
+            opt["assigned"] = false;
+
+            for (let m = 0; m < opt["datas"].length; m++) {
+              let currData = opt["datas"][m];
+              currData["value"] = "";
+            }
+          }
+        }
+      }
+    }
+  };
+
+  saveWeight(e: any) {
+    if (!this.utils.isNullOrEmpty(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    let weightSaveObj: Object = {};
+
+    if (this.utils.isNullOrEmpty(this.weightTitle)) {
+      this.utils.iAlert('error', 'Information', 'Weight title is empty');
+      return false;
+    }
+
+    if (!this.utils.isEmptyObject(this.selectedWeight)) {
+      weightSaveObj["_id"] = this.selectedWeight["_id"];
+    }
+
+    let wgtSqrs: Object = this.getAssignedSquares();
+
+    weightSaveObj["title"] = this.weightTitle;
+  };
+
+  getAssignedSquares() {
+    let weightScoreObj: Object = {};
+
+    if (this.tileSquares.length > 0) {
+      for (let i = 0; i < this.tileSquares.length; i++) {
+        let sqr: Object = this.tileSquares[i];
+
+        weightScoreObj[sqr["tileId"]] = {};
+        let blockAssigned: Object = {};
+
+        for (let j = 0; j < sqr["blocks"].length; j++) {
+          let blk: Object = sqr["blocks"][j];
+          let blkId: string = blk["blockId"];
+
+          for (let k = 0; k < blk["options"].length; k++) {
+            let opt: Object = blk["options"][k];
+            let optIndx = opt["index"];
+            let answers: any[] = [];
+
+            let isBlkWeightAnswered: boolean = false;
+
+            for (let l = 0; l < blk["datas"].length; l++) {
+              let optData: Object = blk["datas"][l];
+
+              if (!isBlkWeightAnswered) {
+                isBlkWeightAnswered = !this.utils.isNullOrEmpty(optData["value"]) ? true : false;
+              }
+
+              answers.push(optData["value"]);
+            }
+
+            if (isBlkWeightAnswered) {
+              if (!blockAssigned.hasOwnProperty(blkId)) {
+                blockAssigned[blkId] = {};
+              }
+
+              blockAssigned[blkId][optIndx] = answers;
+            }
+          }
+        }
+
+        if (!this.utils.isEmptyObject(blockAssigned)) {
+          weightScoreObj[sqr["tileId"]] = blockAssigned;
+        }
+      }
+    }
+
+    return weightScoreObj;
   };
 
   ngOnInit() {
