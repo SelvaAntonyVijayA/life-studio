@@ -111,6 +111,24 @@ export class QaScoresComponent implements OnInit {
       this.selectedTiles.push(currTile["_id"]);
     } else {
       this.selectedTiles.splice(tileIndex, 1);
+      let sqrTile: Object = this.tileSquares.find(s => s['tileId'] === currTile["_id"]);
+
+      if (!this.utils.isEmptyObject(sqrTile)) {
+        for (let j = 0; j < sqrTile["blocks"].length; j++) {
+          let blk: Object = sqrTile["blocks"][j];
+
+          for (let k = 0; k < blk["options"].length; k++) {
+            let opt: Object = blk["options"][k];
+
+            opt["assigned"] = false;
+
+            for (let m = 0; m < opt["datas"].length; m++) {
+              let currData = opt["datas"][m];
+              currData["value"] = "";
+            }
+          }
+        }
+      }
     }
   };
 
@@ -246,8 +264,8 @@ export class QaScoresComponent implements OnInit {
     return tilesAndSquares;
   };
 
-  getWeightList() {
-    let qaWeights = this.qaScoresService.getQaScores(this.oid);
+  getWeightList(wgtId?: string) {
+    let qaWeights = this.qaScoresService.getQaScores(this.oid, wgtId);
 
     return qaWeights;
   };
@@ -650,20 +668,60 @@ export class QaScoresComponent implements OnInit {
       e.stopPropagation();
     }
 
+    this.loaderShared.showSpinner(true);
     let weightSaveObj: Object = {};
 
     if (this.utils.isNullOrEmpty(this.weightTitle)) {
       this.utils.iAlert('error', 'Information', 'Weight title is empty');
+      this.loaderShared.showSpinner(false);
       return false;
-    }
-
-    if (!this.utils.isEmptyObject(this.selectedWeight)) {
-      weightSaveObj["_id"] = this.selectedWeight["_id"];
     }
 
     let wgtSqrs: Object = this.getAssignedSquares();
 
+    if (!this.utils.isEmptyObject(this.selectedWeight)) {
+      weightSaveObj["_id"] = this.selectedWeight["_id"];
+      weightSaveObj["existingTiles"] = Object.keys(wgtSqrs);
+    }
+
     weightSaveObj["title"] = this.weightTitle;
+
+    weightSaveObj["tileId"] = Object.keys(wgtSqrs);
+    weightSaveObj["weight"] = wgtSqrs;
+    weightSaveObj["organizationId"] = this.oid;
+
+    if (!this.utils.isNullOrEmpty(this.selectedProcedure)) {
+      weightSaveObj["procedureId"] = this.selectedProcedure;
+    }
+
+    if (!this.utils.isEmptyObject(wgtSqrs)) {
+      this.qaScoresService.saveQaWeight(weightSaveObj)
+        .then(qaScoreRes => {
+          let id: string = weightSaveObj.hasOwnProperty("_id") ? weightSaveObj["_id"] : qaScoreRes["_id"];
+          let msgTxt: string = "Weight";
+
+          this.getWeightList(id).then(qaRes => {
+            if (this.utils.isArray(qaRes) && qaRes.length > 0) {
+              if (weightSaveObj.hasOwnProperty("_id")) {
+                msgTxt = msgTxt + " " + "Updated";
+                var wIdx = this.weightList.map(w => { return w['_id']; }).indexOf(id);
+                this.weightList[wIdx] = qaRes[0];
+              } else {
+                msgTxt = msgTxt + " " + "Saved";
+                this.weightList.push(qaRes[0]);
+              }
+
+              this.selectedWeight = qaRes[0];
+            }
+          });
+
+          this.loaderShared.showSpinner(false);
+          this.utils.iAlert("success", "", msgTxt);
+        });
+    } else {
+      this.utils.iAlert('error', 'Information', 'Weight score is empty, Please assign a weight square');
+      this.loaderShared.showSpinner(false);
+    }
   };
 
   getAssignedSquares() {
@@ -673,7 +731,6 @@ export class QaScoresComponent implements OnInit {
       for (let i = 0; i < this.tileSquares.length; i++) {
         let sqr: Object = this.tileSquares[i];
 
-        weightScoreObj[sqr["tileId"]] = {};
         let blockAssigned: Object = {};
 
         for (let j = 0; j < sqr["blocks"].length; j++) {
@@ -687,8 +744,8 @@ export class QaScoresComponent implements OnInit {
 
             let isBlkWeightAnswered: boolean = false;
 
-            for (let l = 0; l < blk["datas"].length; l++) {
-              let optData: Object = blk["datas"][l];
+            for (let l = 0; l < opt["datas"].length; l++) {
+              let optData: Object = opt["datas"][l];
 
               if (!isBlkWeightAnswered) {
                 isBlkWeightAnswered = !this.utils.isNullOrEmpty(optData["value"]) ? true : false;
@@ -714,6 +771,47 @@ export class QaScoresComponent implements OnInit {
     }
 
     return weightScoreObj;
+  };
+
+  removeWeight(e: any) {
+    if (!this.utils.isNullOrEmpty(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    if (!this.utils.isEmptyObject(this.selectedWeight)) {
+      this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this QA Score??", "Delete", "Cancel", (r) => {
+        if (r["resolved"]) {
+          this.loaderShared.showSpinner(true);
+          let weightDeleteObj: Object = {};
+
+          weightDeleteObj["existingTiles"] = Object.keys(this.selectedWeight["weight"]);
+          weightDeleteObj["_id"] = this.selectedWeight["_id"];
+
+          this.qaScoresService.removeQaWeight(weightDeleteObj).then(deleteStatus => {
+            var wIdx = this.weightList.map(w => { return w['_id']; }).indexOf(this.selectedWeight["_id"]);
+            this.weightList.splice(wIdx, 1);
+            this.qaScoresReset();
+            this.loaderShared.showSpinner(false);
+
+            this.utils.iAlert('success', '', 'QA Score deleted successfully');
+          });
+        }
+      });
+    } else {
+      this.utils.iAlert('error', 'Information', 'Please select a Rule!!!');
+    }
+  };
+
+  newWeight(e: any) {
+    if (!this.utils.isNullOrEmpty(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    this.loaderShared.showSpinner(true);
+    this.qaScoresReset();
+    this.loaderShared.showSpinner(false);
   };
 
   ngOnInit() {

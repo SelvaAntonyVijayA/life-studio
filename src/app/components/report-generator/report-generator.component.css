@@ -1,0 +1,252 @@
+/*Report Generator Container*/
+
+.report_generator_container {
+  height: 920px;
+  position: relative;
+}
+
+.report_rule_page_head {
+  position: relative;
+  margin-left: 1px;
+  width: 914px;
+  height: 40px;
+  float: left;
+}
+
+.report_name {
+  width: 212px;
+  float: left;
+  margin-top: 6px;
+  margin-left: 15px;
+}
+
+.report_types {
+  margin-left: 15px;
+  width: 190px;
+  margin-top: 6px;
+  float: left;
+}
+
+.report_apps {
+  margin-left: 15px;
+  width: 190px;
+  margin-top: 6px;
+  float: left;
+}
+
+.report_form_btns {
+  float: right;
+  margin-top: 6px;
+  width: 30%;
+}
+
+/*Report Rule Buttons */
+
+.report_rule_new {
+  border-bottom-color: #228B22;
+  border-bottom-width: 3px;
+  float: left;
+  margin-right: 4px;
+  margin-left: 27px;
+}
+
+.report_rule_save {
+  border-bottom-color: #1E90FF;
+  border-bottom-width: 3px;
+  float: left;
+  margin-right: 4px;
+}
+
+.report_rule_delete {
+  border-bottom-color: #FF0000;
+  border-bottom-width: 3px;
+}
+
+/* Report Main layout area */
+
+.report_rule_main {
+  float: left;
+  width: 76.4%;
+  height: 920px;
+}
+
+/* Main Report Area */
+
+.report_list_main {
+  float: left;
+  width: 170px;
+  height: 920px;
+  position: relative;
+  margin-left: 1px;
+  padding-top: 5px;
+  margin-top: 1px;
+}
+
+.report_main_content {
+  float: left;
+  width: 743px;
+  height: 920px;
+  margin-left: 1px;
+  margin-top: 1px;
+}
+
+/* Tiles Panel Main */
+
+.report_rule_tiles_panel {
+  width: 283px;
+  height: 960px;
+  margin-top: 1px;
+  float: left;
+}
+
+.report_rule_tiles_list_panel {
+  text-align: left;
+  position: relative;
+  padding-top: 1px;
+  padding-left: 8px;
+  height: 788px;
+  overflow: hidden;
+  margin-top: 57px;
+}
+
+/*Tiles List */
+
+.tiles_list_search {
+  position: relative;
+  top: 5px;
+  padding-left: 9px;
+  text-align: center;
+  float: left;
+  width: 100%;
+}
+
+.tile_search_box {
+  width: 265px;
+  margin: 0 auto;
+  margin-bottom: 6px;
+}
+
+.report_rule_tile_category_filter {
+  width: 265px;
+  margin: 0 auto;
+}
+
+/* Tiles Sort */
+
+.tiles_sort {
+  float: left;
+  width: 284px;
+  margin-top: 4%;
+}
+
+.txt_arrange {
+  font-size: 11px;
+  float: left;
+  margin-top: 4px;
+  margin-left: 13px;
+}
+
+.sort_box {
+  float: left;
+  margin-left: 5px;
+  width: 87.5px;
+}
+
+.do_sort {
+  margin-right: 11px;
+  margin-top: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  float: right;
+}
+
+.tiles_count_main {
+  width: 100%;
+  font-size: 12px;
+  float: left;
+  height: 1.5%;
+  margin-top: 3%;
+}
+
+.tile-view-change {
+  float: left;
+  margin-left: 15px;
+}
+
+.sort_image {
+  margin-left: 5px;
+}
+
+.tile-view-change img {
+  cursor: pointer;
+  padding-right: 2px;
+}
+
+.tiles_list_count {
+  float: right;
+  font-size: 80%;
+  padding-right: 7%;
+  padding-top: 5px;
+}
+
+/* Tiles */
+
+.tiles_list_single {
+  float: left;
+  display: table;
+  position: relative;
+  text-align: left;
+  margin-left: 7px;
+  margin-bottom: 4px;
+  width: 257px;
+  min-height: 32px;
+  padding-bottom: 2px;
+  color: #000000;
+  border: 2px outset rgba(255, 255, 255, .5);
+  background-color: #FFFFFF;
+  border-radius: 0px;
+  cursor: pointer;
+}
+
+.tiles_list_single:hover {
+  background-color: #F2F2F2;
+}
+
+.tiles_list_single.selected {
+  background-color: #3c3c3c;
+  color: #FFFFFF;
+}
+
+.tile_list_art {
+  max-width: 240px;
+  margin-top: 8px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  margin-right: 4px;
+  float: left;
+}
+
+.tile_list_art.tile-content-img {
+  max-width: 30px;
+  max-height: 25px;
+  margin-top: 3px;
+}
+
+.tile_list_art.tile-details-img {
+  max-width: 240px;
+  max-height: none;
+}
+
+.tile_list_title {
+  float: left;
+  width: 235px;
+  margin-top: 2px;
+  margin-left: 5px;
+  font-size: 11px;
+  text-align: justify;
+  word-wrap: break-word;
+}
+
+.tile_list_title.tile-content-title {
+  width: 200px;
+}

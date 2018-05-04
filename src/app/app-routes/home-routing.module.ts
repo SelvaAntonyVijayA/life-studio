@@ -24,6 +24,7 @@ import { AuthandsecurityComponent } from '../components/authandsecurity/authands
 import { HealthStatusRulesComponent } from '../components/health-status-rules/health-status-rules.component';
 import { PhotosComponent } from '../components/photos/photos.component';
 import { QaScoresComponent } from '../components/qa-scores/qa-scores.component';
+import { ReportGeneratorComponent } from '../components/report-generator/report-generator.component';
 
 const homeRoutes: Routes = [
   {
@@ -113,6 +114,10 @@ const homeRoutes: Routes = [
       {
         path: 'qascores',
         component: QaScoresComponent
+      },
+      {
+        path: 'reportgenerator',
+        component: ReportGeneratorComponent
       }
     ]
   }

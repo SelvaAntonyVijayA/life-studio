@@ -38,7 +38,7 @@ export class QaScoresService {
       .catch(this.handleError);
   };
 
-  removeQaWeight(removeObj: Object, wgtId: string) {
+  removeQaWeight(removeObj: Object, wgtId?: string) {
     let removeWgtUrl: string = "/qaweights/removeweight/";
 
     if (!this.utils.isNullOrEmpty(wgtId)) {

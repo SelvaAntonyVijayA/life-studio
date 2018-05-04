@@ -41,6 +41,7 @@ import { PhotosComponent } from '../../components/photos/photos.component';
 import { RecurrenceComponent } from '../../components/recurrence/recurrence.component';
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { QaScoresComponent } from '../../components/qa-scores/qa-scores.component';
+import { ReportGeneratorComponent } from '../../components/report-generator/report-generator.component';
 
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';
@@ -107,7 +108,8 @@ import { MomentData } from '../../helpers/momentdata';
     OrganizationsComponent, StudiousersComponent, MenuBackgroundComponent, SettingsComponent, UserprofileComponent,
     ProfilebuilderComponent, AuthandsecurityComponent, PhotosComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
     jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent,
-    LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent, RecurrenceComponent, QaScoresComponent],
+    LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent,
+    RecurrenceComponent, QaScoresComponent, ReportGeneratorComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService, LivestreamService, MomentData, LanguageService]
 })

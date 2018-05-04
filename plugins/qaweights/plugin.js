@@ -31,6 +31,10 @@ var getWeight = function (req, res, next) {
   query = {};
   options = {};
 
+  if (!__util.isNullOrEmpty(req.params.weightId)) {
+    query["_id"] = req.params.weightId;
+  }
+
   if (!__util.isNullOrEmpty(req.params.orgId)) {
     query["organizationId"] = $db.objectId(req.params.orgId);
   }
