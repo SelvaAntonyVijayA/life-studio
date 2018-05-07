@@ -41,7 +41,8 @@ var plugins = {
   "notification": "notification",
   "smartengine": "smartengine",
   "media": "media",
-  "qaweights": "qaweights"
+  "qaweights": "qaweights",
+  "reportrule": "reportrule"
 };
 
 module.exports = function (appPath, dirName, app) {

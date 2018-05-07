@@ -191,6 +191,9 @@ module.exports = function (app) {
   router.all('/qaweights/getweight/:orgId/:weightId*?', $qaweights.getWeight);
   router.all('/qaweights/removeweight/:weightId*?', $qaweights.removeWeight);
 
+  router.all('/reportrule/getallsquares/:orgId', $reportrule.getall);
+  router.all('/reportrule/list/:orgId/:ruleId*?', $reportrule.list);
+
   router.get('/media/list/:appId/:tileId/:type', $media.list);
 
   app.use('/', router);

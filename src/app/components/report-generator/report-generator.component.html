@@ -24,6 +24,17 @@
       </div>
     </div>
     <div class="page_block report_list_main">
+      <div class="rule_search">
+        <input [(ngModel)]="ruleTextSearch" class="form-control input-sm rule_search_box " placeholder="Search" type="text">
+      </div>
+
+      <div id="rule_group_main" class="rule_group_list">
+        <ul>
+          <li (click)="selectRule($event, ruleObj)" *ngFor="let ruleObj of (reportRuleList | filterByText:'name': ruleTextSearch | orderBy: false: 'dateUpdated' : 'dateCreated'); let idx = index; trackBy: trackByIndex">
+            <label [ngClass]="!utils.isEmptyObject(selectedRule) && selectedRule['_id'] === ruleObj['_id']? 'lbl_rule_title selected': 'lbl_rule_title'">{{ruleObj!.name}}</label>
+          </li>
+        </ul>
+      </div>
 
     </div>
     <div class="page_block report_main_content">
@@ -77,31 +88,31 @@
         <div class='tiles_list_count'>
         </div>
       </div>
+    </div>
 
-      <div id="tiles-list-show" class="report_rule_tiles_list_panel">
-        <div (click)="selectTiles($event, tile)" [ngClass]="checkSelectedExists(tile)? 'tiles_list_single selected' : 'tiles_list_single'"
-          *ngFor="let tile of (tileList | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1] | filterByArrayProperty: 'procedureIds': selectedProcedure); let i = index; trackBy: trackByTileId">
-          <img [ngClass]="tileSort['listType'] === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
-          <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
-          <div *ngIf="tile" class="tile_icons">
-            <span [title]="tile!.tileApps" [style.display]="tile!.isWgt" class="step weight"></span>
-            <span [title]="tile!.tileHealthStatusRules" [style.display]="tile!.isRules" class="step smart smarticon report-rule-tile">
-              <i class="icon ion-heart"></i>
-            </span>
-            <span [title]="tile!.tileProcedure" [style.display]="tile!.isProcedure" class="step smart smarticon smarticon-tile">
-              <i class="icon ion-medkit"></i>
-            </span>
-            <span [title]="tile!.tileSmart" [style.display]="tile!.isSmart" class="step smart smarticon smarticon-tile">
-              <i class="icon ion-lightbulb"></i>
-            </span>
-            <span [title]="tile!.tileNotifications" [style.display]="tile!.isNotification" class="step smart noteicon smarticon-tile"
-              style="display: block;" aria-hidden="true">
-              <i class="icon ion-android-notifications-none"></i>
-            </span>
-            <span [title]="tile!.tileApps" [style.display]="tile!.isRole" class="step smart smarticon smarticon-tile">
-              <i class="icon ion-android-person"></i>
-            </span>
-          </div>
+    <div id="tiles-list-show" class="report_rule_tiles_list_panel">
+      <div (click)="selectTiles($event, tile)" [ngClass]="checkSelectedExists(tile)? 'tiles_list_single selected' : 'tiles_list_single'"
+        *ngFor="let tile of (tileList | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1] | filterByArrayProperty: 'procedureIds': selectedProcedure); let i = index; trackBy: trackByTileId">
+        <img [ngClass]="tileSort['listType'] === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
+        <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
+        <div *ngIf="tile" class="tile_icons">
+          <span [title]="tile!.tileApps" [style.display]="tile!.isWgt" class="step weight"></span>
+          <span [title]="tile!.tileHealthStatusRules" [style.display]="tile!.isRules" class="step smart smarticon report-rule-tile">
+            <i class="icon ion-heart"></i>
+          </span>
+          <span [title]="tile!.tileProcedure" [style.display]="tile!.isProcedure" class="step smart smarticon smarticon-tile">
+            <i class="icon ion-medkit"></i>
+          </span>
+          <span [title]="tile!.tileSmart" [style.display]="tile!.isSmart" class="step smart smarticon smarticon-tile">
+            <i class="icon ion-lightbulb"></i>
+          </span>
+          <span [title]="tile!.tileNotifications" [style.display]="tile!.isNotification" class="step smart noteicon smarticon-tile"
+            style="display: block;" aria-hidden="true">
+            <i class="icon ion-android-notifications-none"></i>
+          </span>
+          <span [title]="tile!.tileApps" [style.display]="tile!.isRole" class="step smart smarticon smarticon-tile">
+            <i class="icon ion-android-person"></i>
+          </span>
         </div>
       </div>
     </div>
