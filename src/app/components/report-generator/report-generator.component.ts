@@ -10,12 +10,13 @@ import 'rxjs/add/observable/forkJoin';
 import { TileService } from '../../services/tile.service';
 import { ProcedureService } from '../../services/procedure.service';
 import { ReportGeneratorService } from '../../services/report-generator.service';
+import { PageService } from '../../services/page.service';
 
 @Component({
   selector: 'app-report-generator',
   templateUrl: './report-generator.component.html',
   styleUrls: ['./report-generator.component.css'],
-  providers: [ReportGeneratorService],
+  providers: [PageService, ReportGeneratorService],
   encapsulation: ViewEncapsulation.None
 })
 export class ReportGeneratorComponent implements OnInit {
@@ -30,7 +31,8 @@ export class ReportGeneratorComponent implements OnInit {
     public utils: Utils,
     private tileService: TileService,
     private procedureService: ProcedureService,
-    private reportGeneratorService: ReportGeneratorService
+    private reportGeneratorService: ReportGeneratorService,
+    private pageService: PageService
   ) { }
 
   private orgChangeDetect: any;
@@ -42,10 +44,17 @@ export class ReportGeneratorComponent implements OnInit {
   selectedTiles: string[] = [];
   tileSquares: any[] = [];
   proceduresList: any[] = [];
-  selectedProcedure: string = "";
+  selectedProcedure: string = "-1";
   reportRuleList: any[] = [];
   selectedRule: Object = {};
   ruleTextSearch: string = "";
+  appList: any[] = [];
+  selectedApp: string = "-1";
+  selectedReport: string = "-1";
+  tileSearchText: string = "";
+  baseTiles: any[] = [];
+  selectedBaseTile: string = "-1";
+  squaresPanelHgt: number = 870;
 
   tileSort: Object = {
     "listType": "list",
@@ -66,6 +75,7 @@ export class ReportGeneratorComponent implements OnInit {
     this.tileSquares = [];
     this.proceduresList = [];
     this.reportRuleList = [];
+    this.appList = [];
 
     this.tileSort = {
       "listType": "list",
@@ -83,24 +93,32 @@ export class ReportGeneratorComponent implements OnInit {
 
   reportRuleReset() {
     this.selectedTiles = [];
-    this.selectedProcedure = "";
+    this.selectedProcedure = "-1";
     this.selectedRule = {};
     this.ruleTextSearch = "";
+    this.selectedApp = "-1";
+    this.selectedReport = "-1";
+    this.tileSearchText = "";
+    this.baseTiles = [];
+    this.selectedBaseTile = "-1";
+    this.squaresPanelHgt = 870;
   };
 
   setScrollList() {
     this.mScrollbarService.initScrollbar("#tiles-list-show", this.scrollbarOptions);
+    this.mScrollbarService.initScrollbar("#rule_group_main", this.scrollbarOptions);
+    this.mScrollbarService.initScrollbar("#main-tile_squares", this.scrollbarOptions);
 
     if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
-      this.cms["appDatas"]["scrollList"].push("#tiles-list-show", "#rule_group_main");
+      this.cms["appDatas"]["scrollList"].push("#tiles-list-show", "#rule_group_main", "#main-tile_squares");
     } else {
-      this.cms["appDatas"]["scrollList"] = ["#tiles-list-show", "#rule_group_main"];
+      this.cms["appDatas"]["scrollList"] = ["#tiles-list-show", "#rule_group_main", "#main-tile_squares"];
     }
   };
 
   /* Destroy Scroll */
   destroyScroll() {
-    this.cms.destroyScroll(["#tiles-list-show", "#rule_group_main"]);
+    this.cms.destroyScroll(["#tiles-list-show", "#rule_group_main", "#main-tile_squares"]);
   };
 
   /* Getting unique Id */
@@ -132,7 +150,15 @@ export class ReportGeneratorComponent implements OnInit {
       this.setTileSquares(reportRuleDatas[1]);
       this.setWeightList(reportRuleDatas[2]);
       this.setProcedures(reportRuleDatas[3]);
+      this.setApps(reportRuleDatas[4]);
+      this.loaderShared.showSpinner(false);
     });
+  };
+
+  setApps(apps: any[]) {
+    if (this.utils.isArray(apps) && apps.length > 0) {
+      this.appList = apps;
+    }
   };
 
   setTileCategories(tileCats: any[]) {
@@ -363,8 +389,9 @@ export class ReportGeneratorComponent implements OnInit {
     let tilesAndSquares = this.getAppTileSquares();
     let ruleList = this.getRuleList();
     let procedureList = this.getProcedures();
+    let appList = this.getApps();
 
-    return Observable.forkJoin([tileCats, tilesAndSquares, ruleList, procedureList]);
+    return Observable.forkJoin([tileCats, tilesAndSquares, ruleList, procedureList, appList]);
   };
 
   getTileCategories() {
@@ -389,6 +416,12 @@ export class ReportGeneratorComponent implements OnInit {
     let procedures = this.procedureService.procedureList(this.oid, "", "procedure");
 
     return procedures;
+  };
+
+  getApps() {
+    let apps = this.pageService.getApps(this.oid);
+
+    return apps;
   };
 
   /*Tile Notify Icons */
@@ -519,8 +552,15 @@ export class ReportGeneratorComponent implements OnInit {
 
     if (tileIndex === -1) {
       this.selectedTiles.push(currTile["_id"]);
+      this.baseTiles.push(currTile);
     } else {
       this.selectedTiles.splice(tileIndex, 1);
+      this.baseTiles.splice(tileIndex, 1);
+
+      if (this.selectedBaseTile === currTile["_id"]) {
+        this.selectedBaseTile = "-1";
+      }
+
       let sqrTile: Object = this.tileSquares.find(s => s['tileId'] === currTile["_id"]);
 
       if (!this.utils.isEmptyObject(sqrTile)) {
@@ -565,13 +605,21 @@ export class ReportGeneratorComponent implements OnInit {
     }
   };
 
+  appChange(appId: string) {
+    this.selectedApp = appId;
+  };
+
+  reportChange(repType: string) {
+    this.squaresPanelHgt = repType === "0" ? 843 : 870;
+    this.selectedReport = repType;
+  };
+
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
       let loadTime = Cookie.get('pageLoadTime');
 
       if (this.utils.isNullOrEmpty(loadTime) || (!this.utils.isNullOrEmpty(loadTime) && loadTime !== params["_dt"])) {
         Cookie.set('pageLoadTime', params["_dt"]);
-        this.loaderShared.showSpinner(false);
         this.reportRuleDataReset();
         this.setScrollList();
         this.oid = Cookie.get('oid');

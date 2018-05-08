@@ -3,13 +3,14 @@
     <div class="page_block report_rule_page_head">
       <input class="form-control input-sm report_name" type="text" placeholder="Report name">
 
-      <select class="form-control input-sm report_types" style="font-family: Helvetica;">
+      <select [ngModel]="selectedReport" (ngModelChange)="reportChange($event)" class="form-control input-sm report_types" style="font-family: Helvetica;">
         <option [value]="'-1'">Select Type</option>
         <option [value]="'0'">Timelapse - One Patient</option>
         <option [value]="'1'">Snapshot - All Patients</option>
       </select>
-      <select class="form-control input-sm report_apps">
+      <select [ngModel]="selectedApp" (ngModelChange)="appChange($event)" class="form-control input-sm report_apps">
         <option [value]="'-1'">Filter by app - All</option>
+        <option *ngFor="let app of appList; let i= index" [value]="app?._id ">{{app?.name}}</option>
       </select>
       <div class="report_form_btns">
         <button class="ili-btn report_rule_new">
@@ -38,12 +39,31 @@
 
     </div>
     <div class="page_block report_main_content">
+      <div class="report_content_filter">
+        <input type="text" [(ngModel)]="tileSearchText" class="form-control input-sm search_tile" value="" placeholder="Search tile">
 
+        <select *ngIf="selectedReport === '0'" [(ngModel)]="selectedProcedure" class="form-control input-sm filter_procedure">
+          <option value="-1">All Procedure</option>
+          <option *ngFor="let proc of proceduresList; let i = index" [value]="proc['_id']">{{proc!.name}}</option>
+        </select>
+      </div>
+
+      <div *ngIf="selectedReport === '0' && baseTiles.length > 0" class="base_line_tile_select">
+        <select [(ngModel)]="selectedBaseTile" class="form-control input-sm base_tiles">
+          <option value="-1">Select Baseline Tile</option>
+          <option *ngFor="let tile of baseTiles;  let i = index" [value]="tile['_id']">{{tile!.title}}</option>
+        </select>
+      </div>
+
+      <div [style.height]="squaresPanelHgt + 'px'" id="main-tile_squares" class="squares_main_content">
+
+      </div>
     </div>
   </div>
   <div class="page_block report_rule_tiles_panel">
     <div class="tiles_list_search">
       <input [(ngModel)]="tileSort[ 'tileSearchText']" class="form-control input-sm tile_search_box" type="text" placeholder="Search Tiles">
+
       <select [(ngModel)]="selectedCategory" class="form-control input-sm report_rule_tile_category_filter">
         <option [value]="'-1'">All Categories</option>
         <option *ngFor="let tileCat of tileCategories; let i = index" [value]="tileCat?._id">{{tileCat?.name}}</option>
@@ -58,6 +78,7 @@
         <option [value]="'category'">Category</option>
         <option [value]="'author'">Author</option>
       </select>
+
       <div *ngIf="tileSort['selectedOpt'] === 'date'" class="do_sort">
         <div *ngIf="tileSort['isAsc']" (click)="doSort(false)">
           Oldest on top
@@ -68,6 +89,7 @@
           <img class="sort_image" src="/img/sort_down.png" />
         </div>
       </div>
+
       <div *ngIf="tileSort['selectedOpt'] !=='date'" class="do_sort">
         <div *ngIf="tileSort['isAsc']" (click)="doSort(false)" class="text_asc">
           A on top

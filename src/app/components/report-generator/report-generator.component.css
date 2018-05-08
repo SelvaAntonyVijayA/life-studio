@@ -254,7 +254,7 @@
 .rule_search {
   position: relative;
   text-align: center;
-  height: 37px;
+  height: 24px;
   float: left;
   width: 100%;
 }
@@ -262,7 +262,7 @@
 .rule_search_box {
   margin: 0 auto;
   width: 94%;
-  margin-top: 12px;
+  margin-top: 1px;
   height: 25px;
 }
 
@@ -302,4 +302,49 @@
   font-size: 14px;
   text-decoration: underline;
   text-decoration-color: #f5deb3;
+}
+
+/* Main procedure filter */
+
+.report_content_filter {
+  float: left;
+  width: 100%;
+  height: 45px;
+}
+
+.search_tile {
+  width: 187px;
+  float: right;
+  margin-top: 8px;
+  margin-right: 15px;
+}
+
+.filter_procedure {
+  float: right;
+  width: 196px;
+  margin-right: 11px;
+  margin-top: 8px;
+}
+
+/* Main Squares Content */
+
+.squares_main_content {
+  float: left;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Main Base line tile select */
+
+.base_line_tile_select {
+  float: left;
+  width: 100%;
+  height: 27px;
+}
+
+.base_tiles {
+  float: left;
+  width: 255px;
+  margin-right: 11px;
+  margin-left: 13px;
 }

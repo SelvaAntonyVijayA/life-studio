@@ -6,6 +6,15 @@ var init = function (app) {
   settingsConf = app.get('settings');
 };
 
+var save = function (req, res, next) {
+  var obj = req.body.form_data;
+
+  $db.save(settingsConf.dbname.tilist_core, settingsConf.collections.reportrule, obj, function (result) {
+    var resultObj = { "_id": result };
+    res.send(resultObj);
+  });
+};
+
 var getall = function (req, res, next) {
   $async.parallel({
     tiles: function (cb) {
@@ -31,7 +40,7 @@ var getall = function (req, res, next) {
 
 var list = function (req, res, next) {
   query = {};
-  
+
   if (!__util.isNullOrEmpty(req.params.ruleId)) {
     query["_id"] = req.params.ruleId;
   }
@@ -52,9 +61,23 @@ var get = function (rQuery, rOptions, cb) {
   })
 };
 
+var deleteRule = function (req, res, next) {
+  query = {};
+  options = {};
+  query["_id"] = req.params.orgId;
+
+  $db.remove(settingsConf.dbname.tilist_core, settingsConf.collections.reportrule, query, options, function (result) {
+    var deleteResult = { "deleted": result };
+
+    res.send(deleteResult);
+  });
+};
+
 module.exports = {
   "init": init,
+  "save": save,
   "getall": getall,
   "list": list,
-  "get": get
+  "get": get,
+  "deleteRule": deleteRule
 };

@@ -193,6 +193,8 @@ module.exports = function (app) {
 
   router.all('/reportrule/getallsquares/:orgId', $reportrule.getall);
   router.all('/reportrule/list/:orgId/:ruleId*?', $reportrule.list);
+  router.all('/reportrule/save', $reportrule.save);
+  router.all('/reportrule/delete/:orgId', $reportrule.deleteRule);
 
   router.get('/media/list/:appId/:tileId/:type', $media.list);
 

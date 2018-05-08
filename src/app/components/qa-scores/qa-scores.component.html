@@ -91,6 +91,7 @@
         <option [value]="'category'">Category</option>
         <option [value]="'author'">Author</option>
       </select>
+
       <div *ngIf="tileSort['selectedOpt'] === 'date'" class="do_sort">
         <div *ngIf="tileSort['isAsc']" (click)="doSort(false)">
           Oldest on top

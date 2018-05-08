@@ -272,7 +272,7 @@ export class Utils {
     if (!this.isNullOrEmpty(str)) {
       str = str.replace(/^\s+|\s+$/gm, "")
       str = str.replace(/\s/g, "");
-      str = str.replace(/ /g,'');
+      str = str.replace(/ /g, '');
 
       str = str.trim();
     }
@@ -345,14 +345,20 @@ export class Utils {
   };
 
 
-  checkIfArraysEqual(arr1, arr2) {
+  checkIfArraysEqual(arr1: any, arr2: any) {
     if (arr1.length != arr2.length) {
       return false;
     }
     //sort them first, then join them and just compare the strings
     return arr1.sort().join() == arr2.sort().join();
-  }
+  };
 
+  validateNumber(number: any) {
+    var reg = /^\d+$/;
+    var result = reg.test(number);
+
+    return result;
+  };
 };
 
 
