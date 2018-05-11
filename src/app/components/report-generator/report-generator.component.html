@@ -36,8 +36,8 @@
           </li>
         </ul>
       </div>
-
     </div>
+
     <div class="page_block report_main_content">
       <div class="report_content_filter">
         <input type="text" [(ngModel)]="tileSearchText" class="form-control input-sm search_tile" value="" placeholder="Search tile">
@@ -49,17 +49,63 @@
       </div>
 
       <div *ngIf="selectedReport === '0' && baseTiles.length > 0" class="base_line_tile_select">
-        <select [(ngModel)]="selectedBaseTile" class="form-control input-sm base_tiles">
+        <select [ngModel]="selectedBaseTile" (ngModelChange)="baseLineTileChange($event)" class="form-control input-sm base_tiles">
           <option value="-1">Select Baseline Tile</option>
           <option *ngFor="let tile of baseTiles;  let i = index" [value]="tile['_id']">{{tile!.title}}</option>
         </select>
       </div>
 
       <div [style.height]="squaresPanelHgt + 'px'" id="main-tile_squares" class="squares_main_content">
+        <div *ngFor="let sqr of (tileSquares | filterInByArray: 'tileId': selectedTiles : true | filterByArrayProperty: 'procedureIds': selectedProcedure); let i = index; trackBy: trackByUniqueId"
+          class="square-tiles">
 
+          <p style="cursor: pointer; float: left; width: 97%; margin-left: 3%;" data-toggle="collapse" [attr.data-target]="'#' + sqr.tileId">
+            <u>{{sqr.title}} </u>
+          </p>
+
+          <div [attr.id]="sqr.tileId" class='form-group collapse in'>
+            <div class='x-axis-label'>
+              <label>X Axis Label</label>
+              <input class="form-control input-sm x-axis-label-name" [(ngModel)]="sqr!.title" type='text'>
+            </div>
+
+            <form [attr.id]="sqr.tileId + '_' + i" role="form">
+              <div *ngFor="let blk of sqr['blocks']; let j = index; trackBy: trackByBlockId" class="block_main">
+                <div style="float:left; width:100%;" *ngFor="let opt of blk['options']; let k = index;">
+                  <div class="radio select-main-block">
+                    <label>
+                      <input style="margin-top:1px;" type="radio" [attr.name]="sqr.tileId" [value]="opt['blkValue']" [checked]="sqr['assigned'] === opt['blkValue']"
+                        (change)="changeTileBase(opt['blkValue'], sqr, opt)"> {{opt!.questionText}}
+                    </label>
+                  </div>
+
+                  <div class="main-square-titles">
+                    <label class="lbl_absolute">
+                      Absolute Value
+                    </label>
+
+                    <label>
+                      In-app answers
+                    </label>
+                  </div>
+
+                  <div class="form-group">
+                    <div *ngFor="let dt of opt['datas']; let l = index" class='squares_answers'>
+                      <label style="line-height: 1.95; float: left; margin-left: 22px; margin-right: 2px;">
+                        <input [disabled]="opt['isDisabled']" OnlyNumbers="true" name="answers" class="report_rule_val" [value]="dt['value']" (input)="changeSubSquareValues(dt, $event.target.value, l)"
+                          type="text" /> {{dt!.text}}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
   <div class="page_block report_rule_tiles_panel">
     <div class="tiles_list_search">
       <input [(ngModel)]="tileSort[ 'tileSearchText']" class="form-control input-sm tile_search_box" type="text" placeholder="Search Tiles">

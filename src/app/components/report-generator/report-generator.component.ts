@@ -55,6 +55,7 @@ export class ReportGeneratorComponent implements OnInit {
   baseTiles: any[] = [];
   selectedBaseTile: string = "-1";
   squaresPanelHgt: number = 870;
+  reportName: string = "";
 
   tileSort: Object = {
     "listType": "list",
@@ -102,6 +103,8 @@ export class ReportGeneratorComponent implements OnInit {
     this.baseTiles = [];
     this.selectedBaseTile = "-1";
     this.squaresPanelHgt = 870;
+    this.resetSquares();
+    this.reportName = "";
   };
 
   setScrollList() {
@@ -198,7 +201,14 @@ export class ReportGeneratorComponent implements OnInit {
 
       for (let i = 0; i < tiles.length; i++) {
         let currTile: Object = tiles[i];
-        let squareObj: Object = { "uniqueId": this.getUniqueId(), "tileId": currTile["_id"], "title": currTile["title"], "blocks": [] }
+        let squareObj: Object = {
+          "uniqueId": this.getUniqueId(),
+          "tileId": currTile["_id"],
+          "title": currTile["title"],
+          "blocks": [],
+          "selectedBlock": ""
+        };
+
         let blocksData: any[] = currTile.hasOwnProperty("blocksData") && currTile["blocksData"].length > 0 ? currTile["blocksData"] : [];
 
         if (blocksData.length > 0) {
@@ -209,7 +219,10 @@ export class ReportGeneratorComponent implements OnInit {
           for (let j = 0; j < blks.length; j++) {
             let blkData = blks[j];
 
-            let currBlock = { "blockId": blkData["_id"], "type": blkData["type"] };
+            let currBlock = {
+              "blockId": blkData["_id"],
+              "type": blkData["type"]
+            };
 
             if (currBlock["type"] === "painlevel") {
               squareObj = this.setPainLevel(blkData, squareObj, currBlock, blockIds);
@@ -222,6 +235,8 @@ export class ReportGeneratorComponent implements OnInit {
         }
 
         if (squareObj["blocks"].length > 0) {
+          let opt = squareObj["blocks"][0]["options"][0];
+          squareObj["assigned"] = opt["blkValue"];
           tileIds.push(squareObj["tileId"]);
           this.tileSquares.push(squareObj);
         }
@@ -235,7 +250,8 @@ export class ReportGeneratorComponent implements OnInit {
     let currOpt = {
       "questionText": !this.utils.isNullOrEmpty(tileBlock["data"]["question"]) ? tileBlock["data"]["question"] : "",
       "index": "-1",
-      "assigned": false,
+      "blkValue": currBlk["blockId"],
+      "isDisabled": true,
       "datas": []
     }
 
@@ -265,6 +281,7 @@ export class ReportGeneratorComponent implements OnInit {
     let level3 = [];
     let quesOpts = tileBlock["data"]["options"];
     let questionText = !this.utils.isNullOrEmpty(tileBlock["data"]["questionText"]) ? tileBlock["data"]["questionText"] : "";
+
     let survey_1 = {
       questionText: questionText,
       options: [],
@@ -326,7 +343,8 @@ export class ReportGeneratorComponent implements OnInit {
       let currOpt = {
         "questionText": !this.utils.isNullOrEmpty(opt["questionText"]) ? opt["questionText"] : "",
         "index": opt["index"],
-        "assigned": false,
+        "blkValue": opt["index"] + currBlk["blockId"],
+        "isDisabled": true,
         "datas": []
       }
 
@@ -358,7 +376,8 @@ export class ReportGeneratorComponent implements OnInit {
     let currOpt = {
       "questionText": !this.utils.isNullOrEmpty(tileBlock["data"]["questionText"]) ? tileBlock["data"]["questionText"] : "",
       "index": "-1",
-      "assigned": false,
+      "blkValue": currBlk["blockId"],
+      "isDisabled": true,
       "datas": []
     }
 
@@ -548,36 +567,100 @@ export class ReportGeneratorComponent implements OnInit {
     e.preventDefault();
     e.stopPropagation();
 
-    let tileIndex = this.selectedTiles.indexOf(currTile["_id"]);
+    if (this.selectedReport !== "-1") {
+      let tileIndex = this.selectedTiles.indexOf(currTile["_id"]);
 
-    if (tileIndex === -1) {
-      this.selectedTiles.push(currTile["_id"]);
-      this.baseTiles.push(currTile);
-    } else {
-      this.selectedTiles.splice(tileIndex, 1);
-      this.baseTiles.splice(tileIndex, 1);
+      if (tileIndex === -1) {
+        this.selectedTiles.push(currTile["_id"]);
+        this.baseTiles.push(currTile);
 
-      if (this.selectedBaseTile === currTile["_id"]) {
-        this.selectedBaseTile = "-1";
+        if (this.selectedBaseTile !== "-1") {
+          this.assignSelectedBaseSquare(currTile["_id"]);
+        }
+      } else {
+        this.selectedTiles.splice(tileIndex, 1);
+        this.baseTiles.splice(tileIndex, 1);
+
+        if (this.selectedBaseTile === currTile["_id"]) {
+          this.selectedBaseTile = "-1";
+        }
+
+        this.unassignSelectedBaseSquare(currTile["_id"]);
       }
+    } else {
+      this.utils.iAlert('error', 'Information', 'Please select report type');
+    }
+  };
 
-      let sqrTile: Object = this.tileSquares.find(s => s['tileId'] === currTile["_id"]);
+  assignSelectedBaseSquare(tileId: string) {
+    let baseSqr: Object = this.tileSquares.find(s => s['tileId'] === this.selectedBaseTile);
 
-      if (!this.utils.isEmptyObject(sqrTile)) {
-        for (let j = 0; j < sqrTile["blocks"].length; j++) {
-          let blk: Object = sqrTile["blocks"][j];
+    let selectedBaseOpt: any[] = [];
 
-          for (let k = 0; k < blk["options"].length; k++) {
-            let opt: Object = blk["options"][k];
+    if (!this.utils.isEmptyObject(baseSqr)) {
+      let assigned: string = baseSqr["assigned"];
 
-            opt["assigned"] = false;
+      for (let i = 0; i < baseSqr["blocks"].length; i++) {
+        let blk: Object = baseSqr["blocks"][i];
 
-            for (let m = 0; m < opt["datas"].length; m++) {
-              let currData = opt["datas"][m];
-              currData["value"] = "";
-            }
+        for (let j = 0; j < blk["options"].length; j++) {
+          let opt: Object = blk["options"][j];
+
+          if (opt["blkValue"] === assigned) {
+            selectedBaseOpt = opt["datas"];
+            break;
           }
         }
+
+        if (selectedBaseOpt.length > 0) {
+          break;
+        }
+      }
+    }
+
+    if (selectedBaseOpt.length > 0) {
+      let currTile: Object = this.tileSquares.find(s => s['tileId'] === tileId);
+      let currAssigned: string = currTile["assigned"];
+
+      for (let i = 0; i < currTile["blocks"].length; i++) {
+        let blk: Object = currTile["blocks"][i];
+
+        for (let j = 0; j < blk["options"].length; j++) {
+          let opt: Object = blk["options"][j];
+
+          let optLen: number = selectedBaseOpt.length > 0 ? selectedBaseOpt.length - 1 : -1;
+
+          for (let k = 0; k < opt["datas"].length; k++) {
+            let currData = opt["datas"][k];
+            currData["value"] = currAssigned == opt["blkValue"] && selectedBaseOpt.length > 0 && k <= optLen && !this.utils.isNullOrEmpty(selectedBaseOpt[k]["value"]) ? selectedBaseOpt[k]["value"] : "";
+          }
+        }
+      }
+    }
+  };
+
+  unassignSelectedBaseSquare(tileId: string) {
+    let sqrTile: Object = this.tileSquares.find(s => s['tileId'] === tileId);
+
+    if (!this.utils.isEmptyObject(sqrTile)) {
+      for (let j = 0; j < sqrTile["blocks"].length; j++) {
+        let blk: Object = sqrTile["blocks"][j];
+        sqrTile["assigned"] = "";
+
+        for (let k = 0; k < blk["options"].length; k++) {
+          let opt: Object = blk["options"][k];
+          opt["isDisabled"] = true;
+
+          for (let m = 0; m < opt["datas"].length; m++) {
+            let currData = opt["datas"][m];
+            currData["value"] = "";
+          }
+        }
+      }
+
+      if (sqrTile["blocks"].length > 0) {
+        let opt = sqrTile["blocks"][0]["options"][0];
+        sqrTile["assigned"] = opt["blkValue"];
       }
     }
   };
@@ -612,6 +695,134 @@ export class ReportGeneratorComponent implements OnInit {
   reportChange(repType: string) {
     this.squaresPanelHgt = repType === "0" ? 843 : 870;
     this.selectedReport = repType;
+  };
+
+  changeTileBase(selectedVal: any, sqr: Object, opt: Object) {
+    setTimeout(() => {
+      opt["isDisabled"] = this.selectedReport === "0" && this.selectedBaseTile === sqr["tileId"] ? false : true;
+      sqr["assigned"] = selectedVal;
+    }, 0);
+
+    let selectedBaseOpt: any[] = [];
+
+    for (let i = 0; i < this.selectedTiles.length; i++) {
+      let currSqr: Object = this.tileSquares.find(s => s['tileId'] === this.selectedTiles[i]);
+      let assigned: string = currSqr["assigned"];
+
+      for (let j = 0; j < currSqr["blocks"].length; j++) {
+        let blck: Object = currSqr["blocks"][j];
+
+        for (let k = 0; k < blck["options"].length; k++) {
+          let opt: Object = blck["options"][k];
+
+          if (sqr["tileId"] === currSqr["tileId"] && opt['blkValue'] !== selectedVal && !opt["isDisabled"]) {
+            opt["isDisabled"] = true;
+          }
+
+          if (sqr["tileId"] !== currSqr["tileId"] && currSqr["tileId"] === this.selectedBaseTile && opt['blkValue'] === assigned) {
+            selectedBaseOpt = opt["datas"];
+          }
+
+          let optLen: number = selectedBaseOpt.length > 0 ? selectedBaseOpt.length - 1 : -1;
+
+          if ((currSqr["tileId"] !== this.selectedBaseTile) || (sqr["tileId"] === currSqr["tileId"])) {
+            for (let m = 0; m < opt["datas"].length; m++) {
+
+              let currData = opt["datas"][m];
+              currData["value"] = this.selectedBaseTile !== "-1" && currSqr["tileId"] !== this.selectedBaseTile && selectedBaseOpt.length > 0 && m <= optLen && sqr["tileId"] === currSqr["tileId"] && opt['blkValue'] === selectedVal && !this.utils.isNullOrEmpty(selectedBaseOpt[m]["value"]) ? selectedBaseOpt[m]["value"] : "";
+            }
+          }
+        }
+      }
+    }
+  };
+
+  changeSubSquareValues(dt: Object, currVal: string, currIdx: number) {
+    dt['value'] = currVal;
+
+    for (let i = 0; i < this.selectedTiles.length; i++) {
+      let currSqr: Object = this.tileSquares.find(s => s['tileId'] === this.selectedTiles[i]);
+      let assigned: string = currSqr["assigned"];
+
+      for (let j = 0; j < currSqr["blocks"].length; j++) {
+        let blck: Object = currSqr["blocks"][j];
+
+        for (let k = 0; k < blck["options"].length; k++) {
+          let opt: Object = blck["options"][k];
+
+          for (let m = 0; m < opt["datas"].length; m++) {
+            let currData = opt["datas"][m];
+
+            if (m === currIdx && assigned === opt['blkValue']) {
+              currData["value"] = currVal;
+            }
+          }
+        }
+      }
+    }
+  };
+
+  baseLineTileChange(tileId: string) {
+    this.selectedBaseTile = tileId;
+
+    let sqrIdx: number = this.tileSquares.map(s => { return s['tileId']; }).indexOf(tileId);
+    let baseIdx: number = this.baseTiles.map(t => { return t['_id']; }).indexOf(tileId);
+    let selectedIdx: number = this.selectedTiles.indexOf(tileId);
+    let sqrObj: Object = {};
+
+    if (sqrIdx !== -1) {
+      sqrObj = Object.assign({}, this.tileSquares[sqrIdx]);
+      this.utils.arrayMove(this.tileSquares, sqrIdx, 0);
+    }
+
+    if (baseIdx !== -1) {
+      this.utils.arrayMove(this.baseTiles, baseIdx, 0);
+    }
+
+    if (selectedIdx !== -1) {
+      this.utils.arrayMove(this.selectedTiles, selectedIdx, 0);
+    }
+
+    setTimeout(() => {
+      this.resetSquares(tileId);
+    }, 0);
+  };
+
+  resetSquares(tileId?: string) {
+    for (let i = 0; i < this.selectedTiles.length; i++) {
+      let currSqr: Object = this.tileSquares.find(s => s['tileId'] === this.selectedTiles[i]);
+      currSqr["assigned"] = "";
+
+      for (let j = 0; j < currSqr["blocks"].length; j++) {
+        let blck: Object = currSqr["blocks"][j];
+
+        for (let k = 0; k < blck["options"].length; k++) {
+          let opt: Object = blck["options"][k];
+          opt["isDisabled"] = true;
+
+          for (let m = 0; m < opt["datas"].length; m++) {
+            let currData = opt["datas"][m];
+            currData["value"] = "";
+          }
+        }
+      }
+
+      if (currSqr["blocks"].length > 0) {
+        let opt = currSqr["blocks"][0]["options"][0];
+        currSqr["assigned"] = opt["blkValue"];
+        opt["isDisabled"] = !this.utils.isNullOrEmpty(tileId) && currSqr["tileId"] === tileId ? false : true;
+      }
+    }
+  };
+
+  selectReportData(reportObj: Object) {
+    if (!this.utils.isEmptyObject(reportObj)) {
+      this.reportName = reportObj.hasOwnProperty("name") && !this.utils.isNullOrEmpty(reportObj["name"]) ? reportObj["name"] : "";
+    }
+  };
+
+  setReportData() {
+
   };
 
   ngOnInit() {
