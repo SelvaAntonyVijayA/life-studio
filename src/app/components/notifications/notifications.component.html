@@ -5,7 +5,8 @@
     </div>
 
     <div id="main-container-pages" class="pages_list_show">
-      <div class="notify_page_list_single" [iliDraggable]="{data: mnu, page: 'notification'}" *ngFor="let mnu of (menus | filterByText:'title': pageSearchText | orderBy: true: 'position'); let i = index; trackBy: trackByIndex;">
+      <div class="notify_page_list_single" dnd-draggable [dragEnabled]="true" [dragData]="mnu" (onDragSuccess)="draggedTile($event, 'menu')"
+      [dropZones]="['notification']" *ngFor="let mnu of (menus | filterByText:'title': pageSearchText | orderBy: true: 'position'); let i = index; trackBy: trackByIndex;">
         <div [title]="mnu['title']" class="new_app_notify_page_label">
           {{ mnu['title'] }}</div>
         <span *ngIf="mnu['isNotification']" [title]="mnu['tileNotifications']" class="step noteicon" aria-hidden="true">
@@ -24,7 +25,7 @@
   <div class="app_page_form">
     <div class="page_block app_page_head">
       <div class="app_form_btns">
-        <button class="ili-btn save_notification">
+        <button (click)="saveNotification($event)" class="ili-btn save_notification">
           Save
         </button>
         <span class="notify_heading_txt">
@@ -51,14 +52,14 @@
             <br> into this space</div>
         </div>
 
-        <div *ngFor="let dragObj of notification!.dragged | reverse; let i = index; trackBy: trackByUniqueId" class="ili-panel notify_item_container page_block drag_cursor">
+        <div *ngFor="let dragObj of notification!.dragged; let i = index; trackBy: trackByUniqueId" class="ili-panel notify_item_container page_block drag_cursor">
           <div *ngIf="!dragObj.hasOwnProperty('pageDragContainer')" class="notificationform">
             <div class="notify_content_right">
               <div class="notify_drag_buttons">
                 <button (click)="imageArt($event, i)" class="trigger_btn" title="Add Icon">
                   <span class="glyphicon glyphicon-upload"></span>
                 </button>
-                <button (click)="replicateDragged(dragObj)" class="trigger_btn" title="Replicate">
+                <button (click)="replicateDragged(dragObj, i)" class="trigger_btn" title="Replicate">
                   <span class="glyphicon glyphicon-retweet"></span>
                 </button>
                 <button (click)="deleteDragged(dragObj, i)" class="trigger_btn" title="Remove">
@@ -139,10 +140,10 @@
                 <img class="notify_item_art notify_v_align" [src]="dragObj[ 'imageUrl'] | safe ">
               </div>
               <div class="notify-dragged-item-inputs ">
-                <select [ngModel]="dragObj?.type" (ngModelChange)="setTriggeType($event, dragObj)" class='form-control input-sm trigger_type_option'>
+                <select [ngModel]="dragObj?.type" (ngModelChange)="setTriggeType($event, dragObj, i)" class='form-control input-sm trigger_type_option'>
                   <option value='date'>At a specific date and time</option>
                   <option value='manual'>Manually</option>";
-                  <option value='trigger'>When Tile is triggered</option>
+                  <option [disabled]="checkTriggerDisabled(dragObj)" value='trigger'>When Tile is triggered</option>
                 </select>
                 <div *ngIf="dragObj['dateVisibility']" style='width:100%;'>
                   <input type='text' [ngModel]="dragObj?.triggerTime" class='triggertime form-control input-sm notification_date_time' placeholder='DateTime'
@@ -151,12 +152,12 @@
                     <option *ngFor="let zone of timeZones; let i = index" [value]="zone?.name">{{zone?.text}}</option>
                   </select>
 
-                  <div class="ridisplay">
+                  <div *ngIf="dragObj['isRecurrence']" class="ridisplay">
                     <div class="rimain">
-                      <a href="#" name="riedit">Edit</a>
-                      <a href="#" name="ridelete" style="display: inline;">Delete</a>
+                      <a href="#" name="riedit">{{dragObj['ruleButtonText']}}</a>
+                      <a *ngIf="dragObj['isRecurrenceDelete']" href="#" name="ridelete" style="display: inline;">Delete</a>
                       <input type="hidden" class="cron" value="0 */1 * * * *">
-                      <label class="ridisplay">Repeats every 1 Minute(s), ends on 04/22/2018 2:55 AM</label>
+                      <label class="ridisplay">{{dragObj['rruleString']}}</label>
                     </div>
                     <div class="rioccurrences" style="display:none"></div>
                   </div>
@@ -166,7 +167,7 @@
                   </div>
                 </div>
                 <div *ngIf="dragObj['type'] == 'manual'" class='push_notification_now' style='margin-top:10px;'>
-                  <button type='button' [ngClass]="dragObj['isPushed']? 'btn-info': 'btn-success'" class='btn btn-xs'>Push Now</button>
+                  <button type='button' (click)="push(dragObj, i)" [ngClass]="dragObj['isPushed']? 'btn-info': 'btn-success'" class='btn btn-xs'>Push Now</button>
                   <span style="margin-left: 5px;">
                     {{ setPushedDate(dragObj['pusheddatetime']) }}</span>
                 </div>
@@ -209,7 +210,8 @@
     </div>
 
     <div id="main-container-groups" class="groups_list_show">
-      <div class="notify_group_list_single" [iliDraggable]="{data: grp, page: 'notification'}" *ngFor="let grp of (groups | filterByText:'name': groupFilter['groupSearch'] | filterByText:'type': groupFilter['groupType'] | orderBy:groupFilter['sort']['isAsc']: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][0]: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
+      <div class="notify_group_list_single" dnd-draggable [dragEnabled]="true" [dragData]="grp" (onDragSuccess)="draggedTile($event, grp?.type)"
+      [dropZones]="['notification']" *ngFor="let grp of (groups | filterByText:'name': groupFilter['groupSearch'] | filterByText:'type': groupFilter['groupType'] | orderBy:groupFilter['sort']['isAsc']: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][0]: groupFilter['sort']['fieldNames'][splitKey(groupFilter['sort']['selected'])][1]); let i = index; trackBy: trackByIndex">
         <div *ngIf="((grp.hasOwnProperty('art') && !utils.isNullOrEmpty(grp['art'])) && (grp['art'].indexOf('tile_default.jpg') || grp['art'].indexOf('tilist_art.jpg')))"
           [ngClass]="groupType === 'list'? 'group-art' : 'group-art details'">
           <img [ngClass]="groupType === 'list'? 'group_list_art' : 'group_list_art group-detail-content'" [src]="grp['art'] | safe">
@@ -278,7 +280,7 @@
     </div>
 
     <div id="tiles-list-show" class="tiles_list_panel">
-      <div class="tiles_list_single" dnd-draggable [dragEnabled]="true" [dragData]="tile" (onDragSuccess)="draggedTile($event)"
+      <div class="tiles_list_single" dnd-draggable [dragEnabled]="true" [dragData]="tile" (onDragSuccess)="draggedTile($event, 'tile')"
         [dropZones]="['notification']" *ngFor="let tile of (tileList | filterByText:'title': tileSort['tileSearchText'] | filterByText:'category': selectedCategory | orderBy:tileSort['isAsc']:tileSort['values'][tileSort['selectedOpt']][0]: tileSort['values'][tileSort['selectedOpt']][1]); let i = index; trackBy: trackByTileId">
         <img [ngClass]="tileSort['listType'] === 'list'? 'tile_list_art tile-content-img' : 'tile_list_art tile-details-img'" [src]="tile?.art | safe">
         <div class="tile_list_title tile-content-title">{{tile?.title}}</div>
@@ -307,6 +309,9 @@
   </div>
 
 </div>
+
+<image-library [popFrom]="'menuart'" [data]="imglibData" [isOpen]="isImageLibrary" [page]="'notification'" (onClose)="onImageLibraryClose($event)"
+  (onDone)="onImageLibraryResult($event)"></image-library>
 
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />

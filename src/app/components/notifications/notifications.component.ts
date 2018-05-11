@@ -7,9 +7,11 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { LoaderSharedService } from '../../services/loader-shared.service';
 import { PageService } from '../../services/page.service';
 import { TileService } from '../../services/tile.service';
+import { NotificationService } from '../../services/notification.service';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/forkJoin';
 import * as moment from 'moment-timezone';
+import * as _ from 'underscore';
 import { MomentData } from '../../helpers/momentdata';
 
 @Component({
@@ -21,13 +23,13 @@ import { MomentData } from '../../helpers/momentdata';
 })
 export class NotificationsComponent implements OnInit {
 
-
   constructor(
     private route: ActivatedRoute,
     private cms: CommonService,
     private mScrollbarService: MalihuScrollbarService,
     private pageService: PageService,
     private tileService: TileService,
+    private notifyService: NotificationService,
     private loaderShared: LoaderSharedService,
     private e1: ElementRef,
     private renderer: Renderer,
@@ -125,14 +127,19 @@ export class NotificationsComponent implements OnInit {
     };
   };
 
-  draggedTile($event: any) {
+  onDrag($event: any, type: any) {
     let data = $event.dragData;
-    alert('start')
   }
 
   onDrop($event: any) {
     let data = $event.dragData;
-    alert('success')
+    let draggedObj = this.setDragged(data, data["type"]);
+
+    if (this.notification.hasOwnProperty("dragged")) {
+      this.notification["dragged"].unshift(draggedObj);
+    } else {
+      this.notification["dragged"] = [draggedObj];
+    }
   }
 
   assignTileNoitfyIcons() {
@@ -421,6 +428,8 @@ export class NotificationsComponent implements OnInit {
       let menu = this.menus[i];
       let smart = this.getSmartObj(menu["_id"], "menu");
       let squares = this.utils.isArray(this.notifications) && this.notifications.length > 0 && this.notifications[0].hasOwnProperty("notificationTiles") && this.notifications[0]["notificationTiles"].length > 0 ? this.notifications[0]["notificationTiles"] : [];
+
+      menu["type"] = "menu";
       menu["isSmart"] = this.checkSmartEngine(smart);
       menu["isNotification"] = this.checkNotification(menu["_id"], smart["type"], squares);
       menu["isRole"] = menu && menu.hasOwnProperty("isRoleBased") && !this.utils.isNullOrEmpty(menu["isRoleBased"]) ? this.utils.convertToBoolean(menu["isRoleBased"]) : false;
@@ -525,7 +534,6 @@ export class NotificationsComponent implements OnInit {
     }
   };
 
-
   /* Intialize scroll bar for the component elements */
   setScrollList() {
     this.mScrollbarService.initScrollbar("#main-container-groups", this.scrollbarOptions);
@@ -546,19 +554,86 @@ export class NotificationsComponent implements OnInit {
     this.cms.destroyScroll(["#main-container-groups", "#main_notify_drag_container", "#tiles-list-show"]);
   };
 
+  /* disabled option(trigger type) When Tile is triggered */
+  checkTriggerDisabled(drg: any, index: any) {
+    if (drg["linkTo"] == "event" || drg["linkTo"] == "catilist" || drg["linkTo"] == "tilist") {
+      return false;
+    }
+
+    return true;
+  };
+
+  /* push manual button event */
+  push(drg: any, index: any) {
+    let draggedObj = !this.utils.isEmptyObject(drg) && drg.hasOwnProperty("obj") ? drg["obj"] : {};
+
+    var updateData = {};
+    updateData["_id"] = this.notification["_id"];
+    updateData["index"] = "index_" + index;
+    updateData["linkTo"] = draggedObj.linkTo;
+    updateData["linkId"] = draggedObj.linkId;
+
+    var data = {};
+    data["type"] = draggedObj.linkTo;
+    data["value"] = draggedObj.linkId;
+    data["groupId"] = !this.utils.isEmptyObject(drg) && typeof drg.group._id == 'undefined' ? "" : drg.group._id;
+    data["locationId"] = this.selectedLocation;
+
+    var notify = {};
+    notify["messages"] = data;
+    notify["notificationText"] = !this.utils.isEmptyObject(drg) ? drg.notificationText : "";
+    notify["appId"] = this.selectedApp;
+
+    var obj = {};
+    obj["notify"] = notify;
+    obj["data"] = updateData;
+
+    let post = {};
+    post["form_data"] = JSON.stringify(obj);
+
+    this.pushNotification(post, updateData, index);
+  };
+
+  /* push manul notification */
+  pushNotification(data: object, square: object, index: any) {
+    debugger;
+
+    this.notifyService.notificationPush(data)
+      .then(res => {
+
+        if (res.data) {
+          var tiles = res.data.notificationTiles;
+
+          for (var i = 0; i < tiles.length; i++) {
+            if (tiles[i].linkId == square["linkId"] && tiles[i].linkTo == square["linkTo"]) {
+
+              var dateTime = tiles[i] && typeof tiles[i].pusheddatetime != 'undefined' ? tiles[i].pusheddatetime : "";
+
+              let currDrg = this.notification["dragged"][index];
+
+              currDrg["setPushedDate"] = this.utils.toLocalDateTime(dateTime);
+            }
+          }
+        }
+
+        this.utils.iAlert("success", "", "Notification has been pushed");
+      });
+  }
+
   /* Replicate Dragged */
   replicateDragged(drg: any) {
     let replicatedDragged = !this.utils.isEmptyObject(drg) && drg.hasOwnProperty("obj") ? drg["obj"] : {};
-    let replicatedObj = this.setDragged(replicatedDragged, drg["type"], {}, true);
-    this.notification["dragged"].push(replicatedObj);
+    let replicatedObj = this.setDragged(replicatedDragged, drg["linkTo"], {}, true);
+
+    this.notification["dragged"].unshift(replicatedObj);
   };
 
   /* Delete dragged object */
   deleteDragged(drgObj: Object, idx: number) {
-    let totalIdx = this.notification["dragged"].length - 1;
-    let currIdx = totalIdx - idx;
+    //let totalIdx = this.notification["dragged"].length - 1;
+    // let currIdx = totalIdx - idx;
 
-    this.notification["dragged"].splice(currIdx, 1);
+    this.notification["dragged"].splice(idx, 1);
   };
 
   draggedActivateDeactivate(e: any, drgObj: Object) {
@@ -567,26 +642,43 @@ export class NotificationsComponent implements OnInit {
     drgObj["activate"] = !drgObj["activate"];
   };
 
-
   onImageLibraryClose(imglib: object) {
     this.isImageLibrary = 'none';
     let currDrg = this.notification["dragged"][imglib["data"]["index"]];
-    currDrg["art"] = imglib["url"];
+    currDrg["imageUrl"] = imglib["url"];
   };
 
   onImageLibraryResult(imglib: object) {
     this.isImageLibrary = 'none';
     let currDrg = this.notification["dragged"][imglib["data"]["index"]];
-    currDrg["art"] = imglib["url"];
+    currDrg["imageUrl"] = imglib["url"];
+  };
+
+
+  setTriggeType(triggerType: any, draggedObj: object, index: any) {
+
+    draggedObj["type"] == triggerType;
+
+    if (triggerType == "date") {
+      draggedObj["dateVisibility"] = true;
+      draggedObj["isZoneLocalTime"] = !this.utils.isNullOrEmpty(draggedObj["zoneLocalTime"]) && (Date.parse(draggedObj["triggerTime"]) != Date.parse(draggedObj["zoneLocalTime"])) ? true : false;
+    } else if (triggerType == "trigger") {
+      draggedObj["dateVisibility"] = false;
+      draggedObj["isZoneLocalTime"] = false;
+    } else {
+      draggedObj["dateVisibility"] = false;
+      draggedObj["isZoneLocalTime"] = false;
+    }
+
   };
 
   imageArt(e: any, idx: number) {
     e.preventDefault();
-    var totalIdx = this.notification["dragged"].length - 1;
-    var currIdx = totalIdx - idx;
+    //var totalIdx = this.notification["dragged"].length - 1;
+    //var currIdx = totalIdx - idx;
 
     this.isImageLibrary = 'block';
-    this.imglibData = { index: currIdx };
+    this.imglibData = { index: idx };
   };
 
   assignSquareDatas(notifyObj: Object) {
@@ -597,7 +689,8 @@ export class NotificationsComponent implements OnInit {
 
       let menuTiles = this.utils.isArray(this.notifications) && this.notifications.length > 0 && this.notifications[0].hasOwnProperty("notificationTiles") && this.notifications[0]["notificationTiles"].length > 0 ? this.notifications[0]["notificationTiles"] : [];
 
-      for (let i = menuTiles.length - 1; 0 <= i; i--) {
+      for (let i = 0; i < menuTiles.length; i++) {
+        //for (let i = menuTiles.length - 1; 0 <= i; i--) {
         let currDrg = menuTiles[i];
         let currObj = {};
 
@@ -647,8 +740,157 @@ export class NotificationsComponent implements OnInit {
     return dragName;
   };
 
+  /* save button event" */
+  saveNotification(e: any) {
+    if (!this.utils.isNullOrEmpty(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    this.loaderShared.showSpinner(true);
+  };
+
+  save(callback) {
+    let id = this.notification.hasOwnProperty("obj") && this.notification["obj"].hasOwnProperty("_id") ? this.notification["obj"]["_id"] : "-1";
+    let notificationPage = {
+      dateCreated: (new Date()).toUTCString(),
+      appId: this.selectedApp,
+      orgId: this.oid,
+      locationId: this.selectedLocation,
+      dateUpdated: (new Date()).toUTCString()
+    };
+
+    if (id && id != '') {
+      notificationPage["_id"] = id;
+    }
+
+    var statusUpdate = this.checkValues(id);
+
+    if (!statusUpdate["result"]) {
+      this.utils.iAlert("info", 'Information', statusUpdate["msg"]);
+      return false;
+    }
+
+    notificationPage["notificationTiles"] = this.getDraggedGroups();
+    notificationPage["notifyToRemove"] = this.handleNotificationMatching(notificationPage["notificationTiles"]);
+
+    var objString = JSON.stringify(notificationPage);
+
+    setTimeout(function () {
+      this.notifyService.saveNotification(objString)
+        .then(res => {
+          this.utils.iAlert("info", 'Information', 'Notification updated successfully');
+
+          // notificationSquaresObj = notificationPage.notificationTiles;
+
+          this.listMenu(function () {
+            var text = this.pageSearchText
+            this.filterApp(text);
+
+            if (callback) {
+              callback();
+            }
+          });
+        });
+    }, 0);
+  };
+
+
+  handleNotificationMatching(draggedTiles) {
+    let notifyToRemove = [];
+
+    if (this.notificationSquares.length > 0) {
+      _.each(this.notificationSquares, function (index, tile) {
+        let linkTo = tile["linkTo"];
+        let linkId = tile["linkId"];
+        let squareObj = { "linkTo": linkTo, "linkId": linkId };
+        let squareList = _.where(draggedTiles, squareObj);
+        let oldList = _.where(this.notificationSquares, squareObj);
+
+        if ((squareList.length != oldList.length) || squareList.length == 0) {
+          var removedList = _.where(notifyToRemove, squareObj);
+
+          if (removedList.length == 0) {
+            notifyToRemove.push(squareObj);
+          }
+        }
+      });
+    }
+    return notifyToRemove;
+  };
+
+  /*getting the dragged groups */
+
+  getDraggedGroups() {
+
+  };
+
+  /*validate the dragged groups */
+  checkValues(id: string) {
+    let draggedTiles = this.notification["dragged"];
+    let result = true;
+    let data = {};
+    let tile = {};
+
+    _.each(draggedTiles, function () {
+      let obj = this;
+
+      if (obj) {
+        var utcDate = "";
+
+        if (this.triggerTime == "") {
+          result = false;
+          data["msg"] = "DateTime cannot be empty";
+        }
+
+        if (this.triggerTime != "") {
+          utcDate = this.momentData.convertToTimeZoneDateTime(this.triggerTime, this.timeZoneName);
+
+          let isDateCheck = false;
+
+          if (id && id != '') {
+            let oldStartDate = this.oldTriggerTime != "" ? new Date(this.momentData.convertToTimeZoneDateTime(this.oldTriggerTime, this.timeZoneName)) : "";
+            let pickeddate = new Date(utcDate);
+
+            if (oldStartDate != "" && oldStartDate.valueOf() != pickeddate.valueOf()) {
+              isDateCheck = true;
+            }
+
+            if (oldStartDate == "") {
+              isDateCheck = true;
+            }
+
+          } else {
+            isDateCheck = true;
+          }
+
+          if (isDateCheck && !this.pastDateValidate(utcDate)) {
+            result = false;
+            data["msg"] = "The start date and time must be greater than the current date and time";
+          }
+        }
+      }
+    });
+
+    data["result"] = result;
+
+    return data;
+  };
+
+  /* date validation with current date */
+  pastDateValidate(value) {
+    var pickeddate = new Date(value);
+    var todayDate = new Date();
+
+    if (pickeddate.valueOf() > todayDate.valueOf()) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   /* Setting dragging Groups, Menus, Tiles */
-  setDragged(currObj: Object, type: string, squareObj: object, isReplicate?: boolean) {
+  setDragged(currObj: Object, type: string, squareObj?: object, isReplicate?: boolean) {
     let dragged = {
       "uniqueId": this.getUniqueId(),
       "name": !this.utils.isEmptyObject(squareObj) && squareObj.hasOwnProperty("name") && !this.utils.isNullOrEmpty(squareObj["name"]) ? this.utils.htmlEncode(squareObj["name"]) : this.setDragObjectName(currObj, type),
@@ -662,21 +904,21 @@ export class NotificationsComponent implements OnInit {
       "rrule": !this.utils.isEmptyObject(squareObj) && squareObj.hasOwnProperty("rrule") && !this.utils.isNullOrEmpty(squareObj["rrule"]) ? squareObj["rrule"] : "",
       "notificationText": !this.utils.isEmptyObject(squareObj) && squareObj.hasOwnProperty("notificationText") && !this.utils.isNullOrEmpty(squareObj["notificationText"]) ? this.utils.htmlEncode(squareObj["notificationText"]) : "",
       "pusheddatetime": !this.utils.isEmptyObject(squareObj) && squareObj.hasOwnProperty("pusheddatetime") && !this.utils.isNullOrEmpty(squareObj["pusheddatetime"]) ? this.utils.toLocalDateTime(squareObj["pusheddatetime"]) : "",
+      "oldTriggerTime": !this.utils.isEmptyObject(squareObj) && squareObj.hasOwnProperty("triggerTime") && !this.utils.isNullOrEmpty(squareObj["triggerTime"]) ? squareObj["triggerTime"] : "",
       "triggerTime": !this.utils.isEmptyObject(squareObj) && squareObj.hasOwnProperty("triggerTime") && !this.utils.isNullOrEmpty(squareObj["triggerTime"]) ? squareObj["triggerTime"] : "",
     };
 
     if (squareObj && (type == "event" || type == "catilist" || type == "tilist" || type == "livestream")) {
-      dragged["title"] = "Groups: " + this.utils.htmlEncode(dragged["name"]);
+      dragged["title"] = "Groups: " + dragged["name"];
     } else if (squareObj && type == "tile") {
-      dragged["title"] = "Tile: " + this.utils.htmlEncode(dragged["name"]);
+      dragged["title"] = "Tile: " + dragged["name"];
     } else if (squareObj && type == "menu") {
-      dragged["title"] = "Page: " + this.utils.htmlEncode(dragged["name"]);
+      dragged["title"] = "Page: " + dragged["name"];
     }
 
 
     dragged["activateText"] = dragged["activate"] ? "Deactivate" : "Activate";
-
-    dragged["timeZoneName"] = squareObj && squareObj["timeZoneName"] ? squareObj["timeZoneName"] : this.momentData.getCurrenTimeZone();
+    dragged["timeZoneName"] = squareObj && squareObj.hasOwnProperty("timeZoneName") && !this.utils.isNullOrEmpty(squareObj["timeZoneName"]) ? squareObj["timeZoneName"] : this.momentData.getCurrenTimeZone();
     dragged["zoneLocalTime"] = !this.utils.isEmptyObject(squareObj) && squareObj.hasOwnProperty("triggerTime") && !this.utils.isNullOrEmpty(squareObj["triggerTime"]) ? this.utils.toLocalDateTime(squareObj["triggerTime"]) : "";
     dragged["dateVisibility"] = dragged["type"] == "date" ? true : false;
     dragged["triggerIsDisable"] = dragged["triggerTime"] != "" ? '' : 'disabled';
@@ -710,6 +952,19 @@ export class NotificationsComponent implements OnInit {
       }
     }
 
+    if (dragged.rrule != "") {
+      dragged["ruleButtonText"] = "Edit";
+      dragged["isRecurrenceDelete"] = true;
+      dragged["rruleString"] = !this.utils.isEmptyObject(squareObj) && squareObj.hasOwnProperty("rruleString") && !this.utils.isNullOrEmpty(squareObj["rruleString"]) ? squareObj["rruleString"] : "";
+    } else {
+      dragged["ruleButtonText"] = "Recurrence";
+      dragged["isRecurrenceDelete"] = false;
+    }
+
+    if (this.utils.isEmptyObject(squareObj)) {
+      dragged["isRecurrence"] = true;
+    }
+
     dragged["group"] = squareObj && squareObj["group"] ? squareObj["timeZoneName"] : this.momentData.getCurrenTimeZone();
 
     if (type === "event") {
@@ -717,21 +972,17 @@ export class NotificationsComponent implements OnInit {
       dragged["availableEnd"] = !this.utils.isEmptyObject(currObj) && currObj.hasOwnProperty("availableEnd") && !this.utils.isNullOrEmpty(currObj["availableEnd"]) ? (currObj["availableEnd"]) : "";
     }
 
-    var offset = moment.tz(squareObj["timeZoneName"]).format('Z');
+    var offset = moment.tz(dragged["timeZoneName"]).format('Z');
     var timeZoneObj = {
-      timeZoneName: squareObj["timeZoneName"],
+      timeZoneName: dragged["timeZoneName"],
       timeZoneOffSet: offset
     };
 
     dragged["zone"] = JSON.stringify(timeZoneObj);
+
     dragged["obj"] = currObj;
 
     return dragged;
-  };
-
-
-  setTriggeType(triggerType: any, ng: object) {
-    alert(triggerType)
   };
 
   convertTimezoneHourMinutes = function (recurrence, date, timeZone) {

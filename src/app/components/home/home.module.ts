@@ -60,6 +60,7 @@ import { AppsService } from '../../services/apps.service';
 import { LivestreamService } from '../../services/livestream.service';
 import { LanguageService } from '../../services/language.service';
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
+import { NotificationService } from '../../services/notification.service';
 //import { DragDropDirectiveModule} from "angular4-drag-drop";
 
 //import { SlimScrollModule } from 'ng2-slimscroll';
@@ -111,7 +112,8 @@ import { MomentData } from '../../helpers/momentdata';
     LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent,
     RecurrenceComponent, QaScoresComponent, ReportGeneratorComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
-    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService, LivestreamService, MomentData, LanguageService]
+    FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService,
+    LivestreamService, MomentData, LanguageService, NotificationService]
 })
 
 export class HomeModule { }
