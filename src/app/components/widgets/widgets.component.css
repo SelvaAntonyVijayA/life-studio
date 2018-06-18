@@ -29,7 +29,7 @@
   width: 314px;
   float: right;
   height: 70px;
-  margin: 7px 0 0 0px;
+  margin: 11px 7px 0 0px
 }
 
 .reset_tile_btn {
@@ -40,16 +40,19 @@
 .save_tile_btn {
   border-bottom-color: #1E90FF;
   border-bottom-width: 3px;
+  margin-left: 3px;
 }
 
 .duplicate_tile_btn {
   border-bottom-color: #C71585;
   border-bottom-width: 3px;
+  margin-left: 3px;
 }
 
 .delete_tile_btn {
   border-bottom-color: #FF0000;
   border-bottom-width: 3px;
+  margin-left: 3px;
 }
 
 .preview_tile_btn {
@@ -64,6 +67,7 @@
   border-bottom-width: 3px;
   width: 153.2px;
   margin-top: 5px;
+  margin-left: 3px;
 }
 
 /* Tile Prime */

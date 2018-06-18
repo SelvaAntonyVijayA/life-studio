@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
-import 'rxjs/add/observable/forkJoin';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/toPromise';
+
+
+
 import { Utils } from '../helpers/utils';
 
 @Injectable()

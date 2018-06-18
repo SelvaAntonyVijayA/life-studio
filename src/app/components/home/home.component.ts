@@ -29,6 +29,6 @@ export class HomeComponent implements OnInit {
   };
 
   ngOnInit() {
-
+    var pilt = "trim";
   }
 }

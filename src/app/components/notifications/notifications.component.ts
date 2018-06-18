@@ -9,7 +9,7 @@ import { PageService } from '../../services/page.service';
 import { TileService } from '../../services/tile.service';
 import { NotificationService } from '../../services/notification.service';
 import { Observable } from 'rxjs';
-import 'rxjs/add/observable/forkJoin';
+
 import * as moment from 'moment-timezone';
 import * as _ from 'underscore';
 import { MomentData } from '../../helpers/momentdata';

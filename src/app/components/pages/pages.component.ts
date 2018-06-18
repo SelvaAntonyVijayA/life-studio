@@ -1,3 +1,5 @@
+
+import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
 import { Component, OnInit, OnDestroy, Input, Output, ElementRef, Renderer, ViewChild, EventEmitter, ContentChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
@@ -12,9 +14,8 @@ import { CategoryService } from '../../services/category.service';
 import { ProcedureService } from '../../services/procedure.service';
 import { LivestreamService } from '../../services/livestream.service';
 import { LoaderSharedService } from '../../services/loader-shared.service';
-import { Observable } from 'rxjs';
-import 'rxjs/add/observable/forkJoin';
-import 'rxjs/add/operator/debounceTime';
+
+
 
 
 declare var $: any;
@@ -498,7 +499,7 @@ export class PagesComponent implements OnInit {
     var procedureRes = this.procedureService.procedureList(this.oid, "", "procedure");
     var processRes = this.procedureService.procedureList(this.oid, "", "process");
 
-    return Observable.forkJoin([evtRes, folRes, catRes, liveRes, procedureRes, processRes]);
+    return observableForkJoin([evtRes, folRes, catRes, liveRes, procedureRes, processRes]);
   };
 
   /* Intialize scroll bar for the component elements */

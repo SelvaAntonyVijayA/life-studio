@@ -8,7 +8,7 @@ import { ImageService } from '../../services/image.service';
 const URL = 'http://localhost:8080/image/upload';
 import { ProgressHttp, HTTP_FACTORY } from 'angular-progress-http';
 import { LoggingHttpFactory } from './logging-http/logging-http-factory';
-import * as Cropper from 'cropperjs';
+//import * as Cropper from 'cropperjs';
 
 interface FileDescriptor {
   name: string;
@@ -56,7 +56,7 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   fileName: string = "or select an image from library";
   public isShow: boolean = false;
   private dom: HTMLInputElement;
-  private cropper: Cropper;
+  //private cropper: Cropper;
   aspectRatio: any = NaN;
   @Input() isOpen = 'none';
   @Input() page: string;
@@ -139,7 +139,7 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
 
           setTimeout(() => {
             this.initCropper(this.selectedimage);
-            this.cropper.replace(this.selectedimage);
+            //this.cropper.replace(this.selectedimage);
           }, 0);
 
         } else {
@@ -244,7 +244,7 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
 
       setTimeout(() => {
         this.initCropper(this.selectedimage);
-        this.cropper.replace(this.selectedimage);
+        //this.cropper.replace(this.selectedimage);
       }, 0);
     } else {
       this.utils.iAlert('error', 'Error', 'Please select a image');
@@ -403,11 +403,11 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
 
   public cropRatio(ratio: any) {
     if (ratio == '1:0.4') {
-      this.cropper.setAspectRatio(1 / 0.4);
+      //this.cropper.setAspectRatio(1 / 0.4);
     } else if (ratio == '1') {
-      this.cropper.setAspectRatio(1);
+      //this.cropper.setAspectRatio(1);
     } else {
-      this.cropper.setAspectRatio(NaN);
+      //this.cropper.setAspectRatio(NaN);
     }
   }
 
@@ -418,8 +418,8 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
  * @memberof cropper
  */
   public onCropApply() {
-    let data = this.cropper.getData();
-    this.uploadCroppedimage(data);
+    //let data = this.cropper.getData();
+    //this.uploadCroppedimage(data);
   }
 
   /**
@@ -440,7 +440,7 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
       ar = NaN;
     }
 
-    this.cropper = new Cropper(e2, {
+    /*this.cropper = new Cropper(e2, {
       aspectRatio: ar,
       autoCrop: true,
       viewMode: 0,
@@ -451,7 +451,7 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
       movable: true,
       cropBoxMovable: true,
       cropBoxResizable: true
-    });
+    });*/
   }
 
   ngOnInit() {

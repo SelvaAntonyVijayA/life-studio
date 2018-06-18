@@ -1,5 +1,5 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
-import 'mousetrap';
+import { MousetrapInstance, ExtendedKeyboardEvent, Mousetrap } from 'mousetrap';
 
 import { KeyboardServiceConfig } from '../models/gallery';
 
@@ -23,7 +23,7 @@ export class KeyboardService {
    * Constructor of `KeyboardService` to init `mousetrap` and `shortcuts` private variables.
    * @param {KeyboardServiceConfig} config object received by the `forRoot()` function to init custom shortcuts
    */
-  constructor( @Inject(KEYBOARD_CONFIGURATION) private config: KeyboardServiceConfig) {
+  constructor(@Inject(KEYBOARD_CONFIGURATION) private config: KeyboardServiceConfig) {
     this.shortcuts = this.config && this.config.shortcuts ? this.config.shortcuts : ['ctrl+s', 'meta+s'];
     this.mousetrap = new (<any>Mousetrap)();
   }

@@ -1,6 +1,8 @@
+
+import {tap} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Http, Request, Response, ConnectionBackend, RequestOptions, RequestOptionsArgs } from '@angular/http';
-import { Observable } from "rxjs/Observable";
+import { Observable } from "rxjs";
 import "rxjs/add/operator/do";
 
 @Injectable()
@@ -21,8 +23,8 @@ export class LoggingHttp extends Http {
         console.debug("URL and Options are:", url, options);
 
         return super
-            .request(url, options)
-            .do(
+            .request(url, options).pipe(
+            tap(
             (response) => {
                 console.info("Response received")
                 console.debug("Response:", response);
@@ -34,6 +36,6 @@ export class LoggingHttp extends Http {
             () => {
                 console.info("Request completed");
             }
-            )
+            ))
     }
 }

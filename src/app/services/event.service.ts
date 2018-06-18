@@ -1,9 +1,10 @@
+
+import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs';
-import 'rxjs/add/observable/forkJoin';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/toPromise';
+
+
+
 import { Utils } from '../helpers/utils';
 
 @Injectable()
@@ -64,7 +65,7 @@ export class EventService {
     let categories = this.getEventCategories(orgId);
     let events = this.eventList(orgId);
 
-    return Observable.forkJoin([categories, events]);
+    return observableForkJoin([categories, events]);
   };
 
   tileActivateDeactivate(eventId: string, tileId: string, position: any, activateType: string) {

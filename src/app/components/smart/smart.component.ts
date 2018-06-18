@@ -1,3 +1,5 @@
+
+import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
 import { Component, OnInit, OnDestroy, Input, Output, ElementRef, Renderer, ViewChild, EventEmitter, ContentChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
@@ -8,8 +10,7 @@ import { LoaderSharedService } from '../../services/loader-shared.service';
 import { PageService } from '../../services/page.service';
 import { TileService } from '../../services/tile.service';
 import { SmartService } from '../../services/smart.service';
-import { Observable } from 'rxjs';
-import 'rxjs/add/observable/forkJoin';
+
 
 @Component({
   selector: 'app-smart',
@@ -264,7 +265,7 @@ export class SmartComponent implements OnInit {
     let tileSquares = this.getTileSquareList();
     let profileData = this.pageService.appProfileData(this.selectedApp);
 
-    return Observable.forkJoin([menuGroupList, tileCatData, tileSquares, profileData]);
+    return observableForkJoin([menuGroupList, tileCatData, tileSquares, profileData]);
   };
 
   assignTileNoitfyIcons() {
@@ -277,7 +278,7 @@ export class SmartComponent implements OnInit {
     let tileCategory = this.tileService.getTileCategory(this.oid);
     let squareTiles = this.getAppPageTiles();
 
-    return Observable.forkJoin([tileCategory, squareTiles]);
+    return observableForkJoin([tileCategory, squareTiles]);
   };
 
   getAppPageTiles() {

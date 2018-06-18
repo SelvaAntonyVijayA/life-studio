@@ -1,3 +1,5 @@
+
+import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
 import { Component, OnInit, OnDestroy, Input, Output, ElementRef, Renderer, ViewChild, EventEmitter, ContentChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
@@ -8,8 +10,7 @@ import { LoaderSharedService } from '../../services/loader-shared.service';
 import { TileService } from '../../services/tile.service';
 import { QaScoresService } from '../../services/qa-scores.service';
 import { ProcedureService } from '../../services/procedure.service';
-import { Observable } from 'rxjs';
-import 'rxjs/add/observable/forkJoin';
+
 
 @Component({
   selector: 'app-qa-scores',
@@ -306,7 +307,7 @@ export class QaScoresComponent implements OnInit {
     let weightList = this.getWeightList();
     let procedureList = this.getProcedures();
 
-    return Observable.forkJoin([tileCats, tilesAndSquares, weightList, procedureList]);
+    return observableForkJoin([tileCats, tilesAndSquares, weightList, procedureList]);
   };
 
   setProcedures(procList: any[]) {

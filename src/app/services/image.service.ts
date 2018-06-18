@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptionsArgs, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
-import 'rxjs/add/observable/forkJoin';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/toPromise';
+
+
+
 import { Utils } from '../helpers/utils';
 
 @Injectable()
@@ -72,5 +72,4 @@ export class ImageService {
     console.log('An error occurred', error);
     return Promise.reject(error.message || error);
   };
-
 }

@@ -1,111 +1,111 @@
 /* You can add global styles to this file, and also import other style files */
 
 body {
-  overflow-x: hidden;
-  font-family: Arial;
-  font-size: 12px;
-  background: url(/img/ili-bg/ili-bg-layer.png) no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  color: #fff;
-  position: relative;
-  margin-bottom: 64px;
-}
-
-input {
-  color: #000000;
-}
-
-.container {
-  width: 1200px;
-  padding: 0;
-}
-
-.page_block {
-  background: linear-gradient(rgba(255, 255, 255, 0.1) 10%, rgba(255, 255, 255, 0.1) 10%);
-  border-radius: 0px;
-}
-
-.search_box {
-  width: 270px;
-  display: inline;
-  float: left;
-}
-
-.input-sm {
-  border-radius: 0px;
-  font-size: 11px;
-}
-
-.ili-btn {
-  width: 75px;
-  border: 1px solid transparent;
-  white-space: nowrap;
-  padding: 1px 5px;
-  font-size: 12px;
-  line-height: 1.5;
-  border-radius: 0;
-  background-color: #FFFFFF;
-  color: black;
-}
-
-.btn {
-  width: 75px;
-}
-
-.ili-form {
-  line-height: 1.42857143;
-  color: #666;
-  background-image: none;
-  border: 1px solid #ccc;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-  background-color: #FFFFFF;
-  border-radius: 0px;
-  height: 25px;
-  padding: 5px 10px;
-  font-size: 12px;
-}
-
-.ili-border-default {
-  border-radius: 0px;
-  font-size: 11px;
-}
-
-.ili-panel {
-  border-color: #ddd;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-  margin-bottom: 0px;
-  background-color: transparent;
-  border: 1px solid transparent;
-}
-
-/* Slim Scroll CSS */
-
-.scroll-window {
-  font-size: 13px;
-  padding: 10px 10px;
-}
-
-/* Placeholder Color */
-
-::-webkit-input-placeholder {
-  /* Chrome/Opera/Safari */
-  color: #aaa;
-}
-
-::-moz-placeholder {
-  /* Firefox 19+ */
-  color: #aaa;
-}
-
-:-ms-input-placeholder {
-  /* IE 10+ */
-  color: #aaa;
-}
-
-:-moz-placeholder {
-  /* Firefox 18- */
-  color: #aaa;
-}
+    overflow-x: hidden;
+    font-family: Arial;
+    font-size: 12px;
+    background: url(/img/ili-bg/ili-bg-layer.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    color: #fff;
+    position: relative;
+    margin-bottom: 64px;
+  }
+  
+  input {
+    color: #000000;
+  }
+  
+  .container {
+    width: 1200px;
+    padding: 0;
+  }
+  
+  .page_block {
+    background: linear-gradient(rgba(255, 255, 255, 0.1) 10%, rgba(255, 255, 255, 0.1) 10%);
+    border-radius: 0px;
+  }
+  
+  .search_box {
+    width: 270px;
+    display: inline;
+    float: left;
+  }
+  
+  .input-sm {
+    border-radius: 0px;
+    font-size: 11px;
+  }
+  
+  .ili-btn {
+    width: 75px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 0;
+    background-color: #FFFFFF;
+    color: black;
+  }
+  
+  .btn {
+    width: 75px;
+  }
+  
+  .ili-form {
+    line-height: 1.42857143;
+    color: #666;
+    background-image: none;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    background-color: #FFFFFF;
+    border-radius: 0px;
+    height: 25px;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  
+  .ili-border-default {
+    border-radius: 0px;
+    font-size: 11px;
+  }
+  
+  .ili-panel {
+    border-color: #ddd;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+    margin-bottom: 0px;
+    background-color: transparent;
+    border: 1px solid transparent;
+  }
+  
+  /* Slim Scroll CSS */
+  
+  .scroll-window {
+    font-size: 13px;
+    padding: 10px 10px;
+  }
+  
+  /* Placeholder Color */
+  
+  ::-webkit-input-placeholder {
+    /* Chrome/Opera/Safari */
+    color: #aaa;
+  }
+  
+  ::-moz-placeholder {
+    /* Firefox 19+ */
+    color: #aaa;
+  }
+  
+  :-ms-input-placeholder {
+    /* IE 10+ */
+    color: #aaa;
+  }
+  
+  :-moz-placeholder {
+    /* Firefox 18- */
+    color: #aaa;
+  }

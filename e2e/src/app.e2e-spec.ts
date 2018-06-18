@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('ili App', () => {
+describe('workspace-project App', () => {
   let page: AppPage;
 
   beforeEach(() => {
@@ -9,6 +9,6 @@ describe('ili App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('Welcome to ILI!');
+    expect(page.getParagraphText()).toEqual('Welcome to ili!');
   });
 });

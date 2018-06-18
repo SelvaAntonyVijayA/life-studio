@@ -9,7 +9,7 @@ import { NotFoundComponent } from '../components/not-found/not-found.component';
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'home', loadChildren: 'app/components/home/home.module#HomeModule', data: { preload: true }},
+  { path: 'home', loadChildren: 'src/app/components/home/home.module#HomeModule', data: { preload: true }},
   { path: '**', component: NotFoundComponent }
 ];
 

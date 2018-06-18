@@ -1,3 +1,5 @@
+
+import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
 import { Component, OnInit, OnDestroy, Input, Output, ElementRef, Renderer, ViewChild, EventEmitter, ContentChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
@@ -5,8 +7,7 @@ import { CommonService } from '../../services/common.service';
 import { Utils } from '../../helpers/utils';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { LoaderSharedService } from '../../services/loader-shared.service';
-import { Observable } from 'rxjs';
-import 'rxjs/add/observable/forkJoin';
+
 import { TileService } from '../../services/tile.service';
 import { ProcedureService } from '../../services/procedure.service';
 import { ReportGeneratorService } from '../../services/report-generator.service';
@@ -410,7 +411,7 @@ export class ReportGeneratorComponent implements OnInit {
     let procedureList = this.getProcedures();
     let appList = this.getApps();
 
-    return Observable.forkJoin([tileCats, tilesAndSquares, ruleList, procedureList, appList]);
+    return observableForkJoin([tileCats, tilesAndSquares, ruleList, procedureList, appList]);
   };
 
   getTileCategories() {

@@ -42,6 +42,7 @@ import { RecurrenceComponent } from '../../components/recurrence/recurrence.comp
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { QaScoresComponent } from '../../components/qa-scores/qa-scores.component';
 import { ReportGeneratorComponent } from '../../components/report-generator/report-generator.component';
+//import { UpgradeComponent } from '@angular/upgrade/static';
 
 import { HeaderService } from '../../services/header.service';
 import { TileService } from '../../services/tile.service';

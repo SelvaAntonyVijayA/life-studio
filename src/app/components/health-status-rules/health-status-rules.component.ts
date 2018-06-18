@@ -1,3 +1,5 @@
+
+import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
 import { Component, OnInit, OnDestroy, Input, Output, ElementRef, Renderer, ViewChild, EventEmitter, ContentChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
@@ -8,8 +10,7 @@ import { LoaderSharedService } from '../../services/loader-shared.service';
 import { PageService } from '../../services/page.service';
 import { HealthStatusRulesService } from '../../services/health-status-rules.service';
 import { TileService } from '../../services/tile.service';
-import { Observable } from 'rxjs';
-import 'rxjs/add/observable/forkJoin';
+
 
 @Component({
   selector: 'app-health-status-rules',
@@ -342,7 +343,7 @@ export class HealthStatusRulesComponent implements OnInit {
     let hsrRules = this.getRules();
     let apps = this.getApps();
 
-    return Observable.forkJoin([tileCats, tilesAndSquares, hsrRules, apps]);
+    return observableForkJoin([tileCats, tilesAndSquares, hsrRules, apps]);
   };
 
   loadHsrPage() {
