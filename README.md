@@ -1,9 +1,10 @@
 Installation
 ------------
-Step 1: Angular 5 will work node 6 and above, Install node version 6
+Step 1: Angular 6 will work node 8 and above, Install node version 8
 
-Step 2: After Node intsalled globally install angular - cli by using the below mentioned command
-        npm install -g @angular/cli
+Step 2: Update your Angular CLI globally and locally, and migrate the configuration to the new angular.json format by running the following:
+a) If already installed -> ng update @angular/cli
+b) If not installed -> npm install -g @angular/cli
 
 Step 3 : Download the ILI project from github and navigate to the project directory and give the below mentioned command.
          npm install
