@@ -1,7 +1,7 @@
 <div class="container report_generator_container">
   <div class="report_rule_main">
     <div class="page_block report_rule_page_head">
-      <input class="form-control input-sm report_name" type="text" placeholder="Report name">
+      <input [(ngModel)]="reportName" class="form-control input-sm report_name" type="text" placeholder="Report name">
 
       <select [ngModel]="selectedReport" (ngModelChange)="reportChange($event)" class="form-control input-sm report_types" style="font-family: Helvetica;">
         <option [value]="'-1'">Select Type</option>
@@ -13,13 +13,13 @@
         <option *ngFor="let app of appList; let i= index" [value]="app?._id ">{{app?.name}}</option>
       </select>
       <div class="report_form_btns">
-        <button class="ili-btn report_rule_new">
+        <button (click)="reportNew($event)" class="ili-btn report_rule_new">
           New
         </button>
-        <button class="ili-btn report_rule_save">
+        <button (click)="reportSave($event)" class="ili-btn report_rule_save">
           Save
         </button>
-        <button class="ili-btn report_rule_delete">
+        <button (click)="reportDelete($event)" class="ili-btn report_rule_delete">
           Delete
         </button>
       </div>
@@ -64,9 +64,9 @@
           </p>
 
           <div [attr.id]="sqr.tileId" class='form-group collapse in'>
-            <div class='x-axis-label'>
+            <div *ngIf="selectedReport === '0'" class='x-axis-label'>
               <label>X Axis Label</label>
-              <input class="form-control input-sm x-axis-label-name" [(ngModel)]="sqr!.title" type='text'>
+              <input class="form-control input-sm x-axis-label-name" [(ngModel)]="sqr!.xAxisLabel" type='text'>
             </div>
 
             <form [attr.id]="sqr.tileId + '_' + i" role="form">

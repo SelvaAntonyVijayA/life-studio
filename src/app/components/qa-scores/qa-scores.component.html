@@ -46,7 +46,7 @@
           <div *ngFor="let blk of sqr['blocks']; let j = index; trackBy: trackByBlockId" class="block_main">
 
             <div style="float:left; width:100%;" *ngFor="let opt of blk['options']; let k = index;">
-              <div class="select-main-block">
+              <div class="select-qa-main-block">
                 <input value="true" [(ngModel)]="opt['assigned']" id="selected-blocks" type="checkbox">
               </div>
 

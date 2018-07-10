@@ -561,6 +561,7 @@ export class MenuBackgroundComponent implements OnInit {
 
     this.pageService.menuImageList(imgData)
       .then(imgList => {
+
         if (this.utils.isArray(imgList) && imgList.length > 0) {
           this.splitImageByType(imgList);
         }
@@ -588,15 +589,21 @@ export class MenuBackgroundComponent implements OnInit {
   };
 
   checkImageSetup() {
-    if (this.setupFrom === "default") {
-      let pageObj = this.pageData;
-      let obj = this.tabName === "web" && pageObj.hasOwnProperty("webBackground") ? pageObj["webBackground"] : this.tabName === "mobile" ? pageObj : {};
+    let pageObj = this.pageData;
+    let obj = this.tabName === "web" && pageObj.hasOwnProperty("webBackground") ? pageObj["webBackground"] : this.tabName === "mobile" ? pageObj : {};
 
+    if (this.setupFrom === "default") {
       this.menuImageData["pt"] = obj.hasOwnProperty("background") && !this.utils.isNullOrEmpty(obj["background"]) ? obj["background"] : this.menuImageData["pt"];
       this.menuImageData["bgp"] = obj.hasOwnProperty("background_portrait") && !this.utils.isNullOrEmpty(obj["background_portrait"]) ? obj["background_portrait"] : this.menuImageData["bgp"];
       this.menuImageData["bgl"] = obj.hasOwnProperty("background_landscape") && !this.utils.isNullOrEmpty(obj["background_landscape"]) ? obj["background_landscape"] : this.menuImageData["bgl"];
       this.menuImageData["tp"] = obj.hasOwnProperty("top_banner") && !this.utils.isNullOrEmpty(obj["top_banner"]) ? obj["top_banner"] : this.menuImageData["tp"];
       this.menuImageData["ti"] = obj.hasOwnProperty("tabIcon") && !this.utils.isNullOrEmpty(obj["tabIcon"]) ? obj["tabIcon"] : this.menuImageData["ti"];
+    } else {
+      this.menuImageData["pt"] = this.utils.isNullOrEmpty(this.menuImageData["pt"]) && obj.hasOwnProperty("background") && !this.utils.isNullOrEmpty(obj["background"]) ? obj["background"] : this.menuImageData["pt"];
+      this.menuImageData["bgp"] = this.utils.isNullOrEmpty(this.menuImageData["bgp"]) && obj.hasOwnProperty("background_portrait") && !this.utils.isNullOrEmpty(obj["background_portrait"]) ? obj["background_portrait"] : this.menuImageData["bgp"];
+      this.menuImageData["bgl"] = this.utils.isNullOrEmpty(this.menuImageData["bgl"]) && obj.hasOwnProperty("background_landscape") && !this.utils.isNullOrEmpty(obj["background_landscape"]) ? obj["background_landscape"] : this.menuImageData["bgl"];
+      this.menuImageData["tp"] = this.utils.isNullOrEmpty(this.menuImageData["tp"]) && obj.hasOwnProperty("top_banner") && !this.utils.isNullOrEmpty(obj["top_banner"]) ? obj["top_banner"] : this.menuImageData["tp"];
+      this.menuImageData["ti"] = this.utils.isNullOrEmpty(this.menuImageData["ti"]) && obj.hasOwnProperty("tabIcon") && !this.utils.isNullOrEmpty(obj["tabIcon"]) ? obj["tabIcon"] : this.menuImageData["ti"];
     }
   };
 

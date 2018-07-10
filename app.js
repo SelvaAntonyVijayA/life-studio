@@ -16,7 +16,8 @@ const fs = require('fs');
 const app = express();
 var context = require('./app-middlewares/context');
 var logDirectory = path.join(__dirname, 'log');
-
+ 
+//ILI App Middlewares
 app.set('settings', require(path.join(process.cwd(), 'config', 'settings')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'src/assets')));

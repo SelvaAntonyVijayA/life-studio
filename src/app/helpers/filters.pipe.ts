@@ -30,7 +30,8 @@ export class OrderByPipe implements PipeTransform {
   }
 
   transform(reqArray: any[], isAsc?: boolean, propName?: string, optPropName?: string): any {
-    return this.utils.sortArray(reqArray, isAsc, propName, optPropName);
+    let sortedArray: any[] = this.utils.sortArray(reqArray, isAsc, propName, optPropName);
+    return sortedArray;
   };
 };
 

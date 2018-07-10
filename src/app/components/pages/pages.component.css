@@ -31,21 +31,18 @@
   float: left;
   margin-left: 3px;
   width: 212px;
-  display: inline;
 }
 
 .app_box {
   float: left;
   margin-left: 10px;
   width: 231px;
-  display: inline;
   margin-top: 7px;
 }
 
 .location_box {
   float: left;
   width: 212px;
-  display: inline;
   margin-left: 3px;
   margin-top: 7px;
 }
@@ -132,13 +129,12 @@
 
 .search_box_pages {
   width: 92%;
-  display: inline;
+  margin: 0 auto;
 }
 
 .filter_page {
   margin-top: 5px;
   width: 84%;
-  display: inline;
 }
 
 /* Pages Layout area */
@@ -476,22 +472,17 @@
 
 .search_box_tilist {
   width: 84%;
-  display: inline;
-  margin-left: 2px;
+  margin: 0 auto;
 }
 
 .tilist_type {
-  margin-top: 5px;
   width: 84%;
-  margin-left: 2px;
-  display: inline;
+  margin: 5px auto;
 }
 
 .sort_group {
-  margin-top: 5px;
   width: 84%;
-  margin-left: 2px;
-  display: inline;
+  margin: 5px auto;
 }
 
 .group-view-change {
@@ -511,7 +502,6 @@
 }
 
 .group_list_single {
-  display: inline-block;
   float: left;
   position: relative;
   margin-left: 15px;

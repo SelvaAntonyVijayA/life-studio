@@ -14,7 +14,7 @@ module.exports = {
     },
     "tilist-service": {
       "user": "ilroot",
-      "password": "M$tsy$2011"
+      "password": "MatsyA2018"
     }
   },
   "domain": "http://localhost:8080",

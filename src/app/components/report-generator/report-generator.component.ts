@@ -1,5 +1,5 @@
 
-import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
+import { forkJoin as observableForkJoin, Observable } from 'rxjs';
 import { Component, OnInit, OnDestroy, Input, Output, ElementRef, Renderer, ViewChild, EventEmitter, ContentChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
@@ -93,7 +93,8 @@ export class ReportGeneratorComponent implements OnInit {
     this.selectedCategory = "-1";
   };
 
-  reportRuleReset() {
+  reportRuleReset(isReportChange?: boolean) {
+    this.resetSquares();
     this.selectedTiles = [];
     this.selectedProcedure = "-1";
     this.selectedRule = {};
@@ -104,8 +105,7 @@ export class ReportGeneratorComponent implements OnInit {
     this.baseTiles = [];
     this.selectedBaseTile = "-1";
     this.squaresPanelHgt = 870;
-    this.resetSquares();
-    this.reportName = "";
+    this.reportName = isReportChange ? this.reportName : "";
   };
 
   setScrollList() {
@@ -206,9 +206,14 @@ export class ReportGeneratorComponent implements OnInit {
           "uniqueId": this.getUniqueId(),
           "tileId": currTile["_id"],
           "title": currTile["title"],
+          "xAxisLabel": currTile["title"],
           "blocks": [],
-          "selectedBlock": ""
+          "assigned": ""
         };
+
+        if (currTile["_id"] === "5b3de155942324c82d3cab37") {
+          var mosa = currTile["_id"];
+        }
 
         let blocksData: any[] = currTile.hasOwnProperty("blocksData") && currTile["blocksData"].length > 0 ? currTile["blocksData"] : [];
 
@@ -344,7 +349,7 @@ export class ReportGeneratorComponent implements OnInit {
       let currOpt = {
         "questionText": !this.utils.isNullOrEmpty(opt["questionText"]) ? opt["questionText"] : "",
         "index": opt["index"],
-        "blkValue": opt["index"] + currBlk["blockId"],
+        "blkValue": opt["index"] + "-" + currBlk["blockId"],
         "isDisabled": true,
         "datas": []
       }
@@ -362,7 +367,6 @@ export class ReportGeneratorComponent implements OnInit {
       }
 
       currBlk["options"].push(currOpt);
-
     }
 
     if (blockIds.indexOf(currBlk["blockId"]) === -1) {
@@ -444,7 +448,7 @@ export class ReportGeneratorComponent implements OnInit {
     return apps;
   };
 
-  /*Tile Notify Icons */
+  /* Tile Notify Icons */
   tileNotifyIcons(currTile: Object, appTiles: Object) {
     var tileNotifications = "";
     var tileSmart = "";
@@ -569,6 +573,11 @@ export class ReportGeneratorComponent implements OnInit {
     e.stopPropagation();
 
     if (this.selectedReport !== "-1") {
+      if (this.selectedReport === "1") {
+        this.selectedTiles = [];
+        this.baseTiles = [];
+      }
+
       let tileIndex = this.selectedTiles.indexOf(currTile["_id"]);
 
       if (tileIndex === -1) {
@@ -577,6 +586,8 @@ export class ReportGeneratorComponent implements OnInit {
 
         if (this.selectedBaseTile !== "-1") {
           this.assignSelectedBaseSquare(currTile["_id"]);
+        } else if (this.selectedReport === "1") {
+          this.reportEnableSelected(currTile["_id"]);
         }
       } else {
         this.selectedTiles.splice(tileIndex, 1);
@@ -666,6 +677,24 @@ export class ReportGeneratorComponent implements OnInit {
     }
   };
 
+  reportEnableSelected(tileId: string) {
+    let sqrTile: Object = this.tileSquares.find(s => s['tileId'] === tileId);
+
+    if (!this.utils.isEmptyObject(sqrTile)) {
+      let blocks: Object = sqrTile["blocks"];
+
+      for (let blk in blocks) {
+        if (blocks.hasOwnProperty(blk)) {
+          let currBlk: Object = blocks[blk];
+
+          var opt = currBlk["options"][0];
+          opt["isDisabled"] = false;
+          break;
+        }
+      }
+    }
+  };
+
   checkSelectedExists(currTile: Object) {
     return this.selectedTiles.indexOf(currTile["_id"]) > -1 ? true : false;
   };
@@ -682,9 +711,16 @@ export class ReportGeneratorComponent implements OnInit {
     e.preventDefault();
     e.stopPropagation();
 
+    if (!this.utils.isEmptyObject(ruleObj) && this.selectedRule["_id"] === ruleObj["_id"]) {
+      return false;
+    }
+
+    this.reportRuleReset();
+
     if (this.utils.isEmptyObject(this.selectedRule) || (!this.utils.isEmptyObject(this.selectedRule) && this.selectedRule["_id"] !== ruleObj["_id"])) {
       this.loaderShared.showSpinner(true);
-      this.selectedRule = ruleObj;
+      this.selectedRule = Object.assign({}, ruleObj);
+      this.selectReportData();
       this.loaderShared.showSpinner(false);
     }
   };
@@ -694,13 +730,19 @@ export class ReportGeneratorComponent implements OnInit {
   };
 
   reportChange(repType: string) {
-    this.squaresPanelHgt = repType === "0" ? 843 : 870;
+    this.reportRuleReset(true);
+
+    this.setSquarePanelHeight(repType);
     this.selectedReport = repType;
+  };
+
+  setSquarePanelHeight(repType: string) {
+    this.squaresPanelHgt = repType === "0" ? 843 : 870;
   };
 
   changeTileBase(selectedVal: any, sqr: Object, opt: Object) {
     setTimeout(() => {
-      opt["isDisabled"] = this.selectedReport === "0" && this.selectedBaseTile === sqr["tileId"] ? false : true;
+      opt["isDisabled"] = this.selectedReport === "0" && this.selectedBaseTile === sqr["tileId"] ? false : this.selectedReport === "1" ? false : true;
       sqr["assigned"] = selectedVal;
     }, 0);
 
@@ -793,6 +835,7 @@ export class ReportGeneratorComponent implements OnInit {
     for (let i = 0; i < this.selectedTiles.length; i++) {
       let currSqr: Object = this.tileSquares.find(s => s['tileId'] === this.selectedTiles[i]);
       currSqr["assigned"] = "";
+      currSqr["xAxisLabel"] = currSqr["title"];
 
       for (let j = 0; j < currSqr["blocks"].length; j++) {
         let blck: Object = currSqr["blocks"][j];
@@ -816,13 +859,266 @@ export class ReportGeneratorComponent implements OnInit {
     }
   };
 
-  selectReportData(reportObj: Object) {
-    if (!this.utils.isEmptyObject(reportObj)) {
+  selectReportData() {
+    if (!this.utils.isEmptyObject(this.selectedRule)) {
+      var reportObj = this.selectedRule;
+
+      var reportType = reportObj.hasOwnProperty("type") && !this.utils.isNullOrEmpty(reportObj["type"]) ? reportObj["type"] : "0";
       this.reportName = reportObj.hasOwnProperty("name") && !this.utils.isNullOrEmpty(reportObj["name"]) ? reportObj["name"] : "";
+      this.selectedReport = reportObj.hasOwnProperty("type") && !this.utils.isNullOrEmpty(reportObj["type"]) ? reportObj["type"] : "-1";
+
+      if (this.selectedReport === "0") {
+        this.selectedProcedure = reportObj.hasOwnProperty("procedureId") && !this.utils.isNullOrEmpty(reportObj["procedureId"]) ? reportObj["procedureId"] : "-1";
+      }
+
+      this.setSquarePanelHeight(reportType);
+
+      if (reportObj.hasOwnProperty("tiles") && !this.utils.isEmptyObject(reportObj["tiles"])) {
+        let currTiles: Object = reportObj["tiles"];
+
+        for (let tileId in currTiles) {
+          let tileObj: Object = currTiles[tileId];
+          let tile: Object = this.tileList.find(t => t['_id'] === tileId);
+          let tileSqr: Object = this.tileSquares.find(s => s['tileId'] === tileId);
+
+          var base = tileObj.hasOwnProperty("base") && !this.utils.isNullOrEmpty(tileObj["base"]) ? this.utils.convertToBoolean(tileObj["base"]) : false;
+          var blockIds = tileObj.hasOwnProperty("blocks") && !this.utils.isEmptyObject(tileObj["blocks"]) ? Object.keys(tileObj["blocks"]) : [];
+
+          this.selectedTiles.push(tileId);
+          this.baseTiles.push(tile);
+
+          if (base) {
+            this.selectedBaseTile = tileId;
+          }
+
+          base = this.selectedReport === "1" ? true : base;
+
+          this.selectAssignedTileBlocks(blockIds, tileId, tileSqr, tileObj, base, reportType);
+        }
+
+        if (this.selectedBaseTile !== "-1") {
+          let sqrIdx: number = this.tileSquares.map(s => { return s['tileId']; }).indexOf(this.selectedBaseTile);
+          let baseIdx: number = this.baseTiles.map(t => { return t['_id']; }).indexOf(this.selectedBaseTile);
+          let selectedIdx: number = this.selectedTiles.indexOf(this.selectedBaseTile);
+
+          if (sqrIdx !== -1) {
+            this.utils.arrayMove(this.tileSquares, sqrIdx, 0);
+          }
+
+          if (baseIdx !== -1) {
+            this.utils.arrayMove(this.baseTiles, baseIdx, 0);
+          }
+
+          if (selectedIdx !== -1) {
+            this.utils.arrayMove(this.selectedTiles, selectedIdx, 0);
+          }
+        }
+      }
     }
   };
 
-  setReportData() {
+  selectAssignedTileBlocks(blockIds: string[], tileId: string, tileSqr: Object, tileObj: Object, base: boolean, reportType: string) {
+    if (blockIds.length > 0) {
+      if (reportType === "0") {
+        tileSqr["xAxisLabel"] = tileObj["xAxisLabel"];
+      }
+
+      for (let i = 0; i < blockIds.length; i++) {
+        var blockAnswers = tileObj["blocks"][blockIds[i]];
+        var assignedBlock = tileSqr["blocks"].find(b => b["blockId"] === blockIds[i]);
+
+        if (!this.utils.isEmptyObject(assignedBlock)) {
+          if (this.utils.isArray(blockAnswers)) {
+            var opt = assignedBlock["options"][0];
+            opt["isDisabled"] = base ? false : true;
+            tileSqr['assigned'] = opt["blkValue"];
+
+            for (let j = 0; j < opt["datas"].length; j++) {
+              opt["datas"][j]["value"] = !this.utils.isNullOrEmpty(blockAnswers[j]) ? blockAnswers[j] : "";
+            }
+          } else {
+            for (let idxKy in blockAnswers) {
+              var idxAnswers = blockAnswers[idxKy];
+              var idxOpt = assignedBlock["options"].find(b => b["index"].toString() === idxKy.toString());
+
+              if (!this.utils.isEmptyObject(idxOpt)) {
+                idxOpt["isDisabled"] = base ? false : true;
+                tileSqr['assigned'] = idxOpt["blkValue"];
+
+                for (let k = 0; k < idxOpt["datas"].length; k++) {
+                  idxOpt["datas"][k]["value"] = !this.utils.isNullOrEmpty(idxAnswers[k]) ? idxAnswers[k] : "";
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  };
+
+  reportNew(e: any) { // Resetting the report to new fresh
+    e.preventDefault();
+    this.reportRuleReset();
+  };
+
+  reportSave(e: any) { // Saving the report
+    e.preventDefault();
+
+    let tileSquares: Object = {};
+
+    if (this.utils.isNullOrEmpty(this.reportName)) {
+      this.utils.iAlert('error', 'Information', 'Report name is empty');
+      return false;
+    }
+
+    if (this.selectedReport === "-1") {
+      this.utils.iAlert('error', 'Information', 'Report type not selected');
+      return false;
+    }
+
+    if (this.selectedReport === "0" && this.selectedBaseTile === "-1") {
+      this.utils.iAlert('error', 'Information', 'No base tile is selected');
+      return false;
+    }
+
+    if (this.selectedTiles.length > 0) {
+      this.loaderShared.showSpinner(true);
+
+      let isNotInt: boolean = false;
+
+      for (let i = 0; i < this.selectedTiles.length; i++) {
+        let currTileId: string = this.selectedTiles[i];
+        let tileSqr: Object = this.tileSquares.find(s => s['tileId'] === currTileId);
+        let isBase: boolean = this.selectedBaseTile !== "-1" && this.selectedBaseTile === currTileId ? true : false;
+
+        if (!this.utils.isEmptyObject(tileSqr)) {
+          let xAxisLabel: string = tileSqr["xAxisLabel"];
+          let assignedBlckVal: string = tileSqr["assigned"]
+          let blockSplitted: string[] = assignedBlckVal.split("-");
+          let blockId: string = blockSplitted.length > 1 ? blockSplitted[1] : blockSplitted[0];
+          let blockObj: Object = tileSqr["blocks"].find(b => b["blockId"] === blockId);
+          let blockIdx: string = blockSplitted.length > 1 ? blockSplitted[0] : "-1";
+          let repVals: number[] = [];
+
+          if (!this.utils.isEmptyObject(blockObj)) {
+            let blockOpts: Object = blockObj["options"].find(o => o["blkValue"] === assignedBlckVal);
+
+            if (!this.utils.isEmptyObject(blockOpts)) {
+              let reportDatas: any[] = blockOpts["datas"];
+
+              for (let j = 0; j < reportDatas.length; j++) {
+                let currVal: any = reportDatas[j]["value"];
+
+                if ((!this.utils.isNullOrEmpty(currVal) && this.utils.validateNumber(currVal)) || this.utils.isNullOrEmpty(currVal)) {
+                  repVals.push(parseInt(currVal));
+                } else if (!this.utils.isNullOrEmpty(currVal)) {
+                  this.utils.iAlert('error', 'Information', 'Absolute Value is not an integer!!!');
+                  isNotInt = true;
+                  break;
+                }
+              }
+            }
+          }
+
+          if (!isNotInt) {
+            tileSquares[currTileId] = {
+              "base": isBase,
+              "blocks": {}
+            };
+
+            if (this.selectedReport == "0") {
+              tileSquares[currTileId]["xAxisLabel"] = xAxisLabel;
+            }
+
+            let cascadeQues: Object = {};
+
+            if (blockIdx !== "-1") {
+              cascadeQues[blockIdx] = repVals;
+            }
+
+            tileSquares[currTileId]["blocks"][blockId] = blockIdx !== "-1" ? cascadeQues : repVals;
+          }
+        }
+
+        if (isNotInt) {
+          break;
+        }
+      }
+
+      if (isNotInt) {
+        this.loaderShared.showSpinner(false);
+        return false;
+      }
+
+      let reportDataObj: Object = {
+        "name": this.reportName,
+        "tiles": tileSquares,
+        "type": this.selectedReport,
+        "organizationId": this.oid,
+        "dateCreated": (new Date()).toUTCString(),
+        "dateUpdated": (new Date()).toUTCString()
+      };
+
+      if (this.selectedProcedure !== "-1") {
+        reportDataObj["procedureId"] = this.selectedProcedure;
+      }
+
+      if (!this.utils.isEmptyObject(this.selectedRule)) {
+        reportDataObj["_id"] = this.selectedRule["_id"];
+        reportDataObj["dateCreated"] = this.selectedRule["dateCreated"];
+      }
+
+      this.reportGeneratorService.saveReportRule(reportDataObj)
+        .then(repObj => {
+          let repId: string = !this.utils.isEmptyObject(repObj) && repObj.hasOwnProperty("_id") ? repObj["_id"] : "-1";
+
+          if (!this.utils.isNullOrEmpty(repId)) {
+            this.getRuleList(repId).then(repList => {
+
+              if (this.utils.isArray(repList) && repList.length > 0) {
+                if (reportDataObj.hasOwnProperty("_id")) {
+                  let repIdx: number = this.reportRuleList.map(rpl => { return rpl['_id']; }).indexOf(repId);
+                  this.reportRuleList[repIdx] = repList[0];
+                } else {
+                  this.reportRuleList.push(repList[0]);
+                }
+
+                this.selectedRule = repList[0];
+              }
+            });
+          }
+
+          let alertMsg: string = reportDataObj.hasOwnProperty("_id") ? "Report updated successfully" : "Report saved sucessfully";
+          this.loaderShared.showSpinner(false);
+          this.utils.iAlert("success", "", alertMsg);
+        });
+    } else {
+      this.utils.iAlert('error', 'Information', 'No blocks are selected');
+    }
+  };
+
+  reportDelete(e: any) { // Deleting the report
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!this.utils.isEmptyObject(this.selectedRule)) {
+      this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Report rule??", "Delete", "Cancel", (r) => {
+        if (r["resolved"]) {
+          this.loaderShared.showSpinner(true);
+
+          this.reportGeneratorService.removeReportRule(this.selectedRule["_id"]).then(deleteStatus => {
+            let ruleIdx: number = this.reportRuleList.map(rpl => { return rpl['_id']; }).indexOf(this.selectedRule["_id"]);
+            this.reportRuleList.splice(ruleIdx, 1);
+            this.loaderShared.showSpinner(false);
+            this.reportRuleReset();
+
+            this.utils.iAlert('success', '', 'Rule deleted successfully');
+          });
+        }
+      });
+    } else {
+      this.utils.iAlert('error', 'Information', 'Please select a Rule!!!');
+    }
 
   };
 

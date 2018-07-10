@@ -64,7 +64,7 @@ var get = function (rQuery, rOptions, cb) {
 var deleteRule = function (req, res, next) {
   query = {};
   options = {};
-  query["_id"] = req.params.orgId;
+  query["_id"] = req.params.ruleId;
 
   $db.remove(settingsConf.dbname.tilist_core, settingsConf.collections.reportrule, query, options, function (result) {
     var deleteResult = { "deleted": result };

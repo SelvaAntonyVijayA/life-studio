@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
-
-
-
 import { Utils } from '../helpers/utils';
-
 
 @Injectable()
 export class ReportGeneratorService {
@@ -16,6 +12,15 @@ export class ReportGeneratorService {
     'Content-Type': 'application/json',
     'charset': 'UTF-8'
   });
+
+  saveReportRule(reportObj: Object) {
+
+    return this.http
+      .post("/reportrule/save", JSON.stringify({ "form_data": reportObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
 
   getReportRule(orgId: string, ruleId?: string) {
     let ruleUrl: string = "/reportrule/list/" + orgId;
@@ -34,6 +39,14 @@ export class ReportGeneratorService {
   getAppTileSquares(orgId: string) {
     return this.http
       .get("/reportrule/getallsquares/" + orgId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  removeReportRule(ruleId: string) {
+    return this.http
+      .get("/reportrule/delete/" + ruleId)
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);
