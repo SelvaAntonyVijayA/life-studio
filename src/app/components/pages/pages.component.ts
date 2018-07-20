@@ -1,5 +1,5 @@
 
-import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
+import { forkJoin as observableForkJoin, Observable } from 'rxjs';
 import { Component, OnInit, OnDestroy, Input, Output, ElementRef, Renderer, ViewChild, EventEmitter, ContentChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';

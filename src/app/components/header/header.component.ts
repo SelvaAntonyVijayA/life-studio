@@ -37,7 +37,7 @@ export class HeaderComponent implements OnInit {
   accessList: Object = {};
   domainName: string = "ili";
   dmDatas: any[] = [];
-  rAcesss: Object = {};
+  rAccess: Object = {};
   userObj: any[] = [];
   allPages: any = {};
   orgs: Organization[] = [];
@@ -382,7 +382,7 @@ export class HeaderComponent implements OnInit {
     }
 
     accesses = this.engineAccesses(accesses);
-    var raccess = this.rAcesss;
+    var raccess = this.rAccess;
 
     if (!$.isEmptyObject(raccess) && raccess["name"].toLowerCase() == 'trial') {
       var expiryDate = new Date(this.userObj[0].createdon);
@@ -519,7 +519,7 @@ export class HeaderComponent implements OnInit {
     this.headerService.getDomainMenus(this.domainName).subscribe(domainDatas => {
       this.dmDatas = domainDatas[0];
       this.userObj = domainDatas[1] && domainDatas[1].length > 0 ? domainDatas[1] : [];
-      this.rAcesss = !$.isEmptyObject(domainDatas[2]) && domainDatas[2].hasOwnProperty("role") ? domainDatas[2]["role"] : {};
+      this.rAccess = !$.isEmptyObject(domainDatas[2]) && domainDatas[2].hasOwnProperty("role") ? domainDatas[2]["role"] : {};
       this.selectedPageTitle = "";
 
       if (this.userObj.length > 0) {
@@ -533,6 +533,7 @@ export class HeaderComponent implements OnInit {
 
       //let cms = new CMS();
       this.cms.setCms("organizations", this.orgs);
+      this.cms.setCms("rAccess", this.rAccess);
 
       if (this.userObj && this.userObj.length > 0) {
         this.pageList();

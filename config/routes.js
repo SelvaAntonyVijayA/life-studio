@@ -7,7 +7,14 @@ module.exports = function (app) {
   router.get('/user/get/:userId*?', $user.get);
   router.get('/user/session', $user.getsession);
   router.all('/user/update/:userId*?', $user.update);
+  router.all('/user/list/:orgId', $user.list);
+  router.all('/user/save', $user.save);
+  router.all('/user/appSaveByUser', $user.appSaveByUser);
+  router.all('/user/createdcheck', $user.createdUserChk);
+  router.all('/user/remove', $user.remove);
+
   router.post('/domain/get/', $domains.get);
+
   router.post('/tile/save', $tile.save);
   router.all('/tile/list/:organizationId*?', $tile.list);
   router.post('/tile/tilebyids/', $tile.tileByIds);
@@ -20,8 +27,10 @@ module.exports = function (app) {
   router.get('/tileblock/getprofile/:orgId/:language*?', $tileblock.getProfile);
   router.get('/tileblock/category/list/:orgId', $tileblock.widgetCategoryList);
   router.post('/tileblock/category/save', $tileblock.widgetCategorySave);
+
   router.get('/tilecategory/list/:orgId', $tilecategory.get);
   router.post('/tilecategory/save', $tilecategory.save);
+
   router.post('/event/save', $event.save);
   router.get('/event/list/:orgId/:eventId*?', $event.list);
   router.get('/event/get/:eventId', $event.get);
@@ -29,26 +38,33 @@ module.exports = function (app) {
   router.post('/event/eventbytiles/', $event.eventByTiles);
   router.get('/event/tile/deactivate/:eventId/:tileId/:position', $event.deActivate);
   router.get('/event/tile/activate/:eventId/:tileId/:position', $event.activate);
+
   router.post('/eventcategory/save', $eventcategory.save);
   router.get('/eventcategory/list/:orgId', $eventcategory.list);
+
   router.post('/tilist/save', $tilist.save);
   router.get('/tilist/remove/:tilistId', $tilist.remove);
   router.get('/tilist/list/:orgId/:tilistId*?', $tilist.list);
   router.get('/tilist/folderbytiles/:tilistId', $tilist.folderByTiles);
+
   router.post('/catilist/save', $catilist.save);
   router.get('/catilist/list/:orgId/:categoryId*?', $catilist.list);
   router.get('/catilist/delete/:categoryId', $catilist.deleteCatilist);
+
   router.post('/tiletheme/save/', $theme.save);
   router.all('/tiletheme/list/:id*?', $theme.list);
   router.all('/app/tiletheme/:id', $theme.get);
   router.all('/tiletheme/remove/:id*?', $theme.remove);
   router.post('/tiletheme/tilePreviewUpdate', $theme.tilePreviewUpdate);
+
   router.post('/procedurecategory/save', $eventcategory.saveProcedureCategory);
   router.get('/procedurecategory/list/:orgId', $eventcategory.listProcedureCategory);
+
   router.get('/procedure/list/:orgId/:procedureId*?', $procedure.list);
   router.get('/procedure/getbytiles/:procedureId', $procedure.getByTiles);
   router.post('/procedure/save', $procedure.save);
   router.get("/procedure/remove/:procedureId", $procedure.remove);
+
   router.all('/image/upload', $image.upload);
   router.post('/image/remove', $image.remove);
   router.get('/image/list/:orgId/:folder*?', $image.list);
@@ -78,11 +94,15 @@ module.exports = function (app) {
   router.get('/img/groups/:type/:id*?/:name*?', $image.resize);
   router.get('/img/streams/:streamId/:name*?', $image.resize);
   router.get('/img/profile/:memberId/:name*?', $image.resize);
+
+  router.all('/email/send', $email.send);
+
   router.all('/access/save', $access.save);
   router.get('/access/list/:type*?', $access.list);
   router.get('/access/remove:id', $access.remove);
   router.all('/access/update/:id', $access.update);
   router.all('/access/userAccesses', $access.userAccesses);
+
   router.get('/organization/getorgpackage/:orgId', $organization.getOrgPackage);
   router.post('/organization/save/:name*?', $organization.save);
   router.all('/organization/list', $organization.list);
@@ -121,13 +141,16 @@ module.exports = function (app) {
   router.all('/pages/questionnaires/:orgId/:appId/:locationId*?', $page.questionnaires);
 
   router.all('/livestream/save?', $livestream.save);
-  router.all('/livestream/list/:orgId*?/:appId*?/:locationId*?', $livestream.list);
+  router.all('/livestream/list/:orgId?/:appId?/:locationId?', $livestream.list);
   router.all('/livestream/update/:livestreamId/:appId*?', $livestream.update);
   router.all('/livestream/groupupdate/:id*?', $livestream.groupUpdate);
   router.all('/livestream/like/:id*?', $livestream.like);
   router.all('/livestream/dislike/:id*?', $livestream.unlike);
   router.all('/livestream/remove/:id*?', $livestream.remove);
   router.all('/livestream/get/:id*?', $livestream.byId);
+  router.all('/livestream/mappedstreamlist/:userId', $livestream.mappedStreamlist);
+  router.all('/livestream/livestreammapping', $livestream.liveStreamMapping);
+  router.all('/livestream/user/rightsmapping/:orgId/:userId/:roleId', $livestream.streamUserRightMapping);
 
   router.all('/files/delete/:orgId*', $image.fileDelete);
   router.get('/files/url/:orgId', $image.urlList);
@@ -177,7 +200,7 @@ module.exports = function (app) {
   router.get('/engine/list/', $engines.list);
   router.all('/engine/save?', $engines.save);
 
-  router.all('/smartengine/save', $smartengine.save)
+  router.all('/smartengine/save', $smartengine.save);
   router.all('/smartengine/list/:orgId/:appId', $smartengine.list);
   router.all('/smartengine/remove', $smartengine.remove);
 
@@ -197,6 +220,8 @@ module.exports = function (app) {
   router.all('/reportrule/delete/:ruleId', $reportrule.deleteRule);
 
   router.get('/media/list/:appId/:tileId/:type', $media.list);
+
+  router.all('/role/list/:orgId*?', $role.list);
 
   app.use('/', router);
 };

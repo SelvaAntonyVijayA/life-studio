@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/ui-darkness/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="/js/jqgrid/src/css/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" href="/js/jqgrid/src/css/ui.jqgrid-bootstarp.css" />
+<link rel="stylesheet" type="text/css" href="/css/user_access.css" />
+
+<div class="container user_access_container">
+  <div style="padding-top: 10px; float: left; width: 100%; padding-bottom: 10px;">
+    <label class="lbl_select_app">Select App :</label>
+    <select [ngModel]="selectedApp" (ngModelChange)="appChange($event)" class="form-control input-sm" style="float: left; width: 200px; ">
+      <option *ngFor="let app of appList; let i= index" [value]="app?._id ">{{app?.name}}</option>
+    </select>
+  </div>
+
+  <div class="stream_mapping_content">
+    <div class="members-grid-content">
+      <div id="members-grid-pager" #memgridpager></div>
+      <table id="members-grid" #memgrid></table>
+    </div>
+
+    <div class="stream-grid-content">
+      <div id="stream-grid-pager" #streamgridpager></div>
+      <table id="stream-grid" #streamgrid></table>
+    </div>
+  </div>
+</div>

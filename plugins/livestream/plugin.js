@@ -391,7 +391,6 @@ var streamUserRightMapping = function (req, res, next) {
       $role._get(query, options, function (roles) {
         callback(null, roles);
       });
-
     },
     function (roles, callback) {
       if (roles.length > 0) {
@@ -496,6 +495,20 @@ var _getCurrentUtcDateTime = function () {
   return (new Date((new Date()).toUTCString()));
 };
 
+var mappedStreamlist = function (req, res, next) {
+  query = {};
+  query = {
+    assignedUserIds: {
+      $exists: true,
+      $in: [req.params.userId]
+    }
+  };
+
+  get(query, function (result) {
+    res.send(result);
+  });
+};
+
 module.exports = {
   "init": init,
   "list": list,
@@ -508,5 +521,7 @@ module.exports = {
   "like": like,
   "unlike": unlike,
   "byId": byId,
-  "update": update
+  "update": update,
+  "mappedStreamlist": mappedStreamlist,
+  "streamUserRightMapping": streamUserRightMapping
 };

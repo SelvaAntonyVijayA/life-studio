@@ -55,6 +55,7 @@
     "ngx-bootstrap": "^2.0.2",
     "ngx-color-picker": "^5.3.0",
     "ngx-malihu-scrollbar": "^1.2.2",
+    "nodemailer": "^4.6.7",
     "path": "^0.12.7",
     "request": "^2.82.0",
     "rxjs": "^6.0.0",

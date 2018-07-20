@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 
-
-
 import { Utils } from '../helpers/utils';
 
 @Injectable()
@@ -73,6 +71,30 @@ export class LivestreamService {
       .catch(this.handleError);
   };
 
+  getMappedStreams(userId: string) {
+    return this.http
+      .get("/livestream/mappedstreamlist/" + userId)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  liveStreamMapping(streamObj: Object) {
+
+    return this.http
+      .post("/livestream/livestreammapping", JSON.stringify({ "form_data": streamObj }), { headers: this.headers })
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  streamUserRightMapping(orgId: string, userId: string, roleId: string) {
+    return this.http
+      .get("/livestream/user/rightsmapping/" + orgId + "/" + userId + "/" + roleId )
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
 
   private handleError(error: any): Promise<any> {
     console.log('An error occurred', error);

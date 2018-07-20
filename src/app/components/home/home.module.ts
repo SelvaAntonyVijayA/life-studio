@@ -42,6 +42,7 @@ import { RecurrenceComponent } from '../../components/recurrence/recurrence.comp
 import { ProceduresComponent } from '../../components/procedures/procedures.component';
 import { QaScoresComponent } from '../../components/qa-scores/qa-scores.component';
 import { ReportGeneratorComponent } from '../../components/report-generator/report-generator.component';
+import { UserAccessComponent } from '../../components/user-access/user-access.component';
 //import { UpgradeComponent } from '@angular/upgrade/static';
 
 import { HeaderService } from '../../services/header.service';
@@ -62,6 +63,7 @@ import { LivestreamService } from '../../services/livestream.service';
 import { LanguageService } from '../../services/language.service';
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 import { NotificationService } from '../../services/notification.service';
+import { ScriptService } from '../../services/script.service';
 //import { DragDropDirectiveModule} from "angular4-drag-drop";
 
 //import { SlimScrollModule } from 'ng2-slimscroll';
@@ -111,10 +113,10 @@ import { MomentData } from '../../helpers/momentdata';
     ProfilebuilderComponent, AuthandsecurityComponent, PhotosComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
     jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent,
     LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent,
-    RecurrenceComponent, QaScoresComponent, ReportGeneratorComponent],
+    RecurrenceComponent, QaScoresComponent, ReportGeneratorComponent, UserAccessComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService,
-    LivestreamService, MomentData, LanguageService, NotificationService]
+    LivestreamService, MomentData, LanguageService, NotificationService, ScriptService]
 })
 
 export class HomeModule { }

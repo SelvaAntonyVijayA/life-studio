@@ -12,6 +12,58 @@ var getLogin = function (req, res, next) {
   res.render('index.html');
 };
 
+var save = function (req, res, next) {
+  query = {};
+  user = req.body.form_data;
+  user.password = $general.encrypt(user.password);
+  var tokenObj = $authtoken.get(req.cookies.token);
+
+  if (user && !__util.isNullOrEmpty(user.email)) {
+    query["email"] = user.email;
+  }
+
+  if (user && !__util.isEmptyObject(user.organizationId)) {
+    query["organizationId"] = {
+      "$in": [user.organizationId[0]]
+    };
+  }
+
+  if (__util.isNullOrEmpty(user._id)) {
+    _getOrgMembers(query, function (orgMembers) {
+      if (orgMembers.length == 0) {
+        user["createdby"] = tokenObj.uid;
+        var userPin = _processUserPin(orgMembers);
+        user.pin = userPin;
+
+        $db.save(settingsConf.dbname.tilist_users, settingsConf.collections.orgmembers, user, function (result) {
+          user = {};
+          user._id = result;
+          user.pin = userPin;
+
+          res.send(user);
+        });
+
+      } else {
+        res.send({
+          "message": "Already Exists"
+        });
+      }
+    });
+  } else {
+    options = {};
+    query = {};
+    query._id = user._id;
+    delete user["_id"];
+
+    $db.update(settingsConf.dbname.tilist_users, settingsConf.collections.orgmembers, query, options, user, function (result) {
+      user = {};
+      user._id = query._id;
+      res.send(user);
+    });
+  }
+};
+
+
 /*var login = function (req, res, next) {
   var obj = req.body.form_data;
 
@@ -291,51 +343,127 @@ var getUserlocation = function (ulQuery, ulOptions, cb) {
   });
 };
 
-var remove = function (req, res, next) {
-  let query = {};
-  let options = {};
+var list = function (req, res, next) {
+  query = {};
+  var tokenObj = $authtoken.get(req.cookies.token);
 
-  if (!__util.isNullOrEmpty(req.params.id)) {
-    query._id = req.params.id;
+  if (req.body.hasOwnProperty("form_data")) {
+    query = req.body.form_data;
+
+    if (typeof query.createdby != 'undefined') {
+      query.createdby = tokenObj.uid;
+    }
+
+  } else if (!req.body.hasOwnProperty("form_data") && !__util.isEmptyObject(req.body)) {
+    query = req.body;
   }
 
-  if (!__util.isNullOrEmpty(req.body._id)) {
-    query._id = req.body._id;
+  if (!__util.isNullOrEmpty(req.params.orgId)) {
+    query.organizationId = {
+      $in: [req.params.orgId]
+    };
   }
 
-  $db.remove(appsconf.dbname, appsconf.collections.apps, query, options, function (result) {
-    let obj = {};
-    obj.deleted = result;
+  query = _serializeUserPost(query);
 
-    res.send(obj);
+  $user._getOrgMembers(query, function (result) {
+    if (result && result.length > 0) {
+      result = processDecrypt(result);
+    }
+
+    res.send(result);
   });
 };
 
-var getAppByPin = function (req, res, next) {
-  let query = {};
-  query = {
-    pin: {
-      $exists: true,
-      $in: [parseInt(req.params.id)]
+var _serializeUserPost = function (query) {
+  if (!__util.isEmptyObject(query)) {
+    if (query._search || query.nd || query.rows || query.page || query.sidx || query.sord || query.start || query.limit) {
+      delete query._search;
+      delete query.nd;
+      delete query.rows;
+      delete query.page;
+      delete query.sidx;
+      delete query.sord;
+      delete query.start;
+      delete query.limit;
     }
-  };
+  }
 
-  _getApps(query, {}, function (result) {
-    let _id = result.length > 0 ? result[0]._id : "";
+  return query;
+};
 
-    res.send({
-      appId: _id
-    });
+var processDecrypt = function (usersData) {
+  _.each(usersData, function (userObj) {
+    if (userObj && !__util.isNullOrEmpty(userObj.password)) {
+      userObj["userPassword"] = $general.decrypt(userObj.password);
+    }
+  });
+
+  return usersData;
+};
+
+var _processUserPin = function (orgMembers) {
+  orgMembers = $general.convertToJsonObject(orgMembers);
+  var userPin = $general.getDynamicPin();
+  var userPinExists = _.findWhere(orgMembers, {
+    "pin": userPin
+  });
+
+  if (userPinExists) {
+    _processUserPin(orgMembers);
+  } else {
+    return userPin;
+  }
+};
+
+var appSaveByUser = function (req, res, next) {
+  var datas = req.body.form_data;
+  
+  _saveUserApp(datas, function (result) {
+    var user = { "_id": result };
+
+    res.send(user);
+  });
+};
+
+var _saveUserApp = function (datas, cb) {
+  // $member.appmember(datas.members, function (memberResult) {
+  $db.save(settingsConf.dbname.tilist_users, settingsConf.collections.userapp, datas.apps, function (result) {
+    cb(result);
+  });
+  // });
+};
+
+var createdUserChk = function (req, res, next) {
+  var result = false;
+
+  if (req.body.hasOwnProperty("createdby") && !__util.isNullOrEmpty(req.body.createdby)) {
+    var tokenObj = $authtoken.get(req.cookies.token);
+    result = req.body.createdby !== tokenObj.uid ? true : false;
+  }
+
+  res.send({ "result": result });
+};
+
+var remove = function (req, res, next) {
+  query = {};
+  options = {};
+  query._id = req.body._id;
+
+  $db.remove(settingsConf.dbname.tilist_users, settingsConf.collections.orgmembers, query, options, function (result) {
+    var obj = {"deleted": result};
+    res.send(obj);
   });
 };
 
 module.exports = {
   "init": init,
+  "save": save,
   "login": login,
+  "list": list,
   "getLogin": getLogin,
   "login": login,
   "get": get,
-  "remove": remove,
   "getsession": getsession,
   "getList": getList,
   "update": _update,
@@ -344,6 +472,9 @@ module.exports = {
   "_saveUserApp": _saveUserApp,
   "_saveUserLoc": _saveUserLoc,
   "getUserApp": getUserApp,
-  "getAppByPin": getAppByPin,
-  "getUserlocation": getUserlocation
+  "getUserlocation": getUserlocation,
+  "appSaveByUser": appSaveByUser,
+  "_saveUserApp": _saveUserApp,
+  "createdUserChk": createdUserChk,
+  "remove": remove
 };

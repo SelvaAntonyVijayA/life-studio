@@ -22,6 +22,7 @@ var plugins = {
   "healthstatusrules": "healthstatusrules",
   "member": "member",
   "memberblockdata": "memberblockdata",
+  "email": "email",
   "db": "database",
   "image": "image",
   "package": "package",

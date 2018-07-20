@@ -105,7 +105,7 @@ module.exports = {
     "smtpserver": "smtp.emailsrvr.com",
     "fromsmtpaddress": "info@interactivelife.com",
     "mailusername": "support@myquu.com",
-    "mailpassword": "MyQuu2oo9",
+    "mailpassword": "!nter@ct!veL!fe!@!@",
     "smtpport": "8025"
   },
   "log": {

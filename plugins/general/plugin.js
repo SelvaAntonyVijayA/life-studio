@@ -219,7 +219,6 @@ var _getDeActivateTime = function (eventObj, tile, dateTime, indx, newActivate) 
   return tile;
 };
 
-
 var getIsoDate = function () {
   var isoString = new Date().toISOString();
   var isoDate = new Date(isoString);

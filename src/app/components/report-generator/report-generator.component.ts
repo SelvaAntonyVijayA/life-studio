@@ -573,12 +573,16 @@ export class ReportGeneratorComponent implements OnInit {
     e.stopPropagation();
 
     if (this.selectedReport !== "-1") {
+      let tileIndex: number = this.selectedTiles.indexOf(currTile["_id"]);
+
       if (this.selectedReport === "1") {
+        for (let i = 0; i < this.selectedTiles.length; i++) {
+          this.unassignSelectedBaseSquare(this.selectedTiles[i]);
+        }
+
         this.selectedTiles = [];
         this.baseTiles = [];
       }
-
-      let tileIndex = this.selectedTiles.indexOf(currTile["_id"]);
 
       if (tileIndex === -1) {
         this.selectedTiles.push(currTile["_id"]);
@@ -589,7 +593,7 @@ export class ReportGeneratorComponent implements OnInit {
         } else if (this.selectedReport === "1") {
           this.reportEnableSelected(currTile["_id"]);
         }
-      } else {
+      } else if(this.selectedReport !== "1") {
         this.selectedTiles.splice(tileIndex, 1);
         this.baseTiles.splice(tileIndex, 1);
 
