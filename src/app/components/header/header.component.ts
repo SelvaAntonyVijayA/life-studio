@@ -199,7 +199,7 @@ export class HeaderComponent implements OnInit {
             } else if (menuNm instanceof Array) {
               $.each(menuNm, (indx, mnName) => {
                 if (mnName == "Basic_Stream" || mnName == "Advanced_Stream") {
-                  var cMname: string = String(menuNm);
+                  var cMname: string = String(mnName);
                   if (self.accessList && self.accessList[cMname]) {
                     if (menuDatas[i].toLowerCase() != "main") {
                       pages[menuDatas[i]][menuNames[j]] = self.accessList[cMname];
@@ -289,6 +289,7 @@ export class HeaderComponent implements OnInit {
     let oid = Cookie.get('oid');
     var currPageName = "";
     this.selectedPageTitle = "";
+    this.destroyLibrarires();
 
     if (isMenu) {
       currPageName = typeof page === "string" ? page : typeof page === "object" && page.hasOwnProperty("url") ? page["url"] : "";
@@ -315,8 +316,9 @@ export class HeaderComponent implements OnInit {
 
   userLogout() {
     this.cms.destroyScroll();
-    Cookie.deleteAll();
+    this.destroyLibrarires();
 
+    Cookie.deleteAll();
     setTimeout(() => {
       this.router.navigate(['/login'], { relativeTo: this.route });
     });
@@ -324,6 +326,7 @@ export class HeaderComponent implements OnInit {
 
   accountPage() {
     this.cms.destroyScroll();
+    this.destroyLibrarires();
     this.router.navigate(['./account'], { relativeTo: this.route });
   };
 
@@ -468,6 +471,14 @@ export class HeaderComponent implements OnInit {
     }
 
     return accesses;
+  };
+
+  destroyLibrarires(){
+    let jQGridDom: any = document.getElementsByClassName('ui-jqdialog');
+
+    if (jQGridDom.length > 0) {
+      $(jQGridDom).remove();
+    }
   };
 
   processEngines(currentEngines: any, accesses: any) {

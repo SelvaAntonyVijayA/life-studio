@@ -1,0 +1,25 @@
+/*Report Generator Container*/
+
+.stream_url_container {
+  height: 920px;
+  position: relative;
+}
+
+.stream_mapping_content {
+  float: left;
+  width: 100%;
+  height: 960px;
+}
+
+.stream_url_apps_main {
+  margin-top: 3px;
+  float: left;
+  margin-bottom: 20px;
+}
+
+.stream_url_main_stream {
+  margin-top: 3px;
+  float: left;
+  margin-bottom: 20px;
+  margin-left: 5px;
+}

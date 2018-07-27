@@ -10,8 +10,6 @@ var query = {};
 var init = function (app) {
   settingsConf = app.get('settings');
   
-  console.dir(settingsConf.email.smtpserver);
-
   smtpTransport = nodemailer.createTransport({
     host: settingsConf.email.smtpserver,
     port: settingsConf.email.smtpport,

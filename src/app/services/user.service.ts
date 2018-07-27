@@ -1,62 +1,70 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Response, RequestOptions } from '@angular/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
+import { HttpErrorHandlerService, HandleError } from '../services/http-error-handler.service';
 import { Utils } from '../helpers/utils';
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json',
+    'charset': 'UTF-8'
+  })
+};
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  constructor(private http: Http, public utils: Utils) { }
+  constructor(private http: HttpClient,
+    httpErrorHandler: HttpErrorHandlerService, public utils: Utils) {
+    this.handleError = httpErrorHandler.createHandleError('UserService')
+  }
 
-  private headers = new Headers({
-    'Content-Type': 'application/json',
-    'charset': 'UTF-8'
-  });
+  private handleError: HandleError;
 
-  save(userObj: Object) {
-    return this.http
-      .post("/user/save", JSON.stringify({ "form_data": userObj }), { headers: this.headers })
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError);
+  save(userObj: Object): Observable<any> {
+
+    return this.http.post<any>("/user/save", { "form_data": userObj }, httpOptions)
+      .pipe(
+        map(res => {
+          return res;
+        }),
+        catchError(this.handleError('saveUser', userObj))
+      );
   };
 
-  update(id: string, obj: any) {
-    return this.http
-      .post("/user/update/" + id, JSON.stringify({ "form_data": obj }), { headers: this.headers })
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError);
+  update(id: string, obj: any): Observable<any> {
+
+    return this.http.post<any>("/user/update/" + id, { "form_data": obj }, httpOptions)
+      .pipe(
+        catchError(this.handleError('updateUser', obj))
+      );
   };
 
-  saveUserApp(obj: any) {
-    return this.http
-      .post("/user/appSaveByUser", JSON.stringify({ "form_data": obj }), { headers: this.headers })
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError);
+  saveUserApp(obj: any): Observable<any> {
+
+    return this.http.post<any>("/user/appSaveByUser", { "form_data": obj }, httpOptions)
+      .pipe(
+        catchError(this.handleError('saveUserApp', obj))
+      );
   };
 
-  createdUserChk(obj: any){
-    return this.http
-    .post("/user/createdcheck", JSON.stringify(obj), { headers: this.headers })
-    .toPromise()
-    .then(response => response.json())
-    .catch(this.handleError); 
+  createdUserChk(obj: any): Observable<any> {
+
+    return this.http.post<any>("/user/createdcheck", obj, httpOptions)
+      .pipe(
+        catchError(this.handleError('createdUserChk', obj))
+      );
   };
 
-  remove(obj){
-    return this.http
-    .post("/user/remove", JSON.stringify(obj), { headers: this.headers })
-    .toPromise()
-    .then(response => response.json())
-    .catch(this.handleError); 
-  };
+  remove(obj): Observable<any> {
 
-  private handleError(error: any): Promise<any> {
-    console.log('An error occurred', error);
-    return Promise.reject(error.message || error);
+    return this.http.post<any>("/user/remove", obj, httpOptions)
+      .pipe(
+        catchError(this.handleError('remove', obj))
+      );
   };
 }

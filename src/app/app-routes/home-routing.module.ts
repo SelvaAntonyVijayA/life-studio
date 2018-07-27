@@ -26,6 +26,7 @@ import { PhotosComponent } from '../components/photos/photos.component';
 import { QaScoresComponent } from '../components/qa-scores/qa-scores.component';
 import { ReportGeneratorComponent } from '../components/report-generator/report-generator.component';
 import { UserAccessComponent } from '../components/user-access/user-access.component';
+import { StreamUrlComponent } from '../components/stream-url/stream-url.component';
 
 const homeRoutes: Routes = [
   {
@@ -123,6 +124,10 @@ const homeRoutes: Routes = [
       {
         path: 'useraccess',
         component: UserAccessComponent
+      },
+      {
+        path: 'streamurl',
+        component: StreamUrlComponent
       }
     ]
   }

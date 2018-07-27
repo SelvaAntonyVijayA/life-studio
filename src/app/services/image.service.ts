@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptionsArgs, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 
-
-
 import { Utils } from '../helpers/utils';
 
 @Injectable()

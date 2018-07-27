@@ -43,6 +43,7 @@ import { ProceduresComponent } from '../../components/procedures/procedures.comp
 import { QaScoresComponent } from '../../components/qa-scores/qa-scores.component';
 import { ReportGeneratorComponent } from '../../components/report-generator/report-generator.component';
 import { UserAccessComponent } from '../../components/user-access/user-access.component';
+import { StreamUrlComponent } from '../../components/stream-url/stream-url.component';
 //import { UpgradeComponent } from '@angular/upgrade/static';
 
 import { HeaderService } from '../../services/header.service';
@@ -113,7 +114,7 @@ import { MomentData } from '../../helpers/momentdata';
     ProfilebuilderComponent, AuthandsecurityComponent, PhotosComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
     jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent,
     LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent,
-    RecurrenceComponent, QaScoresComponent, ReportGeneratorComponent, UserAccessComponent],
+    RecurrenceComponent, QaScoresComponent, ReportGeneratorComponent, UserAccessComponent, StreamUrlComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService,
     LivestreamService, MomentData, LanguageService, NotificationService, ScriptService]

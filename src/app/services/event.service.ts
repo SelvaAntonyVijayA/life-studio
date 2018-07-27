@@ -1,9 +1,7 @@
 
-import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
+import { forkJoin as observableForkJoin, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
-
-
 
 import { Utils } from '../helpers/utils';
 
@@ -15,7 +13,6 @@ export class EventService {
   });
 
   constructor(private http: Http, public utils: Utils) {
-    
   }
 
   eventSave(eventObj: any) {

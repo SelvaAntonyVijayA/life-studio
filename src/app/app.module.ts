@@ -17,6 +17,9 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
 
 import { AlertComponent, AlertsComponent } from './components/alert/alert.component';
 import { AlertService } from './services/alert.service';
+import { LoggerService } from './services/logger.service';
+import { MessageService } from './services/message.service';
+import { HttpErrorHandlerService } from './services/http-error-handler.service';
 import { Utils } from './helpers/utils';
 
 @NgModule({
@@ -30,7 +33,7 @@ import { Utils } from './helpers/utils';
   imports: [
     BrowserModule, BrowserAnimationsModule, AppRoutesModule, FormsModule, HttpModule, HttpClientModule
   ],
-  providers: [LoginService, AlertService, Utils, LoaderSharedService, HttpClient],
+  providers: [LoginService, AlertService, MessageService, HttpErrorHandlerService, LoggerService, Utils, LoaderSharedService, HttpClient],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

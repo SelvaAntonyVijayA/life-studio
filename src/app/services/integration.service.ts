@@ -2,10 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 
-
-
 import { Utils } from '../helpers/utils';
-
 
 @Injectable()
 export class IntegrationService {
@@ -24,8 +21,7 @@ export class IntegrationService {
       .then(response => response.json())
       .catch(this.handleError);
   };
-
-
+  
   saveIntegration(obj: any, orgId?: string, type?: string) {
     var url = '/integration/save/';
 

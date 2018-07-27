@@ -8,7 +8,7 @@ import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { DOCUMENT } from '@angular/common';
 import { LoaderSharedService } from '../../services/loader-shared.service';
 import { UserAccessService } from '../../services/user-access.service';
-import { ScriptService } from '../../services/script.service';
+//import { ScriptService } from '../../services/script.service';
 import { PageService } from '../../services/page.service';
 import { RolesService } from '../../services/roles.service';
 import { LivestreamService } from '../../services/livestream.service';
@@ -39,7 +39,6 @@ export class UserAccessComponent implements OnInit {
     public utils: Utils,
     @Inject(DOCUMENT) private document: any,
     private userAccessService: UserAccessService,
-    private scriptService: ScriptService,
     private pageService: PageService,
     private rolesService: RolesService,
     private livestreamService: LivestreamService,
@@ -49,10 +48,10 @@ export class UserAccessComponent implements OnInit {
 
   emptyMembers: any = $("<div><div style='position:relative;'><span style='color:#fff;font-size:15px'>0 records found</span></div></div>");
   emptyStreams: any = $("<div><div style='position:relative;'><span style='color:#fff;font-size:15px'>0 records found</span></div></div>");
-  @ViewChild('memgridpager') membersGridPager: ElementRef;
-  @ViewChild('memgrid') membersGrid: ElementRef;
-  @ViewChild('streamgridpager') streamGridPager: ElementRef;
-  @ViewChild('streamgrid') streamGrid: ElementRef;
+  membersGridPager: ElementRef<any>;
+  membersGrid: ElementRef<any>;
+  streamGridPager: ElementRef<any>;
+  streamGrid: ElementRef<any>;
 
   private orgChangeDetect: any;
   scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
@@ -67,12 +66,12 @@ export class UserAccessComponent implements OnInit {
   mappedList: any[] = [];
 
   setScrollList() {
-    //this.mScrollbarService.initScrollbar("#tiles-list-show", this.scrollbarOptions);
+    // this.mScrollbarService.initScrollbar("#tiles-list-show", this.scrollbarOptions);
 
     if (this.cms["appDatas"].hasOwnProperty("scrollList")) {
-      //this.cms["appDatas"]["scrollList"].push("#tiles-list-show", "#rule_group_main", "#main-tile_squares");
+      // this.cms["appDatas"]["scrollList"].push("#tiles-list-show", "#rule_group_main", "#main-tile_squares");
     } else {
-      //this.cms["appDatas"]["scrollList"] = ["#tiles-list-show", "#rule_group_main", "#main-tile_squares"];
+      // this.cms["appDatas"]["scrollList"] = ["#tiles-list-show", "#rule_group_main", "#main-tile_squares"];
     }
   };
 
@@ -134,6 +133,14 @@ export class UserAccessComponent implements OnInit {
     this.allOrgRoles = [];
     this.orgRoles = {};
     this.memGridEdit = "";
+
+    $.jgrid.gridUnload("#members-grid");
+    $.jgrid.gridUnload("#stream-grid");
+
+    this.membersGridPager = this.document.getElementById("members-grid-pager");
+    this.membersGrid = this.document.getElementById("members-grid");
+    this.streamGridPager = this.document.getElementById("stream-grid-pager");
+    this.streamGrid = this.document.getElementById("stream-grid");
   };
 
   userAccessReset(isAppChange: boolean) {
@@ -147,7 +154,7 @@ export class UserAccessComponent implements OnInit {
   appChange(appId: string) {
     this.selectedApp = appId;
     this.resetStreamGrid();
-    $(this.streamGrid.nativeElement).jqGrid('resetSelection');
+    $(this.streamGrid).jqGrid('resetSelection');
     this.userAccessReset(true);
   };
 
@@ -190,13 +197,13 @@ export class UserAccessComponent implements OnInit {
         }
       }
     }
-
+    
     this.loadMembers();
     this.loadLiveStreams();
   };
 
   loadMembers() {
-    $(this.membersGrid.nativeElement).jqGrid({
+    $(this.membersGrid).jqGrid({
       url: '/user/list/' + this.oid,
       datatype: "json",
       colModel: [{
@@ -286,7 +293,7 @@ export class UserAccessComponent implements OnInit {
 
       },
       loadComplete: () => {
-        $(this.membersGridPager.nativeElement).insertAfter('#gview_members-grid > .ui-jqgrid-titlebar');
+        $(this.membersGridPager).insertAfter('#gview_members-grid > .ui-jqgrid-titlebar');
 
         let memGridPagerCenter: any = this.document.getElementById("members-grid-pager_center");
         let memGridAdd: any = this.document.getElementById("members-grid_iladd");
@@ -300,14 +307,14 @@ export class UserAccessComponent implements OnInit {
         $(memGridCancel).attr("title", "Cancel Edit");
         $(this.memGridEdit).attr("title", "Edit Member");
 
-        if (this.membersGrid.nativeElement.p.reccount === 0) {
+        if (this.membersGrid["p"]["reccount"] === 0) {
           this.emptyMembers.show();
         } else {
           this.emptyMembers.hide();
         }
 
         if (this.savedUserId !== "-1") {
-          $(this.membersGrid.nativeElement).jqGrid('setSelection', this.savedUserId);
+          $(this.membersGrid).jqGrid('setSelection', this.savedUserId);
           //var currentUserRow = $('#users-grid').jqGrid("getLocalRow", this.savedUserId);
           this.savedUserId = "-1";
         }
@@ -316,7 +323,7 @@ export class UserAccessComponent implements OnInit {
         $(this.memGridEdit).click();
       },
       onSelectRow: (rowId) => {
-        let streamGrid: any = $(this.streamGrid.nativeElement);
+        let streamGrid: any = $(this.streamGrid);
         this.mappedList = [];
 
         if (rowId.length > 12) {
@@ -327,9 +334,9 @@ export class UserAccessComponent implements OnInit {
       }
     });
 
-    this.emptyMembers.insertAfter($(this.membersGrid.nativeElement).parent());
+    this.emptyMembers.insertAfter($(this.membersGrid).parent());
 
-    $(this.membersGrid.nativeElement).navGrid('#members-grid-pager', {
+    $(this.membersGrid).navGrid('#members-grid-pager', {
       edit: false,
       add: false,
       del: false,
@@ -347,7 +354,7 @@ export class UserAccessComponent implements OnInit {
       }
     });
 
-    $(this.membersGrid.nativeElement).inlineNav('#members-grid-pager', {
+    $(this.membersGrid).inlineNav('#members-grid-pager', {
       edit: true,
       add: true,
       del: false,
@@ -414,7 +421,7 @@ export class UserAccessComponent implements OnInit {
     userObj["createdon"] = (new Date()).toUTCString();
     userObj["updatedon"] = (new Date()).toUTCString();
 
-    this.userService.save(userObj).then(res => {
+    this.userService.save(userObj).subscribe(res => {
       this.utils.iAlert('success', '', 'User Created');
       this.savedUserId = res._id;
       this.assignUserRights(userObj["role_id"]);
@@ -451,7 +458,7 @@ export class UserAccessComponent implements OnInit {
     obj["apps"] = app;
     obj["members"] = users;
 
-    this.userService.saveUserApp(obj).then(userAppRes => {
+    this.userService.saveUserApp(obj).subscribe(userAppRes => {
     });
   };
 
@@ -483,7 +490,7 @@ export class UserAccessComponent implements OnInit {
     userObj["lastName"] = options.lastName;
     userObj["updatedon"] = (new Date()).toUTCString();
 
-    this.userService.update(options["_id"], userObj).then(res => {
+    this.userService.update(options["_id"], userObj).subscribe(res => {
       this.utils.iAlert('success', '', 'User Updated');
       this.savedUserId = options["_id"];
       this.memberReload();
@@ -491,16 +498,16 @@ export class UserAccessComponent implements OnInit {
   };
 
   memberReload() {
-    $(this.membersGrid.nativeElement).jqGrid('setGridParam', {
+    $(this.membersGrid).jqGrid('setGridParam', {
       datatype: 'json',
       page: 1
     }).trigger("reloadGrid");
   };
 
   deleteUser() {
-    let userId: string = $(this.membersGrid.nativeElement).jqGrid('getGridParam', 'selrow');
-    var currentUserRow = $(this.membersGrid.nativeElement).jqGrid("getLocalRow", userId);
-    this.checkCreatedUser(currentUserRow.createdby).then(userChkRes => {
+    let userId: string = $(this.membersGrid).jqGrid('getGridParam', 'selrow');
+    var currentUserRow = $(this.membersGrid).jqGrid("getLocalRow", userId);
+    this.checkCreatedUser(currentUserRow.createdby).subscribe(userChkRes => {
       let isUser: boolean = userChkRes["result"];
 
       if (isUser || this.utils.isNullOrEmpty(currentUserRow.createdby) || this.utils.isNullOrEmpty(currentUserRow.createdby)) {
@@ -514,13 +521,13 @@ export class UserAccessComponent implements OnInit {
       }
 
       if (userId.length < 12) {
-        $(this.memGridEdit.nativeElement).click();
+        $(this.memGridEdit).click();
         return false;
       }
 
       this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure you want to delete this member?", "Yes", "No", (r) => {
         if (r["resolved"]) {
-          this.userService.remove({ "_id": userId }).then(delRes => {
+          this.userService.remove({ "_id": userId }).subscribe(delRes => {
             this.utils.iAlert('success', '', 'Member Deleted');
             this.savedUserId = "-1";
             this.memberReload();
@@ -540,7 +547,7 @@ export class UserAccessComponent implements OnInit {
     var appId = this.selectedApp;
     var postUrl = '/livestream/list/' + this.oid + '/' + appId;
 
-    $(this.streamGrid.nativeElement).jqGrid({
+    $(this.streamGrid).jqGrid({
       url: postUrl,
       editurl: 'clientArray',
       datatype: "json",
@@ -579,7 +586,7 @@ export class UserAccessComponent implements OnInit {
         $(streamPagerLeft).css("width", "100%");
 
         this.memberExistsCheck();
-        if (this.streamGrid.nativeElement.p.reccount === 0) {
+        if (this.streamGrid["p"]["reccount"] === 0) {
           this.emptyStreams.show();
         } else {
           this.emptyStreams.hide();
@@ -587,9 +594,9 @@ export class UserAccessComponent implements OnInit {
       }
     });
 
-    this.emptyStreams.insertAfter($(this.streamGrid.nativeElement).parent());
+    this.emptyStreams.insertAfter($(this.streamGrid).parent());
 
-    $(this.streamGrid.nativeElement).jqGrid('navGrid', "#stream-grid-pager", {
+    $(this.streamGrid).jqGrid('navGrid', "#stream-grid-pager", {
       edit: false,
       add: false,
       del: false,
@@ -620,10 +627,10 @@ export class UserAccessComponent implements OnInit {
   };
 
   updateStreamMapping(operation: string) {
-    let selectedStreams: any = $(this.streamGrid.nativeElement).jqGrid("getGridParam", "selarrrow");
+    let selectedStreams: any = $(this.streamGrid).jqGrid("getGridParam", "selarrrow");
     let appId: string = this.selectedApp;
     let streamObj: Object = {};
-    streamObj["userId"] = $(this.membersGrid.nativeElement).jqGrid('getGridParam', 'selrow');
+    streamObj["userId"] = $(this.membersGrid).jqGrid('getGridParam', 'selrow');
     streamObj["streams"] = selectedStreams;
     streamObj["operation"] = operation;
 
@@ -650,17 +657,17 @@ export class UserAccessComponent implements OnInit {
     var appId = this.selectedApp;
     var streamPostUrl = '/livestream/list/' + this.oid + '/' + appId;
 
-    $(this.streamGrid.nativeElement).jqGrid('setGridParam', {
+    $(this.streamGrid).jqGrid('setGridParam', {
       datatype: 'json',
       url: streamPostUrl
     }).trigger("reloadGrid");
   };
 
   memberExistsCheck() {
-    let userId: string = $(this.membersGrid.nativeElement).jqGrid('getGridParam', 'selrow');
+    let userId: string = $(this.membersGrid).jqGrid('getGridParam', 'selrow');
 
     if (!this.utils.isNullOrEmpty(userId)) {
-      let streamGrid: any = $(this.streamGrid.nativeElement);
+      let streamGrid: any = $(this.streamGrid);
       this.streamsMapped(userId, streamGrid);
     }
   };
@@ -695,7 +702,7 @@ export class UserAccessComponent implements OnInit {
         this.userAccessDataReset();
         this.oid = Cookie.get('oid');
         this.setrAccess();
-        this.setScrollList();
+        //this.setScrollList();
         this.loadUserAccess();
       }
     });
@@ -703,6 +710,6 @@ export class UserAccessComponent implements OnInit {
 
   ngOnDestroy() {
     this.orgChangeDetect.unsubscribe();
-    this.destroyScroll();
+    //this.destroyScroll();
   };
 }
