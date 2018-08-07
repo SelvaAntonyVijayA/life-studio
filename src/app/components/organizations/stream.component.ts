@@ -412,7 +412,7 @@ export class StreamComponent implements OnInit {
 
     if (id.length > 12) {
       this.streamService.updateStream(id, obj)
-        .then(res => {
+        .subscribe(res => {
           if (res) {
             cb(res)
           }
@@ -420,7 +420,7 @@ export class StreamComponent implements OnInit {
 
     } else {
       this.streamService.saveStream(obj)
-        .then(res => {
+        .subscribe(res => {
           if (res) {
             cb(res)
           }
@@ -430,7 +430,7 @@ export class StreamComponent implements OnInit {
 
   deleteStream(id: any, cb?: any) {
     this.streamService.deleteStream(id)
-      .then(res => {
+      .subscribe(res => {
         if (res) {
           cb(true);
         }

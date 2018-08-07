@@ -17,7 +17,7 @@ export class DomainPageLib {
   Activity_Reports: string = '/activityreports';
   End_Users: string = '/endusers';
   Registration: string = '/registration';
-  Role_based_in_app_visibility: string = '/roleappvisibility';
+  Role_based_in_app_visibility: string = '/privateaccess';
   SMART: string = '/smart';
   Notifications: string = '/notifications';
   Push_Notifications: string = '/pushnotifications';

@@ -6,7 +6,6 @@
 #popup_content.alert {background-image: url(/img/info.gif);}
 #popup_content.confirm {background-image: url(/img/important.gif);}
 #popup_content.prompt {	background-image: url(/img/help.gif);}
-#popup_message {}
 .other_alert {padding-left: 48px;}
 .message_alert{ padding-left: 48px; padding-top: 13px;	}
 #popup_panel {text-align: center;margin: 1em 0em 0em 2em;}

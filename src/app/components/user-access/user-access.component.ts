@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject, OnDestroy, Input, Output, ElementRef, Renderer2, ViewChild, AfterViewInit, ViewChildren, EventEmitter, ContentChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Inject, ElementRef, ViewEncapsulation } from '@angular/core';
 import { forkJoin as observableForkJoin, Observable } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
+//import { MalihuScrollbarService } from 'ngx-malihu-scrollbar';
 import { CommonService } from '../../services/common.service';
 import { Utils } from '../../helpers/utils';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
@@ -16,10 +16,10 @@ import { UserService } from '../../services/user.service';
 import { EmailService } from '../../services/email.service'
 
 declare var $: any;
-declare var jquery: any;
-declare var jqGrid: any;
-declare var navGrid: any;
-declare var jAlert: any;
+//declare var jquery: any;
+//declare var jqGrid: any;
+//declare var navGrid: any;
+//declare var jAlert: any;
 
 @Component({
   selector: 'app-user-access',
@@ -32,13 +32,13 @@ export class UserAccessComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
     private cms: CommonService,
-    private mScrollbarService: MalihuScrollbarService,
+    //private mScrollbarService: MalihuScrollbarService,
     private loaderShared: LoaderSharedService,
-    private e1: ElementRef,
-    private renderer: Renderer2,
+   // private e1: ElementRef,
+    //private renderer: Renderer2,
     public utils: Utils,
     @Inject(DOCUMENT) private document: any,
-    private userAccessService: UserAccessService,
+    //private userAccessService: UserAccessService,
     private pageService: PageService,
     private rolesService: RolesService,
     private livestreamService: LivestreamService,
@@ -197,7 +197,7 @@ export class UserAccessComponent implements OnInit {
         }
       }
     }
-    
+
     this.loadMembers();
     this.loadLiveStreams();
   };
@@ -463,7 +463,7 @@ export class UserAccessComponent implements OnInit {
   };
 
   assignUserRights(roleId: string) {
-    this.livestreamService.streamUserRightMapping(this.oid, this.savedUserId, roleId).then(rMRes => {
+    this.livestreamService.streamUserRightMapping(this.oid, this.savedUserId, roleId).subscribe(() => {
 
     });
   };
@@ -480,7 +480,7 @@ export class UserAccessComponent implements OnInit {
     messageContent += "<span> Password : " + password + "</span>";
     data["html"] = messageContent;
 
-    this.emailService.send(data).then(emailRes => {
+    this.emailService.send(data).then(() => {
     });
   };
 
@@ -644,7 +644,7 @@ export class UserAccessComponent implements OnInit {
       return false;
     }
 
-    this.livestreamService.liveStreamMapping(streamObj).then(strmRes => {
+    this.livestreamService.liveStreamMapping(streamObj).subscribe(strmRes => {
       if (!this.utils.isEmptyObject(strmRes) && strmRes.hasOwnProperty("status") && strmRes["status"] === "success") {
         this.utils.iAlert('success', '', 'Stream mapped');
       } else {
@@ -675,7 +675,7 @@ export class UserAccessComponent implements OnInit {
   streamsMapped(rowId: string, streamGrid: any) {
     if (!this.utils.isNullOrEmpty(rowId) && rowId.length > 12) {
       this.getMappedStreams(rowId)
-        .then(mStrms => {
+        .subscribe(mStrms => {
           if (this.utils.isArray(mStrms) && mStrms.length > 0) {
             this.mappedList = mStrms;
           }

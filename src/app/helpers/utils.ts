@@ -359,6 +359,16 @@ export class Utils {
 
     return result;
   };
+
+  replaceAll(find: string, replace: string, str: string) { // Replace all occurences in a string
+    if (!this.isNullOrEmpty(find)) {
+      while (str.indexOf(find) > -1) {
+        str = str.replace(find, replace);
+      }
+    }
+
+    return str;
+  };
 };
 
 

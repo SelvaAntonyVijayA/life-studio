@@ -246,7 +246,7 @@ export class HeaderComponent implements OnInit {
         var pageUrl = pgLib[pageKeys[i]];
 
         if (pageUrl === currPageUrl) {
-          pgTitle = pageKeys[i].replace("_", " ");
+          pgTitle = this.utils.replaceAll("_", " " ,pageKeys[i]);
         }
 
         if (!this.utils.isNullOrEmpty(pgTitle)) {
@@ -344,12 +344,12 @@ export class HeaderComponent implements OnInit {
       if (typeof subPages == 'object' && !$.isEmptyObject(subPages)) {
         data["type"] = "multi";
         text = text + ' ';
-        data["text"] = text.replace("$", "-");
-        data["aId"] = page.replace("$", "_");
+        data["text"] = self.utils.replaceAll("$", "-", text);
+        data["aId"] = self.utils.replaceAll("$", "_", page);
       } else if (typeof subPages !== "undefined" && !$.isEmptyObject(subPages)) {
         data["type"] = "single";
-        data["text"] = text.replace("$", "-");
-        data["aId"] = page.replace("$", "_");
+        data["text"] = self.utils.replaceAll("$", "-", text);
+        data["aId"] = self.utils.replaceAll("$", "_", page);
       }
 
       var sPgs = [];
@@ -359,10 +359,10 @@ export class HeaderComponent implements OnInit {
         sPg["id"] = spage.replace("$", "_") + "_li";
         sPg["url"] = $.trim(subPages[spage]) == '' ? '' : subPages[spage];
         var stext = spage.replace(rep, ' ');
-        stext = stext.replace("$", "-");
+        stext = self.utils.replaceAll("$", "-", stext);
         sPg["name"] = stext;
         sPg["siteMap"] = text + "- " + stext;
-        sPg["aId"] = spage.replace("$", "_");
+        sPg["aId"] = self.utils.replaceAll("$", "_", spage);
         sPgs.push(sPg);
       }
 
@@ -473,7 +473,7 @@ export class HeaderComponent implements OnInit {
     return accesses;
   };
 
-  destroyLibrarires(){
+  destroyLibrarires() {
     let jQGridDom: any = document.getElementsByClassName('ui-jqdialog');
 
     if (jQGridDom.length > 0) {

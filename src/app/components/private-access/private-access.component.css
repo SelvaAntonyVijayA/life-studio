@@ -1,0 +1,102 @@
+/*Private access Container*/
+
+.private_access_container {
+  height: 920px;
+  position: relative;
+}
+
+.lbl_select_app {
+  color: #cecece;
+  font-size: 12px;
+  float: left;
+  margin-top: 14px;
+  margin-right: 5px;
+}
+
+.apps_private_access {
+  float: left;
+  min-height: 22px;
+  width: 230px;
+  margin-top: 10px;
+}
+
+.lbl_private_access_branch {
+  color: #cecece;
+  font-size: 12px;
+  float: left;
+  margin-top: 14px;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.location_private_access {
+  margin-top: 10px;
+  float: left;
+  min-height: 22px;
+  width: 200px;
+}
+
+.file-import {
+  float: left;
+  position: relative;
+  margin-left: 0px;
+}
+
+.member_upload {
+  margin-top: 10px;
+  margin-left: 10px;
+  float: left;
+  width: 90px;
+}
+
+.csv-wrapper {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.csv-wrapper input {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  filter: alpha(opacity=1);
+  opacity: 0.01;
+  -moz-opacity: 0.01;
+  cursor: pointer;
+}
+
+.csv-wrapper .button {
+  margin-bottom: 5px;
+  border: 1px solid #D3D3D3;
+  color: #030303;
+  background: #E2E2E2;
+  padding: 2.5px 8px;
+  margin-right: 4px;
+  border-radius: 0px;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.member_import {
+  margin-top: 10px;
+  float: left;
+  width: 110px;
+  border-radius: 0px;
+  height: 24px;
+}
+
+.members-count {
+  float: right;
+  position: relative;
+  margin: 17px 0 0 0;
+  color: #FFF;
+}
+
+.head_private_access {
+  margin-left: 0px;
+  width: 100%;
+}

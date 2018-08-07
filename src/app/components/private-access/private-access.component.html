@@ -1,0 +1,37 @@
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/ui-darkness/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="/js/jqgrid/src/css/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" href="/js/jqgrid/src/css/ui.jqgrid-bootstarp.css" />
+<link rel="stylesheet" type="text/css" href="/css/jqgrid_ui.css" />
+
+
+<div class="container private_access_container">
+  <div class="row head_private_access">
+    <label class="lbl_select_app">Select App :</label>
+    <select class="form-control input-sm apps_private_access"></select>
+
+    <label class="lbl_private_access_branch">Branch or Location:</label>
+    <select class="form-control input-sm location_private_access"></select>
+
+    <div class="file-import">
+      <div class="member_upload">
+        <div class="csv-wrapper">
+          <input type="file" name="fileUpload" (change)="getFileName($event.target.files)" id="fileUpload">
+          <span class="button">Browse files</span>
+        </div>
+
+        <!-- <span id="fileName"></span>  -->
+      </div>
+
+      <button class="btn-xs btn-info member_import">
+        Import End Users
+      </button>
+
+      <!--   <a href="#" title="Download sample import member file" class="import-csv"></a>    -->
+    </div>
+
+    <div class="members-count">
+      <span style="margin-right: 4px">Total No. of Downloads:</span>
+      <span> 0 </span>
+    </div>
+  </div>
+</div>

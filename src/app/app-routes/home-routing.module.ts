@@ -27,6 +27,8 @@ import { QaScoresComponent } from '../components/qa-scores/qa-scores.component';
 import { ReportGeneratorComponent } from '../components/report-generator/report-generator.component';
 import { UserAccessComponent } from '../components/user-access/user-access.component';
 import { StreamUrlComponent } from '../components/stream-url/stream-url.component';
+import { EmoticonsReportsComponent } from '../components/emoticons-reports/emoticons-reports.component';
+import { PrivateAccessComponent } from '../components/private-access/private-access.component';
 
 const homeRoutes: Routes = [
   {
@@ -128,6 +130,14 @@ const homeRoutes: Routes = [
       {
         path: 'streamurl',
         component: StreamUrlComponent
+      },
+      {
+        path: "reports",
+        component: EmoticonsReportsComponent
+      },
+      {
+        path: "privateaccess",
+        component: PrivateAccessComponent
       }
     ]
   }
