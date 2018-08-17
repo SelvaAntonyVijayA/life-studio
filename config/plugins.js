@@ -43,7 +43,9 @@ var plugins = {
   "smartengine": "smartengine",
   "media": "media",
   "qaweights": "qaweights",
-  "reportrule": "reportrule"
+  "reportrule": "reportrule",
+  "approles": "approles",
+  "pagepermissions": "pagepermissions"
 };
 
 module.exports = function (appPath, dirName, app) {

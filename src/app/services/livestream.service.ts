@@ -60,7 +60,7 @@ export class LivestreamService {
       .catch(this.handleError);*/
   };
 
-  saveStream(obj: any) {
+  saveStream(obj: any): Observable<any> {
     return this.http.post<any>("/livestream/save", { "form_data": obj }, httpOptions)
       .pipe(
         catchError(this.handleError('saveStream', obj))
@@ -73,7 +73,7 @@ export class LivestreamService {
       .catch(this.handleError); */
   };
 
-  updateStream(id: string, obj: any) {
+  updateStream(id: string, obj: any): Observable<any> {
     //var url = "/livestream/update/" + id;
 
 
@@ -89,7 +89,7 @@ export class LivestreamService {
       .catch(this.handleError); */
   };
 
-  deleteStream(id: string) {
+  deleteStream(id: string): Observable<any> {
     //var url = '/livestream/remove/' + id;
 
 
@@ -105,7 +105,7 @@ export class LivestreamService {
       .catch(this.handleError);*/
   };
 
-  getMappedStreams(userId: string) {
+  getMappedStreams(userId: string): Observable<any> {
 
     return this.http.get<any>("/livestream/mappedstreamlist/" + userId)
       .pipe(
@@ -119,7 +119,7 @@ export class LivestreamService {
        .catch(this.handleError); */
   };
 
-  liveStreamMapping(streamObj: Object) {
+  liveStreamMapping(streamObj: Object): Observable<any> {
 
     return this.http.post<any>("/livestream/livestreammapping", { "form_data": streamObj }, httpOptions)
       .pipe(
@@ -133,7 +133,7 @@ export class LivestreamService {
       .catch(this.handleError);*/
   };
 
-  streamUserRightMapping(orgId: string, userId: string, roleId: string) {
+  streamUserRightMapping(orgId: string, userId: string, roleId: string): Observable<any> {
     return this.http.get<any>("/livestream/user/rightsmapping/" + orgId + "/" + userId + "/" + roleId)
       .pipe(
         catchError(this.handleError('deleteStream', { "Status": "Error" }))

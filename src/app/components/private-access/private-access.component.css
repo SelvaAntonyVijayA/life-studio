@@ -100,3 +100,29 @@
   margin-left: 0px;
   width: 100%;
 }
+
+.main_access_squares {
+  margin-top: 0px;
+  margin-left: 2px;
+  width: 470px;
+  float: left;
+  margin-bottom: 0px;
+}
+
+.private_access_main {
+  float: left;
+  margin-bottom: 5px;
+}
+
+.squares_main {
+  float: left;
+  margin-left: 5px;
+  margin-bottom: 5px;
+}
+
+.users_main {
+  float: left;
+  margin-left: 5px;
+  margin-bottom: 5px;
+}
+

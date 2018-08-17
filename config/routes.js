@@ -125,7 +125,7 @@ module.exports = function (app) {
   router.all("/location/save/:name*?", $location.save);
   router.all("/location/update/:id*?", $location.update);
   router.all("/location/remove/:id*?", $location.remove);
-  router.all('/cms/loc/list/:orgid*?/:appid*?', $location.list);
+  router.all('/cms/loc/list/:orgId?/:appId?', $location.locationByUserId);
 
   router.all('/page/save', $page.save);
   router.all('/page/update/:menuId*?', $page.update);
@@ -139,6 +139,7 @@ module.exports = function (app) {
   router.all('/pages/squares/:orgId/:appId/:locationId*?', $page.squares);
   router.all('/pages/tile/:orgId/:appId/:locationId*?', $page.tile);
   router.all('/pages/questionnaires/:orgId/:appId/:locationId*?', $page.questionnaires);
+  router.all('/page/pagesquareslist/:appId', $page.pageSquaresList);
 
   router.all('/livestream/save?', $livestream.save);
   router.all('/livestream/list/:orgId?/:appId?/:locationId?', $livestream.list);
@@ -196,6 +197,10 @@ module.exports = function (app) {
   router.all('/app/member/plsave:id*?', $member.savepreferredlocation);
   router.all('/app/square/assign', $member.squareAssign);
   router.all('/app/member/preferredlocation/assigned/:locationid*?', $member.getAssignedPl);
+  router.all('/app/member/profile/:appId', $member.getProfile);
+
+  router.all('/app/member/rolemembers/', $member.getRoleMembers);
+  router.all('/app/member/get/:orgId/:appId/:locationId?', $member.getMemberbyApp);
 
   router.get('/engine/list/', $engines.list);
   router.all('/engine/save?', $engines.save);
@@ -222,6 +227,11 @@ module.exports = function (app) {
   router.get('/media/list/:appId/:tileId/:type', $media.list);
 
   router.all('/role/list/:orgId*?', $role.list);
+
+  router.all('/approles/save', $approles.save);
+  router.all('/approles/list/:appId?/:isManager?', $approles.list);
+  router.all('/approles/update/:appRoleId', $approles.update);
+  router.all('/approles/remove/:appRoleId', $approles.removeRole);
 
   app.use('/', router);
 };

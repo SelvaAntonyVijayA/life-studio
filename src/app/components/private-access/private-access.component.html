@@ -1,16 +1,21 @@
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/ui-darkness/jquery-ui.css" />
 <link rel="stylesheet" type="text/css" href="/js/jqgrid/src/css/ui.jqgrid.css" />
 <link rel="stylesheet" type="text/css" href="/js/jqgrid/src/css/ui.jqgrid-bootstarp.css" />
-<link rel="stylesheet" type="text/css" href="/css/jqgrid_ui.css" />
+<!--- <link rel="stylesheet" type="text/css" href="/css/jqgrid_ui.css" /> -->
+<link rel="stylesheet" type="text/css" href="/css/private_access.css" />
 
 
 <div class="container private_access_container">
   <div class="row head_private_access">
     <label class="lbl_select_app">Select App :</label>
-    <select class="form-control input-sm apps_private_access"></select>
+    <select [ngModel]="selectedApp" (ngModelChange)="appChange($event)" class="form-control input-sm apps_private_access">
+      <option *ngFor="let app of appList; let i= index" [value]="app?._id ">{{app?.name}}</option>
+    </select>
 
     <label class="lbl_private_access_branch">Branch or Location:</label>
-    <select class="form-control input-sm location_private_access"></select>
+    <select [ngModel]="selectedLocation" (ngModelChange)="locationChange($event)" class="form-control input-sm location_private_access">
+      <option *ngFor="let loc of locationsList; let i= index" [value]="loc?._id ">{{loc?.name}}</option>
+    </select>
 
     <div class="file-import">
       <div class="member_upload">
@@ -33,5 +38,20 @@
       <span style="margin-right: 4px">Total No. of Downloads:</span>
       <span> 0 </span>
     </div>
+  </div>
+
+  <div class="main_access_squares">
+    <div class="private_access_main">
+      <div id="private-access-pager"></div>
+      <table id="private-access"></table>
+    </div>
+    <div class="squares_main">
+      <div id="squares-pager"></div>
+      <table id="squares"></table>
+    </div>
+  </div>
+  <div class="users_main">
+    <div id="users-grid-pager"></div>
+    <table id="users-grid"></table>
   </div>
 </div>

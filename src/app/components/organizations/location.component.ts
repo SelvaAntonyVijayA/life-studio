@@ -102,26 +102,26 @@ export class LocationComponent implements OnInit {
     toolBar[0].appendChild(container);
 
     let addButtonOptions: jqwidgets.ButtonOptions =
-      {
-        height: 25, width: 25
-      }
+    {
+      height: 25, width: 25
+    }
     let otherButtonsOptions: jqwidgets.ButtonOptions =
-      {
-        disabled: true, height: 25, width: 25
-      }
+    {
+      disabled: true, height: 25, width: 25
+    }
 
     this.myAddButton = jqwidgets.createInstance(buttons[0], 'jqxButton', addButtonOptions);
     this.myDeleteButton = jqwidgets.createInstance(buttons[1], 'jqxButton', otherButtonsOptions);
 
     let addTooltopOptions: jqwidgets.TooltipOptions =
-      {
-        position: 'bottom', content: 'Add'
-      }
+    {
+      position: 'bottom', content: 'Add'
+    }
 
     let deleteTooltopOptions: jqwidgets.TooltipOptions =
-      {
-        position: 'bottom', content: 'Delete'
-      }
+    {
+      position: 'bottom', content: 'Delete'
+    }
 
     let myAddToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[0], 'jqxTooltip', addTooltopOptions);
     let myDeleteToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[1], 'jqxTooltip', deleteTooltopOptions);
@@ -145,7 +145,7 @@ export class LocationComponent implements OnInit {
           let recordDeleteMsg = 'Are you sure you want to delete this location?';
 
           this.locationService.getPreferredLocation(locationId)
-            .then(res => {
+            .subscribe(res => {
               if (res) {
                 plAssigned = res && res.length > 0 ? res : [];
               }
@@ -472,7 +472,7 @@ export class LocationComponent implements OnInit {
 
     if (id.length > 12) {
       this.locationService.updateLocation(id, obj)
-        .then(res => {
+        .subscribe(res => {
           if (res) {
             cb(res)
           }
@@ -480,7 +480,7 @@ export class LocationComponent implements OnInit {
 
     } else {
       this.locationService.saveLocation(obj, this.orgType)
-        .then(res => {
+        .subscribe(res => {
           if (res) {
             cb(res)
           }
@@ -500,7 +500,7 @@ export class LocationComponent implements OnInit {
     obj["preferredLocs"] = plToRemove;
 
     this.locationService.deleteLocation(obj)
-      .then(res => {
+      .subscribe(res => {
         if (res) {
           cb(true);
         }

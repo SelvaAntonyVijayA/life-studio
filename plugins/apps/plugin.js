@@ -103,6 +103,8 @@ var list = function (req, res, next) {
     query = req.body.form_data;
   }
 
+  console.dir(query);
+
   if (__util.isEmptyObject(query)) {
     res.send({});
   } else {

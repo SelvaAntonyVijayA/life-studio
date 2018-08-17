@@ -1103,6 +1103,50 @@ var getAllTileIdsAssignedToApp = function (organizationId, cb) {
     });
 };
 
+var pageSquaresList = function (req, res, next) {
+  query = {};
+  options = {};
+  query.appId = req.params.appId;
+
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.page, query, options, function (result) {
+    if (result.length > 0) {
+      result = _processPageAccesses(result);
+    }
+
+    res.send(result);
+  });
+};
+
+var _processPageAccesses = function (accessPages) {
+  var pageAccesses = [];
+  var pageSquares = {};
+
+  _.each(accessPages, function (page) {
+    if (!__util.isEmptyObject(page.menuTiles) && page.menuTiles.length > 0) {
+      _.each(page.menuTiles, function (square) {
+        pageSquares = {};
+
+        if (!__util.isNullOrEmpty(square.isPrivate) && square.isPrivate) {
+          pageSquares["squareIdType"] = square.linkId + "_" + square.linkTo;
+
+          var squareExists = _.findWhere(pageAccesses, {
+            "squareIdType": pageSquares.squareIdType
+          });
+
+          if (!squareExists) {
+            pageSquares["linkId"] = square.linkId;
+            pageSquares["linkTo"] = square.linkTo;
+            pageSquares["name"] = square.name;
+            pageSquares["_id"] = page._id;
+            pageAccesses.push(pageSquares);
+          }
+        }
+      });
+    }
+  });
+
+  return pageAccesses;
+};
 
 module.exports = {
   "init": init,
@@ -1123,5 +1167,6 @@ module.exports = {
   "tile": tile,
   "questionnaires": questionnaires,
   "smartUpdate": smartUpdate,
-  "getAllTileIdsAssignedToApp": getAllTileIdsAssignedToApp
+  "getAllTileIdsAssignedToApp": getAllTileIdsAssignedToApp,
+  "pageSquaresList": pageSquaresList
 };

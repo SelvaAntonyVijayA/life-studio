@@ -290,6 +290,135 @@ var profileDynamicFields = function (url, cb) {
   });
 };
 
+var getProfileHtml = function (fields, enableResetPassword) {
+  var defaultRegex = {
+    text: {
+      pattern: "^[a-zA-Z0-9 \_\.]+$",
+      message: " can only consist of alphabetical, number, dot and underscore"
+    },
+    email: {
+      pattern: "",
+      message: "Invalid email address"
+    },
+    date: {
+      pattern: "",
+      message: "Invalid Date of birth (mm/dd/yyyy)"
+    },
+    number: {
+      pattern: "^[0-9 \.\,]+$",
+      message: " can only consist of numbers with dot or commas"
+    }
+  };
+
+  var html = "";
+
+  _.each(fields, function (field) {
+    if (field.tag === "password" && enableResetPassword) {
+      html += "<div class='form-group' type='" + field.type + "' tag='" + field.tag + "' style='position: relative;' role='" + field.role + "'>";
+
+    } else {
+      html += "<div class='form-group' type='" + field.type + "' tag='" + field.tag + "' role='" + field.role + "'>";
+    }
+
+    if (field.type === "check") {
+      html += "<input style='float: left;margin-bottom: 15px;' type='checkbox' value='' id='" + field.tag + "' name='" + field.tag + "' ";
+
+      if (!field.required) {
+        html += "required data-bv-notempty-message='" + field.name + " is required' ";
+      }
+
+      html += "><span style='float: left;margin-left: 5px;margin-right: 10px;line-height: 20px;'>" + field.name + "</span>";
+
+    } else if (field.type === "select") {
+      var cssSeletedOptionAlert = "";
+      html += "<select id='" + field.tag + "' name='" + field.tag + "'  ";
+
+      var validationExists = _.filter(field.values, function (obj) {
+        return !__util.isNullOrEmpty(obj.validation);
+      });
+
+      if (!__util.isEmptyObject(validationExists)) {
+        cssSeletedOptionAlert = "selected-option-alert";
+      }
+
+      if (field.required) {
+        html += "required data-bv-notempty-message='" + field.name + " is required' class='form-control input-sm mandatory " + cssSeletedOptionAlert + "'>";
+
+      } else {
+        html += "class='form-control input-sm " + cssSeletedOptionAlert + "'>";
+      }
+
+      html += "<option value=''>" + (field.required ? ("*" + field.name) : field.name) + "</option>";
+
+      _.each(field.values, function (optionObj) {
+        html += "<option value='" + optionObj.value + "' ";
+
+        if (!__util.isNullOrEmpty(optionObj.validation)) {
+          html += "profile-message='" + optionObj.validation + "' ";
+        }
+
+        html += ">" + optionObj.value + "</option>";
+      });
+
+      html += "</select>";
+
+    } else {
+      html += "<input type='" + (field.tag === "password" ? "password" : (field.type === "date" ? "text" : field.type)) + "' ";
+      html += "id='" + field.tag + "' name='" + field.tag + "' ";
+
+      if (field.required) {
+        html += "required data-bv-notempty-message='" + field.name + " is required' ";
+
+        if (field.type === "date") {
+          html += "class='form-control input-sm type-date mandatory' placeholder='" + field.name + " (mm/dd/yyyy)' ";
+
+        } else {
+          html += "class='form-control input-sm mandatory' placeholder='* " + field.name + "' ";
+        }
+
+      } else {
+        if (field.type === "date") {
+          html += "class='form-control input-sm type-date' placeholder='" + field.name + " (mm/dd/yyyy)' ";
+
+        } else {
+          html += "class='form-control input-sm' placeholder='" + field.name + "' ";
+        }
+      }
+
+      if (field.type === "number") {
+        html += "pattern='" + defaultRegex[field.type].pattern + "' ";
+        html += "data-bv-regexp='true' data-bv-regexp-message='" + field.name + defaultRegex[field.type].message + "' ";
+
+      } else if (field.type === "email") {
+        html += "data-bv-emailaddress='true' data-bv-emailaddress-message='" + defaultRegex[field.type].message + "' ";
+
+      } else if (field.type === "date") {
+        html += "data-bv-date-format='MM/DD/YYYY' ";
+        html += "data-bv-date='true' data-bv-date-message='" + defaultRegex[field.type].message + "' ";
+
+      } else if (field.type === "custom") {
+        html += "pattern='" + field.regex + "' ";
+        html += "data-bv-regexp='true' data-bv-regexp-message='" + field.name + " is invalid' ";
+      }
+
+      if (field.tag === "password" && enableResetPassword) {
+        html += " style='width: 470px;' readonly ";
+      }
+
+      html += ">";
+
+      if (field.tag === "password" && enableResetPassword) {
+        html += "<button id='btnPasswordReset' class='btn btn-default btn-xs'> Reset </button> ";
+        html += "<span style='font-size: 10px; color: #6b6b6b;'> Password is generated automatically </span> ";
+      }
+    }
+
+    html += "</div>";
+  });
+
+  return html;
+};
+
 module.exports = {
   "init": init,
   "encrypt": encrypt,
@@ -302,6 +431,7 @@ module.exports = {
   "getIsoDate": getIsoDate,
   "getDynamicPin": getDynamicPin,
   "getObjectIdByQuery": getObjectIdByQuery,
-  "profileDynamicFields": profileDynamicFields
+  "profileDynamicFields": profileDynamicFields,
+  "getProfileHtml": getProfileHtml
 };
 

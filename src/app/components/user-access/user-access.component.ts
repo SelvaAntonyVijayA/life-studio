@@ -13,7 +13,7 @@ import { PageService } from '../../services/page.service';
 import { RolesService } from '../../services/roles.service';
 import { LivestreamService } from '../../services/livestream.service';
 import { UserService } from '../../services/user.service';
-import { EmailService } from '../../services/email.service'
+import { EmailService } from '../../services/email.service';
 
 declare var $: any;
 //declare var jquery: any;

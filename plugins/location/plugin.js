@@ -127,12 +127,12 @@ var locationByUserId = function (req, res, next) {
 
       isOrgAdmin = checkOrgAdmin(req, res, next);
 
-      if (!__util.isNullOrEmpty(req.params.orgid)) {
-        query.org_id = req.params.orgid;
+      if (!__util.isNullOrEmpty(req.params.orgId)) {
+        query.org_id = req.params.orgId;
       }
 
-      if (!__util.isNullOrEmpty(req.params.appid)) {
-        query.app_id = req.params.appid;
+      if (!__util.isNullOrEmpty(req.params.appId)) {
+        query.app_id = req.params.appId;
       }
 
       if (!isOrgAdmin) {
@@ -153,7 +153,7 @@ var locationByUserId = function (req, res, next) {
         callback(null, []);
       } else {
         let locationQuery = {
-          appId: req.params.appid
+          appId: req.params.appId
         };
 
         if (!isOrgAdmin) {
