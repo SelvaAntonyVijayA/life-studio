@@ -447,7 +447,7 @@ export class AppgridComponent implements OnInit {
 
     if (id.length > 12) {
       this.appService.updateApp(id, obj)
-        .then(res => {
+        .subscribe(res => {
           if (res) {
             cb(res)
           }
@@ -455,7 +455,7 @@ export class AppgridComponent implements OnInit {
 
     } else {
       this.appService.saveApp(obj, this.orgType)
-        .then(res => {
+        .subscribe(res => {
           if (res) {
             cb(res)
           }
@@ -465,7 +465,7 @@ export class AppgridComponent implements OnInit {
 
   deleteApp(id: any, cb?: any) {
     this.appService.deleteApp(id)
-      .then(res => {
+      .subscribe(res => {
         if (res) {
           cb(true);
         }

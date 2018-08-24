@@ -55,3 +55,51 @@
     <table id="users-grid"></table>
   </div>
 </div>
+
+<ng-template #userForm>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Add User</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="userFormRef.hide('new')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body user-form-body">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+          <form [formGroup]="memberForm">
+            <div *ngFor="let memField of profileFields; let i= index; trackBy: trackByIndex" class="form-group">
+              <div *ngIf="memField['type'] === 'text' || memField['type'] === 'password' || memField['type'] === 'email'">
+                <!-- <label class="lbl_mem_title">{{memField['name']}}</label> -->
+                <input [placeholder]="memField['required']?'*' + memField['name']: memField['name']" [attr.type]="memField['formFieldName'] ==='password'? 'password': memField['type']"
+                  [formControlName]="memField['formFieldName']" class="form-control mem_form_input" [ngClass]="{ 'is-invalid': memberFormSubmitted && formDetails[memField['formFieldName']].errors }"
+                />
+                <div *ngIf="memberFormSubmitted && formDetails[memField['formFieldName']].errors" class="alert alert-danger invalid-feedback validator_error_names">
+                  <div *ngIf="formDetails[memField['formFieldName']].errors.required">{{memField['name'] + " is required"}}</div>
+                  <div *ngIf="memberFormSubmitted && memField['formFieldName'] === 'email' && formDetails[memField['formFieldName']].errors.email">{{
+                    memField['name'] + " must be a valid email address" }}</div>
+                  <div *ngIf="memberFormSubmitted && memField['formFieldName'] === 'password' && formDetails[memField['formFieldName']].errors.minlength">{{
+                    memField['name'] + " must be at least 6 characters"}}</div>
+                </div>
+              </div>
+              <div *ngIf="memField['type'] === 'select'">
+                <select class="form-control mem_form_input mem_select" [formControlName]="memField['formFieldName']" [ngClass]="{ 'is-invalid': memberFormSubmitted && formDetails[memField['formFieldName']].errors }">
+                  <option [value]="''">{{ memField['required']?'*' + memField['name'] :memField['name']}}</option>
+                  <option *ngFor="let selectVal of memField['values'];let j= index;trackBy: trackByIndex" [value]="selectVal['value']">{{selectVal['value']}}</option>
+                </select>
+
+                <div *ngIf="memberFormSubmitted && formDetails[memField['formFieldName']].errors" class="alert alert-danger invalid-feedback validator_error_names">
+                  <div *ngIf="formDetails[memField['formFieldName']].errors.required">{{ memField['name'] + " is required." }}</div>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" (click)="onSubmit($event)" class="btn btn-default"> Save </button>
+  </div>
+</ng-template>

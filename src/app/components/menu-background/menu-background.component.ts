@@ -474,7 +474,7 @@ export class MenuBackgroundComponent implements OnInit {
     let fr: FileReader = new FileReader();    // File reader new Instance
 
     fr.onload = () => {           // File onload callback method
-      var img = new Image;
+      let img: any = new Image;
 
       img.onload = () => {      // Image on load callback method
         var resultObj = {

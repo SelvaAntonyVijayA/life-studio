@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ElementRef, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Inject, ElementRef, ViewEncapsulation, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { Utils } from '../../helpers/utils';
@@ -9,7 +9,12 @@ import { LoaderSharedService } from '../../services/loader-shared.service';
 import { PageService } from '../../services/page.service';
 import { LocationService } from '../../services/location.service';
 import { MemberService } from '../../services/member.service';
+import { RolesService } from '../../services/roles.service';
+import { AppsService } from '../../services/apps.service'
 import 'src/js/jquery.tinysort.min.js';
+import { ModalDirective, BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 declare var tsort: any;
 declare var $: any;
@@ -30,9 +35,14 @@ export class PrivateAccessComponent implements OnInit {
     private pageService: PageService,
     private locationService: LocationService,
     private memberService: MemberService,
+    private rolesService: RolesService,
+    private appsService: AppsService,
     @Inject(DOCUMENT) private document: any,
+    private modalService: BsModalService,
     private e1: ElementRef,
-    private cdRef: ChangeDetectorRef) { }
+    private cdRef: ChangeDetectorRef,
+    private formBuilder: FormBuilder
+  ) { }
 
   emptyProcess: any = this.divZeroRecordsFound("one");
   emptyRoles: any = this.divZeroRecordsFound("one");
@@ -46,6 +56,8 @@ export class PrivateAccessComponent implements OnInit {
   usersGrid: ElementRef<any>;
   usersGridPager: ElementRef<any>;
 
+  @ViewChild('userForm') userForm: ModalDirective;
+  userFormRef: BsModalRef;
   private orgChangeDetect: any;
   oid: string = "";
   rAccess: Object = {};
@@ -63,6 +75,8 @@ export class PrivateAccessComponent implements OnInit {
   userChk: boolean = false;
   memberId: string = "";
   selectedUserId: string = "-1";
+  memberForm: FormGroup;
+  memberFormSubmitted: boolean = false;
 
   getFileName(el: any) {
     //var name = el.value;
@@ -86,9 +100,11 @@ export class PrivateAccessComponent implements OnInit {
             let userData: any = profUserDatas[1];
 
             this.userColModel = profData["userColModel"];
-            this.profileFields = profData["fields"];
+            //this.profileFields = profData["fields"];
 
             this.loadUsers(userData);
+            this.createUserForm(profData["fields"]);
+            this.memberFormOnHide();
           });
         });
 
@@ -168,6 +184,8 @@ export class PrivateAccessComponent implements OnInit {
     this.userChk = false;
     this.memberId = "";
     this.selectedUserId = "-1";
+    this.memberFormSubmitted = false;
+    this.userFormRef = null;
   };
 
   loadRoles() {
@@ -243,32 +261,23 @@ export class PrivateAccessComponent implements OnInit {
       title: "Delete",
       buttonicon: "ui-icon-trash",
       onClickButton: () => {
-        /* var roleId = $("#private-access").jqGrid('getGridParam', 'selrow');
-   
-         if (roleId && roleId != "" && roleId != null && roleId.length > 12) {
-           var roleObj = {};
-           roleObj.roleId = roleId;
-           roleObj.appId = $(".apps-access").val();
-   
-           $.ajax({
-             type: "POST",
-             cache: false,
-             async: false,
-             data: {
-               "form_data": JSON.stringify(roleObj)
-             },
-             url: "/app/member/rolemembers/",
-             success: function (members) {
-               if (members.length > 0) {
-                 jAlert('Unassign the assigned users to delete selected Role', 'Information', 'Ok');
-               } else {
-                 deleteRole(roleId);
-               }
-             }
-           });
-         } else {
-           jAlert('No Role is selected', 'Information', 'Ok');
-         } */
+        let roleId: string = $(this.privateAccessGrid).jqGrid('getGridParam', 'selrow');
+
+        if (this.utils.isNullOrEmpty(roleId) && roleId.length > 12) {
+          let roleObj: Object = {};
+          roleObj["roleId"] = roleId;
+          roleObj["appId"] = this.selectedApp;
+
+          this.memberService.roleMembers(roleObj).subscribe(memRes => {
+            if (memRes.length > 0) {
+              this.utils.iAlert('error', 'Information', 'Unassign the assigned users to delete selected Role');
+            } else {
+              this.deleteRole(roleId);
+            }
+          })
+        } else {
+          this.utils.iAlert('error', 'Information', 'No Role is selected');
+        }
       }
     });
 
@@ -295,57 +304,47 @@ export class PrivateAccessComponent implements OnInit {
       this.emptyRoles.hide();
     },
     aftersavefunc: (rowid: any, response: any, options: any) => {
-      let roleCurrentRow: string = $(this.privateAccessGrid).jqGrid("getLocalRow", rowid);
+      let roleCurrentRow: any = $(this.privateAccessGrid).jqGrid("getLocalRow", rowid);
 
-      /*if (roleCurrentRow.name != "") {
-        var roleObj = {};
-        roleObj.name = roleCurrentRow.name;
-        roleObj.appId = $('.apps-access').val();
-  
+      if (roleCurrentRow.hasOwnProperty("name") && !this.utils.isNullOrEmpty(roleCurrentRow.name)) {
+        let roleObj: Object = {};
+        roleObj["name"] = roleCurrentRow.name;
+        roleObj["appId"] = this.selectedApp;
+
         if (roleCurrentRow._id.length > 12) {
-          roleObj._id = roleCurrentRow._id;
-  
-          var squaresList = [];
-          var rolesCurrentRow = $("#private-access").jqGrid("getLocalRow", rowid);
-  
-          if (rolesCurrentRow.squares && rolesCurrentRow.squares.length > 0) {
-            $.each(rolesCurrentRow.squares, function (index, currentSquare) {
-              var square = {};
-              var data = currentSquare.split("_");
+          roleObj["_id"] = roleCurrentRow._id;
+
+          let squaresList: any[] = [];
+          let rolesCurrentRow: any = $("#private-access").jqGrid("getLocalRow", rowid);
+
+          if (rolesCurrentRow.hasOwnProperty("squares") && this.utils.isArray(rolesCurrentRow["squares"]) && rolesCurrentRow.squares.length > 0) {
+            for (let i = 0; i < rolesCurrentRow.squares.length; i++) {
+              let currentSquare: any = rolesCurrentRow.squares[i];
+
+              let square: Object = {};
+              let data: any[] = currentSquare.split("_");
               square["squareId"] = data[0];
               square["type"] = data[1];
-  
               squaresList.push(square);
-            });
+            }
           }
-  
-          roleObj.squares = squaresList;
+
+          roleObj["squares"] = squaresList;
         }
-  
-        var roleString = JSON.stringify(roleObj);
-  
-        $.ajax({
-          type: "POST",
-          cache: false,
-          async: false,
-          data: {
-            "form_data": roleString
-          },
-          url: "/approles/save",
-          success: function (res) {
-            newRoleId = res._id;
-  
-            $("#private-access").setGridParam({
-              datatype: 'json',
-              page: 1
-            }).trigger('reloadGrid');
-  
-            jAlert('Role created', 'Information', 'Ok');
-          }
+
+        this.rolesService.saveRole(roleObj).subscribe(res => {
+          this.newRoleId = res._id;
+
+          $(this.privateAccessGrid).setGridParam({
+            datatype: 'json',
+            page: 1
+          }).trigger('reloadGrid');
+
+          this.utils.iAlert('success', '', 'Role created');
         });
       } else {
-        $('#private-access').jqGrid('delRowData', rowid);
-      }*/
+        $(this.privateAccessGrid).jqGrid('delRowData', rowid);
+      }
     }
   };
 
@@ -392,6 +391,40 @@ export class PrivateAccessComponent implements OnInit {
     }
   };
 
+  deleteRole(roleId: string) {
+    this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure you want to delete this Role?", "Yes", "No", (r) => {
+      if (r["resolved"]) {
+        this.rolesService.removeRole(roleId).subscribe(delRes => {
+          $("#private-access").jqGrid('setGridParam', {
+            datatype: 'json'
+          }).trigger("reloadGrid");
+
+          let locationId: string = "";
+
+          if (this.selectedLocation !== "-1" && this.utils.isNullOrEmpty(this.selectedLocation)) {
+            locationId = this.selectedLocation
+          }
+
+          let memberUrl: string = '/app/member/get/' + this.oid + "/" + this.selectedApp + "/" + locationId;
+
+          let isShrink: boolean = this.getUserGridShrink();
+
+          $(this.usersGrid).jqGrid('setGridParam', {
+            datatype: 'json',
+            shrinkToFit: isShrink,
+            url: memberUrl
+          }).trigger("reloadGrid");
+
+          $(this.squaresGrid).jqGrid('setGridParam', {
+            datatype: 'json'
+          }).trigger("reloadGrid");
+
+          this.utils.iAlert('success', '', 'Role removed');
+        });
+      }
+    });
+  };
+
   loadSquares() {
     $(this.squaresGrid).jqGrid({
       url: '/page/pagesquareslist/' + this.selectedApp,
@@ -424,7 +457,6 @@ export class PrivateAccessComponent implements OnInit {
       onSelectRow: (rowid: string) => {
       },
       loadComplete: () => {
-
         if (this.squaresGrid["p"]["reccount"] === 0) {
           this.emptySquares.show();
         } else {
@@ -457,62 +489,67 @@ export class PrivateAccessComponent implements OnInit {
       buttonicon: "ui-icon-circle-plus",
       position: "first",
       onClickButton: () => {
-        var roleId = $(this.privateAccessGrid).jqGrid('getGridParam', 'selrow');
-        var selectedSquares = $(this.squaresGrid).jqGrid("getGridParam", "selarrrow");
+        let roleId: string = $(this.privateAccessGrid).jqGrid('getGridParam', 'selrow');
+        let selectedSquares: any[] = $(this.squaresGrid).jqGrid("getGridParam", "selarrrow");
 
-        /* if (!roleId || roleId == "" || roleId == null || roleId.length < 12) {
-           jAlert('No role is selected', 'Information', 'Ok');
-         } else {
-           var squaresList = [];
-           var pageIds = [];
-           var square = {};
- 
-           $.each(selectedSquares, function (index, squareId) {
-             square = {};
-             var rowData = $("#table3").getRowData(squareId);
-             var data = rowData.squareIdType.split("_");
-             square["squareId"] = data[0];
-             square["type"] = data[1];
- 
-             var pageIndex = pageIds.indexOf(rowData._id);
- 
-             if (pageIndex == -1) {
-               pageIds.push(rowData._id);
-             }
- 
-             squaresList.push(square);
-           });
- 
-           var squareObj = {
-             "squares": squaresList,
-             "pageIds": pageIds
-           };
- 
-           assignMembers(function (result) {
-             assignSquares("/approles/update/" + roleId, squareObj, function (result) {
-               var rolesData = $('#private-access').jqGrid('getRowData', roleId);
-               rolesData.squares = selectedSquares;
-               $('#private-access').jqGrid('setRowData', roleId, rolesData);
- 
-               $('#users-grid').jqGrid('resetSelection');
-               var members = $('#users-grid').jqGrid('getGridParam', 'data');
-               var memberIdsAssigned = [];
- 
-               if (members.length > 0) {
-                 memberIdsAssigned = [];
-                 $.each(members, function (index, mem) {
-                   if (mem.memberRoleId == roleId) {
-                     memberIdsAssigned.push(mem._id);
-                     $('#users-grid').jqGrid('setSelection', mem._id);
-                     $('#users-grid').find("#" + mem._id + " input:checkbox").prop('checked', false);
-                   }
-                 });
-               }
- 
-               jAlert('Squares assigned', 'Information', 'Ok');
-             });
-           });
-         } */
+        if (this.utils.isNullOrEmpty(roleId) || roleId.length < 12) {
+          this.utils.iAlert('error', 'Information', "No role is selected");
+        } else {
+          let squaresList: any[] = [];
+          let pageIds: any[] = [];
+          let square: Object = {};
+
+          for (let i = 0; i < selectedSquares.length; i++) {
+            let squareId: string = selectedSquares[i];
+            square = {};
+
+            let rowData: any = $(this.squaresGrid).getRowData(squareId);
+            var data = rowData.squareIdType.split("_");
+            square["squareId"] = data[0];
+            square["type"] = data[1];
+
+            var pageIndex = pageIds.indexOf(rowData._id);
+
+            if (pageIndex == -1) {
+              pageIds.push(rowData._id);
+            }
+
+            squaresList.push(square);
+          }
+
+          let squareObj: Object = {
+            "squares": squaresList,
+            "pageIds": pageIds
+          };
+
+          this.assignMembers((memRes) => {
+            this.assignSquares(roleId, squareObj, (sqrRes) => {
+              let rolesData: any = $(this.privateAccessGrid).jqGrid('getRowData', roleId);
+              rolesData.squares = selectedSquares;
+              $(this.privateAccessGrid).jqGrid('setRowData', roleId, rolesData);
+
+              $(this.usersGrid).jqGrid('resetSelection');
+              let members: any[] = $(this.usersGrid).jqGrid('getGridParam', 'data');
+              let memberIdsAssigned: any[] = [];
+
+              if (members.length > 0) {
+                memberIdsAssigned = [];
+
+                for (let i = 0; i < members.length; i++) {
+                  let mem: any = members[i];
+
+                  if (mem.memberRoleId === roleId) {
+                    memberIdsAssigned.push(mem._id);
+                    $(this.usersGrid).jqGrid('setSelection', mem._id);
+                    $(this.usersGrid).find("#" + mem._id + " input:checkbox").prop('checked', false);
+                  }
+                }
+              }
+
+              this.utils.iAlert('success', '', 'Squares assigned');
+            });
+          });
+        }
       }
     });
 
@@ -564,6 +601,65 @@ export class PrivateAccessComponent implements OnInit {
     return currIsShrink;
   };
 
+  assignMembers(cb) {
+    let selectedUsers: any[] = $(this.usersGrid).jqGrid("getGridParam", "selarrrow");
+    let selectedSquares: any[] = $(this.squaresGrid).jqGrid("getGridParam", "selarrrow");
+    let roleId: string = $(this.privateAccessGrid).jqGrid('getGridParam', 'selrow');
+    let rolesData: any = $(this.privateAccessGrid).jqGrid('getRowData', roleId);
+    let squaresList: any[] = [];
+    let memberUpdateList: any[] = [];
+    let square: Object = {};
+
+    for (let i = 0; i < selectedSquares.length; i++) {
+      let squareId: string = selectedSquares[i];
+      square = {};
+      let rowData: any = $(this.squaresGrid).getRowData(squareId);
+      let data: any[] = rowData.squareIdType.split("_");
+      square["squareId"] = data[0];
+      square["type"] = data[1];
+
+      squaresList.push(square);
+    }
+
+    for (let i = 0; i < selectedUsers.length; i++) {
+      let user: any = selectedUsers[i];
+      let userData: any = $('#users-grid').jqGrid('getRowData', user);
+      let userObj: Object = {};
+      userObj["userId"] = user;
+      userObj["appId"] = $('.apps-access').val();
+      userObj["squares"] = {
+        "squares": squaresList
+      };
+
+      if (userData.memberRoleId === roleId) {
+        memberUpdateList.push(userObj);
+      }
+    }
+
+    if (memberUpdateList.length === 0) {
+      cb();
+    } else {
+      this.appsService.squareAssign(memberUpdateList).subscribe(sqrRes => {
+        if (!sqrRes.success) {
+          this.utils.iAlert('error', 'Information', sqrRes.message);
+        } else {
+          if (cb) {
+            cb(sqrRes);
+          }
+        }
+      });
+    }
+  };
+
+  assignSquares(roleId: string, obj: Object, cb: any) {
+
+    this.rolesService.updateRole(roleId, obj).subscribe(updateRes => {
+      if (cb) {
+        cb(updateRes);
+      }
+    });
+  };
+
   loadUsers(userDatas: any[]) {
     let isShrink: boolean = this.getUserGridShrink();
     let rowNumber: number = userDatas && userDatas.length > 25 ? userDatas.length : 25;
@@ -591,9 +687,9 @@ export class PrivateAccessComponent implements OnInit {
           $(onSelectUser).css("background", "");
           selectedUserId = -1;
         }
-
+  
         onSelectUser = $('#' + $.jgrid.jqID(rowid))[0];
-
+  
         if (!userChk) {
           $(onSelectUser).css("background", "#4AC2B9");
           $(onSelectUser).css("font-weight", "bolder");
@@ -725,15 +821,18 @@ export class PrivateAccessComponent implements OnInit {
       buttonicon: "ui-icon-plus",
       position: "first",
       onClickButton: () => {
-        if (this.selectedApp !== "-1") {
-          this.memberId = "-1";
-          //$('#addMemberDetail').modal('show');
-          this.resetValidation();
-          //var form = $('#userForm');
-          this.resetMember();
-        } else {
-          this.utils.iAlert('error', 'Information', 'No App is selected');
-        }
+        //this.userForm.show();
+        this.userFormRef = this.modalService.show(this.userForm, { class: 'modal-md' });
+
+        /* if (this.selectedApp !== "-1") {
+           this.memberId = "-1";
+           //this.userForm.show();
+           this.resetValidation();
+           //var form = $('#userForm');
+           this.resetMember();
+         } else {
+           this.utils.iAlert('error', 'Information', 'No App is selected');
+         } */
       }
     }).navButtonAdd('#users-grid-pager', {
       caption: "Role",
@@ -743,7 +842,7 @@ export class PrivateAccessComponent implements OnInit {
         /* var roleId = $("#private-access").jqGrid('getGridParam', 'selrow');
          var rolesData = $('#private-access').jqGrid('getRowData', roleId);
          var selectedUsers = $("#users-grid").jqGrid("getGridParam", "selarrrow");
- 
+   
          if (selectedUsers.length == 0) {
            jAlert('No End Users are selected', 'Information', 'Ok');
          } else if (roleId == null || roleId == "") {
@@ -753,20 +852,20 @@ export class PrivateAccessComponent implements OnInit {
            var squaresList = [];
            var square = {};
            var selectedSquares = $("#table3").jqGrid("getGridParam", "selarrrow");
- 
+   
            $.each(selectedSquares, function (index, squareId) {
              square = {};
              var rowData = $("#table3").getRowData(squareId);
              var data = rowData.squareIdType.split("_");
              square["squareId"] = data[0];
              square["type"] = data[1];
- 
+   
              squaresList.push(square);
            });
- 
+   
            $.each(selectedUsers, function (index, user) {
              var checked = $('#users-grid').find("#" + user + " input:checkbox").is(':checked');
- 
+   
              if (checked) {
                var userObj = {};
                userObj.userId = user;
@@ -774,18 +873,18 @@ export class PrivateAccessComponent implements OnInit {
                userObj.squares = {
                  "squares": squaresList
                };
- 
+   
                userObj.role = {
                  "role": [{
                    "roleId": roleId,
                    "name": rolesData.name
                  }]
                };
- 
+   
                memberUpdateList.push(userObj);
              }
            });
- 
+   
            $.ajax({
              type: "POST",
              cache: false,
@@ -801,20 +900,20 @@ export class PrivateAccessComponent implements OnInit {
                } else {
                  onloadAssigning = true;
                  var locationId = "";
- 
+   
                  if ($('.location').val() != "-1" && $('.location').val() != "") {
                    locationId = $('.location').val()
                  }
- 
+   
                  var memberUrl = '/app/member/get/' + oid + "/" + $('.apps-access').val() + "/" + locationId;
                  var isShrink = getUserGridShrink();
- 
+   
                  $("#users-grid").jqGrid('setGridParam', {
                    datatype: 'json',
                    shrinkToFit: isShrink,
                    url: memberUrl
                  }).trigger("reloadGrid");
- 
+   
                  jAlert('End users are assigned to role', 'Information', 'Ok');
                }
              }
@@ -830,7 +929,7 @@ export class PrivateAccessComponent implements OnInit {
          var rolesData = $('#private-access').jqGrid('getRowData', roleId);
          var selectedUsers = $("#users-grid").jqGrid("getGridParam", "selarrrow");
          var roleSquaresList = [];
- 
+   
          if (selectedUsers.length == 0) {
            jAlert('No End Users are selected', 'Information', 'Ok');
          } else if (roleId == null || roleId == "") {
@@ -839,32 +938,32 @@ export class PrivateAccessComponent implements OnInit {
            jConfirm("Are you sure you want to unassign the Users?", 'Warning', 'Yes', 'No', function (r) {
              if (r) {
                var memberUpdateList = [];
- 
+   
                if (rolesData.squares) {
                  var squares = rolesData.squares != "" ? rolesData.squares.split(',') : [];
- 
+   
                  if (squares.length > 0) {
                    $.each(squares, function (index, squareId) {
                      square = {};
                      var data = squareId.split("_");
                      square["squareId"] = data[0];
                      square["type"] = data[1];
- 
+   
                      roleSquaresList.push(square);
                    });
                  }
                }
- 
+   
                $.each(selectedUsers, function (index, user) {
                  var checked = $('#users-grid').find("#" + user + " input:checkbox").is(':checked');
- 
+   
                  if (checked) {
                    var userData = $('#users-grid').jqGrid('getRowData', user);
- 
+   
                    if (userData.squares) {
                      userData.squares = JSON.parse(userData.squares);
                    }
- 
+   
                    if (userData.squares.length > 0) {
                      $.each(roleSquaresList, function (i, rSquare) {
                        $.each(userData.squares, function (indx, square) {
@@ -874,22 +973,22 @@ export class PrivateAccessComponent implements OnInit {
                        });
                      });
                    }
- 
+   
                    var userObj = {};
                    userObj.userId = user;
                    userObj.appId = $('.apps-access').val();
                    userObj.role = {
                      "role": []
                    };
- 
+   
                    userObj.squares = {
                      "squares": userData.squares
                    };
- 
+   
                    memberUpdateList.push(userObj);
                  }
                });
- 
+   
                $.ajax({
                  type: "POST",
                  cache: false,
@@ -905,20 +1004,20 @@ export class PrivateAccessComponent implements OnInit {
                    } else {
                      onloadAssigning = true;
                      var locationId = "";
- 
+   
                      if ($('.location').val() != "-1" && $('.location').val() != "") {
                        locationId = $('.location').val()
                      }
- 
+   
                      var memberUrl = '/app/member/get/' + oid + "/" + $('.apps-access').val() + "/" + locationId;
                      var isShrink = getUserGridShrink();
- 
+   
                      $("#users-grid").jqGrid('setGridParam', {
                        datatype: 'json',
                        shrinkToFit: isShrink,
                        url: memberUrl
                      }).trigger("reloadGrid");
- 
+   
                      jAlert('End users are unassigned to selected role', 'Information', 'Ok');
                    }
                  }
@@ -935,13 +1034,13 @@ export class PrivateAccessComponent implements OnInit {
         /* var selectedUsers = $("#users-grid").jqGrid("getGridParam", "selarrrow");
          var someUsersNotDeleted = false;
          var appsForDelete = ["5622140512b747843bc8136f", "56d8849474ae9b5201144c92"];
- 
+   
          jConfirm("Are you sure you want to delete the user(s)?", 'Warning', 'Yes', 'No', function (r) {
            if (r) {
              $.each(selectedUsers, function (index, userId) {
                var checked = $('#users-grid').find("#" + userId + " input:checkbox").is(':checked');
                var postUrl = "/app/member/remove/" + userId;
- 
+   
                if (checked) {
                  $.ajax({
                    type: "POST",
@@ -956,16 +1055,16 @@ export class PrivateAccessComponent implements OnInit {
                  });
                }
              });
- 
+   
              reloadUserData();
- 
+   
              if (someUsersNotDeleted) {
                jAlert('Some User(s) not deleted', 'Information', 'Ok');
- 
+   
              } else {
                jAlert('User(s) deleted', 'Information', 'Ok');
              }
- 
+   
            }
          }); */
       }
@@ -1092,11 +1191,11 @@ export class PrivateAccessComponent implements OnInit {
 
   resetMember() {
     /* var formFields = $("#userForm .form-group").find(":first");
- 
+   
      for (var i = 0; i < formFields.length; i++) {
        $(formFields[i]).val("");
      }
- 
+   
      $('#addMemberDetail').find('.modal-title').text("Add User"); */
   };
 
@@ -1109,10 +1208,10 @@ export class PrivateAccessComponent implements OnInit {
     //var currentUserRow = $('#users-grid').jqGrid("getLocalRow", memberId);
     /* $('#addMemberDetail').find('.modal-title').text("Edit User");
      var profileImage = $('#addMemberDetail').find('.member-profile-image');
- 
+   
      if (currentUserRow && currentUserRow.allFieldsString) {
        var selectUserData = JSON.parse(currentUserRow.allFieldsString);
- 
+   
        if (selectUserData && selectUserData.image && typeof selectUserData.image !== "undefined" && selectUserData.image != "" && selectUserData.image != null) {
          profileImage.css("display", "block");
          profileImage.find('img').attr("src", selectUserData.image);
@@ -1120,31 +1219,169 @@ export class PrivateAccessComponent implements OnInit {
          profileImage.css("display", "none");
          profileImage.find('img').attr("src", "");
        }
- 
+   
        var formFields = $("#userForm .form-group").find(":first");
- 
+   
        for (var i = 0; i < formFields.length; i++) {
          var field = $(formFields[i]);
- 
+   
          if (field.attr("type") === 'checkbox') {
            field.prop('checked', selectUserData[field.attr("name")]);
- 
+   
          } else if (field.attr("type") === 'date') {
            var fdate = _validateInput(selectUserData[field.attr("name")]);
- 
+   
            if (fdate) {
              fdate = fdate.split('/');
              field.val(fdate[2] + "-" + fdate[0] + "-" + fdate[1]);
            }
- 
+   
          } else if (field.attr("type") === 'password') {
            field.val(_validateInput(selectUserData["decryptedPassword"]));
- 
+   
          } else {
            field.val(_validateInput(selectUserData[field.attr("name")]));
          }
        }
      } */
+  };
+
+  duplicateRole() {
+    let roleId: string = $(this.privateAccessGrid).jqGrid('getGridParam', 'selrow');
+
+    if (this.utils.isNullOrEmpty(roleId) || roleId.length < 12) {
+      this.utils.iAlert('error', 'Information', 'No role is selected');
+      return false;
+    }
+    let rolesCurrentRow: any;
+
+    if (roleId.length > 12) {
+      rolesCurrentRow = $(this.privateAccessGrid).jqGrid("getLocalRow", roleId);
+      let squaresList: any[] = [];
+
+      if (rolesCurrentRow.hasOwnProperty("squares") && rolesCurrentRow.squares.length > 0) {
+        for (let i = 0; i < rolesCurrentRow.squares; i++) {
+          let currRoleSqr = rolesCurrentRow.squares[i];
+          let square: Object = {};
+          let data: any[] = currRoleSqr.split("_");
+          square["squareId"] = data[0];
+          square["type"] = data[1];
+          squaresList.push(square);
+        }
+      }
+
+      let roleObj: Object = {};
+      roleObj["name"] = "Copy of " + rolesCurrentRow.name;
+      roleObj["appId"] = this.selectedApp;
+      roleObj["squares"] = squaresList;
+
+      this.rolesService.saveRole(roleObj).subscribe(res => {
+        this.newRoleId = res["_id"];
+
+        $(this.privateAccessGrid).jqGrid('setGridParam', {
+          datatype: 'json',
+        }).trigger("reloadGrid");
+
+        this.utils.iAlert('success', '', 'Role duplicated');
+      });
+    };
+  };
+
+  get formDetails() { return this.memberForm.controls; }
+
+  createUserForm(memFields: any[]) {
+    this.profileFields = [];
+    let profObject: Object = {};
+
+    let getFieldContents: Function = (field: Object, fieldName: string) => {
+      let result: any = "";
+
+      if (field.hasOwnProperty("required") && !this.utils.isNullOrEmpty(field["required"]) && field["required"]) {
+        if (fieldName === "email" || fieldName === "password") {
+          result = [Validators.required];
+        } else {
+          result = Validators.required
+        }
+      }
+
+      return result;
+    };
+
+    for (let i = 0; i < memFields.length; i++) {
+      let currField: Object = {};
+      let profField: Object = memFields[i];
+      currField = Object.assign({}, profField);
+
+      let fieldName: string = profField.hasOwnProperty("name") && !this.utils.isNullOrEmpty(profField["name"]) ? this.utils.trim(profField["name"].toLowerCase()) : "";
+      currField["formFieldName"] = fieldName;
+
+      if (!this.utils.isNullOrEmpty(fieldName)) {
+        let fieldContents: any[] = [""];
+
+        if (currField["formFieldName"] === "email") {
+          let emailContent: any = getFieldContents(currField, fieldName);
+
+          if (this.utils.isArray(emailContent)) {
+            emailContent.push(Validators.email);
+          } else {
+            emailContent = Validators.email;
+          }
+
+          if (!this.utils.isNullOrEmpty(emailContent)) {
+            fieldContents.push(emailContent);
+          }
+
+        } else if (currField["formFieldName"] === "password") {
+          let passContent: any = getFieldContents(currField, fieldName);
+
+          if (this.utils.isArray(passContent)) {
+            passContent.push(Validators.minLength(6));
+          } else {
+            passContent = Validators.minLength(6);
+          }
+
+          if (!this.utils.isNullOrEmpty(passContent)) {
+            fieldContents.push(passContent);
+          }
+        } else {
+          let requiredContent: any = getFieldContents(currField, fieldName);
+
+          if (!this.utils.isNullOrEmpty(requiredContent)) {
+            fieldContents.push(requiredContent);
+          }
+        }
+
+        profObject[fieldName] = fieldContents;
+
+        if (currField['type'] === 'text' || currField['type'] === 'password' || currField['type'] === 'email' || currField['type'] === 'select') {
+          this.profileFields.push(currField);
+        }
+      }
+    }
+
+    this.memberForm = this.formBuilder.group(profObject);
+  };
+
+  trackByIndex(index: number, obj: any): any {
+    return index;
+  };
+
+  onSubmit() {
+    //this.payLoad = JSON.stringify(this.form.value);
+    let val: any = this.memberForm.value;
+
+    this.memberFormSubmitted = true;
+
+    // stop here if form is invalid
+    if (this.memberForm.invalid) {
+      return;
+    }
+  };
+
+  memberFormOnHide() {
+    this.modalService.onHide.subscribe((reslut) => {
+      this.memberFormSubmitted = false;
+    });
   };
 
   ngOnInit() {

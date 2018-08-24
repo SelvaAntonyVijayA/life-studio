@@ -15,9 +15,6 @@ import { ProcedureService } from '../../services/procedure.service';
 import { LivestreamService } from '../../services/livestream.service';
 import { LoaderSharedService } from '../../services/loader-shared.service';
 
-
-
-
 declare var $: any;
 
 @Component({

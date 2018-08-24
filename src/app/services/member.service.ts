@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { HttpErrorHandlerService, HandleError } from '../services/http-error-handler.service';
@@ -46,4 +46,10 @@ export class MemberService {
       );
   };
 
+  roleMembers(obj: Object): Observable<any> {
+    return this.http.post<any>("/app/member/rolemembers/", { "form_data": obj }, httpOptions)
+      .pipe(
+        catchError(this.handleError('roleMembers', obj))
+      );
+  };
 }

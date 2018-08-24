@@ -34,7 +34,7 @@ export class UserAccessComponent implements OnInit {
     private cms: CommonService,
     //private mScrollbarService: MalihuScrollbarService,
     private loaderShared: LoaderSharedService,
-   // private e1: ElementRef,
+    // private e1: ElementRef,
     //private renderer: Renderer2,
     public utils: Utils,
     @Inject(DOCUMENT) private document: any,
@@ -586,6 +586,7 @@ export class UserAccessComponent implements OnInit {
         $(streamPagerLeft).css("width", "100%");
 
         this.memberExistsCheck();
+
         if (this.streamGrid["p"]["reccount"] === 0) {
           this.emptyStreams.show();
         } else {

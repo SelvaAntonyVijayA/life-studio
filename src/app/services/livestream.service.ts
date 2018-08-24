@@ -21,10 +21,6 @@ export class LivestreamService {
   }
 
   private handleError: HandleError;
-  /*private headers = new Headers({
-    'Content-Type': 'application/json',
-    'charset': 'UTF-8'
-  });*/
 
   getLiveStream(orgId?: string, appId?: string, locId?: string, formData?: Object): Observable<any> {
     var liveStreamUrl = "/livestream/list/";
@@ -52,57 +48,29 @@ export class LivestreamService {
       .pipe(
         catchError(this.handleError('getLiveStream', formDataToPost))
       );
-
-    /*return this.http
-      .post(liveStreamUrl, JSON.stringify(formDataToPost), { headers: this.headers })
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError);*/
   };
 
   saveStream(obj: any): Observable<any> {
+    
     return this.http.post<any>("/livestream/save", { "form_data": obj }, httpOptions)
       .pipe(
         catchError(this.handleError('saveStream', obj))
       );
-
-    /*return this.http
-      .post(url, JSON.stringify({ "form_data": obj }), { headers: this.headers })
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError); */
   };
 
   updateStream(id: string, obj: any): Observable<any> {
-    //var url = "/livestream/update/" + id;
-
 
     return this.http.post<any>("/livestream/update/" + id, { "form_data": obj }, httpOptions)
       .pipe(
         catchError(this.handleError('saveStream', obj))
       );
-
-    /*return this.http
-      .post(url, JSON.stringify({ "form_data": obj }), { headers: this.headers })
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError); */
   };
 
   deleteStream(id: string): Observable<any> {
-    //var url = '/livestream/remove/' + id;
-
-
     return this.http.get<any>("/livestream/remove/" + id)
       .pipe(
         catchError(this.handleError('deleteStream', { "Status": "Error" }))
       );
-
-    /*return this.http
-      .get(url)
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError);*/
   };
 
   getMappedStreams(userId: string): Observable<any> {
@@ -111,12 +79,6 @@ export class LivestreamService {
       .pipe(
         catchError(this.handleError('deleteStream', { "Status": "Error" }))
       );
-
-    /* return this.http
-       .get("/livestream/mappedstreamlist/" + userId)
-       .toPromise()
-       .then(response => response.json())
-       .catch(this.handleError); */
   };
 
   liveStreamMapping(streamObj: Object): Observable<any> {
@@ -125,30 +87,13 @@ export class LivestreamService {
       .pipe(
         catchError(this.handleError('liveStreamMapping', streamObj))
       );
-
-    /*return this.http
-      .post("/livestream/livestreammapping", JSON.stringify({ "form_data": streamObj }), { headers: this.headers })
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError);*/
   };
 
   streamUserRightMapping(orgId: string, userId: string, roleId: string): Observable<any> {
+
     return this.http.get<any>("/livestream/user/rightsmapping/" + orgId + "/" + userId + "/" + roleId)
       .pipe(
         catchError(this.handleError('deleteStream', { "Status": "Error" }))
       );
-
-
-    /* return this.http
-       .get("/livestream/user/rightsmapping/" + orgId + "/" + userId + "/" + roleId)
-       .toPromise()
-       .then(response => response.json())
-       .catch(this.handleError); */
   };
-
-  /* private handleError(error: any): Promise<any> {
-     console.log('An error occurred', error);
-     return Promise.reject(error.message || error);
-   }; */
 }

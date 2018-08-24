@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { CKEditorModule } from 'ng2-ckeditor';
 
@@ -102,7 +102,7 @@ import { MomentData } from '../../helpers/momentdata';
 
 @NgModule({
   imports: [
-    CommonModule, MalihuScrollbarModule.forRoot(), FormsModule, HomeRoutingModule,
+    CommonModule, MalihuScrollbarModule.forRoot(), HomeRoutingModule, FormsModule, ReactiveFormsModule,
     ColorPickerModule, CKEditorModule, NgSelectModule, MatIconModule, MatToolbarModule,
     ProgressHttpModule, ModalModule.forRoot(), DndModule.forRoot()
   ],

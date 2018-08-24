@@ -109,3 +109,11 @@ body {
     /* Firefox 18- */
     color: #aaa;
   }
+
+  .ng-valid[required], .ng-valid.required {  /* green */
+    border-left: 5px solid #42A948;
+  }
+  
+  .ng-invalid:not(form) {  /* red */
+    border-left: 5px solid #a94442;
+  }

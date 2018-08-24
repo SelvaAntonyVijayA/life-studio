@@ -126,3 +126,30 @@
   margin-bottom: 5px;
 }
 
+.user-form-body {
+  min-height: 450px;
+}
+
+.lbl_mem_title {
+  color: #000000;
+}
+
+.mem_form_input {
+  width: 96%;
+  height: 25px;
+  border-radius: 0px;
+  font-size: 11px;
+  box-shadow: 0 0 black;
+}
+
+.mem_select{
+  height: 29px;
+}
+
+.validator_error_names {
+  color: #FF0000;
+  width: 96%;
+  font-size: 10px;
+  font-style: inherit;
+}
+

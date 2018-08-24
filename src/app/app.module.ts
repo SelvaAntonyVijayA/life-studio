@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 //import { UpgradeModule } from '@angular/upgrade/static';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -31,7 +31,7 @@ import { Utils } from './helpers/utils';
     AlertsComponent
   ],
   imports: [
-    BrowserModule, BrowserAnimationsModule, AppRoutesModule, FormsModule, HttpModule, HttpClientModule
+    BrowserModule, BrowserAnimationsModule, AppRoutesModule, FormsModule, ReactiveFormsModule, HttpModule, HttpClientModule
   ],
   providers: [LoginService, AlertService, MessageService, HttpErrorHandlerService, LoggerService, Utils, LoaderSharedService, HttpClient],
   bootstrap: [AppComponent]

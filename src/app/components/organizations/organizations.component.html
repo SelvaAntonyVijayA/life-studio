@@ -61,7 +61,7 @@
   <div style="overflow: hidden;height:100%;">
     <form (ngSubmit)="onSubmit()" #orgForm="ngForm">
       <div>
-        <div class="form-group">
+        <div class="form-group org-field-group">
           <label for="name">Name</label>
           <input id="name" name="name" class="form-control input-sm" required minlength="2" [(ngModel)]="org.name" #name="ngModel">
           <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
@@ -73,7 +73,7 @@
             </div>
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group org-field-group">
           <label for="type">Type</label>
           <select id="type" required name="type" class="form-control input-sm" [(ngModel)]="org.type_id" #type="ngModel">
             <option *ngFor="let t of organizationTypes" [value]="t._id">{{t.name}}</option>
@@ -82,7 +82,7 @@
             Please select the Type
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group org-field-group">
           <label for="package">Package</label>
           <select id="package" required name="package" class="form-control input-sm" [(ngModel)]="org.packageId" #package="ngModel">
             <option *ngFor="let p of packages" [value]="p._id">{{p.name}}</option>
