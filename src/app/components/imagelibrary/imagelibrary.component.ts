@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, Directive, ChangeDetectionStrategy, Input, Output, ElementRef, Renderer2, ViewChild, EventEmitter, ContentChild, ViewEncapsulation, AfterViewInit } from '@angular/core';
-import { NgOption, NG_SELECT_DEFAULT_CONFIG } from '../../ng-select';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnDestroy, Input, Output, ElementRef, Renderer2, ViewChild, EventEmitter, AfterViewInit } from '@angular/core';
+import { NG_SELECT_DEFAULT_CONFIG } from '../../ng-select';
+import { ActivatedRoute} from '@angular/router';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { CommonService } from '../../services/common.service';
 import { Utils } from '../../helpers/utils';

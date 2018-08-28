@@ -93,6 +93,8 @@ export class NotificationsComponent implements OnInit {
   };
   isImageLibrary: string = "none";
   imglibData: object = {};
+  isRecurrencePopup: boolean = false;
+  recurrenceData: object = {};
 
   doSort(isVal: boolean) {
     this.tileSort["isAsc"] = isVal;
@@ -642,6 +644,18 @@ export class NotificationsComponent implements OnInit {
     drgObj["activate"] = !drgObj["activate"];
   };
 
+  onRecurrenceClose(imglib: object) {
+    this.isRecurrencePopup = false;
+    let currDrg = this.notification["dragged"][imglib["data"]["index"]];
+    //currDrg["imageUrl"] = imglib["url"];
+  };
+
+  onRecurrenceResult(imglib: object) {
+    this.isRecurrencePopup = true;
+    let currDrg = this.notification["dragged"][imglib["data"]["index"]];
+    //currDrg["imageUrl"] = imglib["url"];
+  };
+
   onImageLibraryClose(imglib: object) {
     this.isImageLibrary = 'none';
     let currDrg = this.notification["dragged"][imglib["data"]["index"]];
@@ -653,7 +667,6 @@ export class NotificationsComponent implements OnInit {
     let currDrg = this.notification["dragged"][imglib["data"]["index"]];
     currDrg["imageUrl"] = imglib["url"];
   };
-
 
   setTriggeType(triggerType: any, draggedObj: object, index: any) {
 
@@ -674,11 +687,22 @@ export class NotificationsComponent implements OnInit {
 
   imageArt(e: any, idx: number) {
     e.preventDefault();
-    //var totalIdx = this.notification["dragged"].length - 1;
-    //var currIdx = totalIdx - idx;
 
     this.isImageLibrary = 'block';
     this.imglibData = { index: idx };
+  };
+
+  recurrencePopup(e: any, drgObj: Object, idx: number) {
+    e.preventDefault();
+
+    let dragged = {
+      "index": idx,
+      "rrule": !this.utils.isEmptyObject(drgObj) && drgObj.hasOwnProperty("rrule") && !this.utils.isNullOrEmpty(drgObj["rrule"]) ? drgObj["rrule"] : "",
+      "timeZoneName": !this.utils.isEmptyObject(drgObj) && drgObj.hasOwnProperty("timeZoneName") && !this.utils.isNullOrEmpty(drgObj["timeZoneName"]) ? drgObj["timeZoneName"] : "",
+    };
+
+    this.isRecurrencePopup = true;
+    this.recurrenceData = dragged;
   };
 
   assignSquareDatas(notifyObj: Object) {

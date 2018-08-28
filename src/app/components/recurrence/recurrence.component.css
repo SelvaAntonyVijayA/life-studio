@@ -1,21 +1,10 @@
 div.riform {
-    padding: 1em;
     background-color: white;
-    box-shadow: 0 0 3em 0.5em #666;
     line-height: 2;
-    -moz-box-shadow: 0 0 3em 0.5em #666;
-    -webkit-box-shadow: 0 0 3em #666;
-    z-index: 9999990;
-}
-
-div.riform h1 {
-    color: #888888;
-    border-bottom: 1px solid #DDDDDD;
-    font-size: 20px;
-    line-height: 1;
-    margin: 0;
-    padding-bottom: 5px;
-    padding-left: 5px;
+    min-width: 400px;
+    max-width: 520px;
+    position: relative;
+    color: #0c0c0c;
 }
 
 div.riform form {
@@ -29,9 +18,29 @@ div.riform .rifield {
     padding-top: 10px;
 }
 
-div.riform .rifield .field {
-    float: left;
-    clear: none;
+div.riform .riminutelyintervel, div.riform .riweeklyintervel, div.riform .rihourlyintervel, div.riform .ridailyintervel, div.riform .rimonthlyintervel, div.riform .riyearlyintervel {
+    height: 35px;
+    margin-bottom: 10px;
+}
+
+div.riform .riweeklyweekdays {
+    height: 50px;
+    padding-top: 0px;
+}
+
+div.riform .rimonthlyoptions {
+    height: 60px;
+    padding-top: 0px;
+}
+
+div.riform .riyearlyoptions {
+    height: 60px;
+    padding-top: 0px;
+}
+
+div.riform .rirangeoptions {
+    height: 100px;
+    padding-top: 0px;
 }
 
 div.riform .label {
@@ -42,10 +51,13 @@ div.riform .label {
     margin-right: 10px;
     text-align: right;
     width: 100px;
+    color: #0c0c0c;
+    font-size: 11px;
 }
 
 div.riform #rirtemplate {
-    margin-top: 6px;
+    margin-top: 0px;
+    width: 150px;
 }
 
 div#riformfields {
@@ -69,21 +81,6 @@ div.riform #riweeklyweekdays .riweeklyweekday label {
 div.riform #riweeklyweekdays .riweeklyweekday {
     margin-right: 15px;
     float: left;
-}
-
-div.riform input.ricancelbutton {
-    background-color: transparent;
-    font-size: 0;
-    /* For IE8 */
-    color: transparent;
-    border: none;
-    position: absolute;
-    right: -14px;
-    top: -14px;
-    cursor: pointer;
-    height: 22px;
-    width: 22px;
-    background: url(/img/close_pop.png);
 }
 
 div.rioccurrencesactions .riaddoccurrence #adddate {
@@ -162,24 +159,30 @@ div.rioccurrences a.rrule, div.rioccurrences a.rdate, div.rioccurrences a.exdate
     margin-right: 5px;
 }
 
-div.rioccurrences a.rrule, div.rioccurrences a.rdate {
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAMAAABFjsb+AAAAdVBMVEUAAAAAAAACAgIHBwcICAgODg4PDw8QEBASEhIXFxcbGxsdHR0fHx8gICAnJyc2NjY3Nzc4ODg5OTk+Pj5ERERISEhJSUlSUlJYWFhqampvb2/Hx8fPz8/R0dHn5+fs7Ozv7+/x8fHy8vL39/f9/f3+/v7///8jaUCMAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAAAOkAAADpAVSSFEsAAAB9SURBVBjTY2BQQwcMDGqyYuxsCMAuJqvGoCbCiApEgGIsECaTEBOEwQIUYwbSbAKCUmqSggKsQDYzVEwGarw0kpiwKlhIhR9JjEVNXFlMWUKNEUWMU4FZgYfGYrxKHEp8KGJM8opqQCgHEwP7l1sUBLhg/sUWLljCD0s4AwBmjBYPljOv7QAAAABJRU5ErkJggg==);
-}
-
-div.rioccurrences a.exdate {
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAMAAABFjsb+AAAAnFBMVEUCodIAAAABAQEVAAAHBwcICAgKCgoPDw8QEBBTAABVAABZAABaAAAXFxdcBwdhCgodHR2TAAAhISFlDw9nDw8vLy8wMDAxMTH4AAD5AQH6AgL+Bgb/BweDKipBQUFERERJSUlQUFBXV1daWlpmZmb0nZ31nZ36o6P/pqb/qanNzc3R0dHp6ens7Ozt7e3v7+/y8vL39/f8/Pz////TudgfAAAAAXRSTlMAQObYZgAAAKFJREFUGFdt0FsXQkAUhuHZIYfIITTVFJVEiNr//781xoUJ79Ws52KvNR8hOI0QrFJDHzPSCgkmoIBcwk0D3+LP1X41mMZNBZNuozjDLI7W3FRhYJ/K4fxrNDgzgd+LZFAcn7fPHUE2DJnbOhNzcprPrHVZODP9cShm1u7Y5s+8zum8ktqS1Q2+saktagrTeguufQFYvvhvAnKK2GVhv4WdfzaPHhGyo11gAAAAAElFTkSuQmCC);
-}
-
-div.rioccurrencesactions a.rirefreshbutton {
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAMAAABFjsb+AAAA1VBMVEWbLGwAAAABAQECAgIFBQUGBgYHBwcICAgJCQkKCgoWFhYZGRkaGhoeHh4fHx8gICAkJCQmJiYoKCgrKyssLCwxMTE3Nzc4ODg5OTk+Pj5DQ0NHR0dISEhRUVFUVFRWVlZXV1ddXV1fX19gYGBkZGRoaGhwcHBxcXF6enp/f3+BgYGDg4OEhISJiYmNjY2VlZWampqnp6eoqKirq6uurq62trbCwsLDw8PFxcXIyMjNzc3V1dXW1tbZ2dnb29vv7+/19fX39/f4+Pj6+vr7+/v8/Pz///9okOBsAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAAAOkAAADpAVSSFEsAAADYSURBVBjTZdBrk8EwFAbghEprFaulxN2y2HVZ6n5tWX3//0+ScIwZ3g/JmWcmOTlhDK9hDBtpCiEqqYTQMeUGDJLrtBcxfo9UJnSRnKCfbyV1KchKRyDq4Fh6mhchxF8hQOQ9zDpg1V0a3F7hYJE1EdjlD3XMDtAkG8Gnnj5GZDMMyYaYkQ0wJ5tjQFbDyVFgec4JNTJji73LY/7vHlvj8T43xLn4gwtC9zlHbo2vf2CdozlMfXlcfvYwjuvSVFalnnz6fduqynaNbEYn7dTVmm3s9Ke+/fMVeXMr/BRXPaEAAAAASUVORK5CYII=);
-    color: transparent;
-    margin-top: 4px;
-    margin-right: 5px;
-}
-
-
 div.ridisplay {
     float: left;
     width: 400px;
     margin-top: 2px;
+}
+
+div.ributtons {
+    margin-top: 0px;
+    height: 25px;
+    width: 100%;
+}
+
+div.ributtons .risavebutton {
+    display: block;
+    float: right;
+}
+
+div.ributtons .riexitbutton {
+    display: block;
+    margin-left: 10px;
+    float: right;
+}
+
+.menu-bg-body {
+    min-height: 240px;
+    max-height: 600px;
 }

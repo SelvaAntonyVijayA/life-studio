@@ -3,36 +3,72 @@
   <div class="modal-dialog menu-bg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title bg-title pull-left">Recurrence</h4>
+        <h4 class="modal-title bg-title pull-left">Recurrence </h4>
         <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body menu-bg-body">
-        <div id="rirtemplate">
-          <label for="repeatrtemplate" class="label"> Repeats: </label>
-          <select id="rirtemplate" name="rirtemplate" class="field">
-            <option value="daily">Daily </option>
-            <option value="mondayfriday">Monday and Friday </option>
-            <option value="weekdays">Weekday </option>
-            <option value="weekly">Weekly </option>
-            <option value="monthly">Monthly </option>
-            <option value="yearly">Yearly </option>
-          </select>
-          <div>
+        <div class="riform">
+          <form>
+            <div style="float:left;height:30px;">
+              <label for="repeatrtemplate" class="label"> Repeats: </label>
+              <select [ngModel]="recurrenceType" (ngModelChange)="recurrenceChange($event)" id="rirtemplate" name="rirtemplate" class="form-control input-sm field">
+                <option value="minutely">Minutely </option>
+                <option value="hourly">Hourly </option>
+                <option value="daily">Daily </option>
+                <option value="weekly">Weekly </option>
+                <option value="monthly">Monthly </option>
+                <option value="yearly">Yearly </option>
+              </select>
+            </div>
             <div id="riformfields">
-              <div id="ridailyinterval" class="rifield" style="display: block;">
+              <div *ngIf="recurrenceType === 'minutely'" id="riminutelyinterval" class="rifield riminutelyintervel"> <label
+                  for="minutelyinterval" class="label">
+                  Every: </label> <div class="field"> <input type="text" style="float: left;  width: 60px;  margin-right: 5px;"
+                    class="form-control input-sm " size="2" value="1" name="riminutelyinterval" id="minutelyinterval"> <span
+                    style="float:left">Minute(s)</span> </div>
+              </div>
+
+              <div *ngIf="recurrenceType === 'hourly'" id="rihourlyinterval" class="rifield rihourlyintervel"> <label for="hourlyinterval"
+                  class="label">
+                  Every: </label> <div class="field"> <input type="text" style="float: left;  width: 60px;  margin-right: 5px;"
+                    class="form-control input-sm " size="2" value="1" name="rihourlyinterval" id="hourlyinterval"> <span style="float:left">Hour(s)</span>
+                </div>
+              </div>
+
+              <div *ngIf="recurrenceType === 'daily'" id="ridailyinterval" class="rifield ridailyintervel" style="display: block;">
                 <label for="repeatdailyinterval" class="label"> Repeat every: </label>
                 <div class="field">
-                  <input type="text" size="2" value="1" name="ridailyinterval" id="repeatdailyinterval"> days </div>
+                  <input type="text" size="2" class="ili-form" value="1" name="ridailyinterval" id="repeatdailyinterval">                  days
+                </div>
               </div>
-              <div id="riweeklyinterval" class="rifield" style="display: none;">
+
+              <div *ngIf="recurrenceType === 'weekly'" id="riweeklyinterval" class="rifield riweeklyintervel">
                 <label for="repeatweeklyinterval" class="label"> Repeat every: </label>
                 <div class="field">
-                  <input type="text" size="2" value="1" name="riweeklyinterval" id="repeatweeklyinterval"> week(s) </div>
+                  <input type="text" style="float: left;  width: 60px;  margin-right: 5px;" size="2" class="ili-form" value="1" name="riweeklyinterval"
+                    id="repeatweeklyinterval"> week(s)
+                </div>
               </div>
-              <div id="riweeklyweekdays" class="rifield" style="display: none;">
-                <label for="repeatweeklyinterval" class="label">Repeat on:</label>
+
+              <div *ngIf="recurrenceType === 'monthly'" id="rimonthlyinterval" class="rifield rimonthlyintervel">
+                <label for="rimonthlyinterval" class="label">Repeat every:
+                </label>
+                <div class="field">
+                  <input type="text" size="2" style="float: left;  width: 60px;  margin-right: 5px;" class="ili-form" value="1" name="rimonthlyinterval">                  month(s)
+                </div>
+              </div>
+
+              <div *ngIf="recurrenceType === 'yearly'" id="riyearlyinterval" class="rifield riyearlyintervel">
+                <label for="riyearlyinterval" class="label">Repeat every:</label>
+                <div class="field">
+                  <input style="float:left; width:50px;margin-right:5px;" type="text" class="ili-form" size="2" value="1" name="riyearlyinterval">                  year(s)
+                </div>
+              </div>
+
+              <div *ngIf="recurrenceType === 'weekly'" id="riweeklyweekdays" class="rifield riweeklyweekdays">
+                <label for="repeatweeklyinterval" style="margin-top: 10px;" class="label">Repeat on:</label>
                 <div class="field">
                   <div class="riweeklyweekday">
                     <input type="checkbox" name="riweeklyweekdaysSU" id="repeatweeklyWeekdaysSU" value="SU">
@@ -64,18 +100,15 @@
                   </div>
                 </div>
               </div>
-              <div id="rimonthlyinterval" class="rifield" style="display: none;">
-                <label for="rimonthlyinterval" class="label">Repeat every:</label>
-                <div class="field">
-                  <input type="text" size="2" value="1" name="rimonthlyinterval"> month(s) </div>
-              </div>
-              <div id="rimonthlyoptions" class="rifield" style="display: none;">
+
+              <div *ngIf="recurrenceType === 'monthly'" id="rimonthlyoptions" class="rifield rimonthlyoptions">
                 <label for="rimonthlytype" class="label">Repeat on:</label>
-                <div class="field">
-                  <div>
-                    <input type="radio" value="DAYOFMONTH" name="rimonthlytype" id="repeatmonthlytype:DAYOFMONTH">
-                    <label for="repeatmonthlytype:DAYOFMONTH"> Day </label>
-                    <select name="rimonthlydayofmonthday" id="repeatmonthlydayofmonthday">
+                <div class="field" style="float: left;width: 400px;">
+                  <div style="float:left; width:400px;">
+                    <input style="float:left; margin-right:5px; margin-top:5px;" type="radio" value="DAYOFMONTH" name="rimonthlytype" id="repeatmonthlytype:DAYOFMONTH">
+                    <label style="float:left;" for="repeatmonthlytype:DAYOFMONTH"> Day </label>
+                    <select style="float:left; margin-left:5px; margin-right:5px; width:50px;" name="rimonthlydayofmonthday" class="form-control input-sm"
+                      id="repeatmonthlydayofmonthday">
                       <option value="1">1</option>
                       <option value="2">2</option>
                       <option value="3">3</option>
@@ -107,18 +140,18 @@
                       <option value="29">29</option>
                       <option value="30">30</option>
                       <option value="31">31</option>
-                    </select> of the month </div>
-                  <div>
-                    <input type="radio" value="WEEKDAYOFMONTH" name="rimonthlytype" id="repeatmonthlytype:WEEKDAYOFMONTH">
-                    <label for="repeatmonthlytype:WEEKDAYOFMONTH"> The </label>
-                    <select name="rimonthlyweekdayofmonthindex">
+                    </select><span style="float:left">of the month</span> </div>
+                  <div style="float:left; width:400px;">
+                    <input style="float:left; margin-right:5px; margin-top: 5px;" type="radio" value="WEEKDAYOFMONTH" name="rimonthlytype" id="repeatmonthlytype:WEEKDAYOFMONTH">
+                    <label style="float:left;" for="repeatmonthlytype:WEEKDAYOFMONTH"> The </label>
+                    <select style="float:left; width:80px;margin-left:5px; margin-right:5px;" class="form-control input-sm" name="rimonthlyweekdayofmonthindex">
                       <option value="+1">first</option>
                       <option value="+2">second</option>
                       <option value="+3">third</option>
                       <option value="+4">fourth</option>
                       <option value="-1">last</option>
                     </select>
-                    <select name="rimonthlyweekdayofmonth">
+                    <select style="float:left; width:80px;margin-left:5px; margin-right:5px;" class="form-control input-sm" name="rimonthlyweekdayofmonth">
                       <option value="SU">Sunday</option>
                       <option value="MO">Monday</option>
                       <option value="TU">Tuesday</option>
@@ -126,21 +159,17 @@
                       <option value="TH">Thursday</option>
                       <option value="FR">Friday</option>
                       <option value="SA">Saturday</option>
-                    </select> of the month </div>
+                    </select> <span style="float:left">of the month</span> </div>
                 </div>
               </div>
-              <div id="riyearlyinterval" class="rifield" style="display: none;">
-                <label for="riyearlyinterval" class="label">Repeat every:</label>
-                <div class="field">
-                  <input type="text" size="2" value="1" name="riyearlyinterval"> year(s) </div>
-              </div>
-              <div id="riyearlyoptions" class="rifield" style="display: none;">
+
+              <div *ngIf="recurrenceType === 'yearly'" id="riyearlyoptions" class="rifield riyearlyoptions">
                 <label for="riyearlyType" class="label">Repeat on:</label>
-                <div class="field">
-                  <div>
-                    <input type="radio" value="DAYOFMONTH" name="riyearlyType" id="repeatyearlytype:DAYOFMONTH">
-                    <label for="repeatyearlytype:DAYOFMONTH"> Every </label>
-                    <select name="riyearlydayofmonthmonth">
+                <div class="field" style="float: left;width: 400px;">
+                  <div style="float:left; width:400px;">
+                    <input style="float:left;margin-right:5px;margin-top: 5px;" type="radio" value="DAYOFMONTH" name="riyearlyType" id="repeatyearlytype:DAYOFMONTH">
+                    <label style="float:left;" for="repeatyearlytype:DAYOFMONTH"> Every </label>
+                    <select style="float:left; width:80px;margin-left:5px; margin-right:5px;" class="form-control input-sm" name="riyearlydayofmonthmonth">
                       <option value="1">January</option>
                       <option value="2">February</option>
                       <option value="3">March</option>
@@ -154,7 +183,7 @@
                       <option value="11">November</option>
                       <option value="12">December</option>
                     </select>
-                    <select name="riyearlydayofmonthday">
+                    <select style="float:left; width:80px; margin-right:5px;" class="form-control input-sm" name="riyearlydayofmonthday">
                       <option value="1">1</option>
                       <option value="2">2</option>
                       <option value="3">3</option>
@@ -188,18 +217,18 @@
                       <option value="31">31</option>
                     </select>
                   </div>
-                  <div>
-                    <input type="radio" value="WEEKDAYOFMONTH" name="riyearlyType" id="repeatyearlytype:WEEKDAYOFMONTH">
-                    <label for="repeatyearlytype:WEEKDAYOFMONTH"> The </label>
-                    <select name="riyearlyweekdayofmonthindex">
+                  <div style="float:left; width:400px;">
+                    <input style="float:left;margin-right:5px;margin-top: 5px;" type="radio" value="WEEKDAYOFMONTH" name="riyearlyType" id="repeatyearlytype:WEEKDAYOFMONTH">
+                    <label style="float:left;" for="repeatyearlytype:WEEKDAYOFMONTH"> The </label>
+                    <select style="float:left; width:80px;margin-left:5px; margin-right:5px;" class="form-control input-sm" name="riyearlyweekdayofmonthindex">
                       <option value="+1">first</option>
                       <option value="+2">second</option>
                       <option value="+3">third</option>
                       <option value="+4">fourth</option>
                       <option value="-1">last</option>
                     </select>
-                    <label for="repeatyearlytype:WEEKDAYOFMONTH"> </label>
-                    <select name="riyearlyweekdayofmonthday">
+                    <label style="float:left;" for="repeatyearlytype:WEEKDAYOFMONTH"> </label>
+                    <select style="float:left; width:80px;margin-left:5px; margin-right:5px;" class="form-control input-sm" name="riyearlyweekdayofmonthday">
                       <option value="SU">Sunday</option>
                       <option value="MO">Monday</option>
                       <option value="TU">Tuesday</option>
@@ -207,8 +236,8 @@
                       <option value="TH">Thursday</option>
                       <option value="FR">Friday</option>
                       <option value="SA">Saturday</option>
-                    </select> of
-                    <select name="riyearlyweekdayofmonthmonth">
+                    </select> <span style="float:left;">of</span>
+                    <select style="float:left; width:80px;margin-left:5px; margin-right:5px;" class="form-control input-sm" name="riyearlyweekdayofmonthmonth">
                       <option value="1">January</option>
                       <option value="2">February</option>
                       <option value="3">March</option>
@@ -225,50 +254,40 @@
                   </div>
                 </div>
               </div>
-              <div id="rirangeoptions" class="rifield" style="display: block;">
+
+              <div id="rirangeoptions" class="rifield rirangeoptions" style="display: block;">
                 <label class="label">End recurrence:</label>
-                <div class="field">
-                  <div>
-                    <input type="radio" value="NOENDDATE" name="rirangetype" id="repeatrangetype:NOENDDATE">
+                <div class="field" style="float:left; width:400px;">
+                  <div style="float:left; width:400px;">
+                    <input type="radio" style="float:left;margin-right:5px;margin-top: 5px;" value="NOENDDATE" name="rirangetype" id="repeatrangetype:NOENDDATE">
                     <label for="repeatrangetype:NOENDDATE"> Never </label>
                   </div>
-                  <div>
-                    <input type="radio" checked="checked" value="BYOCCURRENCES" name="rirangetype" id="repeatrangetype:BYOCCURRENCES">
-                    <label for="repeatrangetype:BYOCCURRENCES"> After </label>
-                    <input type="text" size="3" value="7" name="rirangebyoccurrencesvalue"> occurrence(s) </div>
-                  <div>
-                    <input type="radio" value="BYENDDATE" name="rirangetype" id="repeatrangetype:BYENDDATE">
-                    <label for="repeatrangetype:BYENDDATE"> On </label>
-                    <input type="text" data-orig-type="date" name="rirangebyenddatecalendar" class="date"> </div>
+                  <div style="float:left;margin-bottom: 5px; width:400px;">
+                    <div style="float: left;">
+                      <input type="radio" style="float:left;margin-right:5px;margin-top: 5px;" checked="checked" value="BYOCCURRENCES" name="rirangetype"
+                        id="repeatrangetype:BYOCCURRENCES">
+                      <label for="repeatrangetype:BYOCCURRENCES"> After </label></div>
+                    <input style="float:left; margin-left:4px;margin-right:4px; width:37px;" type="text" size="3" class="ili-form" value="7"
+                      name="rirangebyoccurrencesvalue"> occurrence(s)
+                  </div>
+                  <div style="float:left; width:400px;">
+                    <div style="float:left;"><input type="radio" style="float:left;margin-right:5px;margin-top: 5px;" value="BYENDDATE"
+                        name="rirangetype" id="repeatrangetype:BYENDDATE">
+                      <label for="repeatrangetype:BYENDDATE"> On </label></div>
+                    <input style="float:left;margin-left:4px;margin-right:4px; width:125px;" type="text" data-orig-type="date" name="rirangebyenddatecalendar"
+                      class="ili-form date"> </div>
                 </div>
               </div>
             </div>
-            <div class="rioccurrencesactions" style="display: none;">
-              <div class="rioccurancesheader">
-                <h2>Selected dates</h2>
-                <span class="refreshbutton action">
-                  <a class="rirefreshbutton" href="#" title="Refresh"> Refresh </a>
-                </span>
-              </div>
-            </div>
-            <div class="rioccurrences"> </div>
-            <div class="rioccurrencesactions" style="display: none;">
-              <div class="rioccurancesheader">
-                <h2>Add date</h2>
-              </div>
-              <div class="riaddoccurrence">
-                <div class="errorarea" style="display: none;"></div>
-                <input type="text" data-orig-type="date" name="adddate" id="adddate" class="date">
-                <input type="button" name="addaction" id="addaction" value="Add"> </div>
-            </div>
-            <div class="ributtons">
-              <input type="submit" class="ricancelbutton " value="Cancel">
-              <input type="submit" class="risavebutton " value="Save"> </div>
-          </div>
+          </form>
         </div>
-        <div class="save-bg-btn">
-          <button (click)="done($event)" class="btn btn-warning btn-xs bg-save">Save</button>
+
+        <div class="ributtons">
+          <input (onclick)="cancel($event)" type="submit" class="btn btn-xs btn-danger riexitbutton " value="Cancel" />
+          <input (onclick)="done($event)" type="submit" class="btn btn-xs btn-info risavebutton " value="Ok" />
         </div>
+
       </div>
     </div>
   </div>
+</div>
