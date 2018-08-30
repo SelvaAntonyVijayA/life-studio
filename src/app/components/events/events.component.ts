@@ -43,7 +43,7 @@ export class EventsComponent implements OnInit {
   tileDropped: Object = {};
   @ContentChild(DraggableDirective) dragDir: DraggableDirective;
   droppedTile: Object = {};
-  event: Object = {};
+  event: any = {};
   art: string = "";
   dragIndex: number = -1;
   intervalId: any = -1;
@@ -392,7 +392,7 @@ export class EventsComponent implements OnInit {
   };
 
   /* Dragged tile on drop */
-  private onDrop(event, isDynamic) {
+  onDrop(event, isDynamic) {
     if (this.event.hasOwnProperty("obj") && !this.utils.isEmptyObject(this.event["obj"])) {
       this.clearInterval();
     }

@@ -77,11 +77,11 @@ export class ThemeComponent implements OnInit {
   saveAs: string = "block";
   delete: string = "block";
 
-  newTheme() {
+  newTheme(e: any) {
     this.loadNew();
   };
 
-  saveTheme() {
+  saveTheme(e:any) {
     this.loaderShared.showSpinner(true);
 
     if (this.name == "") {
@@ -93,7 +93,7 @@ export class ThemeComponent implements OnInit {
     this._save(false, false);
   };
 
-  saveAsTheme() {
+  saveAsTheme(e:any) {
     this.loaderShared.showSpinner(true);
 
     if (this.name == "") {
@@ -111,7 +111,7 @@ export class ThemeComponent implements OnInit {
     this._save(true, false);
   };
 
-  deleteTheme() {
+  deleteTheme(e:any) {
     this.loaderShared.showSpinner(true);
 
     if (this.id.trim() != '' && this.id.trim() != '0') {
@@ -138,7 +138,7 @@ export class ThemeComponent implements OnInit {
     }
   };
 
-  previewTheme() {
+  previewTheme(e:any) {
   };
 
   themeChange(theme: string) {

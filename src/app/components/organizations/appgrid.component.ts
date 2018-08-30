@@ -32,7 +32,7 @@ export class AppgridComponent implements OnInit {
   source: any;
   rowIndex: number;
   appId: string;
-  app: object = { name: "", authenticated: "", pin: "", googleAnalytics: "", alerts: "", chat: "" };
+  app: any = { name: "", authenticated: "", pin: "", googleAnalytics: "", alerts: "", chat: "" };
   myAddButton: jqwidgets.jqxButton;
   myDeleteButton: jqwidgets.jqxButton;
   chatList: any = [];
@@ -124,26 +124,26 @@ export class AppgridComponent implements OnInit {
     toolBar[0].appendChild(container);
 
     let addButtonOptions: jqwidgets.ButtonOptions =
-      {
-        height: 25, width: 25
-      }
+    {
+      height: 25, width: 25
+    }
     let otherButtonsOptions: jqwidgets.ButtonOptions =
-      {
-        disabled: true, height: 25, width: 25
-      }
+    {
+      disabled: true, height: 25, width: 25
+    }
 
     this.myAddButton = jqwidgets.createInstance(buttons[0], 'jqxButton', addButtonOptions);
     this.myDeleteButton = jqwidgets.createInstance(buttons[1], 'jqxButton', otherButtonsOptions);
 
     let addTooltopOptions: jqwidgets.TooltipOptions =
-      {
-        position: 'bottom', content: 'Add'
-      }
+    {
+      position: 'bottom', content: 'Add'
+    }
 
     let deleteTooltopOptions: jqwidgets.TooltipOptions =
-      {
-        position: 'bottom', content: 'Delete'
-      }
+    {
+      position: 'bottom', content: 'Delete'
+    }
 
     let myAddToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[0], 'jqxTooltip', addTooltopOptions);
     let myDeleteToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[1], 'jqxTooltip', deleteTooltopOptions);
@@ -315,7 +315,7 @@ export class AppgridComponent implements OnInit {
   onRowUnselect(event: any): void {
   };
 
-  addWindowOpen() {
+  addWindowOpen(e: any) {
   };
 
   ngAfterViewInit(): void {
@@ -382,7 +382,7 @@ export class AppgridComponent implements OnInit {
     }
   };
 
-  addWindowClose() {
+  addWindowClose(e: any) {
     this.app = { name: "", authenticated: "", pin: "", googleAnalytics: "", alerts: "", chat: "" };
     this.updateButtons('End Edit');
   };

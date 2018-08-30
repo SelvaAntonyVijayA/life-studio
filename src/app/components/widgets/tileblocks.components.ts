@@ -57,7 +57,7 @@ export class BlockControls {
             .then(resWdgtCat => {
               if (!this.utils.isEmptyObject(resWdgtCat) && resWdgtCat.hasOwnProperty("_id") && !this.utils.isNullOrEmpty(resWdgtCat["_id"])) {
                 this.block['data']['category'] = resWdgtCat["_id"];
-                var blk = { "view": category, "opt": "widgetCat"};
+                var blk = { "view": category, "opt": "widgetCat" };
                 this.blockView.emit(blk)
               }
             });
@@ -125,7 +125,7 @@ export class VideoBlockComponent implements BlockComponent {
     this.videoView.emit(view);
   };
 
-  checkDisabled(e: any) {
+  checkDisabled(e?: any) {
     return !this.utils.isNullOrEmpty(this.block.data.url) ? true : false;
   }
 };
@@ -768,7 +768,7 @@ export class QuestionnaireSubOptionComponent {
     return idx;
   };
 
-  deleteSubLevel() {
+  deleteSubLevel(e: any) {
     var level = { "parentIndex": this.parentIndex, "currentIndex": this.currentIndex };
     this.removeSubLevel.emit(level);
   };
@@ -849,7 +849,7 @@ export class DescriptionSubOptionComponent {
     return this.levelIndex == 2 ? idx = idx + "i" : idx;
   };
 
-  deleteSubLevel() {
+  deleteSubLevel(e: any) {
     var level = { "parentIndex": this.parentIndex, "currentIndex": this.currentIndex };
     this.removeSubLevel.emit(level);
   };

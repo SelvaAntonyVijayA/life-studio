@@ -47,9 +47,9 @@ export class HeaderComponent implements OnInit {
   selectedPageTitle: string = "";
   isSpinner = new EventEmitter<any>();
 
-  menusDatas: Object = {
-    "left": [],
-    "right": []
+  menusDatas: any = {
+    left: [],
+    right: []
   };
 
   orgChangeSet(orgId?: string) {

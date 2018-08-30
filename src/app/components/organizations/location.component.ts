@@ -26,7 +26,7 @@ export class LocationComponent implements OnInit {
   dataAdapter: any;
   source: any;
   rowIndex: number;
-  locationObj: object = { name: "", group: "", phone: "", address: "", city: "", state: "", longitude: "", latitude: "", radius: "", status: "", appId: "" };
+  locationObj: any = { name: "", group: "", phone: "", address: "", city: "", state: "", longitude: "", latitude: "", radius: "", status: "", appId: "" };
   myAddButton: jqwidgets.jqxButton;
   myDeleteButton: jqwidgets.jqxButton;
   @ViewChild('locationGrid') locationGrid: jqxGridComponent;
@@ -292,7 +292,7 @@ export class LocationComponent implements OnInit {
   onRowUnselect(event: any): void {
   };
 
-  addWindowOpen() {
+  addWindowOpen(e: any) {
   };
 
   ngAfterViewInit(): void {
@@ -376,7 +376,7 @@ export class LocationComponent implements OnInit {
     }
   };
 
-  addWindowClose() {
+  addWindowClose(e: any) {
     this.locationObj = { name: "", authenticated: "-1", pin: "", googleAnalytics: "", alerts: "", chat: "-1" };
     this.updateButtons('End Edit');
   };

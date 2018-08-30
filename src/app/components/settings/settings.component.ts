@@ -35,7 +35,7 @@ export class SettingsComponent implements OnInit {
   selectedLocation: string = "";
   draggedTiles: any[] = [];
   droppedTile: Object = {};
-  xsettings: object = {};
+  xsettings: any = {};
   dragIndex: number = -1;
   scrollbarOptions: Object = { axis: 'y', theme: 'light-2' };
   isImageLibrary: string = "none";
@@ -220,7 +220,7 @@ export class SettingsComponent implements OnInit {
     this.cms.destroyScroll([".app_settings_drag_block"]);
   };
 
-  private onDrop(drpTile: any, isDynamic?: boolean) {
+  onDrop(drpTile: any, isDynamic?: boolean) {
     var draggedTile = this.setDefaultDraggedTile(drpTile);
 
     if (this.xsettings.hasOwnProperty("menuTiles")) {
@@ -295,6 +295,11 @@ export class SettingsComponent implements OnInit {
     var uniqueId = Date.now() + Math.floor(1000 + Math.random() * 9000);
 
     return uniqueId;
+  };
+
+  /* Dragged tile by uniqueId */
+  trackByUniqueId(index: number, obj: any, currObj: any) {
+    return obj["uniqueId"];
   };
 
   addDraggable(idx: number) {

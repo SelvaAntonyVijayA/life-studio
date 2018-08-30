@@ -614,7 +614,7 @@ export class WidgetsComponent implements OnInit {
     return tile;
   };
 
-  tileSave(e: any, isUpdate: boolean, isDuplicate: boolean, updated?: boolean, newTileObj?: Object, langSave?: boolean, langCode?: string) {
+  tileSave(e: any, isUpdate?: boolean, isDuplicate?: boolean, updated?: boolean, newTileObj?: Object, langSave?: boolean, langCode?: string) {
     if (!this.utils.isNullOrEmpty(e)) {
       e.preventDefault();
       e.stopPropagation();

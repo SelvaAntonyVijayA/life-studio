@@ -58,7 +58,7 @@ export class NotificationsComponent implements OnInit {
   smart: any[] = [];
   notifications: any[] = [];
   notificationSquares: any[] = [];
-  notification: object = {};
+  notification: any = {};
   //liveStreams: any[] = [];
   menus: any[] = [];
   timeZones: any[] = [];

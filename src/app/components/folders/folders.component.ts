@@ -36,7 +36,7 @@ export class FoldersComponent implements OnInit {
   droppedTile: Object = {};
   folders: any[] = [];
   groupType: string = "list";
-  folder: Object = {};
+  folder: any = {};
   folderFilter: Object = {
     "folderSearch": "",
     "sort": {
@@ -175,7 +175,7 @@ export class FoldersComponent implements OnInit {
     return splittedVal[0];
   };
 
-  private onDrop(drpTile: any, isDynamic?: boolean) {
+  onDrop(drpTile: any, isDynamic?: boolean) {
     var draggedTile = this.setDefaultDraggedTile(drpTile);
 
     if (this.folder.hasOwnProperty("draggedTiles")) {

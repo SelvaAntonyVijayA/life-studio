@@ -17,7 +17,7 @@
       <button (click)="saveFolder($event, true)" class="ili-btn btn folder_save">
         Save
       </button>
-      <button (click)="duplicateFolder($event, true)" class="ili-btn folder_duplicate">
+      <button (click)="duplicateFolder($event)" class="ili-btn folder_duplicate">
         Duplicate
       </button>
       <button (click)="deleteFolder($event)" class="ili-btn folder_delete">
@@ -86,7 +86,7 @@
         {{ setDragIndex(i, dragTile)}}
         <div *ngIf="!dragTile.hasOwnProperty('folderDragContainer')" class="folder_main_panel">
           <div class="folder_content_left">
-          <!--  <div class="folder_tile_single">
+            <!--  <div class="folder_tile_single">
               <img class='tile_list_art tile-content-img' [src]="dragTile?.tile?.art | safe">
               <div class="tile_list_title tile-content-title">{{dragTile?.tile?.title}}</div>
             </div> -->

@@ -36,7 +36,7 @@ export class StreamComponent implements OnInit {
   isAdvancedDisabled: boolean = false;
   source: any;
   rowIndex: number;
-  streamObj: object = {
+  streamObj: any = {
     name: "", organizationId: "", locationId: "", url: "", urlAndroid: "", urlWeb: "",
     reportAbuse: "", isAdvanced: false, chat: false, createdApp: {}
   };
@@ -289,7 +289,7 @@ export class StreamComponent implements OnInit {
   onRowUnselect(event: any): void {
   };
 
-  addWindowOpen() {
+  addWindowOpen(e: any) {
   };
 
   ngAfterViewInit(): void {
@@ -348,7 +348,7 @@ export class StreamComponent implements OnInit {
     }
   };
 
-  addWindowClose() {
+  addWindowClose(e: any) {
     this.streamObj = {
       name: "", organizationId: "", locationId: "", url: "", urlAndroid: "", urlWeb: "",
       reportAbuse: "", isAdvanced: false, chat: false, createdApp: {}

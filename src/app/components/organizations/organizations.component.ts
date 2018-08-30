@@ -49,7 +49,7 @@ export class OrganizationsComponent implements OnInit {
   isAppGrid: boolean = false;
   orgId: string;
   type: string;
-  org: object = { type: "", name: '', type_id: '', packageId: "" };
+  org: any = { type: "", name: '', type_id: '', packageId: "" };
   gridAddButton: jqwidgets.jqxButton;
   gridDeleteButton: jqwidgets.jqxButton;
   searchDropdown: jqwidgets.jqxDropDownList;
@@ -198,7 +198,7 @@ export class OrganizationsComponent implements OnInit {
   ready = (): void => {
   };
 
-  orgRendered(): void {
+  orgRendered(e: any): void {
   };
 
   renderToolbar = (toolBar: any): void => {
@@ -281,45 +281,45 @@ export class OrganizationsComponent implements OnInit {
     }
 
     let addButtonOptions: jqwidgets.ButtonOptions =
-      {
-        height: 25, width: 25
-      }
+    {
+      height: 25, width: 25
+    }
 
     let otherButtonsOptions: jqwidgets.ButtonOptions =
-      {
-        disabled: true, height: 25, width: 25
-      }
+    {
+      disabled: true, height: 25, width: 25
+    }
 
     let drpoptions: jqwidgets.DropDownListOptions =
-      {
-        source: this.dropDownSource,
-        displayMember: "name",
-        valueMember: "id",
-        dropDownHeight: "80",
-        selectedIndex: "0",
-        placeHolder: "Look in",
-        width: 80,
-        height: 23
-      }
+    {
+      source: this.dropDownSource,
+      displayMember: "name",
+      valueMember: "id",
+      dropDownHeight: "80",
+      selectedIndex: "0",
+      placeHolder: "Look in",
+      width: 80,
+      height: 23
+    }
 
     let inputOptions: jqwidgets.InputOptions =
-      {
-        placeHolder: 'Search...', height: 25, width: 160
-      }
+    {
+      placeHolder: 'Search...', height: 25, width: 160
+    }
 
     this.gridAddButton = jqwidgets.createInstance(buttons[0], 'jqxButton', addButtonOptions);
     this.gridDeleteButton = jqwidgets.createInstance(buttons[1], 'jqxButton', otherButtonsOptions);
     this.searchDropdown = jqwidgets.createInstance(buttons[3], "jqxDropDownList", drpoptions);
     this.searchInput = jqwidgets.createInstance(buttons[4], "jqxInput", inputOptions)
     let addTooltopOptions: jqwidgets.TooltipOptions =
-      {
-        position: 'bottom', content: 'Add'
-      }
+    {
+      position: 'bottom', content: 'Add'
+    }
 
     let deleteTooltopOptions: jqwidgets.TooltipOptions =
-      {
-        position: 'bottom', content: 'Delete'
-      }
+    {
+      position: 'bottom', content: 'Delete'
+    }
 
     let myAddToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[0], 'jqxTooltip', addTooltopOptions);
     let myDeleteToolTip: jqwidgets.jqxTooltip = jqwidgets.createInstance(buttons[1], 'jqxTooltip', deleteTooltopOptions);
@@ -609,11 +609,11 @@ export class OrganizationsComponent implements OnInit {
       });
   };
 
-  addOpen() {
+  addOpen(e: any) {
 
   };
 
-  addClose() {
+  addClose(e: any) {
     this.org = { name: '', packageId: '', type_id: '' };
     this.updateButtons('End Edit');
   };

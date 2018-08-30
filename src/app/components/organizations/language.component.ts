@@ -30,7 +30,7 @@ export class LanguageComponent implements OnInit {
   dataAdapter: any;
   source: any;
   rowIndex: number;
-  langObj: object = { name: "", code: "" };
+  langObj: any = { name: "", code: "" };
   langId: string;
   myAddButton: jqwidgets.jqxButton;
   myDeleteButton: jqwidgets.jqxButton;
@@ -249,7 +249,7 @@ export class LanguageComponent implements OnInit {
   onRowUnselect(event: any): void {
   };
 
-  addWindowOpen() {
+  addWindowOpen(e: any) {
   };
 
   ngAfterViewInit(): void {
@@ -299,7 +299,7 @@ export class LanguageComponent implements OnInit {
     }
   };
 
-  addWindowClose() {
+  addWindowClose(e: any) {
     this.langObj = { name: "", code: "" };
 
     this.updateButtons('End Edit');

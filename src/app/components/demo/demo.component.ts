@@ -53,10 +53,10 @@ export class DemoComponent implements OnInit {
   };
 
 
-  onOpen(e: any) {
+  onOpen(e?: any) {
   };
 
-  onClose(e: any) {
+  onClose(e?: any) {
   };
 
   onFocus(e: any) {
@@ -103,7 +103,7 @@ export class DemoComponent implements OnInit {
     }
   }
 
-  onClear(e: any) {
+  onClear(e?: any) {
   }
 
   ngOnInit() {

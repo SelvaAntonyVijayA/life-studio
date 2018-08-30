@@ -61,7 +61,7 @@ export class PagesComponent implements OnInit {
   selectedPage: string = "";
   pageSearchText: string = "";
   groups: any[] = [];
-  page: Object = {};
+  page: any = {};
   dragIndex: number = -1;
   groupFilter: Object = {
     "groupSearch": "",
@@ -620,7 +620,7 @@ export class PagesComponent implements OnInit {
   };
 
   /* Dragged tile on drop */
-  private onDrop(data: Object, isDynamic: boolean) {
+  onDrop(data: Object, isDynamic: boolean) {
     if (!this.utils.isNullOrEmpty(data)) {
       var drgObjType = data.hasOwnProperty(data["_id"]) ? data[data["_id"]] : "tile";
       var currType = drgObjType === "groups" ? data["type"] : drgObjType;

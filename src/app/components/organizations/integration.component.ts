@@ -29,7 +29,7 @@ export class IntegrationComponent implements OnInit {
   typeSource: any;
   typeAdaper: any;
   rowIndex: number = -1;
-  inteObj: object = { userName: "", password: "", code: "", typeId: "", appId: "" };
+  inteObj: any = { userName: "", password: "", code: "", typeId: "", appId: "" };
   myAddButton: jqwidgets.jqxButton;
   myDeleteButton: jqwidgets.jqxButton;
   @ViewChild('integrationGrid') integrationGrid: jqxGridComponent;
@@ -249,7 +249,7 @@ export class IntegrationComponent implements OnInit {
   onRowUnselect(event: any): void {
   };
 
-  addWindowOpen() {
+  addWindowOpen(e: any) {
   };
 
   ngAfterViewInit(): void {
@@ -306,7 +306,7 @@ export class IntegrationComponent implements OnInit {
     }
   };
 
-  addWindowClose() {
+  addWindowClose(e: any) {
     this.inteObj = { userName: "", password: "", code: "", typeId: "", appId: "" };
     this.updateButtons('End Edit');
   };

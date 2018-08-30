@@ -54,7 +54,7 @@ export class ProceduresComponent implements OnInit {
   };
 
   procedures: any[] = [];
-  procedure: Object = {};
+  procedure: any = {};
   dragIndex: number = -1;
   languageList: any[] = [];
   selectedLanguage: string = "en";
@@ -159,7 +159,7 @@ export class ProceduresComponent implements OnInit {
   };
 
   /* Dragged tile on drop */
-  private onDrop(currTile, isDynamic) {
+  onDrop(currTile, isDynamic) {
     var draggedTile = this.setDraggedTile(currTile);
 
     if (this.procedure.hasOwnProperty("draggedTiles")) {

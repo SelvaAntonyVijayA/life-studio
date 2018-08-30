@@ -49,7 +49,7 @@ export class ProcessesComponent implements OnInit {
   };
 
   processes: any[] = [];
-  process: Object = {};
+  process: any = {};
   dragIndex: number = -1;
   languageList: any[] = [];
   selectedLanguage: string = "en";
@@ -495,7 +495,7 @@ export class ProcessesComponent implements OnInit {
   };
 
   /* Dragged tile on drop */
-  private onDrop(currTile, isDynamic) {
+  onDrop(currTile, isDynamic) {
     var draggedTile = this.setDraggedTile(currTile);
 
     if (this.process.hasOwnProperty("draggedTiles")) {
