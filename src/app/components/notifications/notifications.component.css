@@ -533,6 +533,7 @@ group-view-change {
   float: left;
   height: 115px;
   width: 105px;
+  margin-bottom:10px;
   text-align: center;
   border: 1px solid #D0CBCB;
 }
@@ -553,7 +554,6 @@ group-view-change {
 .notify-dragged-item-inputs {
   float: left;
   width: 175px;
-  height: 129px;
   margin-left: 5px;
 }
 
@@ -740,4 +740,10 @@ div.ridisplay {
   float: left;
   width: 400px;
   margin-top: 2px;
+}
+
+.under-group {
+  float: left;
+  width: 100%;
+  font-size: 11px;
 }

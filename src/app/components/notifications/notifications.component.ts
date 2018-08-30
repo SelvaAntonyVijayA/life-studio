@@ -1232,7 +1232,7 @@ export class NotificationsComponent implements OnInit {
   };
 
   setPushedDate(pushedDate: string) {
-    return !this.utils.isNullOrEmpty(pushedDate) ? "Pushed&nbsp;At&nbsp;:&nbsp;&nbsp;" + pushedDate.slice(0, 10) : "";
+    return !this.utils.isNullOrEmpty(pushedDate) ? "Pushed At:    " + pushedDate.slice(0, 10) : "";
   };
 
   ngOnInit() {

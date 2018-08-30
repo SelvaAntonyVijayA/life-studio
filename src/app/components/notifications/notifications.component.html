@@ -154,8 +154,8 @@
 
                   <div *ngIf="dragObj['isRecurrence']" class="ridisplay">
                     <div class="rimain">
-                      <a (click)="recurrencePopup($event, dragObj, i)" href="#" name="riedit">{{dragObj['ruleButtonText']}}</a>
-                      <a *ngIf="dragObj['isRecurrenceDelete']" href="#" name="ridelete" style="display: inline;">Delete</a>
+                      <a (click)="recurrencePopup($event, dragObj, i)" style="margin-right:5px;" href="#" name="riedit">{{dragObj['ruleButtonText']}}</a>
+                      <a *ngIf="dragObj['isRecurrenceDelete']" href="#" name="ridelete" style="display: inline;margin-right:5px;">Delete</a>
                       <input type="hidden" class="cron" value="0 */1 * * * *">
                       <label class="ridisplay">{{dragObj['rruleString']}}</label>
                     </div>
@@ -170,13 +170,13 @@
                   <button type='button' (click)="push(dragObj, i)" [ngClass]="dragObj['isPushed']? 'btn-info': 'btn-success'" class='btn btn-xs'>Push
                     Now
                   </button>
-                  <span style="margin-left: 5px;">
-                    {{ setPushedDate(dragObj['pusheddatetime']) }}</span>
-                </div>
-                <div *ngIf="dragObj['isGroup']" class='under-group'>Under Group :
-                  <span>{{ dragObj['groupName'] }}</span>
                 </div>
               </div>
+              <span *ngIf="dragObj['type'] == 'manual'" style="position:absolute;left: 116px;top:102px;">
+                {{ setPushedDate(dragObj['pusheddatetime']) }}</span>
+            </div>
+            <div *ngIf="dragObj['isGroup']" class='under-group'>Under Group :
+              <span>{{ dragObj['groupName'] }}</span>
             </div>
             <input type='text' class='form-control input-sm notification_text' [(ngModel)]="dragObj.notificationText" placeholder='Notification Text'
             />
@@ -316,8 +316,8 @@
   (onDone)="onImageLibraryResult($event)"></image-library>
 
 
-<recurrence-popup [popFrom]="'recurrence'" [data]="recurrenceData" [show-modal]="isRecurrencePopup" [page]="'notification'" (onClose)="onRecurrenceClose($event)"
-  (onDone)="onRecurrenceResult($event)"></recurrence-popup>
+<recurrence-popup [popFrom]="'recurrence'" [data]="recurrenceData" [show-modal]="isRecurrencePopup" [page]="'notification'"
+  (onClose)="onRecurrenceClose($event)" (onDone)="onRecurrenceResult($event)"></recurrence-popup>
 
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
