@@ -52,4 +52,32 @@ export class MemberService {
         catchError(this.handleError('roleMembers', obj))
       );
   };
+
+  saveMember(data: Object) {
+    return this.http.post<any>("/cms/member/save", { "form_data": data }, httpOptions)
+      .pipe(
+        catchError(this.handleError('saveMember', data))
+      );
+  };
+
+  updateMember(id: string, data: Object) {
+
+    return this.http.post<any>("/app/member/update/" + id, { "form_data": data }, httpOptions)
+      .pipe(
+        catchError(this.handleError('updateMember', data))
+      );
+  };
+
+  appMemberRemove(memberId: string, appId?: string) {
+    let removeUrl: string = "/app/member/remove/" + memberId;
+
+    if (!this.utils.isNullOrEmpty(appId)) {
+      removeUrl = removeUrl + "/" + appId;
+    }
+
+    return this.http.get<any>(removeUrl)
+      .pipe(
+        catchError(this.handleError('appMemberRemove', { "Status": "Error" }))
+      );
+  }
 }

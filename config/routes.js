@@ -198,9 +198,9 @@ module.exports = function (app) {
   router.all('/app/square/assign', $member.squareAssign);
   router.all('/app/member/preferredlocation/assigned/:locationid*?', $member.getAssignedPl);
   router.all('/app/member/profile/:appId', $member.getProfile);
-
   router.all('/app/member/rolemembers/', $member.getRoleMembers);
   router.all('/app/member/get/:orgId/:appId/:locationId?', $member.getMemberbyApp);
+  router.all('/app/member/remove/:memberId/:appId?', $member.removeMember);
 
   router.get('/engine/list/', $engines.list);
   router.all('/engine/save?', $engines.save);

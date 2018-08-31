@@ -36,7 +36,7 @@
 
     <div class="members-count">
       <span style="margin-right: 4px">Total No. of Downloads:</span>
-      <span> 0 </span>
+      <span> {{ memberCount }} </span>
     </div>
   </div>
 
@@ -58,7 +58,10 @@
 
 <ng-template #userForm>
   <div class="modal-header">
-    <h4 class="modal-title pull-left">Add User</h4>
+    <h4 class="modal-title pull-left">{{formTitle}}</h4>
+    <div *ngIf="profileImage.isShow" class="member-profile-image">
+      <img [src]="profileImage.src" alt="Profile Image" height="53" width="50">
+    </div>
     <button type="button" class="close pull-right" aria-label="Close" (click)="userFormRef.hide('new')">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -69,9 +72,18 @@
         <div class="col-md-6 offset-md-3">
           <form [formGroup]="memberForm">
             <div *ngFor="let memField of profileFields; let i= index; trackBy: trackByIndex" class="form-group">
-              <div *ngIf="memField['type'] === 'text' || memField['type'] === 'password' || memField['type'] === 'email'">
+              <div *ngIf="memField['type'] === 'check'">
+                <input type="checkbox" class="validator_error_check" [formControlName]="memField['formFieldName']">
+                <label [for]="memField['formFieldName']" class="lbl_mem_check">{{memField['name']}}</label>
+                <div *ngIf="memberFormSubmitted && formDetails[memField['formFieldName']].errors" class="alert alert-danger invalid-feedback validator_error_names">
+                  <div *ngIf="formDetails[memField['formFieldName']].invalid">{{ "Please check " + memField['name'] }}
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="memField['type'] === 'text' || memField['type'] === 'password' || memField['type'] === 'email' || memField['type'] === 'date' || memField['type'] === 'number' || memField['type'] === 'custom'">
                 <!-- <label class="lbl_mem_title">{{memField['name']}}</label> -->
-                <input [placeholder]="memField['required']?'*' + memField['name']: memField['name']" [attr.type]="memField['formFieldName'] ==='password'? 'password': memField['type']"
+                <input (focus)="changeToDate($event, memField['type'], true)" (focusout)="changeToDate($event, memField['type'], false)"
+                  [placeholder]="memField['required']?'*' + memField['name']: memField['name']" [attr.type]="memField['formFieldName'] ==='password'? 'password': memField['type'] === 'date'? 'text': memField['type']"
                   [formControlName]="memField['formFieldName']" class="form-control mem_form_input" [ngClass]="{ 'is-invalid': memberFormSubmitted && formDetails[memField['formFieldName']].errors }"
                 />
                 <div *ngIf="memberFormSubmitted && formDetails[memField['formFieldName']].errors" class="alert alert-danger invalid-feedback validator_error_names">
@@ -80,6 +92,13 @@
                     memField['name'] + " must be a valid email address" }}</div>
                   <div *ngIf="memberFormSubmitted && memField['formFieldName'] === 'password' && formDetails[memField['formFieldName']].errors.minlength">{{
                     memField['name'] + " must be at least 6 characters"}}</div>
+                  <div *ngIf="memberFormSubmitted && memField['type'] === 'text' && formDetails[memField['formFieldName']].errors?.pattern">{{
+                    defaultRegex["text"]["message"] }}
+                  </div>
+                  <div *ngIf="memberFormSubmitted && memField['type'] === 'number' && formDetails[memField['formFieldName']].errors?.pattern">{{
+                    defaultRegex["number"]["message"] }}</div>
+                  <div *ngIf="memberFormSubmitted && memField['type'] === 'custom' && formDetails[memField['formFieldName']].errors?.pattern">{{
+                    memField["name"] + " is invalid" }}</div>
                 </div>
               </div>
               <div *ngIf="memField['type'] === 'select'">
@@ -89,7 +108,9 @@
                 </select>
 
                 <div *ngIf="memberFormSubmitted && formDetails[memField['formFieldName']].errors" class="alert alert-danger invalid-feedback validator_error_names">
-                  <div *ngIf="formDetails[memField['formFieldName']].errors.required">{{ memField['name'] + " is required." }}</div>
+                  <div *ngIf="formDetails[memField['formFieldName']].errors.required">{{ memField['name'] + " is required."
+                    }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -100,6 +121,6 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button type="button" (click)="onSubmit($event)" class="btn btn-default"> Save </button>
+    <button type="button" (click)="saveMember($event)" class="btn btn-default"> Save </button>
   </div>
 </ng-template>

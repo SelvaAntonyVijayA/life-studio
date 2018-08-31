@@ -504,6 +504,72 @@ var memberProfileCheck = function (fields, memberData, dateCheck) {
   }
 };
 
+var removeMember = function (req, res, next) {
+  query = {};
+  options = {};
+  query._id = req.params.memberId;
+
+  if (!__util.isNullOrEmpty(req.params.appId)) {
+    query.appId = req.params.appId;
+
+    deleteMemberUpdateToMobile(query, function (mobileDelete) {
+      if (mobileDelete) {
+        deleteMember(query, options, function (result) {
+          res.send(result);
+        });
+
+      } else {
+        res.send({});
+      }
+    });
+
+  } else {
+    deleteMember(query, options, function (result) {
+      res.send(result);
+    });
+  }
+};
+
+var deleteMemberUpdateToMobile = function (data, cb) {
+  var options = {
+    url: appconf.authDomain + "/migrate/delete",
+    method: "POST",
+    json: {
+      appId: data.appId,
+      userIds: [data._id.toString()]
+    }
+  };
+
+  $general.getUrlResponseWithSecurity(options, function (err, res, body) {
+    if (err) {
+      $log.error("Error : procedure delete patient: " + JSON.stringify(err));
+
+      cb(false);
+
+    } else if (res.statusCode == 200) {
+      $log.info("procedure deleted patient: " + JSON.stringify(body));
+
+      cb(true);
+
+    } else {
+      $log.error("Error : procedure delete patient: " + res.statusCode);
+
+      cb(false);
+    }
+  });
+};
+
+var deleteMember = function (query, options, cb) {
+  $db.remove(settingsConf.dbname.tilist_users, settingsConf.collections.members, query, options, function (result) {
+    var obj = {};
+    obj.deleted = result;
+
+    if (cb) {
+      cb(obj);
+    }
+  });
+};
+
 module.exports = {
   "init": init,
   "_getMember": _getMember,
@@ -516,5 +582,7 @@ module.exports = {
   "getAssignedPl": getAssignedPl,
   "getProfile": getProfile,
   "getRoleMembers": getRoleMembers,
-  "getMemberbyApp": getMemberbyApp
+  "getMemberbyApp": getMemberbyApp,
+  "removeMember": removeMember,
+  "deleteMember": deleteMember
 };
