@@ -46,6 +46,9 @@ import { UserAccessComponent } from '../../components/user-access/user-access.co
 import { StreamUrlComponent } from '../../components/stream-url/stream-url.component';
 import { EmoticonsReportsComponent } from '../../components/emoticons-reports/emoticons-reports.component';
 import { PrivateAccessComponent } from '../../components/private-access/private-access.component';
+import { InappmembershipComponent } from '../../components/inappmembership/inappmembership.component';
+import { TrendalertsComponent } from '../../components/trendalerts/trendalerts.component';
+
 //import { UpgradeComponent } from '@angular/upgrade/static';
 
 import { HeaderService } from '../../services/header.service';
@@ -116,7 +119,8 @@ import { MomentData } from '../../helpers/momentdata';
     ProfilebuilderComponent, AuthandsecurityComponent, PhotosComponent, jqxGridComponent, jqxWindowComponent, jqxExpanderComponent, jqxTooltipComponent,
     jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent,
     LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent,
-    RecurrenceComponent, QaScoresComponent, ReportGeneratorComponent, UserAccessComponent, StreamUrlComponent, EmoticonsReportsComponent, PrivateAccessComponent],
+    RecurrenceComponent, QaScoresComponent, ReportGeneratorComponent, UserAccessComponent, StreamUrlComponent, EmoticonsReportsComponent, PrivateAccessComponent,
+    InappmembershipComponent, TrendalertsComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService,
     LivestreamService, MomentData, LanguageService, NotificationService, ScriptService]

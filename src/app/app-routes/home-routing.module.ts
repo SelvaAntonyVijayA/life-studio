@@ -29,6 +29,8 @@ import { UserAccessComponent } from '../components/user-access/user-access.compo
 import { StreamUrlComponent } from '../components/stream-url/stream-url.component';
 import { EmoticonsReportsComponent } from '../components/emoticons-reports/emoticons-reports.component';
 import { PrivateAccessComponent } from '../components/private-access/private-access.component';
+import { InappmembershipComponent } from '../components/inappmembership/inappmembership.component';
+import { TrendalertsComponent } from '../components/trendalerts/trendalerts.component';
 
 const homeRoutes: Routes = [
   {
@@ -138,6 +140,14 @@ const homeRoutes: Routes = [
       {
         path: "privateaccess",
         component: PrivateAccessComponent
+      },
+      {
+        path: "inappmembership",
+        component: InappmembershipComponent
+      },
+      {
+        path: "trendalerts",
+        component: TrendalertsComponent
       }
     ]
   }
