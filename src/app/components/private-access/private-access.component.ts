@@ -11,11 +11,13 @@ import { LocationService } from '../../services/location.service';
 import { MemberService } from '../../services/member.service';
 import { RolesService } from '../../services/roles.service';
 import { AppsService } from '../../services/apps.service'
+import { GeneralService } from '../../services/general.service'
 import 'src/js/jquery.tinysort.min.js';
 import { ModalDirective, BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-//import { DateValidator } from '../../helpers/date-validator';
+// import { merge } from 'rxjs/operators';
+// import { DateValidator } from '../../helpers/date-validator';
 
 declare var tsort: any;
 declare var $: any;
@@ -24,7 +26,7 @@ declare var $: any;
   selector: 'app-private-access',
   templateUrl: './private-access.component.html',
   styleUrls: ['./private-access.component.css'],
-  providers: [PageService, LocationService, MemberService],
+  providers: [PageService, LocationService, MemberService, GeneralService],
   encapsulation: ViewEncapsulation.None
 })
 export class PrivateAccessComponent implements OnInit {
@@ -38,6 +40,7 @@ export class PrivateAccessComponent implements OnInit {
     private memberService: MemberService,
     private rolesService: RolesService,
     private appsService: AppsService,
+    private generalService: GeneralService,
     @Inject(DOCUMENT) private document: any,
     private modalService: BsModalService,
     private e1: ElementRef,
@@ -83,6 +86,7 @@ export class PrivateAccessComponent implements OnInit {
   memberCount: number = 0;
   formTitle: string = "Add User";
   profileImage: object = { "isShow": false, "src": "" };
+  profileObj: Object = {};
 
   defaultRegex: Object = {
     text: {
@@ -109,15 +113,15 @@ export class PrivateAccessComponent implements OnInit {
         this.getLocations().subscribe(locRes => {
           if (this.utils.isArray(locRes) && locRes.length > 0) {
             this.locationsList = locRes;
-            this.selectedLocation = locRes[0]["_id"];
+            //this.selectedLocation = locRes[0]["_id"];
           }
 
           this.getPrivateAccess().subscribe(profUserDatas => {
             let profData: any = profUserDatas[0];
             let userData: any = profUserDatas[1];
 
-            this.userColModel = profData["userColModel"];
-           
+            this.userColModel = this.userColumns().concat(profData["userColModel"]);
+
             this.loadUsers(userData);
             this.createUserForm(profData["fields"]);
             this.memberFormOnHide();
@@ -156,17 +160,52 @@ export class PrivateAccessComponent implements OnInit {
   };
 
   getUserData() {
-    let memberData: any = this.memberService.getMemberData(this.oid, this.selectedApp, this.selectedLocation);
+    let locId = !this.utils.isNullOrEmpty(this.selectedLocation) && this.selectedLocation !== "-1" ? this.selectedLocation : "";
+    let memberData: any = this.memberService.getMemberData(this.oid, this.selectedApp, locId);
 
     return memberData;
   };
 
   appChange(appId: string) {
     this.selectedApp = appId;
+
+    this.userLoadInitial = "-1";
+    this.memberId = "";
+    this.selectedLocation = "-1";
+    this.locationsList = [];
+
+    $.jgrid.gridUnload("#users-grid");
+    this.assignAppProfileDatas();
+    this.appLocationsAssign();
+  };
+
+  assignAppProfileDatas() {
+    this.getProfileFields().subscribe(res => {
+      let profData: any = !this.utils.isNullOrEmpty(res) && res.hasOwnProperty("userColModel") && this.utils.isArray(res["userColModel"]) ? res["userColModel"] : [];
+      this.userColModel = this.userColumns().concat(profData);
+    });
+  };
+
+  appLocationsAssign() {
+    this.getLocations().subscribe(locRes => {
+      if (this.utils.isArray(locRes) && locRes.length > 0) {
+        this.locationsList = locRes;
+      }
+    });
   };
 
   locationChange(locId: string) {
     this.selectedLocation = locId;
+
+    $(this.privateAccessGrid).jqGrid('setGridParam', {
+      datatype: 'json'
+    }).trigger("reloadGrid");
+
+    $(this.squaresGrid).jqGrid('setGridParam', {
+      datatype: 'json'
+    }).trigger("reloadGrid");
+
+    this.loadUserData(true);
   };
 
   privateAccessDataReset() {
@@ -207,6 +246,7 @@ export class PrivateAccessComponent implements OnInit {
     this.memberCount = 0;
     this.formTitle = "Add User";
     this.profileImage = { "isShow": false, "src": "" };
+    this.profileObj = {};
   };
 
   loadRoles() {
@@ -275,7 +315,7 @@ export class PrivateAccessComponent implements OnInit {
       title: "Duplicate",
       buttonicon: " ui-icon-transferthick-e-w",
       onClickButton: () => {
-        //duplicateRole();
+        this.duplicateRole();
       }
     }).navButtonAdd('#private-access-pager', {
       caption: "",
@@ -783,6 +823,8 @@ export class PrivateAccessComponent implements OnInit {
         if (this.onloadAssigning) {
           this.onloadAssigning = true;
         }
+
+        this.doColumnActions();
       },
       ondblClickRow: (id: string) => {
         this.memberId = id;
@@ -843,15 +885,11 @@ export class PrivateAccessComponent implements OnInit {
       buttonicon: "ui-icon-plus",
       position: "first",
       onClickButton: () => {
-        //this.userForm.show();
-        this.userFormRef = this.modalService.show(this.userForm, { class: 'modal-md' });
-
         if (this.selectedApp !== "-1") {
           this.memberId = "-1";
-          //this.userForm.show();
           this.resetValidation();
-          //var form = $('#userForm');
           this.resetMember();
+          this.userFormRef = this.modalService.show(this.userForm, { class: 'modal-md' });
         } else {
           this.utils.iAlert('error', 'Information', 'No App is selected');
         }
@@ -947,7 +985,7 @@ export class PrivateAccessComponent implements OnInit {
 
         if (selectedUsers.length == 0) {
           this.utils.iAlert('error', 'Information', 'No End Users are selected');
-        } else if (roleId == null || roleId == "") {
+        } else if (this.utils.isNullOrEmpty(roleId)) {
           this.utils.iAlert('error', 'Information', 'No Role is selected');
         } else {
 
@@ -1204,13 +1242,8 @@ export class PrivateAccessComponent implements OnInit {
   };
 
   resetMember() {
-    /* var formFields = $("#userForm .form-group").find(":first");
-   
-     for (var i = 0; i < formFields.length; i++) {
-       $(formFields[i]).val("");
-     }
-   
-     $('#addMemberDetail').find('.modal-title').text("Add User"); */
+    this.clearProfileFields();
+    this.formTitle = "Add User";
   };
 
   resetValidation() {
@@ -1238,63 +1271,89 @@ export class PrivateAccessComponent implements OnInit {
         this.profileImage["src"] = "";
       }
 
-      let fieldDatas: any[] = [];
-      let profObject: Object = {};
+      //let fieldDatas: any[] = [];
+      //let profObject: Object = {};
 
       for (let i = 0; i < this.profileFields.length; i++) {
         let profField: object = this.profileFields[i];
         let tagName: any = profField["tag"];
         let fieldContents: any[] = [];
+        let fieldProfileObj: any[] = this.profileObj[profField["formFieldName"]];
 
         if (profField["type"] === "check") {
           let checkValue: boolean = this.checkfieldExists(selectUserData, tagName) ? this.utils.convertToBoolean(selectUserData[tagName]) : false;
           fieldContents.push(checkValue);
-          fieldContents.push([Validators.requiredTrue]);
+          fieldProfileObj[0] = checkValue;
+          //fieldContents.push([Validators.requiredTrue]);
         } else if (profField["type"] === "date") {
           let dateFieldValue: any = this.checkfieldExists(selectUserData, tagName) ? selectUserData[tagName] : "";
           let fSplittedDate: any[] = !this.utils.isNullOrEmpty(dateFieldValue) ? dateFieldValue.split('/') : [];
           let formattedDate: any = fSplittedDate.length > 0 ? fSplittedDate[2] + "-" + fSplittedDate[0] + "-" + fSplittedDate[1] : "";
-          fieldContents.push(formattedDate);
+          //fieldContents.push(formattedDate);
 
-          let dateContent: any = this.getRequired(profField);
+          fieldProfileObj[0] = formattedDate;
+
+          /* let dateContent: any = this.getRequired(profField);
 
           if (dateContent.length > 0) {
             fieldContents.push(dateContent);
-          }
+          } */
         } else if (profField["type"] === "password") {
           let decryptedPassword: any = this.checkfieldExists(selectUserData, "decryptedPassword") ? selectUserData["decryptedPassword"] : "";
-          fieldContents.push(decryptedPassword);
+          //fieldContents.push(decryptedPassword);
 
-          let passContent: any = this.getRequired(profField);
-          passContent.push(Validators.minLength(6));
+          fieldProfileObj[0] = decryptedPassword;
 
-          if (passContent.length > 0) {
-            fieldContents.push(passContent);
-          }
+          /* let passContent: any = this.getRequired(profField);
+           passContent.push(Validators.minLength(6));
+ 
+           if (passContent.length > 0) {
+             fieldContents.push(passContent);
+           } */
         } else {
           let fieldData: any = this.checkfieldExists(selectUserData, tagName) ? selectUserData[tagName] : "";
-          fieldContents.push(fieldData);
+          //fieldContents.push(fieldData);
 
-          if (profField["type"] === "text") {
-            fieldData.push(Validators.pattern(this.defaultRegex["text"]["pattern"]));
-          } else if (profField["type"] === "email") {
-            fieldData.push(Validators.email);
-          } else if (profField["type"] === "number") {
-            fieldData.push(Validators.pattern(this.defaultRegex["number"]["pattern"]));
-          } else if (profField["type"] === "custom") {
-            if (profField.hasOwnProperty("regex") && !this.utils.isNullOrEmpty(profField["regex"])) {
-              fieldData.push(Validators.pattern(profField["regex"]));
-            }
-          }
+          fieldProfileObj[0] = fieldData;
 
-          if (fieldData.length > 0) {
-            fieldContents.push(fieldData);
-          }
+          // let fieldDataContent = this.getRequired(profField);
+
+          /* if (profField["type"] === "text") {
+             fieldDataContent.push(Validators.pattern(this.defaultRegex["text"]["pattern"]));
+           } else if (profField["type"] === "email") {
+             fieldDataContent.push(Validators.email);
+           } else if (profField["type"] === "number") {
+             fieldDataContent.push(Validators.pattern(this.defaultRegex["number"]["pattern"]));
+           } else if (profField["type"] === "custom") {
+             if (profField.hasOwnProperty("regex") && !this.utils.isNullOrEmpty(profField["regex"])) {
+               fieldDataContent.push(Validators.pattern(profField["regex"]));
+             }
+           } */
+
+          /* if (fieldDataContent.length > 0) {
+             fieldContents.push(fieldDataContent);
+           } */
         }
 
-
-        profObject[profField["formFieldName"]] = fieldContents;
+        //profObject[profField["formFieldName"]] = fieldContents;
       }
+
+
+      this.memberForm = this.formBuilder.group(this.profileObj);
+    } else {
+      this.clearProfileFields();
+    }
+  };
+
+  clearProfileFields() {
+    if (!this.utils.isEmptyObject(this.profileObj)) {
+      for (let fieldKey in this.profileObj) {
+        let fieldData: any[] = this.profileObj[fieldKey];
+
+        fieldData[0] = "";
+      }
+
+      this.memberForm = this.formBuilder.group(this.profileObj);
     }
   };
 
@@ -1310,6 +1369,7 @@ export class PrivateAccessComponent implements OnInit {
       this.utils.iAlert('error', 'Information', 'No role is selected');
       return false;
     }
+
     let rolesCurrentRow: any;
 
     if (roleId.length > 12) {
@@ -1348,7 +1408,9 @@ export class PrivateAccessComponent implements OnInit {
 
   createUserForm(memFields: any[]) {
     this.profileFields = [];
-    let profObject: Object = {};
+    //let profObject: Object = {};
+
+    this.profileObj = {};
 
     for (let i = 0; i < memFields.length; i++) {
       let currField: Object = {};
@@ -1397,7 +1459,7 @@ export class PrivateAccessComponent implements OnInit {
           }
         }
 
-        profObject[fieldName] = fieldContents;
+        this.profileObj[fieldName] = fieldContents;
 
         if (currField['type'] === 'text' || currField['type'] === 'password' || currField['type'] === 'email' || currField['type'] === 'select' || currField['type'] === 'date' || currField['type'] === 'check' || currField['type'] === 'custom') {
           this.profileFields.push(currField);
@@ -1405,7 +1467,7 @@ export class PrivateAccessComponent implements OnInit {
       }
     }
 
-    this.memberForm = this.formBuilder.group(profObject);
+    this.memberForm = this.formBuilder.group(this.profileObj);
   };
 
   getRequired(field: Object) {
@@ -1552,8 +1614,6 @@ export class PrivateAccessComponent implements OnInit {
           this.resetGrid(false);
         }
       } else if (!updateRes.success && updateRes.body) {
-
-
         this.utils.iAlert('success', '', updateRes.body);
       } else if (updateRes._id) {
         this.savedMemCheck = true;
@@ -1629,9 +1689,9 @@ export class PrivateAccessComponent implements OnInit {
   };
 
   loadUserData(isReload: boolean) {
-    let locId: string = this.selectedLocation !== "-1" && !this.utils.isNullOrEmpty(this.selectedLocation) ? this.selectedLocation : "";
+    //let locId: string = this.selectedLocation !== "-1" && !this.utils.isNullOrEmpty(this.selectedLocation) ? this.selectedLocation : "";
 
-    this.memberService.getMemberData(this.oid, this.selectedApp, locId).subscribe(memRes => {
+    this.getUserData().subscribe(memRes => {
       this.memberCount = !this.utils.isNullOrEmpty(memRes) && this.utils.isArray(memRes) && memRes.length > 0 ? memRes.length : 0;
 
       if (isReload) {
@@ -1647,6 +1707,244 @@ export class PrivateAccessComponent implements OnInit {
         this.loadUsers(memRes);
       }
     });
+  };
+
+  userColumns() {
+    let userCols: any[] = [{
+      name: 'isApproved',
+      index: 'isApproved',
+      sortable: false,
+      hidden: true
+    }, {
+      name: 'squares',
+      index: 'squares',
+      sortable: false,
+      formatter: function (cellvalue) {
+        return JSON.stringify(cellvalue);
+      },
+      hidden: true
+    }, {
+      name: 'role',
+      index: 'role',
+      sortable: false,
+      hidden: true
+    }, {
+      name: 'squareTypeId',
+      index: 'squareTypeId',
+      sortable: false,
+      hidden: true
+    }, {
+      name: 'memberRoleId',
+      index: 'memberRoleId',
+      sortable: false,
+      hidden: true
+    }, {
+      name: 'action',
+      label: 'Action',
+      index: 'action',
+      width: 90,
+      sortable: false,
+      formatter: (cellvalue: any, options: any, rowObject: any) => {
+        if (rowObject.hasOwnProperty("isApproved") && !this.utils.isNullOrEmpty(rowObject["isApproved"]) && !rowObject.isApproved) {
+          return "<button type='button' value='approve' style='margin-right: 10px;width: 55px;' rowid='" + rowObject._id + "' class='btn-success btn-xs action user-approval-deny'>Approve</button><span title='Denied' style='left: 0px; right: 3px; top: 2px;color: #b90200; font-size: 12px;' class='glyphicon glyphicon-remove' aria-hidden='true'></span>";
+
+        } else if (rowObject.hasOwnProperty("isApproved") && !this.utils.isNullOrEmpty(rowObject["isApproved"]) && rowObject.isApproved) {
+          return "<button type='button' value='deny' style='margin-right: 10px;width: 55px;' rowid='" + rowObject._id + "' class='btn-danger btn-xs action user-approval-deny'>Deny</button><span title='Approved' style='left: 2px; right: 3px; top: 2px;color: #36a41e; font-size: 12px;' class='glyphicon glyphicon-ok' aria-hidden='true'></span> ";
+
+        } else {
+          return "";
+        }
+      }
+    }, {
+      label: 'Email Verification',
+      name: 'verified',
+      width: 100,
+      editable: true,
+      formatter: 'select',
+      sortable: false,
+      edittype: 'select',
+      editoptions: {
+        value: {
+          '0': 'Unverified',
+          '1': 'Verified'
+        }
+      }
+    }];
+
+    return userCols;
+  };
+
+  doColumnActions() {
+    let userApprovalDeny: any = this.document.getElementsByClassName("user-approval-deny");
+
+    if (userApprovalDeny.length > 0) {
+      this.removeEventColumnListener(userApprovalDeny, "userApproveDeny");
+      this.addEventColumnListener(userApprovalDeny, "userApproveDeny");
+    }
+  };
+
+  removeEventColumnListener(domObjs: any, fnName: any) {
+    if (domObjs.length > 0) {
+      for (let i = 0; i < domObjs.length; i++) {
+        domObjs[i].removeEventListener('click', this[fnName]);
+      }
+    };
+  }
+
+  addEventColumnListener(domObjs: any, fnName: any) {
+    if (domObjs.length > 0) {
+      for (let i = 0; i < domObjs.length; i++) {
+        domObjs[i].addEventListener('click', this[fnName]);
+      }
+    };
+  };
+
+  userApproval(userId: string) {
+    var objApproval = {
+      isApproved: true,
+      appId: this.selectedApp
+    };
+
+    if (!this.utils.isNullOrEmpty(this.selectedApp) && this.selectedApp !== "-1") {
+      this.memberUpdate(userId, objApproval).subscribe((res) => {
+        if (res.message) {
+          if (!res.success) {
+            this.utils.iAlert('success', '', res.message);
+          } else {
+            this.loadUserData(true);
+            this.utils.iAlert('success', '', 'Approved');
+          }
+        } else if (!res.success && res.body) {
+          this.utils.iAlert('error', 'Information', res.body);
+        } else if (res._id) {
+          this.loadUserData(true);
+          this.utils.iAlert('success', '', 'Approved');
+        }
+      });
+    }
+
+  };
+
+  userDeny(userId: string, domObj: any) {
+    let objDeny: object = {
+      isApproved: false,
+      appId: this.selectedApp
+    };
+
+    if (!this.utils.isNullOrEmpty(this.selectedApp) && this.selectedApp !== "-1") {
+      this.memberUpdate(userId, objDeny).subscribe((res) => {
+        if (res.message) {
+          if (!res.success) {
+            this.utils.iAlert('success', '', res.message);
+          } else {
+            $(domObj).removeClass("user-deny").addClass("user-approval");
+            $(domObj).val("approve");
+            $(domObj).text("Approve");
+
+            let isShrink: boolean = this.getUserGridShrink();
+
+            $(this.usersGrid).setGridParam({
+              datatype: 'json',
+              shrinkToFit: isShrink,
+            }).trigger('reloadGrid');
+
+            this.utils.iAlert('success', '', 'Denied');
+          }
+        } else if (!res.success && res.body) {
+          this.utils.iAlert('error', 'Information', res.body);
+        } else if (res._id) {
+          $(domObj).removeClass("user-deny").addClass("user-approval");
+          $(domObj).val("approve");
+          $(domObj).text("Approve");
+
+          this.utils.iAlert('success', '', 'Denied');
+        }
+      });
+    }
+  };
+
+  memberUpdate(id: string, obj: object) {
+    let memberUpdate: any = this.memberService.updateMember(id, obj);
+
+    return memberUpdate;
+  };
+
+  userApproveDeny(e: any) {
+    let userId: string = e.srcElement.getAttribute("rowid");
+    let currVal: string = e.srcElement.getAttribute("value");
+    let currTarget: any = e.target;
+
+    if (currVal === "approve") {
+      //$(currTarget).removeClass("user-approval").addClass("user-deny");
+
+      if ($(currTarget).hasClass("btn-success")) {
+        $(currTarget).removeClass("btn-success");
+      }
+
+      if (!$(currTarget).hasClass("btn-danger")) {
+        $(currTarget).first().addClass("btn-danger")
+      }
+
+      $(currTarget).text("Deny");
+      $(currTarget).val("deny");
+      //this.userApproval(userId);
+    } else {
+
+      $(currTarget).removeClass("user-deny").addClass("user-approval");
+      $(currTarget).val("approve");
+      $(currTarget).text("Approve");
+
+      //this.userDeny(userId, currTarget);
+    }
+  };
+
+  importCsv(e: any) {
+    e.preventDefault();
+
+    let fields: any = [];
+    let profObj: object = {};
+    let isValidate: boolean = false;
+
+    for (let i = 0; i < this.profileFields.length; i++) {
+      let currProfileField: any = this.profileFields[i];
+      let name: string = currProfileField["name"];
+
+      if (name.toLowerCase() == 'email') {
+        if (isValidate == false) {
+          isValidate = true;
+        }
+      }
+
+      if (currProfileField.role == "login identifier" || currProfileField.required) {
+        name = "*" + name;
+      }
+
+      profObj[name] = "";
+    }
+
+    profObj["Request email verification (Yes/No)"] = "";
+    profObj["End user is pre-approved (True/False)"] = "";
+
+    fields.push(profObj);
+
+    if (isValidate) {
+      this.generalService.getExcelData(this.selectedApp, fields).subscribe(res => {
+        if (!res.success) {
+          if (res.message) {
+
+            this.utils.iAlert('error', 'Information', res.message);
+          } else {
+            this.utils.iAlert('error', 'Information', 'Unable to download file. Please try Again!!!');
+          }
+          return false;
+        } else {
+          this.document.location.href = "/files/" + res.fileName;
+          return true;
+        }
+      })
+    } else {
+      this.utils.iAlert('error', 'Information', 'Email field is mandatory to import the users');
+    }
   };
 
   ngOnInit() {

@@ -168,3 +168,11 @@ input[type=checkbox].validator_error_check {
   float: right;
   margin: -38px 50px 0px 0px;
 }
+
+.import_csv {
+  width: 20px;
+  height: 20px;
+  float: left;
+  margin: 13px 0 0 16px;
+  cursor: pointer;
+}

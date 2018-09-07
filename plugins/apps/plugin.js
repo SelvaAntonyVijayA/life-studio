@@ -320,6 +320,16 @@ var appProfileData = function (req, res, next) {
   });
 };
 
+var _getAppById = function (appId, cb) {
+  query = {};
+  query._id = appId;
+  options = {};
+
+  _getApps(query, {}, function (app) {
+    cb(app);
+  });
+};
+
 module.exports = {
   "init": init,
   "list": list,
@@ -332,5 +342,6 @@ module.exports = {
   "auth": auth,
   "_get": _get,
   "getAppsByIds": getAppsByIds,
-  "appProfileData": appProfileData
+  "appProfileData": appProfileData,
+  "_getAppById": _getAppById
 }

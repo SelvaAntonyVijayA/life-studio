@@ -570,6 +570,167 @@ var deleteMember = function (query, options, cb) {
   });
 };
 
+var _getMemberQuery = function (obj, loginIdentifiers, login) {
+  var memQuery = {};
+  memQuery.appId = obj.appId;
+
+  _.each(loginIdentifiers, function (field) {
+    if (!__util.isNullOrEmpty(obj[field])) {
+      memQuery[field] = obj[field];
+    }
+    else if (login && __util.isNullOrEmpty(obj[field]) && !__util.isNullOrEmpty(login[field])) {
+      memQuery[field] = login[field];
+    }
+  });
+
+  return memQuery;
+};
+
+var memberSave = function (obj, cb) {
+  if (obj.login && obj.login.length > 0) {
+    var login = obj.login[0];
+    var login_identifiers = login.login_identifiers ? login.login_identifiers : [];
+    var existsQuery = {};
+
+    if (login.type == "ili") {
+      if (login_identifiers.length == 0) {
+        cb({
+          "success": false,
+          "message": "invalid request"
+        });
+
+        return;
+
+      } else if (login_identifiers.length > 0) {
+        existsQuery = _getMemberQuery(obj, login_identifiers, login);
+      }
+    }
+
+    if (!__util.isNullOrEmpty(obj.email)) {
+      if (!$general.validateEmail(obj.email)) {
+        cb({
+          "success": false,
+          "message": "invalid email"
+        });
+
+        return;
+      }
+    }
+
+    if (!__util.isNullOrEmpty(login.email)) {
+      if (!$general.validateEmail(login.email)) {
+        cb({
+          "success": false,
+          "message": "invalid email"
+        });
+
+        return;
+      }
+    }
+
+    if (!__util.isNullOrEmpty(login.type)) {
+      obj.type = login.type;
+    }
+
+    if (!__util.isNullOrEmpty(login.email)) {
+      obj.email = login.email;
+    }
+
+    if (!__util.isNullOrEmpty(login.id)) {
+      obj.id = login.id;
+    }
+
+    if (!__util.isNullOrEmpty(obj.password)) {
+      obj.password = $general.encrypt(obj.password);
+    }
+
+    if (!__util.isNullOrEmpty(login.password)) {
+      obj.password = $general.encrypt(login.password);
+    }
+  } else {
+    cb({
+      "success": false,
+      "message": "invalid request"
+    });
+
+    return;
+  }
+
+  delete obj["decryptedPassword"];
+
+  exists(null, existsQuery, function (memberExists) {
+    if (memberExists.length > 0) {
+      cb({
+        "success": false,
+        "message": "already exists"
+      });
+    } else {
+      _memberSave(obj, function (result) {
+        obj._id = result.toString();
+        obj.id = result.toString();
+
+        if (!__util.isNullOrEmpty(obj.password)) {
+          obj.password = $general.decrypt(obj.password);
+        }
+
+        $datamigration.userSave(obj, function (migrate) {
+          if (migrate.success) {
+
+            cb({
+              "success": true,
+              "_id": result.toString()
+            });
+
+          } else {
+            if (!migrate.success) {
+              deleteMember({
+                _id: result
+              }, {});
+            }
+
+            cb(migrate);
+          }
+        });
+      });
+    }
+  });
+};
+
+var exists = function (res, memberId, cb) {
+  query = {};
+
+  if (typeof memberId == 'object') {
+    query = memberId;
+  } else {
+    query._id = memberId;
+  }
+
+  options = {};
+
+  $member._getMember(query, options, function (result) {
+    if (cb) {
+      cb(result);
+    }
+
+    if (result.length > 0) {
+      return true;
+    } else {
+      if (!__util.isNullOrEmpty(res)) {
+        res.status(404).send('Not found');
+        return;
+      }
+
+      return false;
+    }
+  });
+};
+
+var _memberSave = function (obj, cb) {
+  $db.save(settingsConf.dbname.tilist_users, settingsConf.collections.members, obj, function (result) {
+    cb(result);
+  });
+};
+
 module.exports = {
   "init": init,
   "_getMember": _getMember,
@@ -584,5 +745,7 @@ module.exports = {
   "getRoleMembers": getRoleMembers,
   "getMemberbyApp": getMemberbyApp,
   "removeMember": removeMember,
-  "deleteMember": deleteMember
+  "deleteMember": deleteMember,
+  "memberSave": memberSave,
+  "exists": exists
 };

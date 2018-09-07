@@ -45,7 +45,8 @@ var plugins = {
   "qaweights": "qaweights",
   "reportrule": "reportrule",
   "approles": "approles",
-  "pagepermissions": "pagepermissions"
+  "pagepermissions": "pagepermissions",
+  "import": "import"
 };
 
 module.exports = function (appPath, dirName, app) {

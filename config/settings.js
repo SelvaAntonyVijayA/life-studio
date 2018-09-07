@@ -174,7 +174,7 @@ module.exports = {
     "host": "localhost",
     "port": 8080
   },
-  "path": "C://ili/angular/src/assets/",
+  "path": "C://ili/angular/src/",
   "folderPath": "C:/ili/angular/src/assets/img/orgs/",
   "image": {
     "imgfolderpath": "img/orgs/{0}/",
@@ -198,5 +198,9 @@ module.exports = {
     "imgFormPhotoFolderPath": "img/formphotos/{0}/",
     "imgFormPhotoUrlPath": "/img/formphotos/{0}/",
     "imgStreamCrownUrlPath": "/img/streams/{0}/{1}/"
+  },
+  "excel": {
+    "folderpath": "files/{0}",
+    "urlpath": "/files/{0}"
   }
 }

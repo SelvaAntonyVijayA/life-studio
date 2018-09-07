@@ -9,11 +9,13 @@
   <div class="row head_private_access">
     <label class="lbl_select_app">Select App :</label>
     <select [ngModel]="selectedApp" (ngModelChange)="appChange($event)" class="form-control input-sm apps_private_access">
+      <option [value]="'-1'" disabled>Select App</option>
       <option *ngFor="let app of appList; let i= index" [value]="app?._id ">{{app?.name}}</option>
     </select>
 
     <label class="lbl_private_access_branch">Branch or Location:</label>
     <select [ngModel]="selectedLocation" (ngModelChange)="locationChange($event)" class="form-control input-sm location_private_access">
+      <option [value]="'-1'" disabled>Select Location</option>
       <option *ngFor="let loc of locationsList; let i= index" [value]="loc?._id ">{{loc?.name}}</option>
     </select>
 
@@ -32,6 +34,7 @@
       </button>
 
       <!--   <a href="#" title="Download sample import member file" class="import-csv"></a>    -->
+      <img (click)="importCsv($event)" title="Download sample import member file" src="/img/excel.png" alt="User Excel Download" class="import_csv" />
     </div>
 
     <div class="members-count">
@@ -84,10 +87,10 @@
                 <!-- <label class="lbl_mem_title">{{memField['name']}}</label> -->
                 <input (focus)="changeToDate($event, memField['type'], true)" (focusout)="changeToDate($event, memField['type'], false)"
                   [placeholder]="memField['required']?'*' + memField['name']: memField['name']" [attr.type]="memField['formFieldName'] ==='password'? 'password': memField['type'] === 'date'? 'text': memField['type']"
-                  [formControlName]="memField['formFieldName']" class="form-control mem_form_input" [ngClass]="{ 'is-invalid': memberFormSubmitted && formDetails[memField['formFieldName']].errors }"
-                />
+                  [formControlName]="memField['formFieldName']" class="form-control mem_form_input" [ngClass]="{ 'is-invalid': memberFormSubmitted && formDetails[memField['formFieldName']].errors }" />
                 <div *ngIf="memberFormSubmitted && formDetails[memField['formFieldName']].errors" class="alert alert-danger invalid-feedback validator_error_names">
-                  <div *ngIf="formDetails[memField['formFieldName']].errors.required">{{memField['name'] + " is required"}}</div>
+                  <div *ngIf="formDetails[memField['formFieldName']].errors.required">{{memField['name'] + " is
+                    required"}}</div>
                   <div *ngIf="memberFormSubmitted && memField['formFieldName'] === 'email' && formDetails[memField['formFieldName']].errors.email">{{
                     memField['name'] + " must be a valid email address" }}</div>
                   <div *ngIf="memberFormSubmitted && memField['formFieldName'] === 'password' && formDetails[memField['formFieldName']].errors.minlength">{{
@@ -102,13 +105,15 @@
                 </div>
               </div>
               <div *ngIf="memField['type'] === 'select'">
-                <select class="form-control mem_form_input mem_select" [formControlName]="memField['formFieldName']" [ngClass]="{ 'is-invalid': memberFormSubmitted && formDetails[memField['formFieldName']].errors }">
+                <select class="form-control mem_form_input mem_select" [formControlName]="memField['formFieldName']"
+                  [ngClass]="{ 'is-invalid': memberFormSubmitted && formDetails[memField['formFieldName']].errors }">
                   <option [value]="''">{{ memField['required']?'*' + memField['name'] :memField['name']}}</option>
                   <option *ngFor="let selectVal of memField['values'];let j= index;trackBy: trackByIndex" [value]="selectVal['value']">{{selectVal['value']}}</option>
                 </select>
 
                 <div *ngIf="memberFormSubmitted && formDetails[memField['formFieldName']].errors" class="alert alert-danger invalid-feedback validator_error_names">
-                  <div *ngIf="formDetails[memField['formFieldName']].errors.required">{{ memField['name'] + " is required."
+                  <div *ngIf="formDetails[memField['formFieldName']].errors.required">{{ memField['name'] + " is
+                    required."
                     }}
                   </div>
                 </div>

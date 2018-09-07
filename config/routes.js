@@ -233,5 +233,8 @@ module.exports = function (app) {
   router.all('/approles/update/:appRoleId', $approles.update);
   router.all('/approles/remove/:appRoleId', $approles.removeRole);
 
+  router.all('/import/member', $import.members);
+  router.all('/export/excel/:appId', $import.makeExcelSheet);
+
   app.use('/', router);
 };

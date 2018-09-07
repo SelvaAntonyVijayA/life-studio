@@ -419,6 +419,15 @@ var getProfileHtml = function (fields, enableResetPassword) {
   return html;
 };
 
+var validateEmail = function (email) {
+  if (!__util.isNullOrEmpty(email)) {
+    var regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
+    return regex.test(email);
+  }
+
+  return false;
+};
+
 module.exports = {
   "init": init,
   "encrypt": encrypt,
@@ -432,6 +441,7 @@ module.exports = {
   "getDynamicPin": getDynamicPin,
   "getObjectIdByQuery": getObjectIdByQuery,
   "profileDynamicFields": profileDynamicFields,
-  "getProfileHtml": getProfileHtml
+  "getProfileHtml": getProfileHtml,
+  "validateEmail": validateEmail
 };
 

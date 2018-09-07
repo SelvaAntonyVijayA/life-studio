@@ -8,7 +8,7 @@ const formidable = require('formidable')
 var init = function (app) {
   appConf = app.get('settings');
   imageConf = appConf["image"];
-  __appPath = appConf["path"];
+  __appPath = appConf["path"] + "assets/";
 };
 
 var list = function (req, res, next) {

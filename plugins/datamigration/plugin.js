@@ -430,5 +430,6 @@ module.exports = {
   "appMigration": appMigration,
   "memberMigration": memberMigration,
   "migration": migration,
-  "appSave": appSave
+  "appSave": appSave,
+  "userSave": userSave
 };
