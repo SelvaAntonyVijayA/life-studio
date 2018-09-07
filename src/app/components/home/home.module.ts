@@ -48,6 +48,9 @@ import { EmoticonsReportsComponent } from '../../components/emoticons-reports/em
 import { PrivateAccessComponent } from '../../components/private-access/private-access.component';
 import { InappmembershipComponent } from '../../components/inappmembership/inappmembership.component';
 import { TrendalertsComponent } from '../../components/trendalerts/trendalerts.component';
+import { ActivityreportsComponent } from '../../components/activityreports/activityreports.component';
+import { EndusersComponent } from '../../components/endusers/endusers.component';
+import { TrendreportsComponent } from '../../components/trendreports/trendreports.component';
 
 //import { UpgradeComponent } from '@angular/upgrade/static';
 
@@ -120,7 +123,7 @@ import { MomentData } from '../../helpers/momentdata';
     jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent,
     LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent,
     RecurrenceComponent, QaScoresComponent, ReportGeneratorComponent, UserAccessComponent, StreamUrlComponent, EmoticonsReportsComponent, PrivateAccessComponent,
-    InappmembershipComponent, TrendalertsComponent],
+    InappmembershipComponent, TrendalertsComponent, ActivityreportsComponent, EndusersComponent, TrendreportsComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService,
     LivestreamService, MomentData, LanguageService, NotificationService, ScriptService]

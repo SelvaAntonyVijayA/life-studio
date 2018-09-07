@@ -31,6 +31,9 @@ import { EmoticonsReportsComponent } from '../components/emoticons-reports/emoti
 import { PrivateAccessComponent } from '../components/private-access/private-access.component';
 import { InappmembershipComponent } from '../components/inappmembership/inappmembership.component';
 import { TrendalertsComponent } from '../components/trendalerts/trendalerts.component';
+import { ActivityreportsComponent } from '../components/activityreports/activityreports.component';
+import { EndusersComponent } from '../components/endusers/endusers.component';
+import { TrendreportsComponent } from '../components/trendreports/trendreports.component';
 
 const homeRoutes: Routes = [
   {
@@ -148,6 +151,18 @@ const homeRoutes: Routes = [
       {
         path: "trendalerts",
         component: TrendalertsComponent
+      },
+      {
+        path: "activityreports",
+        component: ActivityreportsComponent
+      },
+      {
+        path: "endusers",
+        component: EndusersComponent
+      },
+      {
+        path: "trendreports",
+        component: TrendreportsComponent
       }
     ]
   }
