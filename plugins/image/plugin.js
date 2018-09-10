@@ -32,12 +32,19 @@ var list = function (req, res, next) {
 
       var imageList = [];
 
+      files.sort(function (a, b) {
+        return fs.statSync(rootFolder + a).birthtime.getTime() -
+          fs.statSync(rootFolder + b).birthtime.getTime();
+      }).reverse();
+
       _.each(files, function (file) {
         try {
           stats = fs.lstatSync(rootFolder + file);
 
           if (stats.isFile()) {
-            imageList.push(imageUrl + file);
+            var fileUrl = imageUrl + file + "?fsize=" + stats.size;
+
+            imageList.push(fileUrl);
           }
         } catch (e) {
           $log.error('image list error: ' + query.organizationId);
@@ -54,10 +61,14 @@ var list = function (req, res, next) {
 var upload = function (req, res, next) {
   var context = { "req": req, "res": res, "next": next };
 
-  _formParse(req, function (data, files) {
-    var isEncoded = typeof data.isEncoded == 'undefined' || data.isEncoded == "false" ? false : true;
+  console.dir(context)
 
-    _uploadImage(context, data, files, isEncoded);
+  _formParse(req, function (data, files) {
+    console.dir(data)
+    var isEncoded = typeof data.isEncoded == 'undefined' || data.isEncoded == "false" ? false : true;
+    var isMultiple = typeof data.isMultiple == 'undefined' || data.isMultiple == "false" ? false : true;
+
+    _uploadImage(context, data, files, isEncoded, isMultiple);
   });
 };
 
@@ -74,7 +85,7 @@ var uploadImage = function (req, res, next) {
     } else if (type == "formphoto" || type == "eventphoto") {
       _photoUpload(context, data, files, isEncoded);
     } else if (type == "categoryphoto") {
-      _uploadImage(context, data, files, isEncoded);
+      _uploadImage(context, data, files, isEncoded, false);
     } else if (type == "profilephoto") {
       _profilePictureUpload(context, data, files, isEncoded);
     } else if (type == "drawtool") {
@@ -82,7 +93,7 @@ var uploadImage = function (req, res, next) {
     } else if (type == "blanksform") {
       _blankFormImageUpload(context, data, files, isEncoded);
     } else {
-      _uploadImage(context, data, files, isEncoded);
+      _uploadImage(context, data, files, isEncoded, false);
     }
 
   });
@@ -196,7 +207,7 @@ var crop = function (req, res, next) {
         return;
       }
 
-      _resizeUploadedImage(context, req.body, dst, dstFileName, 'crop');
+      _resizeUploadedImage(context, req.body, dst, dstFileName, 'crop', false, false);
     });
 };
 
@@ -1055,7 +1066,131 @@ var fileDelete = function (req, res, next) {
   }
 };
 
-var _uploadImage = function (context, data, files, isEncoded) {
+var uploadTileBackground = function (req, res, next) {
+  var retrn = {};
+
+  _formParse(req, function (data, files) {
+    var folder = typeof data.folder == 'undefined' ? "" : data.folder;
+    var isEncoded = typeof data.isEncoded == 'undefined' || data.isEncoded == "false" ? false : true;
+
+    try {
+      if (files) {
+
+        for (var prop in files) {
+          var file = files[prop];
+
+          if (!__util.isNullOrEmpty(file.name)) {
+            var fileArray = file.name.split('.');
+
+            var imagePath = __appPath + imageConf.tileBackgroundfolder.replace('{0}', data.tileId);
+            __util.createDir(imagePath);
+
+            var fileName = fileArray[0] + Date.parse(new Date());
+            fileName = fileName.replace(/\s/g, "");
+            fileName = fileName.replace(/(\s)+/g, '_');
+            fileName = fileName + "." + fileArray[1];
+
+            __util.fileUpload(file, imagePath, fileName, function (error) {
+              if (error) {
+                $log.error('tilebg original image : ' + imagePath + ' Error: ' + error);
+              }
+            });
+
+            var imagePathAssigned = appConf.domain + imageConf.tileBackgroundUrl.replace('{0}', data.tileId);
+            imagePathAssigned = imagePathAssigned + fileName;
+
+            var updateObj = {};
+            var urlRtrn = {};
+            urlRtrn.imageUrl = imagePathAssigned;
+
+            if (data.type == "portrait") {
+              updateObj = {
+                tileBackgroundPortrait: imagePathAssigned
+              };
+
+            } else if (data.type == "landscape") {
+              updateObj = {
+                tileBackgroundLandscape: imagePathAssigned
+              };
+            }
+
+            if (!__util.isEmptyObject(updateObj)) {
+              $tile.tileUpdate({ _id: context.data.tileId }, {}, updateObj, function (result) {
+              });
+            }
+
+            res.send(urlRtrn);
+          }
+        }
+
+      } else {
+        res.send({});
+      }
+
+    } catch (err) {
+      $log.error('upload : ' + err);
+      $log.error('upload stack: ' + err.stack);
+
+      res.send({});
+    }
+  });
+};
+
+var deleteTileBackground = function (req, res, next) {
+  _formParse(req, function (data, files) {
+    var fileName = data.imageUrl.split('/').pop();
+    var imagePath = __appPath + imageConf.tileBackgroundfolder.replace('{0}', data.tileId);
+    imagePath = imagePath + fileName;
+
+    if (__util.isValidFile(imagePath)) {
+      fs.unlink(imagePath, function (err) {
+
+        if (err) {
+          $log.error('tilebg delete: ' + err);
+
+          res.send({
+            "status": false
+          });
+
+        } else {
+          var updateObj = {};
+
+          if (data.type == "portrait") {
+            updateObj = {
+              tileBackgroundPortrait: null
+            };
+
+          } else if (data.type == "landscape") {
+            updateObj = {
+              tileBackgroundLandscape: null
+            };
+          }
+
+          if (!__util.isEmptyObject(updateObj)) {
+            $tile.tileUpdate({ _id: context.data.tileId }, {}, updateObj, function (result) {
+              res.send({
+                "status": true
+              });
+            });
+
+          } else {
+            res.send({
+              "status": false
+            });
+          }
+
+        }
+      });
+
+    } else {
+      res.send({
+        "status": true
+      });
+    }
+  });
+};
+
+var _uploadImage = function (context, data, files, isEncoded, isMultiple) {
   var req = context["req"];
   var res = context["res"];
   var type = data.type;
@@ -1089,7 +1224,7 @@ var _uploadImage = function (context, data, files, isEncoded) {
 
             var pathUploaded = imagePath + fileName;
 
-            _resizeUploadedImage(context, data, pathUploaded, fileName, 'upload', isCategory);
+            _resizeUploadedImage(context, data, pathUploaded, fileName, 'upload', isCategory, isMultiple);
           });
         }
       }
@@ -1175,7 +1310,7 @@ var _uploadPictureBlock = function (context, data, files, isEncoded) {
             }
 
             var pathUploaded = imagePath + fileName;
-            _resizeUploadedImage(context, data, pathUploaded, fileName);
+            _resizeUploadedImage(context, data, pathUploaded, fileName, 'picture', false, false);
             retrn.imageUrl = appConf.domain + imageConf.tileImageUrl.replace('{0}', data.appId).replace('{1}', data.tileId) + fileName;
 
             $tile.pushImageBlock(data.appId, data.tileId, retrn.imageUrl, data.caption, data.moderated, function (result) {
@@ -1719,7 +1854,7 @@ var _blankFormImageUpload = function (context, data, files, isEncoded) {
     });
 };
 
-var _resizeUploadedImage = function (context, data, path, fileName, retrn, categories) {
+var _resizeUploadedImage = function (context, data, path, fileName, retrn, categories, isMultiple) {
   var req = context["req"];
   var res = context["res"];
   var urlRtrn = {};
@@ -1776,15 +1911,26 @@ var _resizeUploadedImage = function (context, data, path, fileName, retrn, categ
 
         switch (retrn) {
           case "upload":
-            urlRtrn.status = true;
-            res.send(urlRtrn);
+
+            if (isMultiple) {
+              var file = {
+                thumbnailUrl: urlRtrn.imageUrl,
+                url: urlRtrn.imageUrl,
+                name: fileName
+              }
+
+              res.send({ files: [file], status: true });
+            } else {
+              urlRtrn.status = true;
+              res.send(urlRtrn);
+            }
+
             break;
           case "crop":
             urlRtrn.status = true;
             res.send(urlRtrn);
             break;
         }
-
       })
     });
 };
@@ -1960,5 +2106,7 @@ module.exports = {
   "uploadImage": uploadImage,
   "uploadDecodedTileImage": uploadDecodedTileImage,
   "exclusiveFileUpload": exclusiveFileUpload,
-  "resize": resize
+  "resize": resize,
+  "uploadTileBackground": uploadTileBackground,
+  "deleteTileBackground": deleteTileBackground
 };
