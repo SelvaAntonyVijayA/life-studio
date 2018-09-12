@@ -1,6 +1,6 @@
 import { Component, OnDestroy, Input, Output, ElementRef, Renderer2, ViewChild, EventEmitter, AfterViewInit } from '@angular/core';
 import { NG_SELECT_DEFAULT_CONFIG } from '../../ng-select';
-import { ActivatedRoute} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 import { CommonService } from '../../services/common.service';
 import { Utils } from '../../helpers/utils';
@@ -8,7 +8,11 @@ import { ImageService } from '../../services/image.service';
 const URL = 'http://localhost:8080/image/upload';
 import { ProgressHttp, HTTP_FACTORY } from 'angular-progress-http';
 import { LoggingHttpFactory } from './logging-http/logging-http-factory';
-//import * as Cropper from 'cropperjs';
+import { FileUploader } from 'ng2-file-upload';
+import Cropper from 'cropperjs';
+
+import { Subscription } from 'rxjs'
+import { HttpClient, HttpRequest, HttpResponse, HttpEvent } from '@angular/common/http'
 
 interface FileDescriptor {
   name: string;
@@ -40,7 +44,7 @@ interface FileDescriptor {
 
 export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   @ViewChild('cropperImage') cropperImage: ElementRef;
-
+  uploader: FileUploader;
   public fileD: FileDescriptor;
   public isReady: boolean = false;
   public isUploading: boolean = false;
@@ -55,8 +59,9 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   httpRequest: any = null;
   fileName: string = "or select an image from library";
   public isShow: boolean = false;
+  public isMultiShow: boolean = false;
   private dom: HTMLInputElement;
-  //private cropper: Cropper;
+  private cropper: Cropper;
   aspectRatio: any = NaN;
   @Input() isOpen = 'none';
   @Input() page: string;
@@ -71,6 +76,16 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   selectedFolders: any;
   selectedOrganization: string = "-1";
   isUploadedCrop: boolean = false;
+  response: string;
+  accept = '*'
+  files: File[] = []
+  progress: number
+  url = 'http://localhost:8080/image/upload'
+  httpEmitter: Subscription
+  httpEvent: HttpEvent<{}>
+  lastFileAt: Date
+
+  sendableFormData: FormData; //populated via ngfFormData directive
 
   constructor(private route: ActivatedRoute,
     private cms: CommonService,
@@ -78,13 +93,38 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
     private e1: ElementRef,
     private renderer: Renderer2,
     public utils: Utils,
-    private progressHttp: ProgressHttp) {
+    private progressHttp: ProgressHttp, public HttpClient: HttpClient) {
     this.renderer = renderer;
+
+    this.uploader = new FileUploader({
+      url: URL,
+      disableMultipart: false, // 'DisableMultipart' must be 'true' for formatDataFunction to be called.
+      parametersBeforeFiles: true,
+      isHTML5: true,
+      additionalParameter: { isMultiple: true, isEncoded: false, type: 'art', folder: this.utils.isNullOrEmpty(this.selectedFolders) ? "" : this.selectedFolders, popFrom: this.popFrom },
+      formatDataFunction: async (item) => {
+        return new Promise((resolve, reject) => {
+          resolve({
+            name: item._file.name,
+            length: item._file.size,
+            contentType: item._file.type,
+            date: new Date()
+          });
+        });
+      }
+    });
+
+    this.response = '';
+    this.uploader.response.subscribe(res =>
+      this.response = res
+    );
   }
 
   onFileSelected(f: File) {
     this.fileName = f.name;
     this.isUploading = true;
+    this.selectedimage = "";
+    this.selectedimages = [];
 
     this.fileD = {
       name: f.name,
@@ -109,10 +149,13 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
     this.closeEvent.emit(onCloseData);
   }
 
+  multiUpload() {
+    this.isMultiShow = true;
+  }
+
   upload() {
     const f = this.fileD;
 
-    let form = new FormData();
     let formData: any = new FormData();
     formData.append("isEncoded", false);
     formData.append("folder", this.utils.isNullOrEmpty(this.selectedFolders) ? "" : this.selectedFolders);
@@ -139,7 +182,7 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
 
           setTimeout(() => {
             this.initCropper(this.selectedimage);
-            //this.cropper.replace(this.selectedimage);
+            this.cropper.replace(this.selectedimage);
           }, 0);
 
         } else {
@@ -200,12 +243,15 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
 
   home() {
     this.selectedFolders = undefined;
+    this.uploader.options.additionalParameter = { isMultiple: true, isEncoded: false, type: 'art', folder: this.utils.isNullOrEmpty(this.selectedFolders) ? "" : this.selectedFolders, popFrom: this.popFrom };
     this.loadImages();
   }
 
   selectImage(e: any, url: string, click: string) {
     e.preventDefault();
     e.stopPropagation();
+
+    this.resetFile();
 
     setTimeout(function () {
       if (this.isSingleClick) {
@@ -244,7 +290,7 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
 
       setTimeout(() => {
         this.initCropper(this.selectedimage);
-        //this.cropper.replace(this.selectedimage);
+        this.cropper.replace(this.selectedimage);
       }, 0);
     } else {
       this.utils.iAlert('error', 'Error', 'Please select a image');
@@ -348,6 +394,7 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   }
 
   onChange(e: any) {
+    this.uploader.options.additionalParameter = { isMultiple: true, isEncoded: false, type: 'art', folder: this.utils.isNullOrEmpty(this.selectedFolders) ? "" : this.selectedFolders, popFrom: this.popFrom };
     this.loadImages();
   }
 
@@ -372,6 +419,7 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
                 if (res.status) {
                   this.loadFolders();
                   this.selectedFolders = e.term;
+                  this.uploader.options.additionalParameter = { isMultiple: true, isEncoded: false, type: 'art', folder: this.utils.isNullOrEmpty(this.selectedFolders) ? "" : this.selectedFolders, popFrom: this.popFrom };
                   this.loadImages();
                 }
               });
@@ -399,15 +447,19 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
 
       this.doneEvent.emit(onCloseData);
     }
-  }
+  };
+
+  public onUploadCancel() {
+    this.isMultiShow = false;
+  };
 
   public cropRatio(ratio: any) {
     if (ratio == '1:0.4') {
-      //this.cropper.setAspectRatio(1 / 0.4);
+      this.cropper.setAspectRatio(1 / 0.4);
     } else if (ratio == '1') {
-      //this.cropper.setAspectRatio(1);
+      this.cropper.setAspectRatio(1);
     } else {
-      //this.cropper.setAspectRatio(NaN);
+      this.cropper.setAspectRatio(NaN);
     }
   }
 
@@ -418,8 +470,8 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
  * @memberof cropper
  */
   public onCropApply() {
-    //let data = this.cropper.getData();
-    //this.uploadCroppedimage(data);
+    let data = this.cropper.getData();
+    this.uploadCroppedimage(data);
   }
 
   /**
@@ -440,18 +492,17 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
       ar = NaN;
     }
 
-    /*this.cropper = new Cropper(e2, {
+    this.cropper = new Cropper(e2, {
       aspectRatio: ar,
       autoCrop: true,
       viewMode: 0,
       rotatable: false,
       zoomable: false,
-      dragMode: 'move',
       guides: true,
       movable: true,
       cropBoxMovable: true,
       cropBoxResizable: true
-    });*/
+    });
   }
 
   ngOnInit() {
@@ -461,11 +512,35 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
       this.loadFolders();
       this.loadImages();
     });
+
+    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+      console.log("ImageUpload:uploaded:", item, status, response);
+    };
+
+    this.uploader.onCompleteAll = () => {
+      console.log("Mulitple image:uploaded completed");
+      this.loadImages();
+      this.isMultiShow = false;
+      this.uploader.progress = 0;
+      this.uploader.clearQueue();
+      this.uploader.destroy();
+    };
   }
 
   public ngAfterViewInit() {
 
   }
+
+  ngOnChanges(cHObj: any) {
+    if (cHObj.hasOwnProperty("popFrom") && !this.utils.isNullOrEmpty(cHObj["popFrom"]["currentValue"])) {
+      let objApp = cHObj["popFrom"];
+      let popFrom = objApp["currentValue"];
+
+      if (!this.utils.isNullOrEmpty(popFrom)) {
+        this.uploader.options.additionalParameter = { isMultiple: true, isEncoded: false, type: 'art', folder: this.utils.isNullOrEmpty(this.selectedFolders) ? "" : this.selectedFolders, popFrom: this.popFrom };
+      }
+    }
+  };
 
   ngOnDestroy() {
     this.orgChangeDetect.unsubscribe();

@@ -244,11 +244,11 @@ div.jcrop-holder {
     font-size: 18px;
     font-weight: bold;
     line-height: 24px;
-    text-align: center;
 }
 
 .crop-box .crop-box-body {
-    padding: 5px;
+    padding: 20px;
+    color: #312e2e;
 }
 
 .crop-box .crop-box-footer {
@@ -336,4 +336,71 @@ div.jcrop-holder {
 
 .close-icon {
     top: 2px;
+}
+
+.btn-upload, .btn-cancel, .btn-crop, .btn-withoutcrop, .btn-done-crop {
+    margin-right: 5px;
+}
+
+.btn-withoutcrop {
+    width: 128px;
+}
+
+.btn-done-crop {
+    width: 106px;
+}
+
+.btn-multi-upload {
+    width: 106px;
+    margin-left: 5px;
+    float: right;
+}
+
+.fileinput-button {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100px;
+}
+
+.fileinput-button input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    opacity: 0;
+    -ms-filter: 'alpha(opacity=0)';
+    font-size: 200px !important;
+    direction: ltr;
+    cursor: pointer;
+}
+
+/* Fixes for IE < 8 */
+
+@media screen\9 {
+    .fileinput-button input {
+        filter: alpha(opacity=0);
+        font-size: 100%;
+        height: 100%;
+    }
+}
+
+.previewIcon {
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.invalid-drag {
+    border: dotted 3px red;
+}
+
+.valid-drag {
+    border: dotted 3px green;
+}
+
+.inline-block {
+    display: inline-block;
+    margin: .2em;
 }

@@ -494,7 +494,7 @@
 
     <div id="main-container-tile-blocks" class="page_block tile_blocks-content">
       <!-- <div style="width:98.9%; height: 877px" > -->
-      <div *ngIf="blocks.length === 0" class="tile_blocks_msg">
+      <div *ngIf="blocks && blocks?.length === 0" class="tile_blocks_msg">
         Select a Widget to start.
         <br/>
         <br/> You can add more Widgets to create a tile.

@@ -7,11 +7,13 @@
         <h4 class="modal-title">Image Library</h4>
         <div style="float:right;width:280px;margin-bottom: 5px;" class="library-title">
           <div style="float:left; width:222px;">
-            <ng-select class="custom" placeholder="Select/Add Folder" [items]="folders" [(ngModel)]="selectedFolders" [multiple]="false"
-              [addTag]="false" (blur)="onBlur($event)" (inputchange)="onSelectChange($event)" (add)="onAdd($event)" (selectchange)="onChange($event)">
+            <ng-select class="custom" placeholder="Select/Add Folder" [items]="folders" [(ngModel)]="selectedFolders"
+              [multiple]="false" [addTag]="false" (blur)="onBlur($event)" (inputchange)="onSelectChange($event)" (add)="onAdd($event)"
+              (selectchange)="onChange($event)">
             </ng-select>
           </div>
-          <button aria-label="Close" (click)="onCloseHandled()" style="float:right;margin-left:5px;" type="button" class="btn btn-xs btn-home">
+          <button aria-label="Close" (click)="onCloseHandled()" style="float:right;margin-left:5px;" type="button"
+            class="btn btn-xs btn-home">
             <span class="glyphicon glyphicon-remove close-icon"></span>
           </button>
           <button (click)="home()" style="float:right" type="button" class="btn btn-xs btn-home">
@@ -35,7 +37,8 @@
           <hr class="list-divider">
           <div class="tile_image_upload">
             <div class="file-wrapper">
-              <input name="imageUpload" #imageUpload id="imageUpload" (change)="onFileSelected($event.target.files[0])" type="file">
+              <input name="imageUpload" #imageUpload id="imageUpload" (change)="onFileSelected($event.target.files[0])"
+                type="file">
               <span class="button">Browse files</span>
               <span id="fileName">{{fileName}}</span>
             </div>
@@ -64,24 +67,30 @@
           </div>
           <div class="img-buttons">
             <div style="float: right; margin-left: 5px;" *ngIf="isUploading">
-              <button type="button" (click)="cancel()" class="btn btn-warning btn-xs">
+              <button type="button" (click)="cancel()" class="btn btn-warning btn-xs btn-cancel ">
                 <span class="glyphicon glyphicon-ban-circle"></span> Cancel
               </button>
-              <button type="button" (click)=upload($event) class="btn btn-success btn-xs">
+              <button type="button" (click)=upload($event) class="btn btn-success btn-xs btn-upload">
                 <span class="glyphicon glyphicon-upload"></span> Upload
               </button>
             </div>
+
+            <button type="button" (click)=multiUpload($event) class="btn btn-success btn-xs btn-multi-upload">
+              <span style="margin-right:2px;" class="glyphicon glyphicon-new-window"></span>Multiple Upload
+            </button>
+
             <div style="float: right;" *ngIf="selectedimages?.length > 0">
-              <button type="button" (click)="crop()" class="btn btn-primary btn-xs">
+              <button type="button" (click)="crop()" class="btn btn-primary btn-xs btn-crop">
                 <span class="glyphicon glyphicon-picture"></span> Crop
               </button>
-              <button type="button" (click)="withOutCrop()" class="btn btn-primary btn-xs">
+              <button type="button" (click)="withOutCrop()" class="btn btn-primary btn-xs btn-withoutcrop">
                 <span class="glyphicon glyphicon-ok-circle"></span> Select without Crop
               </button>
-              <button type="button" (click)="remove()" class="btn btn-danger btn-xs">
+              <button type="button" (click)="remove()" class="btn btn-danger btn-xs btn-delete">
                 <span class="glyphicon glyphicon-trash"></span> Delete
               </button>
             </div>
+
           </div>
           <section class="crop-container" *ngIf="isShow === true">
             <div class="crop-box">
@@ -113,8 +122,8 @@
                   </label>
                 </div>
 
-                <button type="button" style="margin-left:20px;" (click)="onCropApply()" class="btn btn-success btn-xs">
-                  <span class="glyphicon glyphicon-upload"></span>Done Croping
+                <button type="button" style="margin-left:20px;" (click)="onCropApply()" class="btn btn-success btn-xs btn-done-crop">
+                  <span style="margin-right:4px;" class="glyphicon glyphicon-upload"></span>Done Cropping
                 </button>
                 <button type="button" (click)="onCropCancel()" class="btn btn-warning btn-xs">
                   <span class="glyphicon glyphicon-ban-circle"></span> Cancel
@@ -129,4 +138,93 @@
   </div>
   <!-- /.modal-dialog -->
 </div>
+<!-- /.modal !-->
+
+<section class="crop-container" *ngIf="isMultiShow === true">
+  <div class="crop-box" style="width:700px;">
+    <div class="crop-box-header">
+      <h3>Multiple Image Upload</h3>
+      <button type="button" class="crop-box-close" (click)="onUploadCancel()">
+        <span></span>
+      </button>
+    </div>
+    <div class="crop-box-body" style="width:700px;">
+      <div>
+        <div style="float:left;">
+          <span class="btn btn-primary fileinput-button btn-xs">
+            <i class="glyphicon glyphicon-plus"></i>
+            <span>Add Images...</span>
+            <input type="file" name="imageUpload" ng2FileSelect [uploader]="uploader" multiple>
+          </span>
+        </div>
+        <button style="margin-left:5px; width:100px " type="button " class="btn btn-success btn-xs " (click)="uploader.uploadAll() "
+          [disabled]="!uploader.getNotUploadedItems().length ">
+          <span class="glyphicon glyphicon-upload "></span> Upload all
+        </button>
+        <button style="margin-left:5px;width:110px " type="button " class="btn btn-warning btn-xs " (click)="uploader.cancelAll()
+            "
+          [disabled]="!uploader.isUploading ">
+          <span class="glyphicon glyphicon-ban-circle "></span> Cancel all
+        </button>
+        <button style="margin-left:5px;width:110px " type="button " class="btn btn-danger btn-xs " (click)="uploader.clearQueue()
+            "
+          [disabled]="!uploader.queue.length ">
+          <span class="glyphicon glyphicon-trash "></span> Remove all
+        </button>
+
+        <div>
+          <span style="float:left;margin-right:5px; margin-top:10px;">Queue progress:</span>
+          <div class="progress " style="float:left;width: 100%; ">
+            <div class="progress-bar " role="progressbar " [ngStyle]="{ 'width': uploader.progress + '%' } "></div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Upload queue</h3>
+      <p>Queue length: {{ uploader?.queue?.length }}</p>
+
+      <div style="width: 100%;max-height:320px; overflow-x: hidden; overflow-y: auto;">
+        <table class="table ">
+          <thead>
+            <tr>
+              <th width="50% ">Name</th>
+              <th>Size</th>
+              <th>Progress</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of uploader.queue ">
+              <td><strong>{{ item?.file?.name }}</strong></td>
+              <td nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+              <td>
+                <div class="progress " style="margin-bottom: 0; ">
+                  <div class="progress-bar " role="progressbar " [ngStyle]="{ 'width': item.progress + '%' } "></div>
+                </div>
+              </td>
+              <td class="text-center ">
+                <span *ngIf="item.isSuccess "><i class="glyphicon glyphicon-ok "></i></span>
+                <span *ngIf="item.isCancel "><i class="glyphicon glyphicon-ban-circle "></i></span>
+                <span *ngIf="item.isError "><i class="glyphicon glyphicon-remove "></i></span>
+              </td>
+              <td nowrap>
+                <button type="button " style="margin-right:5px;" class="btn btn-success btn-xs " (click)="item.upload() "
+                  [disabled]="item.isReady
+            || item.isUploading || item.isSuccess ">
+                  <span class="glyphicon glyphicon-upload "></span> Upload
+                </button>
+                <button type="button " style="margin-right:5px;" class="btn btn-warning btn-xs " (click)="item.cancel() "
+                  [disabled]="!item.isUploading ">
+                  <span class="glyphicon glyphicon-ban-circle "></span> Cancel
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- /.modal !-->

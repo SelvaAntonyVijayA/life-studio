@@ -105,12 +105,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { GeoValidator } from '../../helpers/geo.validator';
 import { DndModule } from 'ng2-dnd';
 import { MomentData } from '../../helpers/momentdata';
+import { FileUploadModule } from 'ng2-file-upload';
 
 @NgModule({
   imports: [
     CommonModule, MalihuScrollbarModule.forRoot(), HomeRoutingModule, FormsModule, ReactiveFormsModule,
     ColorPickerModule, CKEditorModule, NgSelectModule, MatIconModule, MatToolbarModule,
-    ProgressHttpModule, ModalModule.forRoot(), DndModule.forRoot()
+    ProgressHttpModule, ModalModule.forRoot(), DndModule.forRoot(), FileUploadModule
   ],
   entryComponents: [TileBlocksComponents],
   declarations: [HomeComponent, HeaderComponent, WidgetsComponent,

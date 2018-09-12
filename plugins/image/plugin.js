@@ -61,10 +61,7 @@ var list = function (req, res, next) {
 var upload = function (req, res, next) {
   var context = { "req": req, "res": res, "next": next };
 
-  console.dir(context)
-
   _formParse(req, function (data, files) {
-    console.dir(data)
     var isEncoded = typeof data.isEncoded == 'undefined' || data.isEncoded == "false" ? false : true;
     var isMultiple = typeof data.isMultiple == 'undefined' || data.isMultiple == "false" ? false : true;
 
@@ -1075,7 +1072,6 @@ var uploadTileBackground = function (req, res, next) {
 
     try {
       if (files) {
-
         for (var prop in files) {
           var file = files[prop];
 
@@ -1911,20 +1907,8 @@ var _resizeUploadedImage = function (context, data, path, fileName, retrn, categ
 
         switch (retrn) {
           case "upload":
-
-            if (isMultiple) {
-              var file = {
-                thumbnailUrl: urlRtrn.imageUrl,
-                url: urlRtrn.imageUrl,
-                name: fileName
-              }
-
-              res.send({ files: [file], status: true });
-            } else {
-              urlRtrn.status = true;
-              res.send(urlRtrn);
-            }
-
+            urlRtrn.status = true;
+            res.send(urlRtrn);
             break;
           case "crop":
             urlRtrn.status = true;
