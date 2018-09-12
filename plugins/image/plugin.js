@@ -274,7 +274,7 @@ var remove = function (req, res, next) {
       var imagePath = __appPath + imageConf.imgfolderpath.replace('{0}', req.cookies.oid);
 
       imagePath = !__util.isNullOrEmpty(obj.folder) ? imagePath + obj.folder + "/" : imagePath;
-      var src = imagePath + fileName;
+      var src = imagePath + fileName.split("?")[0];
 
       _remove(src, function (result) {
         resultArray.push(result);
