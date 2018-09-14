@@ -61,6 +61,7 @@
     "node-xlsx": "^0.12.1",
     "nodemailer": "^4.6.7",
     "path": "^0.12.7",
+    "pubnub": "^4.21.5",
     "request": "^2.82.0",
     "rxjs": "^6.0.0",
     "rxjs-compat": "^6.2.1",

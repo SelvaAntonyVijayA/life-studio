@@ -731,6 +731,96 @@ var _memberSave = function (obj, cb) {
   });
 };
 
+var cmsMemberSave = function (req, res, next) {
+  var obj = req.body.form_data;
+  obj = lastDateUpdatePropAssign(obj);
+  var login = {};
+  var login_identifiers = obj.login_identifier ? obj.login_identifier : [];
+
+  if (login_identifiers.length == 0) {
+    res.send({
+      "success": false,
+      "message": "invalid request"
+    });
+
+    return;
+  }
+
+  if (login_identifiers.length > 0) {
+    query = _getMemberQuery(obj, login_identifiers, login);
+  }
+
+  if (!__util.isNullOrEmpty(obj.email) && !$general.validateEmail(obj.email)) {
+
+    res.status(404).send({
+      "success": false,
+      "message": "invalid email"
+    });
+  } else {
+    if (!__util.isNullOrEmpty(obj.password)) {
+      obj.password = $general.encrypt(obj.password);
+    }
+
+    delete obj["decryptedPassword"];
+    
+    $member.exists(null, query, function (memberExists) {
+      if (memberExists.length > 0) {
+        res.send({
+          "success": false,
+          "message": "already exists"
+        });
+      } else {
+        _memberSave(obj, function (result) {
+          obj._id = result.toString();
+          obj.id = result.toString();
+          
+          console.dir(1);
+          console.dir(obj.password);
+          
+          if (!__util.isNullOrEmpty(obj.password)) {
+            obj.password = $general.decrypt(obj.password);
+          }
+          
+          console.dir(2);
+          console.dir(obj.password);
+          
+          $datamigration.userSave(obj, function (migrate) {
+            if (migrate.success) {
+
+              res.send({
+                "success": true,
+                "_id": result.toString()
+              });
+            } else {
+              if (!migrate.success) {
+                $member.deleteMember({
+                  _id: result
+                }, {});
+              }
+
+              res.send(migrate);
+            }
+          });
+        });
+      }
+    });
+  }
+};
+
+var lastDateUpdatePropAssign = function (obj) {
+  if (!__util.isEmptyObject(obj)) {
+
+    if (!__util.isEmptyObject(obj.$set)) {
+      obj.$set.lastUpdatedOn = $general.getIsoDate();
+
+    } else {
+      obj.lastUpdatedOn = $general.getIsoDate();
+    }
+  }
+
+  return obj;
+};
+
 module.exports = {
   "init": init,
   "_getMember": _getMember,
@@ -747,5 +837,6 @@ module.exports = {
   "removeMember": removeMember,
   "deleteMember": deleteMember,
   "memberSave": memberSave,
+  "cmsMemberSave": cmsMemberSave,
   "exists": exists
 };

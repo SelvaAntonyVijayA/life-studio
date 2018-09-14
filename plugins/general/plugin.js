@@ -17,9 +17,16 @@ var encrypt = function (str) {
 };
 
 var decrypt = function (str) {
-  var decrypted = _cryptString(str, hexType, utfType);
+  try {
+    var decrypted = _decryptString(str, hexType, utfType);
 
-  return decrypted;
+    return decrypted;
+
+  } catch (err) {
+    $log.error("Error on decrypt: " + JSON.stringify(err));
+
+    return str;
+  }
 };
 
 var _cryptString = function (str, fromType, toType) {
@@ -28,6 +35,14 @@ var _cryptString = function (str, fromType, toType) {
   cryptedPassword += cipher.final(toType);
 
   return cryptedPassword;
+};
+
+var _decryptString = function (str, fromType, toType) {
+  var decipher = crypto.createDecipher('des-ede3-cbc', secretkey);
+  var decryptedPassword = decipher.update(str, fromType, toType);
+  decryptedPassword += decipher.final(toType);
+
+  return decryptedPassword;
 };
 
 /*var convertToObjectId = function (data) {
@@ -428,6 +443,11 @@ var validateEmail = function (email) {
   return false;
 };
 
+var hashMD5 = function (str) {
+  return crypto.createHash('md5').update(str).digest('hex');
+};
+
+
 module.exports = {
   "init": init,
   "encrypt": encrypt,
@@ -442,6 +462,7 @@ module.exports = {
   "getObjectIdByQuery": getObjectIdByQuery,
   "profileDynamicFields": profileDynamicFields,
   "getProfileHtml": getProfileHtml,
-  "validateEmail": validateEmail
+  "validateEmail": validateEmail,
+  "hashMD5": hashMD5
 };
 

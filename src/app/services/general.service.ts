@@ -31,4 +31,12 @@ export class GeneralService {
         catchError(this.handleError('getExcelData', fields))
       );
   };
+
+  fileUpload(url: string, formData: any): Observable<any> {
+
+    return this.http.post<any>(url, formData, httpOptions)
+      .pipe(
+        catchError(this.handleError('fileUpload', url))
+      );
+  };
 }

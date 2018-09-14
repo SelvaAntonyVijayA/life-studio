@@ -117,6 +117,7 @@ module.exports = function (app) {
   router.all("/cms/apps/update/:id*?", $apps.appUpdate);
   router.all("/cms/apps/remove/:id*?", $apps.remove);
   router.all("/cms/apps/list/:orgId/:isAdmin*?", $apps.list);
+  router.all("/cms/member/save", $member.cmsMemberSave);
   router.all("/app/id/:pin*?", $apps.getAppByPin);
   router.all("/app/auth/:appid*?", $apps.auth);
   router.all("/app/profiledata/:appId", $apps.appProfileData)

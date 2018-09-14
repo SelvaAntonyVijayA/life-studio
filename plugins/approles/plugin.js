@@ -7,7 +7,7 @@ var init = function (app) {
 };
 
 var save = function (req, res, next) {
-  var obj = JSON.parse(req.body.form_data);
+  var obj = req.body.form_data;
   query = {};
   options = {};
 

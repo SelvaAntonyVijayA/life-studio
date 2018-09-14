@@ -87,6 +87,7 @@ export class PrivateAccessComponent implements OnInit {
   formTitle: string = "Add User";
   profileImage: object = { "isShow": false, "src": "" };
   profileObj: Object = {};
+  @ViewChild('fileImport') fileImport: ElementRef;
 
   defaultRegex: Object = {
     text: {
@@ -99,9 +100,11 @@ export class PrivateAccessComponent implements OnInit {
     }
   };
 
-  getFileName(el: any) {
+  getFileName(files: any) {
     //var name = el.value;
     //$("#fileName").text(name);
+
+    let currFile = files.item(0);
   };
 
   loadPrivateAccess() {
@@ -175,23 +178,27 @@ export class PrivateAccessComponent implements OnInit {
     this.locationsList = [];
 
     $.jgrid.gridUnload("#users-grid");
-    this.assignAppProfileDatas();
-    this.appLocationsAssign();
-  };
 
-  assignAppProfileDatas() {
-    this.getProfileFields().subscribe(res => {
-      let profData: any = !this.utils.isNullOrEmpty(res) && res.hasOwnProperty("userColModel") && this.utils.isArray(res["userColModel"]) ? res["userColModel"] : [];
+    this.usersGrid = this.document.getElementById("users-grid");
+    this.usersGridPager = this.document.getElementById("users-grid-pager");
+
+    this.getAppDependentDatas().subscribe(res => {
+      let profData: any = !this.utils.isNullOrEmpty(res[0]) && res[0].hasOwnProperty("userColModel") && this.utils.isArray(res[0]["userColModel"]) ? res[0]["userColModel"] : [];
       this.userColModel = this.userColumns().concat(profData);
+
+      if (this.utils.isArray(res[1]) && res[1].length > 0) {
+        this.locationsList = res[1];
+      }
+
+      this.resetGrid(true);
     });
   };
 
-  appLocationsAssign() {
-    this.getLocations().subscribe(locRes => {
-      if (this.utils.isArray(locRes) && locRes.length > 0) {
-        this.locationsList = locRes;
-      }
-    });
+  getAppDependentDatas() {
+    let profDatas: any = this.getProfileFields();
+    let locDatas: any = this.getLocations();
+
+    return observableForkJoin([profDatas, locDatas]);
   };
 
   locationChange(locId: string) {
@@ -324,7 +331,7 @@ export class PrivateAccessComponent implements OnInit {
       onClickButton: () => {
         let roleId: string = $(this.privateAccessGrid).jqGrid('getGridParam', 'selrow');
 
-        if (this.utils.isNullOrEmpty(roleId) && roleId.length > 12) {
+        if (!this.utils.isNullOrEmpty(roleId) && roleId.length > 12) {
           let roleObj: Object = {};
           roleObj["roleId"] = roleId;
           roleObj["appId"] = this.selectedApp;
@@ -528,7 +535,7 @@ export class PrivateAccessComponent implements OnInit {
         let squaresPagerCenter: any = this.document.getElementById("squares-pager_center");
 
         $(squaresPagerLeft).css("width", "100%");
-        $(this.squaresGridPager).insertAfter('#gview_table3 > .ui-jqgrid-titlebar');
+        $(this.squaresGridPager).insertAfter('#gview_squares > .ui-jqgrid-titlebar');
         $(squaresPagerCenter).hide();
       }
     });
@@ -684,7 +691,7 @@ export class PrivateAccessComponent implements OnInit {
 
     for (let i = 0; i < selectedUsers.length; i++) {
       let user: any = selectedUsers[i];
-      let userData: any = $('#users-grid').jqGrid('getRowData', user);
+      let userData: any = $(this.usersGrid).jqGrid('getRowData', user);
       let userObj: Object = {};
       userObj["userId"] = user;
       userObj["appId"] = $('.apps-access').val();
@@ -899,13 +906,13 @@ export class PrivateAccessComponent implements OnInit {
       title: "Assign Role to CHECKED users",
       buttonicon: "ui-icon-circle-plus",
       onClickButton: () => {
-        let roleId: string = $("#private-access").jqGrid('getGridParam', 'selrow');
+        let roleId: string = $(this.privateAccessGrid).jqGrid('getGridParam', 'selrow');
         let rolesData: any = $(this.privateAccessGrid).jqGrid('getRowData', roleId);
         let selectedUsers: any[] = $("#users-grid").jqGrid("getGridParam", "selarrrow");
 
         if (selectedUsers.length === 0) {
           this.utils.iAlert('error', 'Information', 'No End Users are selected');
-        } else if (!this.utils.isNullOrEmpty(roleId)) {
+        } else if (this.utils.isNullOrEmpty(roleId)) {
           this.utils.iAlert('error', 'Information', 'No Role is selected');
         } else if (selectedUsers.length > 0) {
           let memberUpdateList: any[] = [];
@@ -959,7 +966,7 @@ export class PrivateAccessComponent implements OnInit {
                 locId = this.selectedLocation;
               }
 
-              let memberUrl: string = '/app/member/get/' + this.oid + "/" + this.selectedApp + "/" + this.selectedLocation;
+              let memberUrl: string = '/app/member/get/' + this.oid + "/" + this.selectedApp + "/" + locId;
               let isShrink: boolean = this.getUserGridShrink();
 
               $(this.usersGrid).jqGrid('setGridParam', {
@@ -989,14 +996,14 @@ export class PrivateAccessComponent implements OnInit {
           this.utils.iAlert('error', 'Information', 'No Role is selected');
         } else {
 
-          this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this Procedure?", "Yes", "No", (r) => {
+          this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure you want to unassign the Users?", "Yes", "No", (r) => {
             if (r["resolved"]) {
               let memberUpdateList: any[] = [];
 
               if (rolesData.squares) {
                 let squares: any[] = !this.utils.isNullOrEmpty(rolesData.squares) ? rolesData.squares.split(',') : [];
 
-                if (squares.length > 0) {
+                if (this.utils.isArray(squares) && squares.length > 0) {
                   for (let i = 0; i < squares.length; i++) {
                     let sqr: Object = {};
                     let data: any[] = squares[i].split("_");
@@ -1015,7 +1022,8 @@ export class PrivateAccessComponent implements OnInit {
                 if (checked) {
                   let userData: any = $(this.usersGrid).jqGrid('getRowData', userId);
 
-                  if (userData.squares) {
+                  if (userData.hasOwnProperty("squares") && !this.utils.isNullOrEmpty(userData.squares)) {
+                    // let sqrs: any = this.utils.htmlEncode(userData.squares);
                     userData.squares = JSON.parse(userData.squares);
                   }
 
@@ -1059,7 +1067,7 @@ export class PrivateAccessComponent implements OnInit {
                     locId = this.selectedLocation;
                   }
 
-                  let memberUrl: string = '/app/member/get/' + this.oid + "/" + $('.apps-access').val() + "/" + locId;
+                  let memberUrl: string = '/app/member/get/' + this.oid + "/" + this.selectedApp + "/" + locId;
                   let isShrink: boolean = this.getUserGridShrink();
 
                   $(this.usersGrid).jqGrid('setGridParam', {
@@ -1127,30 +1135,34 @@ export class PrivateAccessComponent implements OnInit {
     let searchPatientNames: any = this.document.getElementById("search_patient_names");
     let doSort: any = this.document.getElementsByClassName("do_sort");
 
-    searchPatientNames.addEventListener('keyup', (e) => {
-      let text: string = e.target.value;
-      this.searchMemberNames(text);
-    });
+    if (!this.utils.isNullOrEmpty(searchPatientNames)) {
+      searchPatientNames.addEventListener('keyup', (e) => {
+        let text: string = e.target.value;
+        this.searchMemberNames(text);
+      });
+    }
 
-    doSort[0].addEventListener('click', (e) => {
-      let dateAsc: any = this.document.getElementsByClassName("date_asc");
-      let dateDesc: any = this.document.getElementsByClassName("date_desc");
-      let state: string = dateAsc[0]["style"]["display"];
+    if (doSort.length > 0) {
+      doSort[0].addEventListener('click', (e) => {
+        let dateAsc: any = this.document.getElementsByClassName("date_asc");
+        let dateDesc: any = this.document.getElementsByClassName("date_desc");
+        let state: string = dateAsc[0]["style"]["display"];
 
-      let dir: string = "";
-      dateAsc[0]["style"]["display"] = "none";
-      dateDesc[0]["style"]["display"] = "none";
+        let dir: string = "";
+        dateAsc[0]["style"]["display"] = "none";
+        dateDesc[0]["style"]["display"] = "none";
 
-      if (this.utils.isNullOrEmpty(state)) {
-        dateDesc[0]["style"]["display"] = "";
-        dir = 'desc';
-      } else {
-        dateAsc[0]["style"]["display"] = "";
-        dir = 'asc';
-      }
+        if (this.utils.isNullOrEmpty(state)) {
+          dateDesc[0]["style"]["display"] = "";
+          dir = 'desc';
+        } else {
+          dateAsc[0]["style"]["display"] = "";
+          dir = 'asc';
+        }
 
-      this.doSort(dir, "sortdate");
-    });
+        this.doSort(dir, "sortdate");
+      });
+    }
 
     this.userLoadInitial = "0";
   };
@@ -1260,6 +1272,7 @@ export class PrivateAccessComponent implements OnInit {
     // var profileImage = $('#addMemberDetail').find('.member-profile-image');
 
     if (!this.utils.isEmptyObject(currentUserRow) && currentUserRow.hasOwnProperty("allFieldsString")) {
+      //let allFieldString: any = this.utils.htmlEncode(userData.squares);
       let selectUserData: any = JSON.parse(currentUserRow.allFieldsString);
 
       if (!this.utils.isEmptyObject("selectUserData") && selectUserData.hasOwnProperty("image") && !this.utils.isNullOrEmpty(selectUserData.image)) {
@@ -1488,7 +1501,7 @@ export class PrivateAccessComponent implements OnInit {
       return false;
     }
 
-    if (this.selectedLocation === "-1" && this.utils.isNullOrEmpty(this.selectedLocation)) {
+    if (this.selectedLocation === "-1" || this.utils.isNullOrEmpty(this.selectedLocation)) {
       this.utils.iAlert('error', 'Information', 'Please Select the Location');
       return false;
     }
@@ -1527,19 +1540,19 @@ export class PrivateAccessComponent implements OnInit {
 
           if (!this.utils.isNullOrEmpty(fieldVal)) {
             let patientDOB: any[] = fieldVal.split('-');
-            data[fieldData["name"]] = patientDOB[1] + "/" + patientDOB[2] + "/" + patientDOB[0];
+            data[fieldData["tag"]] = patientDOB[1] + "/" + patientDOB[2] + "/" + patientDOB[0];
           }
         } else if (type === 'check') {
-          data[fieldData["name"]] = fieldVal;
+          data[fieldData["tag"]] = fieldVal;
 
         } else if (type === 'number') {
-          data[fieldData["name"]] = parseInt(fieldVal);
+          data[fieldData["tag"]] = parseInt(fieldVal);
 
         } else {
-          data[fieldData["name"]] = fieldVal;
+          data[fieldData["tag"]] = fieldVal;
         }
 
-        if (fieldData["name"] === "password") {
+        if (fieldData["tag"] === "password") {
           currentPassword = fieldVal;
         }
       }
@@ -1576,7 +1589,7 @@ export class PrivateAccessComponent implements OnInit {
         this.memberService.saveMember(data).subscribe(saveRes => {
           if (saveRes.message) {
             if (!saveRes.success) {
-              this.utils.iAlert('success', '', saveRes.message);
+              this.utils.iAlert('error', 'Information', saveRes.message);
             } else {
               this.savedMemCheck = true;
               this.memberId = saveRes._id;
@@ -1596,6 +1609,16 @@ export class PrivateAccessComponent implements OnInit {
               shrinkToFit: isShrink,
             }).trigger("reloadGrid");
           }
+
+          if (this.savedMemCheck) {
+            if (!this.utils.isNullOrEmpty(this.userFormRef)) {
+              this.userFormRef.hide();
+            }
+
+            this.savedMemCheck = false;
+          }
+
+          this.memberFormSubmitted = false;
         });
       }
     }
@@ -1945,6 +1968,57 @@ export class PrivateAccessComponent implements OnInit {
     } else {
       this.utils.iAlert('error', 'Information', 'Email field is mandatory to import the users');
     }
+  };
+
+  memberImport(e: any) {
+    this.loaderShared.showSpinner(true);
+
+    if (this.utils.isNullOrEmpty(this.selectedApp) || this.selectedApp === "-1") {
+      this.utils.iAlert('error', 'Information', 'Please Select the App');
+      this.loaderShared.showSpinner(false);
+      return false;
+    }
+
+    if (this.utils.isNullOrEmpty(this.selectedLocation) || this.selectedLocation === "-1") {
+      this.utils.iAlert('error', 'Information', 'Please Select the Location');
+      this.loaderShared.showSpinner(false);
+      return false;
+    }
+
+    let importFiles: any = this.fileImport.nativeElement.files;
+
+    if (this.utils.isNullOrEmpty(this.fileImport.nativeElement.value)) {
+      this.loaderShared.showSpinner(false);
+      return;
+    }
+
+    let currFile = importFiles.item(0);
+
+    this.loaderShared.showSpinner(false);
+    this.importFile(currFile);
+  };
+
+  importFile(file: any) {
+    let formData: any = new FormData();
+
+    formData.append("appId", this.selectedApp);
+    formData.append("locationId", this.selectedApp);
+    formData.append("file[]", file);
+
+    this.generalService.fileUpload("/import/member", formData).subscribe(resData => {
+      resData = JSON.parse(resData);
+
+      if (!resData.success) {
+        this.utils.iAlert('error', 'Information', resData.message);
+      } else {
+        this.utils.iAlert('success', '', 'End users are imported successfully!!!');
+      }
+
+      this.loaderShared.showSpinner(false);
+      this.resetGrid(false);
+    });
+
+    this.fileImport.nativeElement.value = "";
   };
 
   ngOnInit() {

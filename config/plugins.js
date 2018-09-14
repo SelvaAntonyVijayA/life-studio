@@ -46,7 +46,8 @@ var plugins = {
   "reportrule": "reportrule",
   "approles": "approles",
   "pagepermissions": "pagepermissions",
-  "import": "import"
+  "import": "import",
+  "pubnub": "pubnub"
 };
 
 module.exports = function (appPath, dirName, app) {

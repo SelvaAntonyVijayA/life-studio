@@ -22,19 +22,20 @@
     <div class="file-import">
       <div class="member_upload">
         <div class="csv-wrapper">
-          <input type="file" name="fileUpload" (change)="getFileName($event.target.files)" id="fileUpload">
+          <input type="file" name="fileUpload" #fileImport (change)="getFileName($event.target.files)">
           <span class="button">Browse files</span>
         </div>
 
         <!-- <span id="fileName"></span>  -->
       </div>
 
-      <button class="btn-xs btn-info member_import">
+      <button (click)="memberImport($event)" class="btn-xs btn-info member_import">
         Import End Users
       </button>
 
       <!--   <a href="#" title="Download sample import member file" class="import-csv"></a>    -->
-      <img (click)="importCsv($event)" title="Download sample import member file" src="/img/excel.png" alt="User Excel Download" class="import_csv" />
+      <img (click)="importCsv($event)" title="Download sample import member file" src="/img/excel.png" alt="User Excel Download"
+        class="import_csv" />
     </div>
 
     <div class="members-count">
