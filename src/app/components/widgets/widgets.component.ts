@@ -59,6 +59,7 @@ export class WidgetsComponent implements OnInit {
   template: string = "-1";
   requiresLogin: boolean = false;
   enableZoom: boolean = false;
+  showAsTabs: boolean = false;
   rtl: boolean = false;
   tileIdsUpdate: Object = {};
   tileIdsDelete: string[] = [];
@@ -533,6 +534,7 @@ export class WidgetsComponent implements OnInit {
       this.seletedTileCategory = currTile.hasOwnProperty("category") && !this.utils.isNullOrEmpty(currTile["category"]) ? currTile["category"] : "-1";
       this.requiresLogin = currTile.hasOwnProperty("requiresLogin") && !this.utils.isNullOrEmpty(currTile["requiresLogin"]) ? this.utils.convertToBoolean(currTile["requiresLogin"]) : false;
       this.enableZoom = currTile.hasOwnProperty("enableZoom") && !this.utils.isNullOrEmpty(currTile["enableZoom"]) ? this.utils.convertToBoolean(currTile["enableZoom"]) : false;
+      this.showAsTabs = currTile.hasOwnProperty("showAsTabs") && !this.utils.isNullOrEmpty(currTile["showAsTabs"]) ? this.utils.convertToBoolean(currTile["showAsTabs"]) : false;
       this.rtl = currTile.hasOwnProperty("rtl") && !this.utils.isNullOrEmpty(currTile["rtl"]) ? this.utils.convertToBoolean(currTile["rtl"]) : false;
       this.art = currTile.hasOwnProperty("art") && !this.utils.isNullOrEmpty(currTile["art"]) ? currTile["art"] : "/img/tile_default.jpg";
     }
@@ -608,6 +610,7 @@ export class WidgetsComponent implements OnInit {
 
     tile["requiresLogin"] = this.requiresLogin;
     tile["enableZoom"] = this.enableZoom;
+    tile["showAsTabs"] = this.showAsTabs;
     tile["language"] = "en";
     tile["rtl"] = this.rtl;
 
@@ -763,6 +766,11 @@ export class WidgetsComponent implements OnInit {
     this.art = tileArt;
   }
 
+  openTileBackground(e: any) {
+    e.preventDefault();
+    //  this.isImageLibrary = 'block';
+  };
+
   deleteTile(e: any) {
     e.preventDefault();
     var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? Object.assign({}, this.selectedTile) : {};
@@ -847,6 +855,8 @@ export class WidgetsComponent implements OnInit {
 
     tile["requiresLogin"] = (tile["type"] === "content" || tile["type"] === "url") ? this.requiresLogin : false;
     tile["enableZoom"] = (tile["type"] === "content" || tile["type"] === "url") ? this.enableZoom : false;
+    tile["showAsTabs"] = (tile["type"] === "content" || tile["type"] === "url") ? this.showAsTabs : false;
+
     tile["language"] = (tile["type"] === "content" || tile["type"] === "url") ? this.selectedLanguage : "";
 
     var currentBlocks = this.blocks;
@@ -1255,6 +1265,7 @@ export class WidgetsComponent implements OnInit {
     this.template = this.defaultThemeId;
     this.requiresLogin = false;
     this.enableZoom = false;
+    this.showAsTabs = false;
     this.rtl = false;
     this.orgTileCategory = "-1";
     this.startWrapper = false;

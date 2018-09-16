@@ -94,7 +94,9 @@ module.exports = function (app) {
   router.get('/img/groups/:type/:id*?/:name*?', $image.resize);
   router.get('/img/streams/:streamId/:name*?', $image.resize);
   router.get('/img/profile/:memberId/:name*?', $image.resize);
-
+  router.all('/image/tilebackground/', $image.uploadTileBackground);
+  router.all('/image/deletetilebg', $image.deleteTileBackground);
+  
   router.all('/email/send', $email.send);
 
   router.all('/access/save', $access.save);

@@ -58,14 +58,22 @@
 .preview_tile_btn {
   border-bottom-color: #2E8B57;
   border-bottom-width: 3px;
-  width: 153.2px;
+  width: 101px;
   margin-top: 5px;
 }
 
 .icon_tile_btn {
   border-bottom-color: #FF8C00;
   border-bottom-width: 3px;
-  width: 153.2px;
+  width: 101px;
+  margin-top: 5px;
+  margin-left: 3px;
+}
+
+.Background_tile_btn {
+  border-bottom-color: #FF8C00;
+  border-bottom-width: 3px;
+  width: 101px;
   margin-top: 5px;
   margin-left: 3px;
 }
@@ -74,7 +82,6 @@
 
 .tile_prime {
   float: left;
-  width: 9%;
   margin-top: 5px;
 }
 
