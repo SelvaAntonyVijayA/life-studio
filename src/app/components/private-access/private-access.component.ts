@@ -1961,7 +1961,7 @@ export class PrivateAccessComponent implements OnInit {
           }
           return false;
         } else {
-          this.document.location.href = "/files/" + res.fileName;
+          window.location.href = "/files/" + res.fileName;
           return true;
         }
       })
@@ -1974,41 +1974,45 @@ export class PrivateAccessComponent implements OnInit {
     this.loaderShared.showSpinner(true);
 
     if (this.utils.isNullOrEmpty(this.selectedApp) || this.selectedApp === "-1") {
-      this.utils.iAlert('error', 'Information', 'Please Select the App');
       this.loaderShared.showSpinner(false);
+      this.utils.iAlert('error', 'Information', 'Please Select the App');
       return false;
     }
 
     if (this.utils.isNullOrEmpty(this.selectedLocation) || this.selectedLocation === "-1") {
-      this.utils.iAlert('error', 'Information', 'Please Select the Location');
       this.loaderShared.showSpinner(false);
+      this.utils.iAlert('error', 'Information', 'Please Select the Location');
+
       return false;
     }
 
     let importFiles: any = this.fileImport.nativeElement.files;
 
     if (this.utils.isNullOrEmpty(this.fileImport.nativeElement.value)) {
+
       this.loaderShared.showSpinner(false);
+      this.utils.iAlert('error', 'Information', 'No files selected');
       return;
     }
 
     let currFile = importFiles.item(0);
-
-    this.loaderShared.showSpinner(false);
     this.importFile(currFile);
   };
 
   importFile(file: any) {
     let formData: any = new FormData();
 
+    let profFileds: string = this.profileFields.length > 0 ? JSON.stringify(this.profileFields) : "";
+
     formData.append("appId", this.selectedApp);
     formData.append("locationId", this.selectedApp);
     formData.append("file[]", file);
+    formData.append("profile", profFileds);
 
     this.generalService.fileUpload("/import/member", formData).subscribe(resData => {
-      resData = JSON.parse(resData);
+      resData = !this.utils.isNullOrEmpty(resData) && resData.hasOwnProperty("body") && !this.utils.isEmptyObject("body") ? resData["body"] : {};
 
-      if (!resData.success) {
+      if (resData.hasOwnProperty("success") && !resData.success) {
         this.utils.iAlert('error', 'Information', resData.message);
       } else {
         this.utils.iAlert('success', '', 'End users are imported successfully!!!');

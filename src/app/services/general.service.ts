@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, last } from 'rxjs/operators';
 
 import { HttpErrorHandlerService, HandleError } from '../services/http-error-handler.service';
 import { Utils } from '../helpers/utils';
@@ -11,6 +11,10 @@ const httpOptions = {
     'Content-Type': 'application/json',
     'charset': 'UTF-8'
   })
+};
+
+const HttpUploadOptions = {
+  headers: new HttpHeaders({ "Content-Type": "multipart/form-data" })
 };
 
 @Injectable({
@@ -34,9 +38,23 @@ export class GeneralService {
 
   fileUpload(url: string, formData: any): Observable<any> {
 
-    return this.http.post<any>(url, formData, httpOptions)
-      .pipe(
-        catchError(this.handleError('fileUpload', url))
-      );
+    /* return this.http.post<any>(url, formData, HttpUploadOptions)
+       .pipe(
+         catchError(this.handleError('fileUpload', url))
+       );*/
+
+    const req = new HttpRequest('POST', url, formData, {
+      reportProgress: false
+    });
+
+    return this.http.request(req).pipe(
+      last(),
+      catchError(this.handleError(formData))
+    );
+
+    /* return this.http.post(url, formData)
+       .toPromise()
+       .catch(this.handleError(url));
+   };*/
   };
 }

@@ -1,8 +1,9 @@
 var query = {};
 var options = {};
-var fs = require('fs');
+const fs = require('fs');
 var json2xls = require('json2xls');
 var xlsx = require('node-xlsx');
+const formidable = require('formidable');
 var settingsConf;
 
 var init = function (app) {
@@ -31,29 +32,20 @@ var makeExcelSheet = function (req, res, next) {
 };
 
 var members = function (req, res, next) {
-  // var retrn = {};
-  // var fileName;
-  var appId;
-  var locationId;
-  var profile = [];
-
-  if (!__util.isEmptyObject(req.body) && !__util.isNullOrEmpty(req.body.profile)) {
-    profile = req.body.profile;
-  } else {
-    res.send({ success: false, message: 'Profile not exists for app.' });
-  }
-
-  if (!__util.isEmptyObject(req.body) && req.body.hasOwnProperty("appId") && !__util.isNullOrEmpty(req.body.appId)) {
-    appId = context.data.appId;
-  } else {
-    res.send({ success: false, message: 'Invalid request.' });
-  }
-
-  if (!__util.isEmptyObject(req.body) && req.body.hasOwnProperty("locationId") && !__util.isNullOrEmpty(req.body.locationId)) {
-    locationId = req.body.locationId;
-  }
 
   _formParse(req, function (data, files) {
+    var appId = data.hasOwnProperty("appId") ? data["appId"] : "";
+    var locationId = data.hasOwnProperty("locationId") ? data["locationId"] : "";
+    var profile = data.hasOwnProperty("profile") && !__util.isNullOrEmpty(data["profile"]) ? JSON.parse(data["profile"]) : [];
+
+    if (!files) {
+      res.send({ success: false, message: 'Profile not exists for app.' });
+    }
+
+    if (__util.isNullOrEmpty(appId)) {
+      res.send({ success: false, message: 'Invalid request.' });
+    }
+
     try {
       if (files) {
         for (var prop in files) {
@@ -100,8 +92,8 @@ var _importMember = function (appId, locationId, profile, fields, members, callB
       $async.each(members, function (member, eachCb) {
         var memberObj = {};
         memberObj = _getMemberObj(appId, locationId, profile, fields, member, appresult);
-        if (memberObj.isProfile) {
 
+        if (memberObj.isProfile) {
           $member.memberSave(memberObj.data, function (result) {
             count++;
             if (result.success) {
@@ -152,6 +144,7 @@ var _getMemberObj = function (appId, locationId, profile, fields, memberData, ap
   var isProfile = false;
 
   _.each(fields, function (dataField, index) {
+
     var name = dataField;
     var value = !__util.isNullOrEmpty(memberData[index]) ? memberData[index] : "";
 

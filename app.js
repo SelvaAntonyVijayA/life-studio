@@ -20,6 +20,8 @@ var logDirectory = path.join(__dirname, 'log');
 //ILI App Middlewares
 app.set('settings', require(path.join(process.cwd(), 'config', 'settings')));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'src')));
+
 app.use(express.static(path.join(__dirname, 'src/assets')));
 app.set('views', __dirname + '/public');
 app.set('views', __dirname + '/public/views');
