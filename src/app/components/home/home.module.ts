@@ -51,7 +51,8 @@ import { TrendalertsComponent } from '../../components/trendalerts/trendalerts.c
 import { ActivityreportsComponent } from '../../components/activityreports/activityreports.component';
 import { EndusersComponent } from '../../components/endusers/endusers.component';
 import { TrendreportsComponent } from '../../components/trendreports/trendreports.component';
-
+import { TileBackgroundComponent } from '../../components/tile-background/tile-background.component';
+import { VideoLibraryComponent } from '../../components/video-library/video-library.component';
 //import { UpgradeComponent } from '@angular/upgrade/static';
 
 import { HeaderService } from '../../services/header.service';
@@ -124,7 +125,8 @@ import { FileUploadModule } from 'ng2-file-upload';
     jqxButtonComponent, AppgridComponent, EnginesComponent, IntegrationComponent, LocationComponent, IntegrationwidgetsComponent, StreamComponent,
     LanguageComponent, GeoValidator, jqxInputComponent, jqxDropDownListComponent, jqxComboBoxComponent, HealthStatusRulesComponent,
     RecurrenceComponent, QaScoresComponent, ReportGeneratorComponent, UserAccessComponent, StreamUrlComponent, EmoticonsReportsComponent, PrivateAccessComponent,
-    InappmembershipComponent, TrendalertsComponent, ActivityreportsComponent, EndusersComponent, TrendreportsComponent],
+    InappmembershipComponent, TrendalertsComponent, ActivityreportsComponent, EndusersComponent, TrendreportsComponent,
+    TileBackgroundComponent, VideoLibraryComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService,
     LivestreamService, MomentData, LanguageService, NotificationService, ScriptService]
