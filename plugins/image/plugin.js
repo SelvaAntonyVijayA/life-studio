@@ -3,7 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const gm = require('gm');
 const util = require('util');
-const formidable = require('formidable')
+const formidable = require('formidable');
+var sizeOf = util.promisify(require('image-size'));
 
 var init = function (app) {
   appConf = app.get('settings');
@@ -37,21 +38,48 @@ var list = function (req, res, next) {
           fs.statSync(rootFolder + b).birthtime.getTime();
       }).reverse();
 
-      _.each(files, function (file) {
+
+      $async.each(files, function (file, eachCb) {
         try {
           stats = fs.lstatSync(rootFolder + file);
+          var size = stats.size;
 
           if (stats.isFile()) {
-            var fileUrl = imageUrl + file + "?fsize=" + stats.size;
+            var fileUrl = imageUrl + file;
 
-            imageList.push(fileUrl);
+            sizeOf(rootFolder + file)
+              .then(dimensions => {
+                var obj = {};
+                var sizeText = _bytesToSize(parseInt(size));
+
+                obj["width"] = dimensions.width;
+                obj["height"] = dimensions.height;
+                obj["size"] = size;
+                obj["sizeText"] = sizeText;
+                obj["url"] = fileUrl;
+                obj["dimension"] = dimensions.width + " x " + dimensions.height;
+
+                imageList.push(obj);
+
+                eachCb();
+              })
+              .catch(err => {
+                console.error(err);
+                eachCb();
+              });
+          } else {
+            eachCb();
           }
         } catch (e) {
+          console.dir(e)
+
           $log.error('image list error: ' + query.organizationId);
         }
+
+      }, function () {
+        res.send(imageList);
       });
 
-      res.send(imageList);
     });
   } else {
     res.send([]);
@@ -2058,6 +2086,23 @@ var _formParse = function (req, cb) {
   form.parse(req, function (err, data, files) {
     cb(data, files);
   })
+};
+
+var _bytesToSize = function (bytes) {
+  if (!isNaN(bytes)) {
+    var sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+
+    if (bytes == 0) {
+      return '0 B';
+    }
+
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+
+  } else {
+    return undefined;
+  }
 };
 
 module.exports = {

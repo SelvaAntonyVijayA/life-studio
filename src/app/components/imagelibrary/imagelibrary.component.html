@@ -26,10 +26,11 @@
           <div class="tile_image_list">
             <ol id="selectable">
               <div *ngFor="let image of images">
-                <li (dblclick)="imageDoubleClick($event, image,'doubleclick')" [style.cursor]="cursor" [ngClass]="selectedimages.indexOf(image) !== -1 ? 'selected' : 'nt-selected'"
-                  (click)="selectImage($event, image, 'click')" class="ui-state-default">
-                  <img src="{{image}}">
-                  <div></div>
+                <li (dblclick)="imageDoubleClick($event, image.url,'doubleclick')" [style.cursor]="cursor" [ngClass]="selectedimages.indexOf(image.url) !== -1 ? 'selected' : 'nt-selected'"
+                  (click)="selectImage($event, image.url, 'click')" class="ui-state-default">
+                  <img src="{{image.url}}">
+                  <div>{{image.dimension}}</div>
+                  <div class="image-length">{{image.sizeText}}</div>
                 </li>
               </div>
             </ol>

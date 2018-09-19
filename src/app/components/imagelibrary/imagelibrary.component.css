@@ -40,7 +40,7 @@
 
 #selectable li img {
     max-width: 115px;
-    max-height: 95px;
+    max-height: 80px;
     padding-top: 2px;
 }
 
@@ -403,4 +403,8 @@ div.jcrop-holder {
 .inline-block {
     display: inline-block;
     margin: .2em;
+}
+
+#selectable li .image-length {
+    font-size: 12px;
 }
