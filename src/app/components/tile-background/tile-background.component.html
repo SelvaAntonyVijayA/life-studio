@@ -1,3 +1,41 @@
-<p>
-  tile-background works!
-</p>
+<div class="modal fade" bsModal #tileBgLib="bs-modal" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="menuBackground"
+  aria-hidden="true" (onHide)="onHide($event)">
+  <div class="modal-dialog tile-bg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title bg-title pull-left">{{ this.pageTitle }}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body tile-bg-body">
+        <div class="main_page_layout">
+          <div class='tile-background'>
+            <div class="vertical-app-background">
+              <img class="delete-vertical-bg" (click)="deleteTileBg($event,tileData['tileBackgroundPortrait'], 'portrait')" *ngIf="!utils.isNullOrEmpty(tileData['tileBackgroundPortrait'])"
+                [src]="'/img/close_bg.png'">
+              <img class="img-vertical-app-background" *ngIf="!utils.isNullOrEmpty(tileData['tileBackgroundPortrait'])" [src]="tileData['tileBackgroundPortrait'] | safe">
+              <input style="display: none;" type="file" #fileBgp (change)="imageFileUpload($event.target.files, 'portrait')">
+              <div class="upload-vertical-app-background" (click)="fileProcess($event, 'portrait')" *ngIf="utils.isNullOrEmpty(tileData['tileBackgroundPortrait'])">
+                <input id="img-vertical-background" type="image" [src]="'/img/background_upload.png'" width="40px">
+                <span class="bgp-txt-fileUpload">Upload File</span>
+                <span class="vertical-size">1240 x 2208</span>
+              </div>
+            </div>
+            <div class="horizontal-app-background">
+              <img class="delete-horizontal-bg" (click)="deleteTileBg($event, tileData['tileBackgroundLandscape'], 'landscape')" *ngIf="!utils.isNullOrEmpty(tileData['tileBackgroundLandscape'])"
+                [src]="'/img/close_bg.png'">
+              <img class="img-horizontal-app-background" *ngIf="!utils.isNullOrEmpty(tileData['tileBackgroundLandscape'])" [src]="tileData['tileBackgroundLandscape'] | safe">
+              <input style="display: none;" type="file" #fileBgl (change)="imageFileUpload($event.target.files, 'landscape')">
+              <div class="upload-horizontal-app-background" (click)="fileProcess($event, 'landscape')" *ngIf="utils.isNullOrEmpty(tileData['tileBackgroundLandscape'])">
+                <input id="img-horizontal-background" type="image" [src]="'/img/background_upload.png'" width="40px">
+                <span class="bgl-txt-fileUpload">Upload File</span>
+                <span class="horizontal-size">2208 x 1240</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

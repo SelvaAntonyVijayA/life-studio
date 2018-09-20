@@ -4,8 +4,7 @@
     <div class="tile_form">
       <input id="txtTileTitle" [(ngModel)]="tileTitle" class="ili-form tile_title" placeholder="Title" type="text">
       <div class="tile_language">
-        <select [ngModel]="selectedLanguage" (ngModelChange)="languageChange($event)" class="form-control input-sm lang_tile"
-          placeholder="Select Language">
+        <select [ngModel]="selectedLanguage" (ngModelChange)="languageChange($event)" class="form-control input-sm lang_tile" placeholder="Select Language">
           <option *ngFor="let lang of languageList; let i = index" [value]="lang?.code">{{lang?.name}}</option>
         </select>
       </div>
@@ -42,7 +41,7 @@
     <div style="float: left;margin-left: 5px;">
       <div class="checkbox">
         <label style="font-size: 11px;">
-          <input [(ngModel)]="showAsTabs"  id="chkShowAsTab" style="margin-top: 2px;" type="checkbox">Show as tabs</label>
+          <input [(ngModel)]="showAsTabs" id="chkShowAsTab" style="margin-top: 2px;" type="checkbox">Show as tabs</label>
       </div>
     </div>
 
@@ -93,8 +92,7 @@
             </div>
           </div>
 
-          <div id='widgetEditor' block='Text' data-placement='top' title='Add any description in multiple paragraphs.'
-            class='widget_btn'>
+          <div id='widgetEditor' block='Text' data-placement='top' title='Add any description in multiple paragraphs.' class='widget_btn'>
             <div>
               <img (click)='loadWidgets($event, "text", {}, "Editor")' src='/img/text_32.png' />
             </div>
@@ -141,8 +139,7 @@
             </div>
           </div>
 
-          <div id='widgetCalendar' block='calendar' data-toggle='tooltip' title='This Widget allows to create calendar'
-            class='widget_btn'>
+          <div id='widgetCalendar' block='calendar' data-toggle='tooltip' title='This Widget allows to create calendar' class='widget_btn'>
             <div>
               <img (click)='loadWidgets($event, "calendar", {}, "Calendar")' src='/img/calendar.png' />
             </div>
@@ -160,8 +157,7 @@
             </div>
           </div>
 
-          <div id='widgetPatient' block='patients' data-toggle='tooltip' title='Show the list of patients by clinic'
-            class='widget_btn'>
+          <div id='widgetPatient' block='patients' data-toggle='tooltip' title='Show the list of patients by clinic' class='widget_btn'>
             <div>
               <img (click)='loadWidgets($event, "patients", {}, "Patients")' src='/img/patient.png' />
             </div>
@@ -191,8 +187,7 @@
             </div>
           </div>
 
-          <div id='widgetTitle' block='title' data-toggle='tooltip' title='Title that will appear over any form you create'
-            class='widget_btn'>
+          <div id='widgetTitle' block='title' data-toggle='tooltip' title='Title that will appear over any form you create' class='widget_btn'>
             <div>
               <img (click)='loadWidgets($event, "title", {}, "Form Title")' src='/img/form.png' />
             </div>
@@ -261,8 +256,7 @@
             </div>
           </div>
 
-          <div id='widgetProfile' block='Profile' data-toggle='tooltip' title='Add profile to update user information'
-            class='widget_btn'>
+          <div id='widgetProfile' block='Profile' data-toggle='tooltip' title='Add profile to update user information' class='widget_btn'>
             <div>
               <img (click)='loadWidgets($event, "profile", {}, "Profile")' src='/img/my-account.png' />
             </div>
@@ -291,8 +285,7 @@
             </div>
           </div>
 
-          <div id='widgetNext' block='next' data-toggle='tooltip' title='Next tile page shows after user submits a form.'
-            class='widget_btn'>
+          <div id='widgetNext' block='next' data-toggle='tooltip' title='Next tile page shows after user submits a form.' class='widget_btn'>
             <div>
               <img (click)='loadWidgets($event, "next", {}, "Next")' src='/img/arrow_next_icon.png' />
             </div>
@@ -332,8 +325,7 @@
             </div>
           </div>
 
-          <div id='widgetPhysician' block='Physician' data-toggle='tooltip' title='Assign a physician to the patient'
-            class='widget_btn'>
+          <div id='widgetPhysician' block='Physician' data-toggle='tooltip' title='Assign a physician to the patient' class='widget_btn'>
             <div>
               <img (click)='loadWidgets($event, "physician", {}, "Physician")' src='/img/physician.png' />
             </div>
@@ -345,8 +337,7 @@
                 <div><img src='/img/mobile-video.png'/></div>
                 <div><label>Mobile Video</label></div>
               </div>-->
-          <div id='widgetEndWrapper' block='EndWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form'
-            class='widget_btn'>
+          <div id='widgetEndWrapper' block='EndWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form' class='widget_btn'>
             <div>
               <img (click)='loadWidgets($event, "endwrapper", {}, "End Wrapper")' src='/img/stop_wrapper.png' />
             </div>
@@ -405,8 +396,7 @@
             </div>
           </div>
 
-          <div id='widgetPlacefull' block='placefull' data-toggle='tooltip' title='PlaceFull event booking and ticketing'
-            class='widget_btn'>
+          <div id='widgetPlacefull' block='placefull' data-toggle='tooltip' title='PlaceFull event booking and ticketing' class='widget_btn'>
             <div>
               <img (click)='loadWidgets($event, "placefull", {}, "PlaceFull")' src='/img/pf_logo.png' />
             </div>
@@ -463,8 +453,7 @@
             </div>
           </div>
 
-          <div id='widgetFileUpload' block='fileupload' data-toggle='tooltip' title='Upload PDF or other format files'
-            class='widget_btn'>
+          <div id='widgetFileUpload' block='fileupload' data-toggle='tooltip' title='Upload PDF or other format files' class='widget_btn'>
             <div>
               <img (click)='loadWidgets($event, "fileupload", {}, "File Upload")' src='/img/uploads-icon.png' />
             </div>
@@ -527,11 +516,11 @@
 
     <!-- Tiles List -->
 
-    <tiles-list [selectedTile]="selectedTile" [tilesToDelete]="tileIdsDelete" (tileContent)="getTileContent($event)"
-      [tilesObjectUpdate]="tileIdsUpdate" [organizations]="organizations" [page]="'tiles'"></tiles-list>
+    <tiles-list [selectedTile]="selectedTile" [tilesToDelete]="tileIdsDelete" (tileContent)="getTileContent($event)" [tilesObjectUpdate]="tileIdsUpdate"
+      [organizations]="organizations" [page]="'tiles'"></tiles-list>
   </div>
   <!-- </div> -->
 </div>
 
-<image-library [popFrom]="'tileart'" [isOpen]="isImageLibrary" [page]="'tile'" (onClose)="onImageLibraryClose($event)"
-  (onDone)="onImageLibraryResult($event)"></image-library>
+<image-library [popFrom]="'tileart'" [isOpen]="isImageLibrary" [page]="'tile'" (onClose)="onImageLibraryClose($event)" (onDone)="onImageLibraryResult($event)"></image-library>
+<tile-background (tileBgContent)="tileBackground($event)" [tileId]="tileId" [tileData]="selectedTile" [show-modal]="isTileBg"></tile-background>

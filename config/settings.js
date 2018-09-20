@@ -197,7 +197,9 @@ module.exports = {
     "imgStreamUrlPath": "/img/streams/{0}/",
     "imgFormPhotoFolderPath": "img/formphotos/{0}/",
     "imgFormPhotoUrlPath": "/img/formphotos/{0}/",
-    "imgStreamCrownUrlPath": "/img/streams/{0}/{1}/"
+    "imgStreamCrownUrlPath": "/img/streams/{0}/{1}/",
+    "tileBackgroundfolder": "/img/tilebg/{0}/",
+    "tileBackgroundUrl": "/img/tilebg/{0}/",
   },
   "excel": {
     "folderpath": "files/{0}",

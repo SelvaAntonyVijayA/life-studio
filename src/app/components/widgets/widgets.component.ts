@@ -70,6 +70,8 @@ export class WidgetsComponent implements OnInit {
   private orgChangeDetect: any;
   startWrapper: boolean = false;
   isImageLibrary: string = "none";
+  tileId: string = "";
+  isTileBg: boolean = false;
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
@@ -768,8 +770,29 @@ export class WidgetsComponent implements OnInit {
 
   openTileBackground(e: any) {
     e.preventDefault();
-    //  this.isImageLibrary = 'block';
+    var obj = this.selectedTile;
+
+    var currTileExists = !this.utils.isEmptyObject(this.selectedTile) ? Object.assign({}, this.selectedTile) : {};
+
+    if (!this.utils.isEmptyObject(currTileExists) && currTileExists.hasOwnProperty("_id")) {
+      this.tileId = currTileExists["_id"];
+      this.isTileBg = true;
+
+    } else {
+      this.utils.iAlert('error', 'Information', 'Please select a tile');
+    }
+
   };
+
+  tileBackground(tileObj: Object) {
+    if (!this.utils.isEmptyObject(tileObj) && tileObj.hasOwnProperty("close")) {
+      this.tileIdsUpdate = {};
+      this.tileIdsUpdate[this.tileId] = false;
+
+      this.isTileBg = false;
+      this.tileId = "";
+    }
+  }
 
   deleteTile(e: any) {
     e.preventDefault();

@@ -64,15 +64,12 @@ var list = function (req, res, next) {
                 eachCb();
               })
               .catch(err => {
-                console.error(err);
                 eachCb();
               });
           } else {
             eachCb();
           }
         } catch (e) {
-          console.dir(e)
-
           $log.error('image list error: ' + query.organizationId);
         }
 
@@ -1095,9 +1092,6 @@ var uploadTileBackground = function (req, res, next) {
   var retrn = {};
 
   _formParse(req, function (data, files) {
-    var folder = typeof data.folder == 'undefined' ? "" : data.folder;
-    var isEncoded = typeof data.isEncoded == 'undefined' || data.isEncoded == "false" ? false : true;
-
     try {
       if (files) {
         for (var prop in files) {
@@ -1139,7 +1133,7 @@ var uploadTileBackground = function (req, res, next) {
             }
 
             if (!__util.isEmptyObject(updateObj)) {
-              $tile.tileUpdate({ _id: context.data.tileId }, {}, updateObj, function (result) {
+              $tile.tileUpdate({ _id: data.tileId }, {}, updateObj, function (result) {
               });
             }
 
@@ -1161,57 +1155,54 @@ var uploadTileBackground = function (req, res, next) {
 };
 
 var deleteTileBackground = function (req, res, next) {
-  _formParse(req, function (data, files) {
-    var fileName = data.imageUrl.split('/').pop();
-    var imagePath = __appPath + imageConf.tileBackgroundfolder.replace('{0}', data.tileId);
-    imagePath = imagePath + fileName;
+  var data = req.body.form_data;
+  var fileName = data.imageUrl.split('/').pop();
+  var imagePath = __appPath + imageConf.tileBackgroundfolder.replace('{0}', data.tileId);
+  imagePath = imagePath + fileName;
 
-    if (__util.isValidFile(imagePath)) {
-      fs.unlink(imagePath, function (err) {
+  if (__util.isValidFile(imagePath)) {
+    fs.unlink(imagePath, function (err) {
 
-        if (err) {
-          $log.error('tilebg delete: ' + err);
+      if (err) {
+        $log.error('tilebg delete: ' + err);
 
-          res.send({
-            "status": false
+        res.send({
+          "status": false
+        });
+
+      } else {
+        var updateObj = {};
+
+        if (data.type == "portrait") {
+          updateObj = {
+            tileBackgroundPortrait: null
+          };
+
+        } else if (data.type == "landscape") {
+          updateObj = {
+            tileBackgroundLandscape: null
+          };
+        }
+
+        if (!__util.isEmptyObject(updateObj)) {
+          $tile.tileUpdate({ _id: data.tileId }, {}, updateObj, function (result) {
+            res.send({
+              "status": true
+            });
           });
 
         } else {
-          var updateObj = {};
-
-          if (data.type == "portrait") {
-            updateObj = {
-              tileBackgroundPortrait: null
-            };
-
-          } else if (data.type == "landscape") {
-            updateObj = {
-              tileBackgroundLandscape: null
-            };
-          }
-
-          if (!__util.isEmptyObject(updateObj)) {
-            $tile.tileUpdate({ _id: context.data.tileId }, {}, updateObj, function (result) {
-              res.send({
-                "status": true
-              });
-            });
-
-          } else {
-            res.send({
-              "status": false
-            });
-          }
-
+          res.send({
+            "status": false
+          });
         }
-      });
-
-    } else {
-      res.send({
-        "status": true
-      });
-    }
-  });
+      }
+    });
+  } else {
+    res.send({
+      "status": true
+    });
+  }
 };
 
 var _uploadImage = function (context, data, files, isEncoded, isMultiple) {

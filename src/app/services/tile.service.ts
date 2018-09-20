@@ -1,5 +1,5 @@
 
-import {forkJoin as observableForkJoin,  Observable } from 'rxjs';
+import { forkJoin as observableForkJoin, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 
@@ -154,6 +154,22 @@ export class TileService {
   getTileBlockByType(organizationId, type) {
     return this.http
       .get("/tile/blockbytype/" + organizationId + "/" + type)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  imageUpload(url, form_data: any) {
+    return this.http
+      .post(url, form_data)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  removeBackgroundImage(objToDelete: Object) {
+    return this.http
+      .post("/image/deletetilebg", JSON.stringify({ "form_data": objToDelete }), { headers: this.headers })
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);
