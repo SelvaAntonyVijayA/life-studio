@@ -57,4 +57,11 @@ export class GeneralService {
        .catch(this.handleError(url));
    };*/
   };
+
+  getAppProfile(appId: string): Observable<any> {
+    return this.http.get<any>("/general/profile/" + appId)
+      .pipe(
+        catchError(this.handleError('getAppProfile', { "Status": "Error" }))
+      );
+  };
 }

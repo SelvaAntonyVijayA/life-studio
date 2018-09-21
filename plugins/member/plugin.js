@@ -821,6 +821,119 @@ var lastDateUpdatePropAssign = function (obj) {
   return obj;
 };
 
+var trendReportMembers = function (req, res, next) {
+  query = {};
+  options = {};
+
+  $async.waterfall([
+    function (callback) {
+      $procedure._getMemberProcedureMapped({ appId: $db.objectId(req.params.appId), deleted: { $exists: false } }, function (procedure) {
+        callback(null, procedure);
+      });
+    }
+  ], function (error, result) {
+    var ids = _getProcedureMappedMemberIds(result);
+
+    if (!__util.isNullOrEmpty(req.params.appId)) {
+      query = {
+        "appId": req.params.appId
+      };
+    }
+
+    if (!__util.isNullOrEmpty(req.params.locationId)) {
+      query["locationId"] = req.params.locationId
+    }
+
+    if (!__util.isNullOrEmpty(req.body.form_data)) {
+      query = req.body.form_data;
+    }
+
+    query["_id"] = ids;
+
+    options = {};
+    options.sort = [['firstName', 'asc']];
+
+    _getMember(query, options, function (members) {
+      if (members.length > 0) {
+        members = _memberProcessing(members, []);
+      }
+
+      res.send(members);
+    });
+  });
+};
+
+var _getProcedureMappedMemberIds = function (datas) {
+  var ids = [];
+
+  _.each(datas, function (data) {
+    if (ids.indexOf(data.memberId.toString()) < 0) {
+      ids.push(data.memberId.toString());
+    }
+  });
+
+  return ids;
+};
+
+var _memberProcessing = function (members, profile) {
+  var filteredMembers = [];
+
+  _.each(members, function (mem) {
+    var password = !__util.isNullOrEmpty(mem.password) ? mem.password : "";
+    var decryptedPassword = !__util.isNullOrEmpty(password) ? $general.decrypt(password) : "";
+
+    mem["decryptedPassword"] = decryptedPassword;
+
+    var squareTypeIds = [];
+
+    if (!__util.isEmptyObject(mem.squares) && mem.squares.length > 0) {
+      _.each(mem.squares, function (square) {
+        var sqTypId = square.squareId + "_" + square.type;
+        squareTypeIds.push(sqTypId);
+      });
+
+      mem["squareTypeId"] = squareTypeIds;
+    } else {
+      mem["squareTypeId"] = [];
+    }
+
+    if (!__util.isEmptyObject(mem.role) && mem.role.length > 0) {
+      var role = mem.role[0];
+
+      mem["memberRoleId"] = role.roleId;
+      mem["isManager"] = typeof role.isManager != "undefined" && !__util.isNullOrEmpty(role.isManager) ? role.isManager : false;
+
+    } else {
+      mem["memberRoleId"] = "";
+    }
+
+    mem["allFieldsString"] = JSON.stringify(mem);
+
+    if (profile.length > 0) {
+      var isValidate = memberProfileCheck(profile, mem, true);
+
+      if (isValidate.isProfile) {
+        if (!__util.isEmptyObject(isValidate.dateObj)) {
+
+          var dkeys = Object.keys(isValidate.dateObj);
+
+          _.each(dkeys, function (dkey) {
+            mem[dkey] = !__util.isNullOrEmpty(mem[dkey]) ? new Date(mem[dkey]) : "";
+          });
+        }
+
+        filteredMembers.push(mem);
+      }
+    }
+
+    if (profile.length == 0) {
+      filteredMembers.push(mem);
+    }
+  });
+
+  return filteredMembers;
+};
+
 module.exports = {
   "init": init,
   "_getMember": _getMember,
@@ -838,5 +951,6 @@ module.exports = {
   "deleteMember": deleteMember,
   "memberSave": memberSave,
   "cmsMemberSave": cmsMemberSave,
-  "exists": exists
+  "exists": exists,
+  "trendReportMembers": trendReportMembers
 };

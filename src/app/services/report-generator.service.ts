@@ -1,25 +1,34 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Response, RequestOptions } from '@angular/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
+import { HttpErrorHandlerService, HandleError } from '../services/http-error-handler.service';
 import { Utils } from '../helpers/utils';
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json',
+    'charset': 'UTF-8'
+  })
+};
 
 @Injectable()
 export class ReportGeneratorService {
 
-  constructor(private http: Http, public utils: Utils) { }
+  constructor(private http: HttpClient,
+    httpErrorHandler: HttpErrorHandlerService, public utils: Utils) {
+    this.handleError = httpErrorHandler.createHandleError('ReportGeneratorService')
+  }
 
-  private headers = new Headers({
-    'Content-Type': 'application/json',
-    'charset': 'UTF-8'
-  });
+  private handleError: HandleError;
 
   saveReportRule(reportObj: Object) {
 
-    return this.http
-      .post("/reportrule/save", JSON.stringify({ "form_data": reportObj }), { headers: this.headers })
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError);
+    return this.http.post<any>("/reportrule/save", { "form_data": reportObj }, httpOptions)
+      .pipe(
+        catchError(this.handleError('saveReportRule', reportObj))
+      );
   };
 
   getReportRule(orgId: string, ruleId?: string) {
@@ -29,31 +38,40 @@ export class ReportGeneratorService {
       ruleUrl = ruleUrl + "/" + ruleId;
     }
 
-    return this.http
-      .get(ruleUrl)
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError);
+    return this.http.get<any>(ruleUrl)
+      .pipe(
+        catchError(this.handleError('getReportRule', { "Status": "Error" }))
+      );
   };
 
   getAppTileSquares(orgId: string) {
-    return this.http
-      .get("/reportrule/getallsquares/" + orgId)
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError);
+    return this.http.get<any>("/reportrule/getallsquares/" + orgId)
+      .pipe(
+        catchError(this.handleError('getAppTileSquares', { "Status": "Error" }))
+      );
   };
 
   removeReportRule(ruleId: string) {
-    return this.http
-      .get("/reportrule/delete/" + ruleId)
-      .toPromise()
-      .then(response => response.json())
-      .catch(this.handleError);
+
+    return this.http.get<any>("/reportrule/delete/" + ruleId)
+      .pipe(
+        catchError(this.handleError('removeReportRule', { "Status": "Error" }))
+      );
   };
 
-  private handleError(error: any): Promise<any> {
-    console.log('An error occurred', error);
-    return Promise.reject(error.message || error);
+  getAverageReport(obj: any) {
+
+    return this.http.post<any>("/reportrule/avarageReport/", { "form_data": obj }, httpOptions)
+      .pipe(
+        catchError(this.handleError('getAverageReport', obj))
+      );
+  };
+
+  getReport(obj: any) {
+
+    return this.http.post<any>("/reportrule/getreport/", { "form_data": obj }, httpOptions)
+      .pipe(
+        catchError(this.handleError('getReport', obj))
+      );
   };
 }

@@ -222,7 +222,7 @@ var _formParse = function (req, cb) {
 
   form.parse(req, function (err, data, files) {
     cb(data, files);
-  })
+  });
 };
 
 module.exports = {

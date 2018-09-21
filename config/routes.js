@@ -96,7 +96,7 @@ module.exports = function (app) {
   router.get('/img/profile/:memberId/:name*?', $image.resize);
   router.all('/image/tilebackground/', $image.uploadTileBackground);
   router.all('/image/deletetilebg', $image.deleteTileBackground);
-  
+
   router.all('/email/send', $email.send);
 
   router.all('/access/save', $access.save);
@@ -204,6 +204,7 @@ module.exports = function (app) {
   router.all('/app/member/rolemembers/', $member.getRoleMembers);
   router.all('/app/member/get/:orgId/:appId/:locationId?', $member.getMemberbyApp);
   router.all('/app/member/remove/:memberId/:appId?', $member.removeMember);
+  router.all('/trendreport/member/get/:appId/:locationId?', $member.trendReportMembers);
 
   router.get('/engine/list/', $engines.list);
   router.all('/engine/save?', $engines.save);
@@ -226,6 +227,8 @@ module.exports = function (app) {
   router.all('/reportrule/list/:orgId/:ruleId*?', $reportrule.list);
   router.all('/reportrule/save', $reportrule.save);
   router.all('/reportrule/delete/:ruleId', $reportrule.deleteRule);
+  router.all('/reportrule/avarageReport/', $reportrule.averageReport);
+  router.all('/reportrule/getreport/', $reportrule.getReport);
 
   router.get('/media/list/:appId/:tileId/:type', $media.list);
 
@@ -238,6 +241,10 @@ module.exports = function (app) {
 
   router.all('/import/member', $import.members);
   router.all('/export/excel/:appId', $import.makeExcelSheet);
+
+  router.all('/app/trendreports/list/:orgId?', $trendreports.list);
+
+  router.all('/general/profile/:appId', $general.profile);
 
   app.use('/', router);
 };

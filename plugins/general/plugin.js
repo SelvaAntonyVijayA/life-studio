@@ -447,6 +447,47 @@ var hashMD5 = function (str) {
   return crypto.createHash('md5').update(str).digest('hex');
 };
 
+var _getObjectIds = function (ids) {
+  var objectIds = [];
+
+  _.each(ids, function (id) {
+    objectIds.push($db.objectId(id));
+  });
+
+  return objectIds;
+};
+
+var profile = function (req, res, next) {
+  var url = settingsConf.authDomain + "/migrate/get_app_structure/" + req.params.appId;
+
+  profileDynamicFields(url, function (fields) {
+    var columnModel = [{
+      name: '_id',
+      index: '_id',
+      sortable: false,
+      hidden: true,
+      key: true
+    }];
+    _.each(fields, function (field) {
+      if (field.tag !== "password") {
+        var cModel = {
+          label: field.name,
+          name: field.tag,
+          editable: true,
+          sortable: true
+        };
+
+        columnModel.push(cModel);
+      }
+    });
+
+    res.send({
+      userColModel: columnModel,
+      fields: fields
+    });
+  });
+};
+
 module.exports = {
   "init": init,
   "encrypt": encrypt,
@@ -462,6 +503,8 @@ module.exports = {
   "profileDynamicFields": profileDynamicFields,
   "getProfileHtml": getProfileHtml,
   "validateEmail": validateEmail,
-  "hashMD5": hashMD5
+  "hashMD5": hashMD5,
+  "_getObjectIds": _getObjectIds,
+  "profile": profile
 };
 

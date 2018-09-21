@@ -13,5 +13,4 @@ export class TrendalertsComponent implements OnInit {
   ngOnInit() {
     this.loaderShared.showSpinner(false);
   }
-
 }

@@ -210,11 +210,7 @@ export class ReportGeneratorComponent implements OnInit {
           "blocks": [],
           "assigned": ""
         };
-
-        if (currTile["_id"] === "5b3de155942324c82d3cab37") {
-          var mosa = currTile["_id"];
-        }
-
+        
         let blocksData: any[] = currTile.hasOwnProperty("blocksData") && currTile["blocksData"].length > 0 ? currTile["blocksData"] : [];
 
         if (blocksData.length > 0) {
@@ -1073,11 +1069,11 @@ export class ReportGeneratorComponent implements OnInit {
       }
 
       this.reportGeneratorService.saveReportRule(reportDataObj)
-        .then(repObj => {
+        .subscribe(repObj => {
           let repId: string = !this.utils.isEmptyObject(repObj) && repObj.hasOwnProperty("_id") ? repObj["_id"] : "-1";
 
           if (!this.utils.isNullOrEmpty(repId)) {
-            this.getRuleList(repId).then(repList => {
+            this.getRuleList(repId).subscribe(repList => {
 
               if (this.utils.isArray(repList) && repList.length > 0) {
                 if (reportDataObj.hasOwnProperty("_id")) {
@@ -1110,7 +1106,7 @@ export class ReportGeneratorComponent implements OnInit {
         if (r["resolved"]) {
           this.loaderShared.showSpinner(true);
 
-          this.reportGeneratorService.removeReportRule(this.selectedRule["_id"]).then(deleteStatus => {
+          this.reportGeneratorService.removeReportRule(this.selectedRule["_id"]).subscribe(deleteStatus => {
             let ruleIdx: number = this.reportRuleList.map(rpl => { return rpl['_id']; }).indexOf(this.selectedRule["_id"]);
             this.reportRuleList.splice(ruleIdx, 1);
             this.loaderShared.showSpinner(false);
@@ -1123,7 +1119,6 @@ export class ReportGeneratorComponent implements OnInit {
     } else {
       this.utils.iAlert('error', 'Information', 'Please select a Rule!!!');
     }
-
   };
 
   ngOnInit() {

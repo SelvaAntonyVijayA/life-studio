@@ -1,3 +1,62 @@
-<div class="container processes_container">
-  working on!
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/ui-darkness/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="/js/jqgrid/src/css/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" href="/js/jqgrid/src/css/ui.jqgrid-bootstarp.css" />
+<!--- <link rel="stylesheet" type="text/css" href="/css/jqgrid_ui.css" /> -->
+<link rel="stylesheet" type="text/css" href="/css/trend_reports.css" />
+
+<div class="container trend_report_container">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="trend_report_header">
+        <!-- Filter Report html  -->
+        <div class="trend_report_select_filter">
+          <span class="tr_txt_apps tr_label_form">Select App: </span>
+          <select [ngModel]="selectedApp" (ngModelChange)="appChange($event)" class="form-control input-sm tr_app_filter"
+            placeholder="Select App">
+            <option [value]="'-1'" disabled>Select App</option>
+            <option *ngFor="let app of appList; let i= index" [value]="app?._id ">{{app?.name}}</option>
+          </select>
+          <span style="padding-left:50px;" class="tr_txt_apps tr_lbl_report">Report: </span>
+          <select [ngModel]="selectedReport" (ngModelChange)="reportChange($event)" class="form-control input-sm tr_report_filter"
+            placeholder="Select Report">
+            <option [value]="'-1'" disabled>Select Report</option>
+            <option *ngFor="let rep of reportList; let i= index" [value]="rep?._id ">{{rep?.name}}</option>
+          </select>
+          <select [(ngModel)]="patientType" *ngIf="isPatientFilter" class="form-control input-sm tr_patient_box"
+            placeholder="Select No of Patients">
+            <option [value]="'0'">One Patient</option>
+            <option [value]="'1'">All Patients</option>
+          </select>
+        </div>
+
+        <!-- Main Report Date html -->
+        <div class="tr_main_repport_dates">
+
+          <span class="tr_lbl_start_date tr_label_form">Start date: </span>
+          <input ILIDateTimePicker [(ngModel)]="startDate" class="form-control input-sm tr_date_time" type="text" />
+          <span class="tr_lbl_end_date tr_label_form">End date:
+          </span>
+          <input ILIDateTimePicker [(ngModel)]="endDate" class="form-control input-sm tr_date_time" type="text" />
+          <div class="tr_form_btns">
+            <button (click)="reportFilter($event)" class="btn filter_btn btn-success btn-xs">
+              Go
+            </button>
+            <button (click)="resetReport($event)" class="btn tr_reset_btn btn-danger btn-xs">
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tr_trend_report_main">
+        <div class="main-users">
+          <div id="users-grid-pager"></div>
+          <table id="users-grid"></table>
+        </div>
+        <div id="chartContainer" class="chart-container-main">
+
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

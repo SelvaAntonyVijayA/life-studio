@@ -47,7 +47,8 @@ var plugins = {
   "approles": "approles",
   "pagepermissions": "pagepermissions",
   "import": "import",
-  "pubnub": "pubnub"
+  "pubnub": "pubnub",
+  "trendreports": "trendreports"
 };
 
 module.exports = function (appPath, dirName, app) {
