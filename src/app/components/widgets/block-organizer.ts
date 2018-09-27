@@ -223,6 +223,11 @@ export class BlockOrganizer {
       this.profileBlock(blk, type, orgConnectDatas);
       return;
     }
+
+    if (type === "addspace") {
+      this.addSpaceBlock(blk, type);
+      return;
+    }
   }
 
   textBlock(blockData: any, type: string) {
@@ -550,6 +555,8 @@ export class BlockOrganizer {
     this.block["data"]["refresh"] = !this.utils.isNullOrEmpty(data["refresh"]) ? this.utils.convertToBoolean(data["refresh"]) : false;
     this.block["data"]["close"] = !this.utils.isNullOrEmpty(data["close"]) ? this.utils.convertToBoolean(data["close"]) : false;
     this.block["data"]["redirectApp"] = !this.utils.isNullOrEmpty(data["redirectApp"]) ? this.utils.convertToBoolean(data["redirectApp"]) : false;
+    this.block["data"]["title"] = !this.utils.isNullOrEmpty(data["title"]) ? data["title"] : "";
+    this.block["data"]["formCollapse"] = !this.utils.isNullOrEmpty(data["formCollapse"]) ? this.utils.convertToBoolean(data["formCollapse"]) : false;
   };
 
   titleBlock(blockData: any, type: string) {
@@ -1027,6 +1034,12 @@ export class BlockOrganizer {
     var profileDatas = !this.utils.isNullOrEmpty(data["profile"]) ? this.mapOrgProfileData(orgConnectDatas, data["profile"], "profile") : this.mapOrgProfileData(orgConnectDatas, [], "profile");
     this.block["data"]["profile"] = profileDatas;
     this.block["data"]["redirectApp"] = !this.utils.isNullOrEmpty(data["redirectApp"]) ? this.utils.convertToBoolean(data["redirectApp"]) : false;
+  };
+
+  addSpaceBlock(blockData: any, type: string) {
+    this.assignBlockId(blockData);
+    this.block["type"] = type;
+    this.block["data"] = {};
   };
 
   getAccountSubmember(mainConnectDatas: any[], blockConnectSubData: any) {
@@ -1528,6 +1541,8 @@ export class GetBlocks {
     var data = {};
     data["refresh"] = blk["data"]["refresh"];
     data["close"] = blk["data"]["close"];
+    data["title"] = blk["data"]["title"];
+    data["formCollapse"] = blk["data"]["formCollapse"];
     data["redirectApp"] = blk["data"]["redirectApp"];
 
     return data;

@@ -1,6 +1,5 @@
 import { Component, EventEmitter, OnInit, forwardRef, Input, SkipSelf, ViewContainerRef, ComponentFactoryResolver, ViewChild, ElementRef } from '@angular/core';
 import { BlockComponent } from './block-organizer';
-import { WidgetsComponent } from './widgets.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Utils } from '../../helpers/utils';
 import { TileService } from '../../services/tile.service';
@@ -13,6 +12,7 @@ import { TileService } from '../../services/tile.service';
              <div class="tigger_btn" (click)="getBlock($event, block.view, 'delete')" title="Remove"><span class="glyphicon glyphicon-remove"></span></div>
              <div class="tigger_btn" (click)="getBlock($event, block.view, 'down')" title="MoveDown"><span class="glyphicon glyphicon-arrow-down"></span></div>
              <div class="tigger_btn" (click)="getBlock($event, block.view, 'up')" title="MoveUp"><span style="margin-top:-1px;" class="glyphicon glyphicon-arrow-up"></span></div>
+             <div class='tigger_btn' (click)="getBlock($event, block.view, 'add')" title='Add Space Above'><span style='margin-top:-1px;' class='glyphicon glyphicon-plus'></span></div>
              <div *ngIf="checkCategory()" class="main-widget-category">
              <!--<select [(ngModel)]="block['data']['category']" class="form-control input-sm widget_category_box" placeholder="Select / Add Category">
              <option disabled [value]="'-1'">Select / Add Category</option>
@@ -860,17 +860,23 @@ export class DescriptionSubOptionComponent {
   outputs: ["startWrapperView"],
   template: `<div class="page_block tile_block wrapper_block">
              <div class="row wrapper_row content_buttons wrapper-row-refresh">
+             <div class='' style='float:left;margin-left:10px; width:60%'>
+             <label class="wrapper_start">Start wrapping Form Widgets in one form</label></div>
              <block-controls (blockView)="getStartWrapper($event)" [(block)]= "block"></block-controls>
+             <div class='' style='float:left;margin-top:10px;margin-bottom:10px; width:100%'>
+             <div class='wrapper-title'><input placeholder='Title' [(ngModel)]="block.data.title" class='start-wrapper-title-text' type='text' /></div>
              <div class="refresh-assign-group">
              <label class="lbl-txt-clear-fields">Clear Fields after each submit</label>
              <input value="true" [checked]="block.data.refresh" [(ngModel)]="block.data.refresh" class="refresh_form" style="margin-top:1px;" type="checkbox" title="Check this box if this form should be cleared every time the end-user enters this tile.">
              </div>
              <div class="refresh-assign-group">
              <label class="lbl-txt-clear-fields">Clear and Close the Form</label>
-             <input  value="true" [checked]="block.data.close" [(ngModel)]="block.data.close" class="close_form" type="checkbox" title="Check this box if this form should be cleared every time the end-user enters this tile and it will close the form.">
+             <input value="true" [checked]="block.data.close" [(ngModel)]="block.data.close" class="close_form" type="checkbox" title="Check this box if this form should be cleared every time the end-user enters this tile and it will close the form.">
              </div>
-             <div class="main-wrapper-text">
-             <label class="wrapper_start">Start wrapping Form Widgets in one form</label></div>
+             <div class="refresh-assign-group">
+             <label class="lbl-txt-clear-fields">Collapse</label>
+             <input [checked]="block.data.formCollapse" [(ngModel)]="block.data.formCollapse" class="form-collapse form_collapse" style="margin-top:1px;" type="checkbox">
+             </div>
              </div></div>`,
   styleUrls: ['./tileblocks.component.css']
 })
@@ -883,6 +889,29 @@ export class StartWrapperBlockComponent implements BlockComponent {
   getStartWrapper(view: any) {
     this.startWrapperView.emit(view);
   };
+};
+
+@Component({
+  selector: 'add-space-block',
+  outputs: ["addSpaceView"],
+  template: `<div class='space_container label_container tile_block tile_blocks_widgets page_block'>
+             <div class='tigger_btn delete_btn' (click)="deleteBlankView($event, block.view, 'delete')" title='Remove'>
+             <span class='glyphicon glyphicon-remove'></span></div>
+             <div class='label_bg space_label'>Add a widget <br/> into this space</div>
+             </div>`,
+  styleUrls: ['./tileblocks.component.css']
+})
+
+export class AddSpaceComponent implements BlockComponent {
+  @Input() block: any;
+
+  addSpaceView = new EventEmitter<any>();
+
+  deleteBlankView(e: any, view: any, opt: string) {
+    e.preventDefault();
+    var blk = { "view": view, "opt": opt }
+    this.addSpaceView.emit(blk)
+  }
 };
 
 @Component({
@@ -1907,7 +1936,7 @@ export const TileBlocksComponents = [
   FillBlockComponent, ButtonsBlockComponent, ContactUsBlockComponent, PlacefullBlockComponent,
   AddToCartBlockComponent, CartBlockComponent, BlanksFormBlockComponent, ExclusiveUrlBlockComponent,
   FileUploadBlockComponent, PushpayBlockComponent, ThreedCartBlockComponent, BlogsBlockComponent,
-  ChatBlockComponent, AccountBlockComponent, ProfileBlockComponent
+  ChatBlockComponent, AccountBlockComponent, ProfileBlockComponent, AddSpaceComponent
 ];
 
 

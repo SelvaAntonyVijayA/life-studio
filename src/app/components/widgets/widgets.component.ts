@@ -22,7 +22,7 @@ import {
   FillBlockComponent, ButtonsBlockComponent, ContactUsBlockComponent,
   PlacefullBlockComponent, AddToCartBlockComponent, CartBlockComponent, BlanksFormBlockComponent,
   ExclusiveUrlBlockComponent, FileUploadBlockComponent, PushpayBlockComponent, ThreedCartBlockComponent,
-  BlogsBlockComponent, ChatBlockComponent, AccountBlockComponent, ProfileBlockComponent
+  BlogsBlockComponent, ChatBlockComponent, AccountBlockComponent, ProfileBlockComponent, AddSpaceComponent
 } from './tileblocks.components';
 
 declare var $: any;
@@ -69,6 +69,7 @@ export class WidgetsComponent implements OnInit {
   widgetRights: any[] = [];
   private orgChangeDetect: any;
   startWrapper: boolean = false;
+  addSpace: boolean = false;
   isImageLibrary: string = "none";
   tileId: string = "";
   isTileBg: boolean = false;
@@ -318,8 +319,23 @@ export class WidgetsComponent implements OnInit {
         viewName = "profileView";
       }
 
+      if (type === "profile") {
+        this.blocks.push(new BlockItem(ProfileBlockComponent, new BlockOrganizer(blockData, type, this.selectedLanguage, this.profileDatas, [], this.utils, this.selectedOrganization)));
+        viewName = "profileView";
+      }
+
       if (blkLength < blocks.length) {
         this.loadComponent(viewName);
+        var addSpaceIndex = this.getAddSpaceBlockIndex();
+
+        if (addSpaceIndex >= 0) {
+          let view = this.blockSelected.viewContainerRef.get(this.currentAddIndex);
+
+          this.utils.arrayMove(this.blocks, this.currentAddIndex, addSpaceIndex);
+          this.blockSelected.viewContainerRef.move(view, addSpaceIndex);
+          this.removeCurrentBlock(addSpaceIndex + 1);
+          this.addSpace = false;
+        }
       }
     }
   };
@@ -374,6 +390,21 @@ export class WidgetsComponent implements OnInit {
     }
   };
 
+  getAddSpaceBlockIndex() {
+    var index = -1;
+
+    for (let i = 0; i < this.blocks.length; i++) {
+      var blkType = this.blocks[i]["block"]["type"];
+
+      if (blkType === "addspace") {
+        index = i;
+        break;
+      }
+    }
+
+    return index;
+  }
+
   getViewBlock(view: any, opt: string) {
     let index = this.blockSelected.viewContainerRef.indexOf(view);
 
@@ -382,6 +413,10 @@ export class WidgetsComponent implements OnInit {
 
       if (blkType !== "startwrapper") {
         this.removeCurrentBlock(index);
+
+        if (blkType == "addspace") {
+          this.addSpace = false;
+        }
       } else {
         this.utils.iQuestions("question", "Warning", "To remove wrapper and KEEP content click on \"Remove\xA0Wrapper\" \n\n To remove wrapper and DELETE content click on \"Delete\xA0All\"\n", "Remove Wrapper", "Delete all", "", (r) => {
           if (r["resolved"] === 0) {
@@ -430,12 +465,16 @@ export class WidgetsComponent implements OnInit {
 
       if (upIdx >= 0) {
         this.blockSelected.viewContainerRef.move(view, upIdx);
+
+        this.utils.arrayMove(this.blocks, index, upIdx);
       }
     } else if (opt === "down") {
       var downIdx = index + 1;
 
       if (downIdx > 0) {
         this.blockSelected.viewContainerRef.move(view, downIdx);
+        
+        this.utils.arrayMove(this.blocks, index, downIdx);
       }
     } else if (opt === "widgetCat") {
       if (!this.utils.isEmptyObject(view)) {
@@ -446,7 +485,26 @@ export class WidgetsComponent implements OnInit {
         this.widgetCategories = wdgtCats;
         this.assignWidgetCategoriesExists(wdgtCats);
       }
-    };
+    } else if (opt === "add") {
+      var blocks = this.blocks;
+      var viewName = "";
+      var blkLength = blocks.length;
+
+      if (!this.addSpace) {
+        this.addSpace = true;
+
+        this.blocks.push(new BlockItem(AddSpaceComponent, new BlockOrganizer({}, "addspace", this.selectedLanguage, [], [], this.utils, this.selectedOrganization)));
+        viewName = "addSpaceView";
+
+        if (blkLength < blocks.length) {
+          this.loadComponent(viewName);
+          this.utils.arrayMove(this.blocks, index, this.currentAddIndex);
+          this.blockSelected.viewContainerRef.move(view, this.currentAddIndex);
+        }
+      } else {
+        this.utils.iAlert("info", "Information", "Add Space above already added");
+      }
+    }
   };
 
   removeCurrentBlock(idx: number) {
