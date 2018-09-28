@@ -53,10 +53,36 @@
           <div id="users-grid-pager"></div>
           <table id="users-grid"></table>
         </div>
+
         <div id="chartContainer" class="chart-container-main">
 
         </div>
+
       </div>
     </div>
   </div>
 </div>
+
+<ng-template #chartForm>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">{{formTitle}}</h4>
+
+    <div class='chart_type'>
+      <img class="img-chart-type" (click)="showChart($event, '1')" title="Column Chart" src="/img/columnchart_icon.png"
+        alt="Column" />
+      <img class="img-chart-type" (click)="showChart($event, '0')" title="Line Chart" src="/img/linechart_icon.png" alt="Line" />
+    </div>
+
+    <button type="button" class="close pull-right" aria-label="Close" (click)="chartFormRef.hide('new')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body user-form-body">
+    <div class="container">
+      <div class="row">
+
+      </div>
+    </div>
+  </div>
+</ng-template>

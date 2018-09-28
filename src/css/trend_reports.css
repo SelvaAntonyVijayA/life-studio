@@ -1,59 +1,78 @@
-.ui-jqgrid .ui-paging-info {
-    font-size: 9px;
+.ui-jqgrid .ui-paging-info {font-size: 9px;}
+.ui-jqgrid .ui-pg-table td {font-size: 9px;}
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {border-bottom-right-radius: 0px;}
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {border-bottom-left-radius: 0px;}
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {border-top-right-radius: 0px;}
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {border-top-right-radius: 0px;}
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {border-top-left-radius: 0px;}
+.ui-jqgrid .ui-paging-info{color:white; font-size:11px;}
+.ui-jqgrid .ui-jqgrid-pager .ui-pg-div{color:white; font-size:11px;}
+
+.ui-jqgrid {font-size:11px;}
+.ui-jqgrid tr.jqgrow td {font-size:11px;}
+.ui-jqgrid table.ui-jqgrid-htable {font-size:11px;}
+
+#search_patient_names, .div-search-patient>.ui-jqgrid .ui-jqgrid-view input {
+  padding: 0 0 0 23px
 }
 
-.ui-jqgrid .ui-pg-table td {
-    font-size: 9px;
+.canvasjs-chart-container.type_snap_shot {
+  height: 300px;
+  width: 75%;
+  display: block;
+  margin: 0 auto;
+  padding-top: 97px;
 }
 
-.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
-    border-bottom-right-radius: 0px;
+/* .canvasjs-chart-container.type_time_lapse {} */
+
+#timelapseContainer {
+  width: 100%;
 }
 
-.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
-    border-bottom-left-radius: 0px;
-}
-
-.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
-    border-top-right-radius: 0px;
-}
-
-.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
-    border-top-right-radius: 0px;
-}
-
-.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
-    border-top-left-radius: 0px;
-}
-
-.ui-jqgrid .ui-paging-info {
-    color: white;
-    font-size: 11px;
-}
-
-.ui-jqgrid .ui-jqgrid-pager .ui-pg-div {
-    color: white;
-    font-size: 11px;
-}
-
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-    border: 1px solid #585f69;
-    background: rgba(22, 38, 56, 0.2);
-}
-
-.ui-jqgrid .ui-jqgrid-titlebar {
-    background: rgba(22, 38, 56, 0.2);
-}
-
-.ui-widget-content {
-    background: rgba(22, 38, 56, 0.5);
-    border: 1px solid #334053;
-}
-
-.ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr {
-    border-top: 1px solid #585f69;
+#user-sort {
+  width: 100px;
+  margin-left: 10px;
+  height: 25px;
+  color: #666;
+  float: left;
 }
 
 #search_patient_names, .div-search-patient>.ui-jqgrid .ui-jqgrid-view input {
-    padding: 0 0 0 23px
+  padding: 0 0 0 23px;
+}
+
+.lblSortText {
+  margin-top: 3px;
+}
+
+#user-sort, .lblSortText {
+  margin-left: 10px;
+  float: left
+}
+
+#user-sort {
+  width: 100px;
+  height: 25px;
+  color: #666
+}
+
+.sort_image {
+  margin-left: 5px;
+}
+
+#status-sort {
+  margin-left: 7px;
+  height: 25px;
+  width: 80px;
+  background-color: #777676;
+  border: gray;
+  color: white;
+  float: left;
+}
+
+.chart_type {
+  position: absolute;
+  top: 15px;
+  right: 55px;
 }

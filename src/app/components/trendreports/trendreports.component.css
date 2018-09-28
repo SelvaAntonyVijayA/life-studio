@@ -107,10 +107,22 @@
 
 .main-users {
   float: left;
-  margin-left: 26px;
+  margin-top: 17px;
 }
 
 .chart-container-main {
   height: 300px;
   width: 100%;
+}
+
+.chart_type {
+  position: absolute;
+  top: 15px;
+  right: 55px;
+}
+
+.img-chart-type {
+  margin-left: 25px;
+  position: relative;
+  cursor: pointer;
 }

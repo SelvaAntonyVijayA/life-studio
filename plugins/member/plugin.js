@@ -762,7 +762,7 @@ var cmsMemberSave = function (req, res, next) {
     }
 
     delete obj["decryptedPassword"];
-    
+
     $member.exists(null, query, function (memberExists) {
       if (memberExists.length > 0) {
         res.send({
@@ -773,17 +773,11 @@ var cmsMemberSave = function (req, res, next) {
         _memberSave(obj, function (result) {
           obj._id = result.toString();
           obj.id = result.toString();
-          
-          console.dir(1);
-          console.dir(obj.password);
-          
+
           if (!__util.isNullOrEmpty(obj.password)) {
             obj.password = $general.decrypt(obj.password);
           }
-          
-          console.dir(2);
-          console.dir(obj.password);
-          
+
           $datamigration.userSave(obj, function (migrate) {
             if (migrate.success) {
 

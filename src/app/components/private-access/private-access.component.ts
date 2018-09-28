@@ -768,6 +768,7 @@ export class PrivateAccessComponent implements OnInit {
           $(this.squaresGrid).jqGrid('resetSelection');
           this.selectUserSquares();
         }
+
         this.userChk = false;
         return $(e.target).is('input[type=checkbox]');
       },
@@ -800,7 +801,6 @@ export class PrivateAccessComponent implements OnInit {
         }
 
         let usersGridPagerCenter: any = this.document.getElementById("users-grid-pager_center");
-
         $(usersGridPagerCenter).hide();
 
         let assignedUsersRow: any = $(this.usersGrid).children().find("tr:not(:first)");

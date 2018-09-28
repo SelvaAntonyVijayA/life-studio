@@ -426,7 +426,7 @@ var _getMemberProcedureMapped = function (pQuery, cb) {
   options = {};
   options.sort = [['_id', 'desc']];
 
-  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.procedure, settingsConf.collections.memberproceduremapping, pQuery, options, function (mappedProcedures) {
+  $db.select(settingsConf.dbname.tilist_core, settingsConf.collections.memberproceduremapping, pQuery, options, function (mappedProcedures) {
     cb(mappedProcedures);
   });
 };
