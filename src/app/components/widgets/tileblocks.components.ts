@@ -241,7 +241,13 @@ export class CalendarBlockComponent implements BlockComponent {
              <div class="content_buttons">
              <block-controls (blockView)="getShare($event)" [(block)]= "block"> </block-controls></div>
              <div class='ili-panel share_panel'>
-             <p style="font-size: 11px; margin-left: 9px; float: left;">It is not recommended that Forms be shared.  If shared, forms may be filled from Facebook or Twitter or Email.</p>
+             <p style="font-size: 11px; float: left;">It is not recommended that Forms be shared.  If shared, forms may be filled from Facebook or Twitter or Email.</p>
+             <div class='input-group input-group-sm main_share_content'>
+             <span class='input-group-addon' style='padding: 0px 10px; font-size: 18px;'>
+             <span (click)="imageLibrary($event, block.view, 'image')" class='glyphicon glyphicon-picture select-image-toshare' style='margin-right: 10px; cursor:pointer;'></span>
+             <span (click)="videoLibrary($event, block.view, 'video')" class='glyphicon glyphicon-facetime-video select-video-toshare' style='cursor:pointer;'></span></span>
+             <input type='text' placeholder='Share URL' [(ngModel)]="block.data.shareURL" class='share-url form-control' />
+             </div>
              <div class="input-group input-group-sm main_share_content">
              <span class="input-group-addon"><input value="true" [checked]="block.data.facebook" [(ngModel)]="block.data.facebook" type="checkbox"></span>
              <span class="form-control"> Facebook </span></div>
@@ -251,7 +257,16 @@ export class CalendarBlockComponent implements BlockComponent {
              <div class="input-group input-group-sm main_share_content">
              <span class="input-group-addon"><input value="true" [checked]="block.data.email" [(ngModel)]="block.data.email" type="checkbox">
              </span><span class="form-control"> Email </span></div>
-             </div></div>`,
+             <div class="input-group input-group-sm main_share_content">
+             <span class="input-group-addon"><input value="true" [checked]="block.data.pinterest" [(ngModel)]="block.data.pinterest" type="checkbox"></span>
+             <span class="form-control"> Pinterest </span></div>
+             <div class="input-group input-group-sm main_share_content">
+             <span class="input-group-addon"><input value="true" [checked]="block.data.linkedIn" [(ngModel)]="block.data.linkedIn" type="checkbox"></span>
+             <span class="form-control"> LinkedIn </span></div>
+             <div class="input-group input-group-sm main_share_content">
+             <span class="input-group-addon"><input value="true" [checked]="block.data.googleplus" [(ngModel)]="block.data.googleplus" type="checkbox"></span>
+             <span class="form-control"> Google+ </span></div>
+             </div>`,
   styleUrls: ['./tileblocks.component.css']
 })
 
@@ -262,6 +277,20 @@ export class ShareBlockComponent implements BlockComponent {
 
   getShare(view: any) {
     this.shareView.emit(view);
+  };
+
+  imageLibrary(e: any, view: any, opt: string) {
+    e.preventDefault();
+
+    var blk = { "view": view, "opt": opt }
+    this.shareView.emit(blk);
+  };
+
+  videoLibrary(e: any, view: any, opt: string) {
+    e.preventDefault();
+
+    var blk = { "view": view, "opt": opt }
+    this.shareView.emit(blk)
   };
 };
 

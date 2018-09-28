@@ -337,6 +337,33 @@
                 <div><img src='/img/mobile-video.png'/></div>
                 <div><label>Mobile Video</label></div>
               </div>-->
+
+          <div id='widgetLocation' block='location' data-toggle='tooltip' title='Get and show user location' class='widget_btn'>
+            <div>
+              <img (click)='loadWidgets($event, "location", {}, "Location")' src='/img/location.png' />
+            </div>
+            <div>
+              <label>Location</label>
+            </div>
+          </div>
+
+          <div id='widgetFlowintegration' block='FlowIntegration' data-toggle='tooltip' title='Create flow integration' class='widget_btn'>
+            <div>
+              <img (click)='loadWidgets($event, "FlowIntegration", {}, "Flow Integration")' src='/img/flowintegration.png' />
+            </div>
+            <div>
+              <label>Flow Integration</label>
+            </div>
+          </div>
+
+          <div id='widgetQRcode' block='qrcode' data-toggle='tooltip' title='Reads QR code and shows data based on option' class='widget_btn'>
+            <div>
+              <img (click)='loadWidgets($event, "qrcode", {}, "QR code")' src='/img/readqrcode.png' />
+            </div>
+            <div>
+              <label>QR code</label>
+            </div>
+          </div>
           <div id='widgetEndWrapper' block='EndWrapper' data-toggle='tooltip' title='Wrap multiple Form Widgets into one form' class='widget_btn'>
             <div>
               <img (click)='loadWidgets($event, "endwrapper", {}, "End Wrapper")' src='/img/stop_wrapper.png' />
@@ -522,5 +549,6 @@
   <!-- </div> -->
 </div>
 
-<image-library [popFrom]="'tileart'" [isOpen]="isImageLibrary" [page]="'tile'" (onClose)="onImageLibraryClose($event)" (onDone)="onImageLibraryResult($event)"></image-library>
+<image-library [popFrom]="'tileart'" [data]="imageLibraryData" [isOpen]="isImageLibrary" [page]="'tile'" (onClose)="onImageLibraryClose($event)"
+  (onDone)="onImageLibraryResult($event)"></image-library>
 <tile-background (tileBgContent)="tileBackground($event)" [tileId]="tileId" [tileData]="selectedTile" [show-modal]="isTileBg"></tile-background>

@@ -10,9 +10,8 @@ import { ProgressHttp, HTTP_FACTORY } from 'angular-progress-http';
 import { LoggingHttpFactory } from './logging-http/logging-http-factory';
 import { FileUploader } from 'ng2-file-upload';
 import Cropper from 'cropperjs';
-
 import { Subscription } from 'rxjs'
-import { HttpClient, HttpRequest, HttpResponse, HttpEvent } from '@angular/common/http'
+import { HttpClient, HttpEvent } from '@angular/common/http'
 
 interface FileDescriptor {
   name: string;
@@ -155,10 +154,19 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
 
   upload() {
     const f = this.fileD;
+    let folder = this.selectedFolders;
+
+    if (this.page == "squareicon" && (this.selectedFolders == "" || this.selectedFolders == "photos")) {
+      folder = "icons";
+    }
+
+    if (this.selectedFolders == "photos" && this.page != "squareicon") {
+      folder = "";
+    }
 
     let formData: any = new FormData();
     formData.append("isEncoded", false);
-    formData.append("folder", this.utils.isNullOrEmpty(this.selectedFolders) ? "" : this.selectedFolders);
+    formData.append("folder", folder);
     formData.append("popupFrom", this.popFrom);
     formData.append("type", "art");
     formData.append("file[]", f.file);
@@ -223,9 +231,18 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
       this.utils.iAlertConfirm("confirm", "Confirm", "Are you sure want to delete this images?", "Yes", "No", (res) => {
         if (res.hasOwnProperty("resolved") && res["resolved"] == true) {
 
+          let folder = this.selectedFolders;
+          if (this.page == "squareicon" && (this.selectedFolders == "" || this.selectedFolders == "photos")) {
+            folder = "icons";
+          }
+
+          if (this.selectedFolders == "photos" && this.page != "squareicon") {
+            folder = "";
+          }
+
           var obj = {};
           obj["src"] = this.selectedimages;
-          obj["folder"] = this.utils.isNullOrEmpty(this.selectedFolders) ? "" : this.selectedFolders
+          obj["folder"] = folder;
 
           this.imageService.deleteImage(obj)
             .then(res => {
@@ -375,7 +392,17 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   };
 
   loadImages() {
-    this.imageService.imageList(this.oid, this.selectedFolders)
+    let folder = this.selectedFolders;
+
+    if (this.page == "squareicon" && (this.selectedFolders == "" || this.selectedFolders == "photos")) {
+      folder = "icons";
+    }
+
+    if (this.selectedFolders == "photos" && this.page != "squareicon") {
+      folder = "";
+    }
+
+    this.imageService.imageList(this.oid, folder)
       .then(imagelist => {
         this.images = [];
 

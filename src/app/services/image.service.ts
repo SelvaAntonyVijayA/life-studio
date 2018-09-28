@@ -13,11 +13,7 @@ export class ImageService {
 
   constructor(private http: Http, public utils: Utils) { }
 
-  imageList(orgId: string, folder?: string, page?: string) {
-    if (page == "squareicon" && folder != "home" && this.utils.isNullOrEmpty(folder)) {
-      folder = "icons"
-    }
-
+  imageList(orgId: string, folder?: string) {
     if (folder == "home") {
       folder = "";
     }

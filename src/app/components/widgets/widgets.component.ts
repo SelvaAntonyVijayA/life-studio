@@ -73,6 +73,8 @@ export class WidgetsComponent implements OnInit {
   isImageLibrary: string = "none";
   tileId: string = "";
   isTileBg: boolean = false;
+  popFrom: string = "";
+  imageLibraryData: Object = {};
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
@@ -473,7 +475,7 @@ export class WidgetsComponent implements OnInit {
 
       if (downIdx > 0) {
         this.blockSelected.viewContainerRef.move(view, downIdx);
-        
+
         this.utils.arrayMove(this.blocks, index, downIdx);
       }
     } else if (opt === "widgetCat") {
@@ -504,6 +506,12 @@ export class WidgetsComponent implements OnInit {
       } else {
         this.utils.iAlert("info", "Information", "Add Space above already added");
       }
+    } else if (opt === "image") {
+      this.isImageLibrary = 'block';
+      this.popFrom = "selectshareimage";
+      this.imageLibraryData = { popFrom: "selectshareimage", count: index };
+
+    } else if (opt === "video") {
     }
   };
 
@@ -814,16 +822,46 @@ export class WidgetsComponent implements OnInit {
   openImageLibrary(e: any) {
     e.preventDefault();
     this.isImageLibrary = 'block';
+    this.popFrom = "tileart";
+    this.imageLibraryData = { popFrom: "tileart" };
   };
 
-  onImageLibraryClose(tileArt: string) {
+  onImageLibraryClose(obj: object) {
     this.isImageLibrary = 'none';
-    this.art = tileArt;
+    this.popFrom = "";
+
+    if (!this.utils.isNullOrEmpty(obj["url"])) {
+      if (obj["data"]["popFrom"] == "tileart") {
+        this.art = obj["url"];
+      } else if (obj["data"]["popFrom"] == "selectshareimage") {
+        let block = this.blocks[obj["data"]["count"]];
+        let blockObj = block["block"];
+
+        blockObj["data"]["shareURL"] = obj["url"];
+        block["block"] = blockObj;
+
+        this.blocks[obj["data"]["count"]] = block;
+      }
+    }
   }
 
-  onImageLibraryResult(tileArt: string) {
+  onImageLibraryResult(obj: object) {
     this.isImageLibrary = 'none';
-    this.art = tileArt;
+    this.popFrom = "";
+
+    if (!this.utils.isNullOrEmpty(obj["url"])) {
+      if (obj["data"]["popFrom"] == "tileart") {
+        this.art = obj["url"];
+      } else if (obj["data"]["popFrom"] == "selectshareimage") {
+        let block = this.blocks[obj["data"]["count"]];
+        let blockObj = block["block"];
+
+        blockObj["data"]["shareURL"] = obj["url"];
+        block["block"] = blockObj;
+
+        this.blocks[obj["data"]["count"]] = block;
+      }
+    }
   }
 
   openTileBackground(e: any) {

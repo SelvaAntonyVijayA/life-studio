@@ -320,7 +320,7 @@
 }
 
 .widget-forms-collapse:hover {
-  max-height: 565px;
+  max-height: 625px;
   overflow: hidden;
   cursor: pointer;
   transition: 2s;

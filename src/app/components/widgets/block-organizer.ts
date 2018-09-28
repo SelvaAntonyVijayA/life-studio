@@ -346,6 +346,11 @@ export class BlockOrganizer {
     this.block["data"]["facebook"] = !this.utils.isNullOrEmpty(data["facebook"]) ? this.utils.convertToBoolean(data["facebook"]) : false;
     this.block["data"]["twitter"] = !this.utils.isNullOrEmpty(data["twitter"]) ? this.utils.convertToBoolean(data["twitter"]) : false;
     this.block["data"]["email"] = !this.utils.isNullOrEmpty(data["email"]) ? this.utils.convertToBoolean(data["email"]) : false;
+
+    this.block["data"]["linkedIn"] = !this.utils.isNullOrEmpty(data["linkedIn"]) ? this.utils.convertToBoolean(data["linkedIn"]) : false;
+    this.block["data"]["pinterest"] = !this.utils.isNullOrEmpty(data["pinterest"]) ? this.utils.convertToBoolean(data["pinterest"]) : false;
+    this.block["data"]["googleplus"] = !this.utils.isNullOrEmpty(data["googleplus"]) ? this.utils.convertToBoolean(data["googleplus"]) : false;
+    this.block["data"]["shareURL"] = !this.utils.isNullOrEmpty(data["shareURL"]) ? data["shareURL"] : "";
   };
 
   patientsBlock(blockData: any, type: string) {
@@ -1455,6 +1460,10 @@ export class GetBlocks {
     data["facebook"] = blk["data"]["facebook"];
     data["twitter"] = blk["data"]["twitter"];
     data["email"] = blk["data"]["email"];
+    data["linkedIn"] = blk["data"]["linkedIn"];
+    data["pinterest"] = blk["data"]["pinterest"];
+    data["googleplus"] = blk["data"]["googleplus"];
+    data["shareURL"] = blk["data"]["shareURL"];
 
     return data;
   };
