@@ -246,5 +246,19 @@ module.exports = function (app) {
 
   router.all('/general/profile/:appId', $general.profile);
 
+  router.all('/app/video/save', $video.vimeoAppSave);
+  router.all('/video/upload/:orgId?', $video.upload);
+  router.all('/video/list/:orgId?', $video.list);
+  router.all('/video/create', $video.vimeocreate);
+  router.all('/video/save', $video.save);
+  router.all('/video/keys/:orgId?', $video.keys);
+
+  router.all('/video/vimeo/get/:videoId?', $video.vimeoJson);
+  router.all('"/video/complete', $video.completevideo);
+
+  router.all('/video/delete/:id?/:videoId?', $video.vimeoDeleteVideo);
+  router.all('/video/picture/upload/:videoId?', $video.pictureUpload);
+  router.all('/app/video/get/:videoId?', $video.videoJson);
+
   app.use('/', router);
 };

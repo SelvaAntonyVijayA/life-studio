@@ -1,10 +1,9 @@
 
-import { Component, OnInit, Input, ViewChild, ElementRef, ComponentFactoryResolver, EventEmitter, OnDestroy, TemplateRef, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, Input, ViewChild, ElementRef,  EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute} from '@angular/router';
 import { Utils } from '../../helpers/utils';
 import { ModalDirective, BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { TileService } from '../../services/tile.service';
 
 @Component({

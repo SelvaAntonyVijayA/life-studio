@@ -72,10 +72,10 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   oid: string = "";
   images: any[] = [];
   folders: any[] = [];
-  selectedFolders: any;
+  selectedFolders: string = "";
   selectedOrganization: string = "-1";
   isUploadedCrop: boolean = false;
-  response: string;
+  response: string = "";
   accept = '*'
   files: File[] = []
   progress: number
@@ -563,8 +563,18 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
       let objApp = cHObj["popFrom"];
       let popFrom = objApp["currentValue"];
 
+      let folder = this.selectedFolders;
+
+      if (this.page == "squareicon" && (this.selectedFolders == "" || this.selectedFolders == "photos")) {
+        folder = "icons";
+      }
+
+      if (this.selectedFolders == "photos" && this.page != "squareicon") {
+        folder = "";
+      }
+
       if (!this.utils.isNullOrEmpty(popFrom)) {
-        this.uploader.options.additionalParameter = { isMultiple: true, isEncoded: false, type: 'art', folder: this.utils.isNullOrEmpty(this.selectedFolders) ? "" : this.selectedFolders, popFrom: this.popFrom };
+        this.uploader.options.additionalParameter = { isMultiple: true, isEncoded: false, type: 'art', folder: folder, popFrom: this.popFrom };
       }
     }
   };

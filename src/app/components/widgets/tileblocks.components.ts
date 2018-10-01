@@ -104,7 +104,8 @@ export class TextBlockComponent implements BlockComponent {
              <block-controls (blockView)="getVideo($event)" [(block)]= "block"> </block-controls></div>
              <div class='ili-panel video_panel'>
              <input [(ngModel)]="block.data.caption" class="form-control input-sm video_caption" type="text" placeholder="Video Caption">
-             <button class="btn btn-warning btn-xs btn_video_upload">Upload</button>
+             <button (click)="videoLibrary($event, block.view, 'video')" class="btn btn-warning btn-xs btn_video_upload">Upload</button>
+             <a href='javascript:void(0);' (click)="videoThumb($event, block.view, 'videothumbnail')" class='video_thumb'><img width='24' title='Upload Preview for Video' src='/img/thumbnail.png' /></a>
              <input [(ngModel)]="block.data.url" class="form-control input-sm video_url" type="text" placeholder="Video URL" [disabled]="checkDisabled()">
              <div *ngIf="block.data?.url" class="row main_video_content">
              <iframe [src]="block.data.url | safe" width="420" height="315" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
@@ -123,6 +124,20 @@ export class VideoBlockComponent implements BlockComponent {
 
   getVideo(view: any) {
     this.videoView.emit(view);
+  };
+
+  videoLibrary(e: any, view: any, opt: string) {
+    e.preventDefault();
+
+    var blk = { "view": view, "opt": opt }
+    this.videoView.emit(blk)
+  };
+
+  videoThumb(e: any, view: any, opt: string) {
+    e.preventDefault();
+
+    var blk = { "view": view, "opt": opt }
+    this.videoView.emit(blk)
   };
 
   checkDisabled(e?: any) {

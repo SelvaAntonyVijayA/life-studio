@@ -1,0 +1,140 @@
+.tile-bg {
+    width: 400px;
+}
+
+.tile-bg-body {
+    width: 400px;
+    height: 220px;
+}
+
+.bg-header {
+    border-bottom: 1px solid rgb(170, 170, 170);
+}
+
+.tile-hide {
+    display: none;
+}
+
+.bg-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.main_page_layout {
+    width: 355px;
+    position: relative;
+    float: left;
+    color: #000000;
+    font-family: 'Roboto'
+}
+
+.tile_video_list {
+    position: relative;
+    height: 350px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.tile_video_upload {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.video_upload_btn {
+    float: right;
+    margin-top: 10px;
+    margin-right: 0px;
+}
+
+.player {
+    width: 125px;
+    height: 130px;
+    z-index: 1000;
+}
+
+#videoSelectable .ui-selected {
+    background: #F39814;
+    color: white;
+}
+
+#videoSelectable {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 490px;
+}
+
+#videoSelectable li {
+    margin: 5px;
+    padding: 1px;
+    float: left;
+    width: 130px;
+    height: 142px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.abort_btn {
+    float: right;
+    margin-top: 10px;
+    margin-right: 0px;
+}
+
+.progress {
+    height: 5px;
+    margin-bottom: 0;
+}
+
+.fileinput-button {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100px;
+    border-radius: 0px;
+}
+
+.fileinput-button input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    opacity: 0;
+    -ms-filter: 'alpha(opacity=0)';
+    font-size: 200px !important;
+    direction: ltr;
+    cursor: pointer;
+}
+
+.remove-videos {
+    float: right;
+    margin-top: -8px;
+    margin-right: -5px;
+    color: #cc0101;
+}
+
+.image_cancel_btn {
+    float: right;
+    margin-left: 0px;
+    margin-top: 10px;
+    margin-right: 5px;
+}
+
+#VideoImgForm {
+    margin-bottom: 0px;
+}
+
+.video-img-buttons {
+    width: 100%;
+    float: left;
+}
+
+@media screen\9 {
+    .fileinput-button input {
+        filter: alpha(opacity=0);
+        font-size: 100%;
+        height: 100%;
+    }
+}

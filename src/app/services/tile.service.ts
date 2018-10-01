@@ -2,7 +2,6 @@
 import { forkJoin as observableForkJoin, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
-
 import { Utils } from '../helpers/utils';
 
 @Injectable()

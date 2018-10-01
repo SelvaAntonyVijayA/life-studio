@@ -1,3 +1,39 @@
-<p>
-  video-library works!
-</p>
+<div class="modal fade" bsModal #videoLibrary="bs-modal" tabindex="-1" role="dialog" [config]="{backdrop: 'static'}" aria-labelledby="menuBackground"
+  aria-hidden="true" (onHide)="onHide($event)">
+  <div class="modal-dialog tile-bg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title bg-title pull-left">{{ this.pageTitle }}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="onClose()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body tile-bg-body">
+        <div class="main_page_layout">
+
+          <div class="tile_video_list">
+            <ol id="videoSelectable">
+            </ol>
+          </div>
+          <div class="tile_video_upload">
+            <div id="videoForm" name="videoForm">
+              <div (click)="fileProcess($events)" class="file-wrapper">
+                <input name="file" style="display: none;" #fileVideo (change)="videoFileUpload($event.target.files)" id="fileupload" type="file">
+                <span class="button">Browse files
+                </span>
+                <span id="videoName">{{videoFileName}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="state"></div>
+            <div id="progress" class="progress hide">
+              <div class="progress-bar progress-bar-info" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

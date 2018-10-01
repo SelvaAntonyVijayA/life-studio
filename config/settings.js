@@ -154,7 +154,7 @@ module.exports = {
       "secretKey": "sec-c-MzdjNmI2OWMtNTk4Ni00ZGYzLWJjY2YtMmJlMmViZGNlNzJh"
     }
   },
-  "vimeo": {
+  "video": {
     "videofolderpath": "public/video/orgs/{0}/",
     "videourlpath": "/video/orgs/{0}/",
     "VimeoClientId": "84cf039e7d9af5955213f8d1ba4d786a711bbf83",
