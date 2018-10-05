@@ -10,8 +10,6 @@ import { ProgressHttp, HTTP_FACTORY } from 'angular-progress-http';
 import { LoggingHttpFactory } from './logging-http/logging-http-factory';
 import { FileUploader } from 'ng2-file-upload';
 import Cropper from 'cropperjs';
-import { Subscription } from 'rxjs'
-import { HttpClient, HttpEvent } from '@angular/common/http'
 
 interface FileDescriptor {
   name: string;
@@ -80,8 +78,6 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
   files: File[] = []
   progress: number
   url = 'http://localhost:8080/image/upload'
-  httpEmitter: Subscription
-  httpEvent: HttpEvent<{}>
   lastFileAt: Date
 
   sendableFormData: FormData; //populated via ngfFormData directive
@@ -92,7 +88,8 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
     private e1: ElementRef,
     private renderer: Renderer2,
     public utils: Utils,
-    private progressHttp: ProgressHttp, public HttpClient: HttpClient) {
+    private progressHttp: ProgressHttp,
+  ) {
     this.renderer = renderer;
 
     this.uploader = new FileUploader({
@@ -534,10 +531,15 @@ export class ImagelibraryComponent implements AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.orgChangeDetect = this.route.queryParams.subscribe(params => {
-      this.oid = Cookie.get('oid');
-      this.selectedOrganization = this.oid;
-      this.loadFolders();
-      this.loadImages();
+      let loadTime = Cookie.get('pageLoadTime');
+
+      if (this.utils.isNullOrEmpty(loadTime) || (!this.utils.isNullOrEmpty(loadTime) && loadTime !== params["_dt"])) {
+        Cookie.set('pageLoadTime', params["_dt"]);
+        this.oid = Cookie.get('oid');
+        this.selectedOrganization = this.oid;
+        this.loadFolders();
+        this.loadImages();
+      }
     });
 
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {

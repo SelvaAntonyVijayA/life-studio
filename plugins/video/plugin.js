@@ -350,9 +350,14 @@ var vimeoRequest = function (videoId, callback) {
 var completevideo = function (req, res, next) {
   var obj = req.body.form_data;
 
-  _vimeoComplete(obj, function (result) {
-    res.send(result);
-  });
+  if (__util.isNullOrEmpty(obj.organizationId)) {
+    res.status(404).send('404 Page Not Found.');
+  }
+  else {
+    _vimeoComplete(obj, function (result) {
+      res.send(result);
+    });
+  }
 };
 
 var vimeoDeleteVideo = function (req, res, next) {
@@ -417,7 +422,7 @@ var keys = function (req, res, next) {
   options = {};
   query.organizationId = req.params.orgId;
 
-  $db.select(videoConf.dbname, videoConf.auth, videoConf.collections.video, query, options, function (result) {
+  $db.select(appConf.dbname.tilist_core, appConf.collections.video, query, options, function (result) {
     res.send(result);
   });
 };
@@ -432,7 +437,7 @@ var vimeoLog = function (title, url, header, callback) {
   obj.url = url;
   obj.header = header;
 
-  $db.save(videoConf.dbname, videoConf.auth, videoConf.collections.vimeoLog, obj, function (result) {
+  $db.save(appConf.dbname.tilist_core, appConf.collections.vimeoLog, obj, function (result) {
     obj._id = result;
 
     if (callback) {
@@ -486,19 +491,19 @@ var videoJson = function (req, res, next) {
 };
 
 var videoById = function (query, options, callBack) {
-  $db.select(videoConf.dbname, videoConf.auth, videoConf.collections.video, query, options, function (result) {
+  $db.select(appConf.dbname.tilist_core, appConf.collections.video, query, options, function (result) {
     callBack(result);
   });
 };
 
 var videoDelete = function (query, options, callBack) {
-  $db.remove(videoConf.dbname, videoConf.auth, videoConf.collections.video, query, options, function (result) {
+  $db.remove(appConf.dbname.tilist_core, appConf.collections.video, query, options, function (result) {
     callBack(result);
   });
 };
 
 var videoUpdate = function (query, options, dataToUpdate, cb) {
-  $db.update(videoConf.dbname, videoConf.auth, videoConf.collections.video, query, options, dataToUpdate, function (result) {
+  $db.update(appConf.dbname.tilist_core, appConf.collections.video, query, options, dataToUpdate, function (result) {
     cb(result);
   });
 };
@@ -606,7 +611,7 @@ var _randomValueHex = function (len) {
 };
 
 var _saveVimeo = function (obj, cb) {
-  $db.save(videoConf.dbname, videoConf.auth, videoConf.collections.video, obj, function (result) {
+  $db.save(appConf.dbname.tilist_core, appConf.collections.video, obj, function (result) {
     obj._id = result;
     cb(obj);
   });

@@ -107,7 +107,7 @@ export class TextBlockComponent implements BlockComponent {
              <button (click)="videoLibrary($event, block.view, 'video')" class="btn btn-warning btn-xs btn_video_upload">Upload</button>
              <a href='javascript:void(0);' (click)="videoThumb($event, block.view, 'videothumbnail')" class='video_thumb'><img width='24' title='Upload Preview for Video' src='/img/thumbnail.png' /></a>
              <input [(ngModel)]="block.data.url" class="form-control input-sm video_url" type="text" placeholder="Video URL" [disabled]="checkDisabled()">
-             <div *ngIf="block.data?.url" class="row main_video_content">
+             <div *ngIf="block.data?.url" class="main_video_content">
              <iframe [src]="block.data.url | safe" width="420" height="315" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
              </div>
              </div></div>`,

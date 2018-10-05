@@ -25,11 +25,21 @@ export class VideoService {
       .catch(this.handleError);
   };
 
-  getVideotokenId(orgId: string) {
+  getVideotokenId() {
     var url = "/video/create";
 
     return this.http
       .get(url)
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
+  };
+
+  completeUrl(obj: Object) {
+    let url = '/video/complete';
+
+    return this.http
+      .post(url, JSON.stringify({ "form_data": obj }), { headers: this.headers })
       .toPromise()
       .then(response => response.json())
       .catch(this.handleError);

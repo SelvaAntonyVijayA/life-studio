@@ -549,6 +549,7 @@
   <!-- </div> -->
 </div>
 
-<image-library [popFrom]="'tileart'" [data]="imageLibraryData" [isOpen]="isImageLibrary" [page]="'tile'" (onClose)="onImageLibraryClose($event)"
+<image-library [popFrom]="popFrom" [data]="imageLibraryData" [isOpen]="isImageLibrary" [page]="'tile'" (onClose)="onImageLibraryClose($event)"
   (onDone)="onImageLibraryResult($event)"></image-library>
+<video-library [videoPopFrom]="videoPopFrom" [data]="videoLibraryData" [show-modal]="isVideoLibrary" [page]="'tile'" (output)="onVideoLibraryResult($event)"></video-library>
 <tile-background (tileBgContent)="tileBackground($event)" [tileId]="tileId" [tileData]="selectedTile" [show-modal]="isTileBg"></tile-background>

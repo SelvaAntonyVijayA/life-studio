@@ -1,10 +1,10 @@
 .tile-bg {
-    width: 400px;
+    width: 710px;
 }
 
 .tile-bg-body {
-    width: 400px;
-    height: 220px;
+    width: 710px;
+    height: 520px;
 }
 
 .bg-header {
@@ -24,16 +24,22 @@
 }
 
 .main_page_layout {
-    width: 355px;
+    width: 670px;
     position: relative;
     float: left;
     color: #000000;
     font-family: 'Roboto'
 }
 
+.progressvideo {
+    float: left;
+    width: 100%;
+    margin-top: 20px;
+}
+
 .tile_video_list {
     position: relative;
-    height: 350px;
+    height: 420px;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -50,9 +56,14 @@
 }
 
 .player {
-    width: 125px;
-    height: 130px;
+    width: 135px;
+    height: 140px;
     z-index: 1000;
+}
+
+.video_divider {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #videoSelectable .ui-selected {
@@ -64,15 +75,15 @@
     list-style-type: none;
     margin: 0;
     padding: 0;
-    width: 490px;
+    width: 670px;
 }
 
 #videoSelectable li {
     margin: 5px;
     padding: 1px;
     float: left;
-    width: 130px;
-    height: 142px;
+    width: 150px;
+    height: 145px;
     text-align: center;
     cursor: pointer;
 }
@@ -129,6 +140,43 @@
 .video-img-buttons {
     width: 100%;
     float: left;
+}
+
+.file-wrapper {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    cursor: pointer;
+    float: left;
+}
+
+.file-wrapper input {
+    height: 35px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    filter: alpha(opacity=1);
+    opacity: 0.01;
+    -moz-opacity: 0.01;
+    cursor: pointer;
+}
+
+.file-wrapper .button {
+    border: 1px solid #D3D3D3;
+    color: #030303;
+    background: #E2E2E2;
+    padding: 4px 18px;
+    margin-right: 4px;
+    border-radius: 0px;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.btn-upload {
+    margin-left: 5px;
 }
 
 @media screen\9 {

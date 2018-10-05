@@ -74,6 +74,7 @@ import { LanguageService } from '../../services/language.service';
 import { TileBlocksDirective } from '../../components/widgets/tileblocks.directive';
 import { NotificationService } from '../../services/notification.service';
 import { ScriptService } from '../../services/script.service';
+import { VideoService } from '../../services/video.service';
 //import { DragDropDirectiveModule} from "angular4-drag-drop";
 
 //import { SlimScrollModule } from 'ng2-slimscroll';
@@ -129,7 +130,7 @@ import { FileUploadModule } from 'ng2-file-upload';
     TileBackgroundComponent, VideoLibraryComponent],
   providers: [HeaderService, TileService, CommonService, DragService, EventService,
     FolderService, AccountService, CategoryService, ProcedureService, ThemeService, ImageService, OrganizationsService, AppsService,
-    LivestreamService, MomentData, LanguageService, NotificationService, ScriptService]
+    LivestreamService, VideoService, MomentData, LanguageService, NotificationService, ScriptService]
 })
 
 export class HomeModule { }

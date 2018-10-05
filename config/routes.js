@@ -254,7 +254,7 @@ module.exports = function (app) {
   router.all('/video/keys/:orgId?', $video.keys);
 
   router.all('/video/vimeo/get/:videoId?', $video.vimeoJson);
-  router.all('"/video/complete', $video.completevideo);
+  router.all('/video/complete', $video.completevideo);
 
   router.all('/video/delete/:id?/:videoId?', $video.vimeoDeleteVideo);
   router.all('/video/picture/upload/:videoId?', $video.pictureUpload);

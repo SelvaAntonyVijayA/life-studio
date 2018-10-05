@@ -75,6 +75,9 @@ export class WidgetsComponent implements OnInit {
   isTileBg: boolean = false;
   popFrom: string = "";
   imageLibraryData: Object = {};
+  isVideoLibrary: boolean = false;
+  videoPopFrom: string = "";
+  videoLibraryData: Object = {};
 
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
@@ -509,9 +512,12 @@ export class WidgetsComponent implements OnInit {
     } else if (opt === "image") {
       this.isImageLibrary = 'block';
       this.popFrom = "selectshareimage";
-      this.imageLibraryData = { popFrom: "selectshareimage", count: index };
+      this.imageLibraryData = { popFrom: this.popFrom, count: index };
 
     } else if (opt === "video") {
+      this.isVideoLibrary = true;
+      this.videoPopFrom = "selectanvideo";
+      this.videoLibraryData = { videoPopFrom: "selectanvideo", count: index };
     }
   };
 
@@ -857,6 +863,25 @@ export class WidgetsComponent implements OnInit {
         let blockObj = block["block"];
 
         blockObj["data"]["shareURL"] = obj["url"];
+        block["block"] = blockObj;
+
+        this.blocks[obj["data"]["count"]] = block;
+      }
+    }
+  }
+
+  onVideoLibraryResult(obj: object) {
+    this.isVideoLibrary = false;
+    this.videoPopFrom = "";
+
+    if (!this.utils.isNullOrEmpty(obj["url"])) {
+      if (obj["data"]["videoPopFrom"] == "selectanvideo") {
+        let block = this.blocks[obj["data"]["count"]];
+        let blockObj = block["block"];
+
+        blockObj["data"]["url"] = obj["url"];
+        blockObj["data"]["videoid"] = obj["videoId"];
+        blockObj["data"]["dataid"] = obj["id"];
         block["block"] = blockObj;
 
         this.blocks[obj["data"]["count"]] = block;
